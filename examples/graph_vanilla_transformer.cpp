@@ -118,6 +118,17 @@ class GraphVanillaTransformerExample : public Example
 
         add_encoder_block(data_path,"/layer_0" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
         add_encoder_block(data_path,"/layer_1" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+        add_encoder_block(data_path,"/layer_2" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+        add_encoder_block(data_path,"/layer_3" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+        add_encoder_block(data_path,"/layer_4" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+        add_encoder_block(data_path,"/layer_5" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+        add_encoder_block(data_path,"/layer_6" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+
+        add_encoder_block(data_path,"/layer_7" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+        add_encoder_block(data_path,"/layer_8" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+        add_encoder_block(data_path,"/layer_9" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+        add_encoder_block(data_path,"/layer_10" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+        add_encoder_block(data_path,"/layer_11" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
 
         graph << OutputLayer(get_output_accessor(common_params)).set_name("out1");
 
