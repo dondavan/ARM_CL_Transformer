@@ -117,6 +117,7 @@ class GraphVanillaTransformerExample : public Example
                      .set_name("tkemb1");
 
         add_encoder_block(data_path,"/layer_0" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+        add_encoder_block(data_path,"/layer_1" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
 
         graph << OutputLayer(get_output_accessor(common_params)).set_name("out1");
 
