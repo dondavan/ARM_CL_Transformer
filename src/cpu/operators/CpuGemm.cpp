@@ -492,7 +492,7 @@ void CpuGemm::run(ITensorPack &tensors)
         ITensorPack pack{{ACL_SRC, d}, {ACL_DST, d}};
         _activation_func->run(pack);
     }
-
+    
 }
 
 void CpuGemm::prepare(ITensorPack &tensors)

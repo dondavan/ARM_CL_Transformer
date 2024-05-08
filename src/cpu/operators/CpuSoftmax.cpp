@@ -194,6 +194,7 @@ void CpuSoftmaxGeneric::run(ITensorPack &tensors)
         permute_out_pack.add_tensor(TensorType::ACL_DST, dst);
         _permute_output.run(permute_out_pack);
     }
+
 }
 
 experimental::MemoryRequirements CpuSoftmaxGeneric::workspace() const

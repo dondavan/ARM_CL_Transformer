@@ -390,10 +390,12 @@ public:
      *
      * @return Node ID of the created node, EmptyNodeID in case of error
      */
-    static NodeID add_feed_forward_layer(Graph                        &g,
-                                            NodeParams                    params,
-                                            NodeIdxPair                   input,
-                                            FeedForwardLayerInfo          info = FeedForwardLayerInfo());
+    static NodeID add_linear_node(Graph                  &g,
+                                         NodeParams             params,
+                                         NodeIdxPair            input,
+                                         LinearLayerInfo        info = LinearLayerInfo(),
+                                         ITensorAccessorUPtr    ff_weights  = nullptr,
+                                         ITensorAccessorUPtr    ff_bias = nullptr);
     /** Adds a generate proposals layer node to the graph
      *
      * @param[in] g       Graph to add the layer to
@@ -446,7 +448,7 @@ public:
      * 
      * @return Node ID of the created node, EmptyNodeID in case of error
      */
-    static NodeID add_linear_layer(Graph &g, NodeParams params, NodeIdxPair input, 
+    static NodeID add_multi_head_linear_layer(Graph &g, NodeParams params, NodeIdxPair input, 
                                                                LinearLayerInfo linear_info,
                                                                ITensorAccessorUPtr query_weights,
                                                                ITensorAccessorUPtr query_bias,

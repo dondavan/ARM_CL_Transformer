@@ -196,6 +196,7 @@ Functionality:
                       embeddings = self.LayerNorm(embeddings)
                       embeddings = self.dropout(embeddings)
                 while out inplementation does not
+            10. segemnt embedding using verctorize kernel, produeces (*,2) shape, should be (*,1)
 
 
 Optimization: 
@@ -227,6 +228,26 @@ Query,Key,Value Weight              (d_model, d_model, ...)
 Query,Key,Value Bias                (1, d_model, ...)
 
 
+Pytroch modificationL:
+Embedding:
+embeddings = self.LayerNorm(embeddings)
+embeddings = self.dropout(embeddings)
+
+Self Attention:
+attention_probs = self.dropout(attention_probs)
+
+BertSelfOutput
+hidden_states = self.dense(hidden_states)
+hidden_states = self.dropout(hidden_states)
+
+Layer Norm class LayerNorm(Module):
+self.elementwise_affine = elementwise_affine -> False
+
+Intermedia 
+
+Output
+hidden_states = self.dropout(hidden_states)
+hidden_states = self.LayerNorm(hidden_states + input_tensor)
 
 
 

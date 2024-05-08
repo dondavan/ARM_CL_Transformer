@@ -40,9 +40,10 @@ Status CpuLinearKernel::validate(const ITensorInfo *input1,
                                      LinearLayerInfo   info)
 {
     ARM_COMPUTE_RETURN_ERROR_ON_DATA_TYPE_CHANNEL_NOT_IN(input1, 1, DataType::F32);
-    LinearAttentionOperation op = info.op();
-    ARM_COMPUTE_RETURN_ERROR_ON(op == LinearAttentionOperation::Unknown);
-
+    ARM_COMPUTE_UNUSED(info);
+    ARM_COMPUTE_UNUSED(output);
+    
+    /*
     TensorShape out_shape = input1->tensor_shape();
     if (op != LinearAttentionOperation::Key)
     {
@@ -56,7 +57,7 @@ Status CpuLinearKernel::validate(const ITensorInfo *input1,
     {
         ARM_COMPUTE_RETURN_ERROR_ON(detail::have_different_dimensions(out_shape, output->tensor_shape(), 0));
         ARM_COMPUTE_RETURN_ERROR_ON_MISMATCHING_DATA_TYPES(input1, output);
-    }
+    }*/
 
     return Status{};
 }

@@ -359,6 +359,7 @@ void CpuActivationKernel::run_op(ITensorPack &tensors, const Window &window, con
     ITensor       *dst = tensors.get_tensor(TensorType::ACL_DST);
 
     _run_method(src, dst, _act_info, window);
+
 }
 
 const char *CpuActivationKernel::name() const

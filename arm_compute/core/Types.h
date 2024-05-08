@@ -1434,8 +1434,8 @@ private:
     unsigned int _h;
 };
 
-/** Linear Layer Information Class*/
-class LinearLayerInfo final
+/** Multi Head Linear Layer Information Class*/
+class MultiHeadLinearLayerInfo final
 {
 public:
     /** Constructor
@@ -1443,7 +1443,7 @@ public:
      * @param[in] d_model   Model dimesion
      * @param[in] h         Parallel attention dimesion
      */
-    LinearLayerInfo(unsigned int d_model = 512, unsigned int h = 8, 
+    MultiHeadLinearLayerInfo(unsigned int d_model = 512, unsigned int h = 8, 
                     LinearAttentionOperation op = LinearAttentionOperation::Unknown ) : _d_model(d_model),
                                                                                         _h(h), 
                                                                                         _op(op)
@@ -1490,7 +1490,7 @@ public:
      * @param[in] axis      Axix to perform normalization along
      * @param[in] epsilon   Lower bound value for the normalization
      */
-    LayerNormLayerInfo(int axis = 1/*Window::DimY*/,
+    LayerNormLayerInfo(int axis = 0/*Window::DimX*/,
                        float epsilon = 1e-5,
                        float gamma = 1.0,
                        float beta = 0): _axis(axis),
@@ -1531,26 +1531,44 @@ private:
     float _beta;
 };
 
-/** Feed Forward Layer Information Class */
-class FeedForwardLayerInfo final
+/** Linear Layer Information Class */
+class LinearLayerInfo final
 {
 public:
     /** Constructor
      * 
-     * @param[in] d_ff  Amount of feed forward fully connected layer node
+     * @param[in] d_d_linear_hidden Linear layer hidden depth
      */
-    FeedForwardLayerInfo(unsigned int d_ff = 2048U): _d_ff(d_ff)
+    LinearLayerInfo(unsigned int d_linear_hidden = 2048U,
+                    TensorShape w_shape = TensorShape(),
+                    TensorShape b_shape = TensorShape()): _d_linear_hidden(d_linear_hidden),
+                                                          _w_shape(w_shape),
+                                                          _b_shape(b_shape)
     {
     }
 
-    /** Get d_ff */
-    int d_ff() const
+    /** Get d_model */
+    int d_linear_hidden() const
     {
-        return  _d_ff;
+        return  _d_linear_hidden;
+    }
+
+    /** Get _w_shape */
+    TensorShape w_shape() const
+    {
+        return  _w_shape;
+    }
+
+    /** Get _b_shape */
+    TensorShape b_shape() const 
+    {
+        return  _b_shape;
     }
     
 private:
-    unsigned int _d_ff;
+    unsigned int _d_linear_hidden;
+    TensorShape _w_shape;
+    TensorShape _b_shape;
 
 };
 

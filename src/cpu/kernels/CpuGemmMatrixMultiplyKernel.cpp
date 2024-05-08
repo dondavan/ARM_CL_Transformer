@@ -133,9 +133,12 @@ void CpuGemmMatrixMultiplyKernel::configure(const ITensorInfo     *lhs,
 
     // dst tensor auto inizialitation if not yet initialized
     TensorShape tensor_shape{lhs->tensor_shape()};
-    tensor_shape.set(0, is_interleaved ? reshape_info.m() : rhs->dimension(0));
-    tensor_shape.set(1, is_interleaved ? reshape_info.n() : lhs->dimension(1));
+    tensor_shape.set(0, is_interleaved ? reshape_info.n() : rhs->dimension(0));
+    tensor_shape.set(1, is_interleaved ? reshape_info.m() : lhs->dimension(1));
     auto_init_if_empty(*dst, lhs->clone()->set_tensor_shape(tensor_shape));
+
+    // Explictly set dst tensor shape
+    dst->set_tensor_shape(tensor_shape);
 
     // Perform validate step
     ARM_COMPUTE_ERROR_THROW_ON(validate_arguments(lhs, rhs, dst, alpha, is_interleaved, reshape_info));

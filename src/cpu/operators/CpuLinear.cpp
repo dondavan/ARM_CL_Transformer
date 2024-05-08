@@ -24,8 +24,9 @@ void CpuLinear::configure(const ITensorInfo *a,
 {
     ARM_COMPUTE_LOG_PARAMS(a, b, c, d, alpha, beta, linear_info);
     ARM_COMPUTE_UNUSED(linear_info);
+    ARM_COMPUTE_UNUSED(beta);
 
-    const bool is_c_bias = beta == 1 && c != nullptr;
+    const bool is_c_bias = c != nullptr;
     const bool run_optimised = false;
 
     _run_vector_matrix_multiplication = a->dimension(1) < 2;
@@ -73,19 +74,23 @@ void CpuLinear::configure(const ITensorInfo *a,
                 experimental::MemoryInfo(offset_int_vec(Transposed1xWRHS), experimental::MemoryLifetime::Persistent, _tmp_b.total_size());
             
             // Use a and b here instead of _tmp_a and _tmp_b because CpuGemmMatrixMultiplyKernel requires the original m,n,k in case of interleaved a and transposed1xw b
-            const int m = a->dimension(0);
-            const int k = a->dimension(1);
-            const int n = b_to_use->dimension(1);
+            const int m = a->dimension(1);
+            const int n = b_to_use->dimension(0);
+            const int k = a->dimension(0);
 
             // Configure matrix multiplication kernel
             _mm_kernel->configure(&_tmp_a, &_tmp_b, gemm_output_to_use, alpha, _run_interleave_transpose,
                                   GEMMReshapeInfo(m, n, k));
+
+            std::cout << "gemm_output_to_use x " << gemm_output_to_use->tensor_shape().x() << std::endl;
+            std::cout << "gemm_output_to_use y " << gemm_output_to_use->tensor_shape().y() << std::endl;
+            std::cout << "gemm_output_to_use z " << gemm_output_to_use->tensor_shape().z() << std::endl;
         }
         
         if (_run_bias_addition)
         {
             _add_bias = std::make_unique<cpu::kernels::CpuAddVecKernel>();
-            _add_bias->configure(gemm_output_to_use, c, d, Window::DimY, Window::DimX, ConvertPolicy::SATURATE);
+            _add_bias->configure(gemm_output_to_use, c, d, Window::DimX, Window::DimX, ConvertPolicy::SATURATE);
             _aux_mem[TempResult] =
                 experimental::MemoryInfo(offset_int_vec(TempResult), experimental::MemoryLifetime::Persistent, _tmp_d.total_size());
         }
@@ -120,6 +125,18 @@ void CpuLinear::run(ITensorPack &tensors)
     auto b = tensors.get_const_tensor(ACL_SRC_1);
     auto c = tensors.get_const_tensor(ACL_SRC_2);
     auto d = tensors.get_tensor(ACL_DST);
+    /*
+    std::cout <<"Linear x: " << a->info()->tensor_shape().x() << std::endl;
+    std::cout <<"Linear y: " << a->info()->tensor_shape().y() << std::endl;
+    std::cout <<"Linear z: " << a->info()->tensor_shape().z() << std::endl;
+    std::cout << *reinterpret_cast<float *>(a->ptr_to_element(Coordinates(0,0)))  << std::endl;
+    std::cout << *reinterpret_cast<float *>(a->ptr_to_element(Coordinates(0,1)))  << std::endl;
+
+    std::cout << *reinterpret_cast<float *>(a->ptr_to_element(Coordinates(1,0,0)))  << std::endl;
+    std::cout << *reinterpret_cast<float *>(a->ptr_to_element(Coordinates(2,0,0)))  << std::endl;
+    std::cout << *reinterpret_cast<float *>(a->ptr_to_element(Coordinates(3071,0,0)))  << std::endl;
+    std::cout << *reinterpret_cast<float *>(a->ptr_to_element(Coordinates(3072,0,0)))  << std::endl;
+    */
 
 
     CpuAuxTensorHandler interleaved_a(offset_int_vec(InterleavedLHS), _tmp_a, tensors, true);
@@ -128,33 +145,7 @@ void CpuLinear::run(ITensorPack &tensors)
     CpuAuxTensorHandler temp_d(offset_int_vec(TempResult), _tmp_d, tensors, true);
 
     ITensorPack mm_pack{{ACL_SRC_0, a}, {ACL_SRC_1, b}, {ACL_DST, (_run_bias_addition) ? temp_d.get() : d}};
-    std::cout << "before interleave_transpose " << std::endl;
 
-    std::cout << "a tensor_shape x " << a->info()->tensor_shape().x() << std::endl;
-    std::cout << "a tensor_shape y " << a->info()->tensor_shape().y() << std::endl;
-    std::cout << "a tensor_shape z " << a->info()->tensor_shape().z() << std::endl;
-
-    std::cout << "a stride in byte x " << a->info()->strides_in_bytes()[0] << std::endl;
-    std::cout << "a stride in byte y " << a->info()->strides_in_bytes()[1] << std::endl;
-    std::cout << "a stride in byte z " << a->info()->strides_in_bytes()[2] << std::endl;
-
-    std::cout << * reinterpret_cast<float *>(a->ptr_to_element(Coordinates(0,0))) << " "
-              << * reinterpret_cast<float *>(a->ptr_to_element(Coordinates(1,0))) << " " 
-              << * reinterpret_cast<float *>(a->ptr_to_element(Coordinates(2,0))) << " " 
-              << * reinterpret_cast<float *>(a->ptr_to_element(Coordinates(3,0))) << " " 
-              
-              << * reinterpret_cast<float *>(a->ptr_to_element(Coordinates(6,0))) << " " 
-              << * reinterpret_cast<float *>(a->ptr_to_element(Coordinates(7,0))) << " " 
-
-              << * reinterpret_cast<float *>(a->ptr_to_element(Coordinates(767,0))) << " " 
-              << * reinterpret_cast<float *>(a->ptr_to_element(Coordinates(768,0))) << " " 
-    << std::endl;
-
-    std::cout << * reinterpret_cast<float *>(a->ptr_to_element(Coordinates(0,0))) << " "
-              << * reinterpret_cast<float *>(a->ptr_to_element(Coordinates(0,1))) << " " 
-              << * reinterpret_cast<float *>(a->ptr_to_element(Coordinates(0,2))) << " " 
-              << * reinterpret_cast<float *>(a->ptr_to_element(Coordinates(0,3))) << " " 
-    << std::endl;
 
     if (_run_interleave_transpose)
     {
@@ -167,7 +158,7 @@ void CpuLinear::run(ITensorPack &tensors)
     }
 
     const ITensor *b_to_use = b;
-    /*
+    
     if (_pretranspose_b_func)
     {
         // Run pretranspose kernel
@@ -175,7 +166,7 @@ void CpuLinear::run(ITensorPack &tensors)
         _pretranspose_b_func->run(pretranspose_pack);
         b_to_use = pretransposed_b.get();
     }
-    */
+    
 
     if (_run_interleave_transpose)
     {
@@ -194,20 +185,25 @@ void CpuLinear::run(ITensorPack &tensors)
                                 _run_vector_matrix_multiplication ? Window::DimX : Window::DimY,
                                 _mm_kernel->window(), mm_pack);
 
-    std::cout << "src/cpu/operators/CpuLinear.cpp " << std::endl;
-    std::cout <<"a->ptr_to_element(Coordinates(0,0)) " <<*reinterpret_cast<const float *>(a->ptr_to_element(Coordinates(0,0))) << std::endl;
-    std::cout <<"b_to_use->ptr_to_element(Coordinates(0,0)) " <<*reinterpret_cast<const float *>(b_to_use->ptr_to_element(Coordinates(0,0))) << std::endl;
-    std::cout <<"c->ptr_to_element(Coordinates(0,0)) " <<*reinterpret_cast<const float *>(c->ptr_to_element(Coordinates(0,0))) << std::endl;
-    std::cout <<"temp_d->ptr_to_element(Coordinates(0,0)) " <<*reinterpret_cast<const float *>(temp_d.get()->ptr_to_element(Coordinates(0,0))) << std::endl;
-
     // Run bias addition kernel
     if (_run_bias_addition)
     {   
         ITensorPack pack{{ACL_SRC_0, temp_d.get()}, {ACL_SRC_1, c}, {ACL_DST, d}};
-        NEScheduler::get().schedule_op(_add_bias.get(), Window::DimY, _add_bias->window(), pack);
+        NEScheduler::get().schedule_op(_add_bias.get(), Window::DimX, _add_bias->window(), pack);
     }
 
+    /*
+    std::cout <<"Linear dst x: " << d->info()->tensor_shape().x() << std::endl;
+    std::cout <<"Linear dst y: " << d->info()->tensor_shape().y() << std::endl;
+    std::cout <<"Linear dst z: " << d->info()->tensor_shape().z() << std::endl;
+    std::cout << *reinterpret_cast<float *>(d->ptr_to_element(Coordinates(0,0)))  << std::endl;
+    std::cout << *reinterpret_cast<float *>(d->ptr_to_element(Coordinates(0,1)))  << std::endl;
 
+    std::cout << *reinterpret_cast<float *>(d->ptr_to_element(Coordinates(1,0,0)))  << std::endl;
+    std::cout << *reinterpret_cast<float *>(d->ptr_to_element(Coordinates(2,0,0)))  << std::endl;
+    std::cout << *reinterpret_cast<float *>(d->ptr_to_element(Coordinates(767,0,0)))  << std::endl;
+    std::cout << *reinterpret_cast<float *>(d->ptr_to_element(Coordinates(768,0,0)))  << std::endl;
+    */
 }
 
 
