@@ -111,24 +111,24 @@ class GraphVanillaTransformerExample : public Example
                                                    d_position,
                                                    true /*Use pretrained positional encoding*/,
                                                    ConvertPolicy::SATURATE),
-                                get_weights_accessor(data_path, "/token_embedding.npy", operation_layout),
-                                get_weights_accessor(data_path, "/segment_embedding.npy", operation_layout),
-                                get_weights_accessor(data_path, "/positional_embedding.npy", operation_layout))
+                                get_weights_accessor(data_path, "token_embedding.npy", operation_layout),
+                                get_weights_accessor(data_path, "segment_embedding.npy", operation_layout),
+                                get_weights_accessor(data_path, "positional_embedding.npy", operation_layout))
                      .set_name("tkemb1");
 
-        add_encoder_block(data_path,"/layer_0" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
-        add_encoder_block(data_path,"/layer_1" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
-        add_encoder_block(data_path,"/layer_2" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
-        add_encoder_block(data_path,"/layer_3" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
-        add_encoder_block(data_path,"/layer_4" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
-        add_encoder_block(data_path,"/layer_5" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+        add_encoder_block(data_path,"/layer_0/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+        add_encoder_block(data_path,"/layer_1/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+        add_encoder_block(data_path,"/layer_2/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+        add_encoder_block(data_path,"/layer_3/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+        add_encoder_block(data_path,"/layer_4/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+        add_encoder_block(data_path,"/layer_5/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
 
-        add_encoder_block(data_path,"/layer_6" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
-        add_encoder_block(data_path,"/layer_7" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
-        add_encoder_block(data_path,"/layer_8" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
-        add_encoder_block(data_path,"/layer_9" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
-        add_encoder_block(data_path,"/layer_10" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
-        add_encoder_block(data_path,"/layer_11" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+        add_encoder_block(data_path,"/layer_6/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+        add_encoder_block(data_path,"/layer_7/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+        add_encoder_block(data_path,"/layer_8/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+        add_encoder_block(data_path,"/layer_9/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+        add_encoder_block(data_path,"/layer_10/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+        add_encoder_block(data_path,"/layer_11/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
 
         graph << OutputLayer(get_output_accessor(common_params)).set_name("out1");
 
@@ -167,12 +167,12 @@ class GraphVanillaTransformerExample : public Example
 
         with_attention
             /* Self Attention */
-            << MultiHeadLinearLayer(LinearLayerInfo(d_model), get_weights_accessor(data_path+layer_path, "/query_weight.npy"),
-                                    get_weights_accessor(data_path+layer_path, "/query_bias.npy"),
-                                    get_weights_accessor(data_path+layer_path, "/key_weight.npy"),
-                                    get_weights_accessor(data_path+layer_path, "/key_bias.npy"),
-                                    get_weights_accessor(data_path+layer_path, "/value_weight.npy"),
-                                    get_weights_accessor(data_path+layer_path, "/value_bias.npy"))
+            << MultiHeadLinearLayer(LinearLayerInfo(d_model), get_weights_accessor(data_path+layer_path, "query_weight.npy"),
+                                    get_weights_accessor(data_path+layer_path, "query_bias.npy"),
+                                    get_weights_accessor(data_path+layer_path, "key_weight.npy"),
+                                    get_weights_accessor(data_path+layer_path, "key_bias.npy"),
+                                    get_weights_accessor(data_path+layer_path, "value_weight.npy"),
+                                    get_weights_accessor(data_path+layer_path, "value_bias.npy"))
             << MultiHeadAttentionLayer(MultiHeadAttentionLayerInfo(d_model, h)).set_name("mha1");
 
         graph << EltwiseLayer(std::move(with_attention), std::move(without_attention), EltwiseOperation::Add).set_name("add_4_norm_attention");
@@ -185,13 +185,13 @@ class GraphVanillaTransformerExample : public Example
         /* Self Intermediate(Feed Forward)*/
         with_ff << LinearLayer(LinearLayerInfo(d_ff, TensorShape(d_model, d_ff) /*weight*/,
                                                TensorShape(d_ff) /*bias*/),
-                               get_weights_accessor(data_path+layer_path, "/ff_weight_0.npy"),
-                               get_weights_accessor(data_path+layer_path, "/ff_bias_0.npy"))
+                               get_weights_accessor(data_path+layer_path, "ff_weight_0.npy"),
+                               get_weights_accessor(data_path+layer_path, "ff_bias_0.npy"))
                 << ActivationLayer(ActivationLayerInfo(ActivationFunction::GELU))
                 << LinearLayer(LinearLayerInfo(d_model, TensorShape(d_ff, d_model) /*weight*/,
                                                TensorShape(d_model) /*bias*/),
-                               get_weights_accessor(data_path+layer_path, "/ff_weight_1.npy"),
-                               get_weights_accessor(data_path+layer_path, "/ff_bias_1.npy"));
+                               get_weights_accessor(data_path+layer_path, "ff_weight_1.npy"),
+                               get_weights_accessor(data_path+layer_path, "ff_bias_1.npy"));
 
         graph << EltwiseLayer(std::move(with_ff), std::move(without_ff), EltwiseOperation::Add).set_name("add_4_norm_ff");
 
