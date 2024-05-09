@@ -1,0 +1,2 @@
+export LD_LIBRARY_PATH=lib/
+./graph_bert_large_uncased --text=./data/input_text.txt --segment=./data/input_segment.txt --data=./data/bert-large-uncased_npy/ --vocabulary=./data/vocab/bert-large-uncased_vocab.txt
