@@ -1,2 +1,2 @@
 export LD_LIBRARY_PATH=lib/
-./graph_vanilla_transformer --text=./data/input_text.txt --segment=./data/input_segment.txt --data=./data/bert-base-uncased_npy/ --vocabulary=./data/vocab/bert-base-uncased_vocab.txt
+./graph_bert_base_uncased --text=./data/input_text.txt --segment=./data/input_segment.txt --data=./data/bert-base-uncased_npy/ --vocabulary=./data/vocab/bert-base-uncased_vocab.txt
