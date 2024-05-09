@@ -137,9 +137,8 @@ class GraphVanillaTransformerExample : public Example
                                get_weights_accessor(data_path, "ff_weight_1.npy"),
                                get_weights_accessor(data_path, "ff_bias_1.npy"));;
 
-        graph << OutputLayer(get_output_accessor(common_params)).set_name("out1");
         */
-
+        graph << OutputLayer(get_output_accessor(common_params)).set_name("out1");
         // Decode Input
         // Finalize graph
         GraphConfig config;
