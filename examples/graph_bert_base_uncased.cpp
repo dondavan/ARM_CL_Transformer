@@ -131,12 +131,14 @@ class GraphVanillaTransformerExample : public Example
             add_encoder_block(data_path,"layer_11/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
 
         // Pooler
-        graph << LinearLayer(LinearLayerInfo(d_model, TensorShape(d_ff, d_model) /*weight*/,
-                                               TensorShape(d_model) /*bias*/),
+        /*
+        graph << LinearLayer(LinearLayerInfo(d_model, TensorShape(d_ff, d_model) ,
+                                               TensorShape(d_model) ),
                                get_weights_accessor(data_path, "ff_weight_1.npy"),
                                get_weights_accessor(data_path, "ff_bias_1.npy"));;
 
         graph << OutputLayer(get_output_accessor(common_params)).set_name("out1");
+        */
 
         // Decode Input
         // Finalize graph
