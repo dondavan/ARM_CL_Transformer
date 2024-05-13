@@ -145,9 +145,16 @@ class GraphVanillaTransformerExample : public Example
             add_encoder_block(data_path,"layer_23/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
 
 
-        graph << OutputLayer(get_output_accessor(common_params)).set_name("out1");
-
-        // Decode Input
+        // Pooler
+        graph << LinearLayer(LinearLayerInfo(d_model, TensorShape(d_model, d_model) ,
+                                               TensorShape(d_model) ),
+                               get_weights_accessor(data_path, "pooler_weight.npy"),
+                               get_weights_accessor(data_path, "pooler_bias.npy"))
+                               
+              << ActivationLayer(ActivationLayerInfo(ActivationFunction::TANH))
+              
+              << OutputLayer(get_output_accessor(common_params)).set_name("out1");
+              
         // Finalize graph
         GraphConfig config;
 

@@ -140,7 +140,6 @@ class GraphVanillaTransformerExample : public Example
               
               << OutputLayer(get_output_accessor(common_params)).set_name("out1");
 
-        // Decode Input
         // Finalize graph
         GraphConfig config;
 
