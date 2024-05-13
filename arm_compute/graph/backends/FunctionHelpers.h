@@ -1887,9 +1887,6 @@ std::unique_ptr<IFunction> create_scale_dot_production_layer(ScaleDotProductionA
     typename TargetInfo::TensorType *value   = get_backing_tensor<TargetInfo>(node.input(2));
     typename TargetInfo::TensorType *output  = get_backing_tensor<TargetInfo>(node.output(0));
 
-    ARM_COMPUTE_ERROR_ON(input == nullptr);
-    ARM_COMPUTE_ERROR_ON(output == nullptr);
-
     // Create and configure function
     auto mm   = get_memory_manager(ctx, TargetInfo::TargetType);
     auto func = std::make_unique<ScaleDotProductionLayerFunction>(mm);
