@@ -257,3 +257,6 @@ hidden_states = self.LayerNorm(hidden_states + input_tensor)
 Current:
 
 Linear layer
+
+
+PhD position applied without reference letter
