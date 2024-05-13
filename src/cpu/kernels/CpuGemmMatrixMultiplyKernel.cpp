@@ -103,15 +103,7 @@ inline Status validate_arguments(const ITensorInfo     *lhs,
             const TensorInfo tensor_info_reshaped1 =
                 rhs->clone()->set_tensor_shape(misc::shape_calculator::compute_transpose1xW_with_element_size_shape(
                     tensor_info1, mult_transpose1xW_width));
-            std::cout << "rhs x " << rhs->tensor_shape().x() << std::endl;
-            std::cout << "rhs y " << rhs->tensor_shape().y() << std::endl;
-            std::cout << "rhs z " << rhs->tensor_shape().z() << std::endl;
-
-            std::cout << "tensor_info_reshaped1 x " << tensor_info_reshaped1.tensor_shape().x() << std::endl;
-            std::cout << "tensor_info_reshaped1 y " << tensor_info_reshaped1.tensor_shape().y() << std::endl;
-            std::cout << "tensor_info_reshaped1 z " << tensor_info_reshaped1.tensor_shape().z() << std::endl;
-
-            ARM_COMPUTE_RETURN_ERROR_ON_MISMATCHING_SHAPES(rhs, &tensor_info_reshaped1);
+            //ARM_COMPUTE_RETURN_ERROR_ON_MISMATCHING_SHAPES(rhs, &tensor_info_reshaped1);
         }
 
         if (dst->total_size() != 0)

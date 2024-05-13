@@ -252,11 +252,9 @@ hidden_states = self.LayerNorm(hidden_states + input_tensor)
 
 
 
-
-
-Current:
-
-Linear layer
+Original modified: 
+src/cpu/kernels/CpuGemmMatrixMultiplyKernel.cpp
+ARM_COMPUTE_RETURN_ERROR_ON_MISMATCHING_SHAPES(rhs, &tensor_info_reshaped1);
 
 
 PhD position applied without reference letter
