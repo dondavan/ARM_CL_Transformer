@@ -151,7 +151,7 @@ class GraphVanillaTransformerExample : public Example
                                get_weights_accessor(data_path, "pooler_weight.npy"),
                                get_weights_accessor(data_path, "pooler_bias.npy"))
                                
-              << ActivationLayer(ActivationLayerInfo(ActivationFunction::TANH))
+              << ActivationLayer(ActivationLayerInfo(ActivationFunction::TANH,1.f, 1.f))
               
               << OutputLayer(get_output_accessor(common_params)).set_name("out1");
               
