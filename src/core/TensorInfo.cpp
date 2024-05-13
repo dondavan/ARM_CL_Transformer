@@ -192,7 +192,7 @@ void TensorInfo::init(const TensorShape &tensor_shape, size_t num_channels, Data
 
 void TensorInfo::init(const TensorShape &tensor_shape, DataType data_type)
 {
-    ARM_COMPUTE_ERROR_ON(num_channels == 0);
+    ARM_COMPUTE_ERROR_ON(num_channels() == 0);
 
     _data_type    = data_type;
     _format       = Format::UNKNOWN;
