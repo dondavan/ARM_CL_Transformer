@@ -138,7 +138,7 @@ class GraphVanillaTransformerExample : public Example
                                
               << ActivationLayer(ActivationLayerInfo(ActivationFunction::TANH))
               
-              << OutputLayer(get_print_output_accessor()).set_name("out1");
+              << OutputLayer(get_output_accessor(common_params)).set_name("out1");
 
         // Finalize graph
         GraphConfig config;
