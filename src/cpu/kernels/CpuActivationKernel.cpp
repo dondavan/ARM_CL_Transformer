@@ -307,7 +307,8 @@ void CpuActivationKernel::configure(const ITensorInfo *src, ITensorInfo *dst, Ac
     }
 #endif // __aarch64__
     _act_info = activation_info;
-    std::cout << "activation_info " << activation_info <<std::endl;
+    if(activation_info.activation() == ActivationFunction::TANH)
+    std::cout << "TANH" <<std::endl;
 
     Window win;
 
