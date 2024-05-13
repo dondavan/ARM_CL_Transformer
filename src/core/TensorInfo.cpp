@@ -67,7 +67,6 @@ TensorInfo::TensorInfo(const ITensorInfo &info) : TensorInfo()
     _dims_state                    = info.tensor_dims_state();
     _data_type                     = info.data_type();
     _format                        = info.format();
-    _text_format                   = info.text_format();
     _is_resizable                  = info.is_resizable();
     _valid_region                  = info.valid_region();
     _padding                       = info.padding();
@@ -89,7 +88,6 @@ TensorInfo::TensorInfo(const TensorInfo &info) : TensorInfo()
     _dims_state                    = info.tensor_dims_state();
     _data_type                     = info.data_type();
     _format                        = info.format();
-    _text_format                   = info.text_format();
     _is_resizable                  = info.is_resizable();
     _valid_region                  = info.valid_region();
     _padding                       = info.padding();

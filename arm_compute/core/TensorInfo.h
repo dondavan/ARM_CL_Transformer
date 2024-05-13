@@ -275,10 +275,6 @@ public:
     {
         return _format;
     }
-    Format text_format() const override
-    {
-        return _text_format;
-    }
     size_t total_size() const override
     {
         return _total_size;
@@ -353,7 +349,6 @@ private:
     TensorDimsState  _dims_state;
     DataType         _data_type;
     Format           _format;
-    Format           _text_format;
     bool             _is_resizable;
     ValidRegion      _valid_region;
     PaddingSize      _padding;
@@ -378,7 +373,6 @@ inline bool operator==(const TensorInfo &lhs, const TensorInfo &rhs)
            (lhs._strides_in_bytes == rhs._strides_in_bytes) && (lhs._num_channels == rhs._num_channels) &&
            (lhs._tensor_shape == rhs._tensor_shape) && (lhs._dims_state == rhs._dims_state) &&
            (lhs._data_type == rhs._data_type) && (lhs._format == rhs._format) &&
-           (lhs._text_format == rhs._text_format) &&
            (lhs._is_resizable == rhs._is_resizable) && (lhs._valid_region == rhs._valid_region) &&
            (lhs._padding == rhs._padding) && (lhs._quantization_info == rhs._quantization_info) &&
            (lhs._data_layout == rhs._data_layout) && (lhs._are_values_constant == rhs._are_values_constant) &&
