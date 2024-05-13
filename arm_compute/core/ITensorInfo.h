@@ -107,7 +107,7 @@ public:
      *
      * @return Reference to this ITensorInfo object
      */
-    virtual ITensorInfo &set_text_format(TextFormat text_format) = 0;
+    virtual ITensorInfo &set_text_format(Format text_format) = 0;
     /** Set the shape of an already initialized tensor.
      *
      * @warning Changing the shape requires to recompute the strides and is
@@ -253,7 +253,7 @@ public:
      *
      * @return Text format of the image
      */
-    virtual TextFormat text_format() const = 0;
+    virtual Format text_format() const = 0;
     /** Returns the total size of the tensor in bytes.
      *
      * @return Total size of the tensor in bytes.

@@ -58,7 +58,6 @@ enum class Channel
 enum class TextFormat
 {
     UNKNOWN,  /**< Unknown text format */
-    UTF8      /**< Utf-8 */
 };
 
 /** Image colour formats */
@@ -83,7 +82,8 @@ enum class Format
     NV12,     /**< A 2 plane YUV format of Luma (Y) and interleaved UV data at 4:2:0 sampling */
     NV21,     /**< A 2 plane YUV format of Luma (Y) and interleaved VU data at 4:2:0 sampling */
     IYUV,     /**< A 3 plane of 8-bit 4:2:0 sampled Y, U, V planes */
-    UYVY422   /**< A single plane of 32-bit macro pixel of U0, Y0, V0, Y1 byte */
+    UYVY422,  /**< A single plane of 32-bit macro pixel of U0, Y0, V0, Y1 byte */
+    UTF8      /**< Utf-8 */
 };
 
 /** Available data types */

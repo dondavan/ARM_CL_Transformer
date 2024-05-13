@@ -68,7 +68,7 @@ public:
      * @param[in] length Length of the 1D tensor
      * @param[in] format Single plane text format of the tensor.
      */
-    TensorInfo(unsigned int length, TextFormat format);
+    TensorInfo(unsigned int length, Format format);
     /** 2D tensor constructor
      *
      * @param[in] width  Width of the 2D tensor
@@ -87,7 +87,7 @@ public:
      * @param[in] tensor_shape It specifies the size for each dimension of the tensor in number of elements.
      * @param[in] format       Single plane format of the tensor.
      */
-    TensorInfo(const TensorShape &tensor_shape, TextFormat format);
+    TensorInfo(const TensorShape &tensor_shape, Format format);
 
     /** Construct a tensor info with a data type and number of channels.
      *
@@ -146,7 +146,7 @@ public:
      * @param[in] tensor_shape Size for each dimension of the tensor in number of elements.
      * @param[in] format       Single text format of the tensor.
      */
-    void init(const TensorShape &tensor_shape, TextFormat format);
+    void init(const TensorShape &tensor_shape, Format format);
     /** Initialize the metadata structure with the given parameters
      *
      * @param[in] tensor_shape                  Size for each dimension of the tensor in number of elements.
@@ -227,7 +227,7 @@ public:
     ITensorInfo                 &set_data_type(DataType data_type) override;
     ITensorInfo                 &set_num_channels(int num_channels) override;
     ITensorInfo                 &set_format(Format format) override;
-    ITensorInfo                 &set_text_format(TextFormat text_format) override;
+    ITensorInfo                 &set_text_format(Format text_format) override;
     ITensorInfo                 &set_tensor_shape(const TensorShape &shape) override;
     ITensorInfo                 &set_tensor_dims_state(const TensorDimsState &state) override;
     ITensorInfo                 &set_quantization_info(const QuantizationInfo &quantization_info) override;
@@ -287,7 +287,7 @@ public:
     {
         return _format;
     }
-    TextFormat text_format() const override
+    Format text_format() const override
     {
         return _text_format;
     }
@@ -365,7 +365,7 @@ private:
     TensorDimsState  _dims_state;
     DataType         _data_type;
     Format           _format;
-    TextFormat       _text_format;
+    Format           _text_format;
     bool             _is_resizable;
     ValidRegion      _valid_region;
     PaddingSize      _padding;

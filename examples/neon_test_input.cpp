@@ -30,13 +30,13 @@ public:
             loader.open("./data/test.txt");
             loader.set_length(5);
             // Create an empty grayscale 640x480 image
-            loader.init_text(src,TextFormat::UTF8);
+            loader.init_text(src,Format::UTF8);
         }
         else
         {
             loader.open(argv[1]);
             loader.set_length(5);
-            loader.init_text(src,TextFormat::UTF8);
+            loader.init_text(src,Format::UTF8);
         }
 
         // Allocate all the text

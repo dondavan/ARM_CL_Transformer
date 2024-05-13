@@ -95,10 +95,10 @@ public:
      * @param[in]  format Format to use for the text (Currently Utf-8)
      */
     template <typename T>
-    void init_text(T &text, TextFormat format)
+    void init_text(T &text, Format format)
     {
         ARM_COMPUTE_ERROR_ON(!is_open());
-        ARM_COMPUTE_ERROR_ON(format != TextFormat::UTF8);
+        ARM_COMPUTE_ERROR_ON(format != Format::UTF8);
 
         // Use the size of the input text
         TensorInfo text_info(_length, format);
@@ -113,7 +113,7 @@ public:
     {
         ARM_COMPUTE_ERROR_ON(!is_open());
         ARM_COMPUTE_ERROR_ON(text.info()->dimension(0) != _length );
-        ARM_COMPUTE_ERROR_ON_FORMAT_NOT_IN(&text, TextFormat::UTF8);
+        ARM_COMPUTE_ERROR_ON_FORMAT_NOT_IN(&text, Format::UTF8);
         ARM_COMPUTE_ERROR_ON(_feeder.get() == nullptr);
 
         unsigned char c = 0;

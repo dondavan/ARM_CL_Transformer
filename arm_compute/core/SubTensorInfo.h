@@ -96,7 +96,7 @@ public:
         _parent->set_format(format);
         return *this;
     };
-    ITensorInfo &set_text_format(TextFormat format) override
+    ITensorInfo &set_text_format(Format format) override
     {
         ARM_COMPUTE_ERROR_ON(_parent == nullptr);
         _parent->set_text_format(format);
@@ -186,7 +186,7 @@ public:
         ARM_COMPUTE_ERROR_ON(_parent == nullptr);
         return _parent->format();
     }
-    TextFormat text_format() const override
+    Format text_format() const override
     {
         ARM_COMPUTE_ERROR_ON(_parent == nullptr);
         return _parent->text_format();

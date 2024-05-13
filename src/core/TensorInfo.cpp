@@ -44,7 +44,7 @@ TensorInfo::TensorInfo()
       _dims_state(),
       _data_type(DataType::UNKNOWN),
       _format(Format::UNKNOWN),
-      _text_format(TextFormat::UTF8),
+      _text_format(Format::UTF8),
       _is_resizable{true},
       _valid_region{Coordinates(), _tensor_shape},
       _padding{0},
@@ -104,7 +104,7 @@ TensorInfo::TensorInfo(Format format) : TensorInfo(TensorShape(), format)
 }
 
 /* transformer */
-TensorInfo::TensorInfo(unsigned int length, TextFormat format): TensorInfo(TensorShape(length), format)
+TensorInfo::TensorInfo(unsigned int length, Format format): TensorInfo(TensorShape(length), format)
 {
 }
 
@@ -118,7 +118,7 @@ TensorInfo::TensorInfo(const TensorShape &tensor_shape, Format format) : TensorI
     init(tensor_shape, format);
 }
 
-TensorInfo::TensorInfo(const TensorShape &tensor_shape, TextFormat format) : TensorInfo()
+TensorInfo::TensorInfo(const TensorShape &tensor_shape, Format format) : TensorInfo()
 {
     init(tensor_shape, format);
 }
@@ -165,7 +165,7 @@ void TensorInfo::init(const TensorShape &tensor_shape, Format format)
     _format = format;
 }
 
-void TensorInfo::init(const TensorShape &tensor_shape, TextFormat format)
+void TensorInfo::init(const TensorShape &tensor_shape, Format format)
 {
     const DataType type         = data_type_from_format(format);
 
@@ -403,7 +403,7 @@ ITensorInfo &TensorInfo::set_format(Format format)
 }
 
 
-ITensorInfo &TensorInfo::set_text_format(TextFormat text_format)
+ITensorInfo &TensorInfo::set_text_format(Format text_format)
 {
     _text_format = text_format;
 

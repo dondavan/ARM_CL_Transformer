@@ -154,11 +154,11 @@ inline DataType data_type_from_format(Format format)
  *
  * @return The size in bytes of the pixel format
  */
-inline DataType data_type_from_format(TextFormat format)
+inline DataType data_type_from_format(Format format)
 {
     switch (format)
     {
-        case TextFormat::UTF8:
+        case Format::UTF8:
             return DataType::U32;
         default:
             ARM_COMPUTE_ERROR("Not supported data_type for given format");
