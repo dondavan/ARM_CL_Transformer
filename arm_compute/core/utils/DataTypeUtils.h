@@ -137,6 +137,8 @@ inline DataType data_type_from_format(Format format)
             return DataType::F16;
         case Format::F32:
             return DataType::F32;
+        case Format::UTF8:
+            return DataType::U32;
         //Doesn't make sense for planar formats:
         case Format::NV12:
         case Format::NV21:
@@ -148,23 +150,6 @@ inline DataType data_type_from_format(Format format)
     }
 }
 
-/** Return the data type used by a given single-planar pixel format
- *
- * @param[in] format Input format
- *
- * @return The size in bytes of the pixel format
- */
-inline DataType data_type_from_format(Format format)
-{
-    switch (format)
-    {
-        case Format::UTF8:
-            return DataType::U32;
-        default:
-            ARM_COMPUTE_ERROR("Not supported data_type for given format");
-            return DataType::UNKNOWN;
-    }
-}
 
 /** Return the promoted data type of a given data type.
  *

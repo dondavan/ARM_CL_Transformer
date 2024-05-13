@@ -82,12 +82,6 @@ public:
      * @param[in] format       Single plane format of the tensor.
      */
     TensorInfo(const TensorShape &tensor_shape, Format format);
-    /** Constructor
-     *
-     * @param[in] tensor_shape It specifies the size for each dimension of the tensor in number of elements.
-     * @param[in] format       Single plane format of the tensor.
-     */
-    TensorInfo(const TensorShape &tensor_shape, Format format);
 
     /** Construct a tensor info with a data type and number of channels.
      *
@@ -139,12 +133,6 @@ public:
      *
      * @param[in] tensor_shape Size for each dimension of the tensor in number of elements.
      * @param[in] format       Single plane format of the tensor.
-     */
-    void init(const TensorShape &tensor_shape, Format format);
-    /** Initialize the metadata structure with the given parameters
-     *
-     * @param[in] tensor_shape Size for each dimension of the tensor in number of elements.
-     * @param[in] format       Single text format of the tensor.
      */
     void init(const TensorShape &tensor_shape, Format format);
     /** Initialize the metadata structure with the given parameters
