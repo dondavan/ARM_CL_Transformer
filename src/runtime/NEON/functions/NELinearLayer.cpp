@@ -58,6 +58,13 @@ void NELinearLayer::run()
     pack.add_tensor(TensorType::ACL_DST, _impl->dst);
     
     _impl->kernel->run(pack);
+    std::cout <<"src/runtime/NEON/functions/NELinearLayer.cpp x: " << _impl->dst->info()->tensor_shape().x() << std::endl;
+    std::cout <<"src/runtime/NEON/functions/NELinearLayer.cpp y: " << _impl->dst->info()->tensor_shape().y() << std::endl;
+    std::cout <<"src/runtime/NEON/functions/NELinearLayer.cpp z: " << _impl->dst->info()->tensor_shape().z() << std::endl;
+    std::cout << *reinterpret_cast<float *>(_impl->dst->ptr_to_element(Coordinates(0,0)))  << std::endl;
+    std::cout << *reinterpret_cast<float *>(_impl->dst->ptr_to_element(Coordinates(1,0)))  << std::endl;
+    std::cout << *reinterpret_cast<float *>(_impl->dst->ptr_to_element(Coordinates(2,0)))  << std::endl;
+    std::cout << *reinterpret_cast<float *>(_impl->dst->ptr_to_element(Coordinates(0,1)))  << std::endl;
 
 }
 
