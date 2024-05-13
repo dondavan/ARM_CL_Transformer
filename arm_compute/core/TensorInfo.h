@@ -215,7 +215,6 @@ public:
     ITensorInfo                 &set_data_type(DataType data_type) override;
     ITensorInfo                 &set_num_channels(int num_channels) override;
     ITensorInfo                 &set_format(Format format) override;
-    ITensorInfo                 &set_text_format(Format text_format) override;
     ITensorInfo                 &set_tensor_shape(const TensorShape &shape) override;
     ITensorInfo                 &set_tensor_dims_state(const TensorDimsState &state) override;
     ITensorInfo                 &set_quantization_info(const QuantizationInfo &quantization_info) override;

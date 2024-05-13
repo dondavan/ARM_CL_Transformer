@@ -44,7 +44,6 @@ TensorInfo::TensorInfo()
       _dims_state(),
       _data_type(DataType::UNKNOWN),
       _format(Format::UNKNOWN),
-      _text_format(Format::UTF8),
       _is_resizable{true},
       _valid_region{Coordinates(), _tensor_shape},
       _padding{0},
@@ -383,14 +382,6 @@ ITensorInfo &TensorInfo::set_format(Format format)
         ARM_COMPUTE_ERROR_ON(num_channels_from_format(format) != _num_channels);
         ARM_COMPUTE_ERROR_ON(data_type_from_format(format) != _data_type);
     }
-    return *this;
-}
-
-
-ITensorInfo &TensorInfo::set_text_format(Format text_format)
-{
-    _text_format = text_format;
-
     return *this;
 }
 
