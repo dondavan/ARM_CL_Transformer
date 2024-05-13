@@ -118,11 +118,6 @@ TensorInfo::TensorInfo(const TensorShape &tensor_shape, Format format) : TensorI
     init(tensor_shape, format);
 }
 
-TensorInfo::TensorInfo(const TensorShape &tensor_shape, Format format) : TensorInfo()
-{
-    init(tensor_shape, format);
-}
-
 TensorInfo::TensorInfo(size_t num_channels, DataType data_type) : TensorInfo()
 {
     init(TensorShape(), num_channels, data_type);
@@ -163,15 +158,6 @@ void TensorInfo::init(const TensorShape &tensor_shape, Format format)
     init(tensor_shape, num_channels, type);
 
     _format = format;
-}
-
-void TensorInfo::init(const TensorShape &tensor_shape, Format format)
-{
-    const DataType type         = data_type_from_format(format);
-
-    init(tensor_shape, type);
-
-    _text_format = format;
 }
 
 void TensorInfo::init(const TensorShape &tensor_shape,
