@@ -39,7 +39,6 @@ TensorDescriptor EmbeddingSumLayerNode::configure_output(size_t idx) const
     const Tensor *token     = input(0);
     const Tensor *segment   = input(1);
     const Tensor *position  = input(2);
-    ARM_COMPUTE_ERROR_ON(src == nullptr);
 
     return compute_output_descriptor(token->desc(), segment->desc(), position->desc());
 }
