@@ -64,23 +64,9 @@ NEActivationLayer::validate(const ITensorInfo *input, const ITensorInfo *output,
 
 void NEActivationLayer::run()
 {
-
-    std::cout <<"src/runtime/NEON/functions/NEActivationLayer.cpp x: " << _impl->src->info()->tensor_shape().x() << std::endl;
-    std::cout <<"src/runtime/NEON/functions/NEActivationLayer.cpp y: " << _impl->src->info()->tensor_shape().y() << std::endl;
-    std::cout <<"src/runtime/NEON/functions/NEActivationLayer.cpp z: " << _impl->src->info()->tensor_shape().z() << std::endl;
-    std::cout << *reinterpret_cast<float *>(_impl->src->ptr_to_element(Coordinates(0,0)))  << std::endl;
-    std::cout << *reinterpret_cast<float *>(_impl->src->ptr_to_element(Coordinates(0,1)))  << std::endl;
-
-    std::cout << *reinterpret_cast<float *>(_impl->src->ptr_to_element(Coordinates(1,0,0)))  << std::endl;
-    std::cout << *reinterpret_cast<float *>(_impl->src->ptr_to_element(Coordinates(2,0,0)))  << std::endl;
-    std::cout << *reinterpret_cast<float *>(_impl->src->ptr_to_element(Coordinates(1023,0,0)))  << std::endl;
-    std::cout << *reinterpret_cast<float *>(_impl->src->ptr_to_element(Coordinates(1024,0,0)))  << std::endl;
-
     ITensorPack pack;
     pack.add_tensor(TensorType::ACL_SRC, _impl->src);
     pack.add_tensor(TensorType::ACL_DST, _impl->dst);
     _impl->op->run(pack);
-
-
 }
 } // namespace arm_compute

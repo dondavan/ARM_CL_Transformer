@@ -307,6 +307,7 @@ void CpuActivationKernel::configure(const ITensorInfo *src, ITensorInfo *dst, Ac
     }
 #endif // __aarch64__
     _act_info = activation_info;
+    std::cout << "activation_info " << activation_info <<std::endl;
 
     Window win;
 
@@ -358,19 +359,24 @@ void CpuActivationKernel::run_op(ITensorPack &tensors, const Window &window, con
     const ITensor *src = tensors.get_const_tensor(TensorType::ACL_SRC);
     ITensor       *dst = tensors.get_tensor(TensorType::ACL_DST);
 
-    _run_method(src, dst, _act_info, window);
+    
+    std::cout <<"src/cpu/kernels/CpuActivationKernel.cpp x: " << src->info()->tensor_shape().x() << std::endl;
+    std::cout <<"src/cpu/kernels/CpuActivationKernel.cpp y: " << src->info()->tensor_shape().y() << std::endl;
+    std::cout <<"src/cpu/kernels/CpuActivationKernel.cpp z: " << src->info()->tensor_shape().z() << std::endl;
+    std::cout << *reinterpret_cast<float *>(dst->ptr_to_element(Coordinates(0,0)))  << std::endl;
+    std::cout << *reinterpret_cast<float *>(dst->ptr_to_element(Coordinates(1,0)))  << std::endl;
+    std::cout << *reinterpret_cast<float *>(dst->ptr_to_element(Coordinates(2,0)))  << std::endl;
+    std::cout << *reinterpret_cast<float *>(dst->ptr_to_element(Coordinates(0,1)))  << std::endl;
 
+    _run_method(src, dst, _act_info, window);
 
     std::cout <<"src/cpu/kernels/CpuActivationKernel.cpp x: " << dst->info()->tensor_shape().x() << std::endl;
     std::cout <<"src/cpu/kernels/CpuActivationKernel.cpp y: " << dst->info()->tensor_shape().y() << std::endl;
     std::cout <<"src/cpu/kernels/CpuActivationKernel.cpp z: " << dst->info()->tensor_shape().z() << std::endl;
     std::cout << *reinterpret_cast<float *>(dst->ptr_to_element(Coordinates(0,0)))  << std::endl;
+    std::cout << *reinterpret_cast<float *>(dst->ptr_to_element(Coordinates(1,0)))  << std::endl;
+    std::cout << *reinterpret_cast<float *>(dst->ptr_to_element(Coordinates(2,0)))  << std::endl;
     std::cout << *reinterpret_cast<float *>(dst->ptr_to_element(Coordinates(0,1)))  << std::endl;
-
-    std::cout << *reinterpret_cast<float *>(dst->ptr_to_element(Coordinates(1,0,0)))  << std::endl;
-    std::cout << *reinterpret_cast<float *>(dst->ptr_to_element(Coordinates(2,0,0)))  << std::endl;
-    std::cout << *reinterpret_cast<float *>(dst->ptr_to_element(Coordinates(1023,0,0)))  << std::endl;
-    std::cout << *reinterpret_cast<float *>(dst->ptr_to_element(Coordinates(1024,0,0)))  << std::endl;
 
 }
 
