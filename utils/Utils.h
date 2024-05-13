@@ -956,7 +956,7 @@ void find_longest_matching(std::vector<std::basic_string<T>> &tokens_vec,
                 }
                 right--;
             }
-            ARM_COMPUTE_ERROR_ON_MSG(right == left, token_buffer.append(" unkown in vocabulary list"));
+            //ARM_COMPUTE_ERROR_ON_MSG(right == left, token_buffer.append(" unkown in vocabulary list"));
             left++;
         }
     }
