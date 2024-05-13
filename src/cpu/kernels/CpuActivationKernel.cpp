@@ -360,6 +360,18 @@ void CpuActivationKernel::run_op(ITensorPack &tensors, const Window &window, con
 
     _run_method(src, dst, _act_info, window);
 
+
+    std::cout <<"src/cpu/kernels/CpuActivationKernel.cpp x: " << dst->info()->tensor_shape().x() << std::endl;
+    std::cout <<"src/cpu/kernels/CpuActivationKernel.cpp y: " << dst->info()->tensor_shape().y() << std::endl;
+    std::cout <<"src/cpu/kernels/CpuActivationKernel.cpp z: " << dst->info()->tensor_shape().z() << std::endl;
+    std::cout << *reinterpret_cast<float *>(dst->ptr_to_element(Coordinates(0,0)))  << std::endl;
+    std::cout << *reinterpret_cast<float *>(dst->ptr_to_element(Coordinates(0,1)))  << std::endl;
+
+    std::cout << *reinterpret_cast<float *>(dst->ptr_to_element(Coordinates(1,0,0)))  << std::endl;
+    std::cout << *reinterpret_cast<float *>(dst->ptr_to_element(Coordinates(2,0,0)))  << std::endl;
+    std::cout << *reinterpret_cast<float *>(dst->ptr_to_element(Coordinates(1023,0,0)))  << std::endl;
+    std::cout << *reinterpret_cast<float *>(dst->ptr_to_element(Coordinates(1024,0,0)))  << std::endl;
+
 }
 
 const char *CpuActivationKernel::name() const
