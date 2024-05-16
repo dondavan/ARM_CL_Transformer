@@ -82,9 +82,6 @@ void CpuLinear::configure(const ITensorInfo *a,
             _mm_kernel->configure(&_tmp_a, &_tmp_b, gemm_output_to_use, alpha, _run_interleave_transpose,
                                   GEMMReshapeInfo(m, n, k));
 
-            std::cout << "gemm_output_to_use x " << gemm_output_to_use->tensor_shape().x() << std::endl;
-            std::cout << "gemm_output_to_use y " << gemm_output_to_use->tensor_shape().y() << std::endl;
-            std::cout << "gemm_output_to_use z " << gemm_output_to_use->tensor_shape().z() << std::endl;
         }
         
         if (_run_bias_addition)
@@ -125,19 +122,6 @@ void CpuLinear::run(ITensorPack &tensors)
     auto b = tensors.get_const_tensor(ACL_SRC_1);
     auto c = tensors.get_const_tensor(ACL_SRC_2);
     auto d = tensors.get_tensor(ACL_DST);
-    /*
-    std::cout <<"Linear x: " << a->info()->tensor_shape().x() << std::endl;
-    std::cout <<"Linear y: " << a->info()->tensor_shape().y() << std::endl;
-    std::cout <<"Linear z: " << a->info()->tensor_shape().z() << std::endl;
-    std::cout << *reinterpret_cast<float *>(a->ptr_to_element(Coordinates(0,0)))  << std::endl;
-    std::cout << *reinterpret_cast<float *>(a->ptr_to_element(Coordinates(0,1)))  << std::endl;
-
-    std::cout << *reinterpret_cast<float *>(a->ptr_to_element(Coordinates(1,0,0)))  << std::endl;
-    std::cout << *reinterpret_cast<float *>(a->ptr_to_element(Coordinates(2,0,0)))  << std::endl;
-    std::cout << *reinterpret_cast<float *>(a->ptr_to_element(Coordinates(3071,0,0)))  << std::endl;
-    std::cout << *reinterpret_cast<float *>(a->ptr_to_element(Coordinates(3072,0,0)))  << std::endl;
-    */
-
 
     CpuAuxTensorHandler interleaved_a(offset_int_vec(InterleavedLHS), _tmp_a, tensors, true);
     CpuAuxTensorHandler pretransposed_b(offset_int_vec(PreTransposedRHS), _pretransposed_b, tensors,true);
@@ -192,18 +176,6 @@ void CpuLinear::run(ITensorPack &tensors)
         NEScheduler::get().schedule_op(_add_bias.get(), Window::DimX, _add_bias->window(), pack);
     }
 
-    /*
-    std::cout <<"Linear dst x: " << d->info()->tensor_shape().x() << std::endl;
-    std::cout <<"Linear dst y: " << d->info()->tensor_shape().y() << std::endl;
-    std::cout <<"Linear dst z: " << d->info()->tensor_shape().z() << std::endl;
-    std::cout << *reinterpret_cast<float *>(d->ptr_to_element(Coordinates(0,0)))  << std::endl;
-    std::cout << *reinterpret_cast<float *>(d->ptr_to_element(Coordinates(0,1)))  << std::endl;
-
-    std::cout << *reinterpret_cast<float *>(d->ptr_to_element(Coordinates(1,0,0)))  << std::endl;
-    std::cout << *reinterpret_cast<float *>(d->ptr_to_element(Coordinates(2,0,0)))  << std::endl;
-    std::cout << *reinterpret_cast<float *>(d->ptr_to_element(Coordinates(767,0,0)))  << std::endl;
-    std::cout << *reinterpret_cast<float *>(d->ptr_to_element(Coordinates(768,0,0)))  << std::endl;
-    */
 }
 
 

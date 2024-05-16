@@ -42,29 +42,12 @@ Status CpuLinearKernel::validate(const ITensorInfo *input1,
     ARM_COMPUTE_RETURN_ERROR_ON_DATA_TYPE_CHANNEL_NOT_IN(input1, 1, DataType::F32);
     ARM_COMPUTE_UNUSED(info);
     ARM_COMPUTE_UNUSED(output);
-    
-    /*
-    TensorShape out_shape = input1->tensor_shape();
-    if (op != LinearAttentionOperation::Key)
-    {
-        out_shape = TensorShape::broadcast_shape(input1->tensor_shape());
-        ARM_COMPUTE_RETURN_ERROR_ON_MSG(out_shape.total_size() == 0, "Inputs are not broadcast compatible");
-        ARM_COMPUTE_RETURN_ERROR_ON_MISMATCHING_DATA_TYPES(input1);
-    }
-
-    // Checks performed when output is configured
-    if ((output != nullptr) && (output->total_size() != 0))
-    {
-        ARM_COMPUTE_RETURN_ERROR_ON(detail::have_different_dimensions(out_shape, output->tensor_shape(), 0));
-        ARM_COMPUTE_RETURN_ERROR_ON_MISMATCHING_DATA_TYPES(input1, output);
-    }*/
 
     return Status{};
 }
 
 void CpuLinearKernel::run_op(ITensorPack &tensors, const Window &window, const ThreadInfo &info)
 {
-    std::cout << "src/cpu/kernels/CpuLinearKernel.cpp" << std::endl;
     ARM_COMPUTE_UNUSED(info);
     ARM_COMPUTE_ERROR_ON_UNCONFIGURED_KERNEL(this);
     ARM_COMPUTE_ERROR_ON(tensors.empty());
@@ -81,13 +64,6 @@ void CpuLinearKernel::run_op(ITensorPack &tensors, const Window &window, const T
     Iterator src_iter(src,win);
     const auto src_ptr      = reinterpret_cast<float *>(src_iter.ptr());
 
-    execute_window_loop(win,
-    [&](const Coordinates &){
-        for(int x = window_start_x; x < window_end_x; x++)
-        {
-            std::cout << *(src_ptr + x) << std::endl;
-        }
-    },src_iter);
 }
 
 const char *CpuLinearKernel::name() const
