@@ -683,8 +683,7 @@ get_output_accessor(const arm_compute::utils::CommonGraphParams &graph_parameter
     ARM_COMPUTE_UNUSED(is_validation);
     if(graph_parameters.raw_output)
     {
-        
-        std::cout << "graph_parameters.raw_output "<< std::endl;
+        std::cout << "graph_parameters.raw_output ";
     }
     else if (!graph_parameters.validation_file.empty())
     {
