@@ -849,10 +849,10 @@ void RawResultAccessor::access_typed_tensor(ITensor &tensor)
 {
     _output_stream << "---------- Result ----------" << std::endl ;
 
-    _output_stream << *reinterpret_cast<T *>(dst->ptr_to_element(Coordinates(0,0)))  << std::endl;
-    _output_stream << *reinterpret_cast<T *>(dst->ptr_to_element(Coordinates(1,0)))  << std::endl;
-    _output_stream << *reinterpret_cast<T *>(dst->ptr_to_element(Coordinates(2,0)))  << std::endl;
-    _output_stream << *reinterpret_cast<T *>(dst->ptr_to_element(Coordinates(0,1)))  << std::endl;
+    _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(0,0)))  << std::endl;
+    _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(1,0)))  << std::endl;
+    _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(2,0)))  << std::endl;
+    _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(0,1)))  << std::endl;
     _output_stream  << std::endl;
 }
 
