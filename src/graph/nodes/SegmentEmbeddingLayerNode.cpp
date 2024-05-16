@@ -45,44 +45,6 @@ TensorDescriptor SegmentEmbeddingLayerNode::compute_output_descriptor(const Tens
 {
     TensorDescriptor output_descriptor = vector_descriptor;
     output_descriptor.shape.set(1, input_descriptor.shape.x());
-    std::cout << "src/graph/nodes/SegmentEmbeddingLayerNode.cpp compute_output_descriptor" << std::endl;
-    std::cout << "output_descriptor shape: " ;
-        for(auto v: output_descriptor.shape)std::cout << " "<<v;
-    std::cout << std::endl;
-
-    switch (output_descriptor.layout)
-    {
-        case DataLayout::NCHW :
-            std::cout<< "DataLayout: NCHW" << std::endl;
-            break;
-        case DataLayout::NCDHW:
-            std::cout<< "DataLayout: NCDHW" << std::endl;
-            break;
-        case DataLayout::NDHWC :
-            std::cout<< "DataLayout: NDHWC" << std::endl;
-            break;
-        case DataLayout::NHWC :
-            std::cout<< "DataLayout: NHWC" << std::endl;
-            break;
-        
-        default:
-            std::cout<< "DataLayout: Unknown" << std::endl;
-            break;
-    }
-
-    switch (output_descriptor.data_type)
-    {
-        case DataType::F32 :
-            std::cout<< "DataType::F32" << std::endl;
-            break;
-        case DataType::U8 :
-            std::cout<< "DataType::U8" << std::endl;
-            break;
-        
-        default:
-            std::cout<< "DataLayout: Unknown" << std::endl;
-            break;
-    }
     
     return output_descriptor;
 }
