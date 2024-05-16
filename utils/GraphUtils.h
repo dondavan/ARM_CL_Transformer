@@ -681,7 +681,11 @@ get_output_accessor(const arm_compute::utils::CommonGraphParams &graph_parameter
                     std::ostream                                &output_stream = std::cout)
 {
     ARM_COMPUTE_UNUSED(is_validation);
-    if (!graph_parameters.validation_file.empty())
+    if(graph_parameters.raw_output)
+    {
+        std::cout << "graph_parameters.raw_output " <<graph_parameters.raw_output << std::endl;
+    }
+    else if (!graph_parameters.validation_file.empty())
     {
         return std::make_unique<ValidationOutputAccessor>(graph_parameters.validation_file, output_stream,
                                                           graph_parameters.validation_range_start,
