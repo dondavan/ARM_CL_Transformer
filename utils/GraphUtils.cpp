@@ -847,7 +847,8 @@ RawResultAccessor::RawResultAccessor(std::ostream      &output_stream)
 template <typename T>
 void RawResultAccessor::access_typed_tensor(ITensor &tensor)
 {
-    _output_stream << "---------- Result ----------" << std::endl << std::endl;
+    _output_stream << "---------- Result ----------" << std::endl ;
+    _output_stream << tensor.info()->tensor_shape().x() << std::endl << std::endl;
 }
 
 bool RawResultAccessor::access_tensor(ITensor &tensor)
