@@ -85,7 +85,7 @@ namespace utils
     os << "Data layout : " << common_params.data_layout << std::endl;
     os << "Tuner enabled? : " << (common_params.enable_tuner ? true_str : false_str) << std::endl;
     os << "Cache enabled? : " << (common_params.enable_cl_cache ? true_str : false_str) << std::endl;
-    os << "Cache enabled? : " << (common_params.raw_output ? true_str : false_str) << std::endl;
+    os << "Raw output? : " << (common_params.raw_output ? true_str : false_str) << std::endl;
     os << "Tuner mode : " << common_params.tuner_mode << std::endl;
     os << "Tuner file : " << common_params.tuner_file << std::endl;
     os << "MLGO file : " << common_params.mlgo_file << std::endl;
