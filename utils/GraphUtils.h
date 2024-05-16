@@ -483,6 +483,32 @@ private:
     size_t                   _top_n;
 };
 
+/** Raw result accessor class */
+class RawResultAccessor final : public graph::ITensorAccessor
+{
+public:
+    /** Constructor
+     * 
+     * @param[out] output_stream Output stream
+     */
+    RawResultAccessor(std::ostream &output_stream = std::cout);
+    /** Allow instances of this class to be move constructed */
+    RawResultAccessor(RawResultAccessor &&) = default;
+    /** Prevent instances of this class from being copied (As this class contains pointers) */
+    RawResultAccessor(const RawResultAccessor &) = delete;
+    /** Prevent instances of this class from being copied (As this class contains pointers) */
+    RawResultAccessor &operator=(const RawResultAccessor &) = delete;
+
+    // Inherited methods overriden:
+    bool access_tensor(ITensor &tensor) override;
+
+private:
+    template <typename T>
+    void access_typed_tensor(ITensor &tensor);
+
+    std::ostream            &_output_stream;
+};
+
 /** Random accessor class */
 class RandomAccessor final : public graph::ITensorAccessor
 {
@@ -683,7 +709,7 @@ get_output_accessor(const arm_compute::utils::CommonGraphParams &graph_parameter
     ARM_COMPUTE_UNUSED(is_validation);
     if(graph_parameters.raw_output)
     {
-        std::cout << "graph_parameters.raw_output ";
+        return std::make_unique<RawResultAccessor>(output_stream);
     }
     else if (!graph_parameters.validation_file.empty())
     {

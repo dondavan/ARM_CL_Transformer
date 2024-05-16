@@ -839,6 +839,36 @@ bool TopNPredictionsAccessor::access_tensor(ITensor &tensor)
     return false;
 }
 
+RawResultAccessor::RawResultAccessor(std::ostream      &output_stream)
+    : _output_stream(output_stream)
+{
+}
+
+template <typename T>
+void RawResultAccessor::access_typed_tensor(ITensor &tensor)
+{
+    _output_stream << "---------- Result ----------" << std::endl << std::endl;
+}
+
+bool RawResultAccessor::access_tensor(ITensor &tensor)
+{
+    ARM_COMPUTE_ERROR_ON_DATA_TYPE_CHANNEL_NOT_IN(&tensor, 1, DataType::F32, DataType::QASYMM8);
+
+    switch (tensor.info()->data_type())
+    {
+        case DataType::QASYMM8:
+            access_typed_tensor<uint8_t>(tensor);
+            break;
+        case DataType::F32:
+            access_typed_tensor<float>(tensor);
+            break;
+        default:
+            ARM_COMPUTE_ERROR("OUTPUT DATA TYPE NOT SUPPORTED!");
+    }
+
+    return false;
+}
+
 RandomAccessor::RandomAccessor(PixelValue lower, PixelValue upper, std::random_device::result_type seed)
     : _lower(lower), _upper(upper), _seed(seed)
 {
