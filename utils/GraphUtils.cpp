@@ -847,12 +847,24 @@ RawResultAccessor::RawResultAccessor(std::ostream      &output_stream)
 template <typename T>
 void RawResultAccessor::access_typed_tensor(ITensor &tensor)
 {
-    _output_stream << "---------- Result ----------" << std::endl ;
+    _output_stream << "---------- Result ----------" << std::endl;
+    for(int y = 0; y < tensor.info()->tensor_shape().y(); y++)
+    {
+        int x = tensor.info()->tensor_shape().x();
+        _output_stream << "[ ";
+        _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(0,0)))  << ", ";
+        _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(1,0)))  << ", ";
+        _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(2,0)))  << ", ";
 
-    _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(0,0)))  << std::endl;
-    _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(1,0)))  << std::endl;
-    _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(2,0)))  << std::endl;
-    _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(0,1)))  << std::endl;
+        _output_stream  << " ..., ";
+
+        _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(x-3,0)))  << ", ";
+        _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(x-2,0)))  << ", ";
+        _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(x-1,0)))  << ", ";
+
+        _output_stream << "] ";
+        _output_stream << std::endl;
+    }
     _output_stream  << std::endl;
 }
 
