@@ -848,9 +848,9 @@ template <typename T>
 void RawResultAccessor::access_typed_tensor(ITensor &tensor)
 {
     _output_stream << "---------- Result ----------" << std::endl;
-    for(int y = 0; y < tensor.info()->tensor_shape().y(); y++)
+    for(size_t y = 0; y < tensor.info()->tensor_shape().y(); y++)
     {
-        int x = tensor.info()->tensor_shape().x();
+        size_t x = tensor.info()->tensor_shape().x();
         _output_stream << "[ ";
         _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(0,0)))  << ", ";
         _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(1,0)))  << ", ";
