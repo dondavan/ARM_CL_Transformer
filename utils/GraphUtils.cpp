@@ -852,15 +852,15 @@ void RawResultAccessor::access_typed_tensor(ITensor &tensor)
     {
         size_t x = tensor.info()->tensor_shape().x();
         _output_stream << "[ ";
-        _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(0,0)))  << ", ";
-        _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(1,0)))  << ", ";
-        _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(2,0)))  << ", ";
+        _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(0,y)))  << ", ";
+        _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(1,y)))  << ", ";
+        _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(2,y)))  << ", ";
 
         _output_stream  << " ..., ";
 
-        _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(x-3,0)))  << ", ";
-        _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(x-2,0)))  << ", ";
-        _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(x-1,0)))  << ", ";
+        _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(x-3,y)))  << ", ";
+        _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(x-2,y)))  << ", ";
+        _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(x-1,y)))  << ", ";
 
         _output_stream << "] ";
         _output_stream << std::endl;
