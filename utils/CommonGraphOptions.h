@@ -45,6 +45,7 @@ namespace utils
  * --layout           : Data layout to be used by the examples. Supported data layout options : NCHW, NHWC.
  * --enable-tuner     : Toggle option to enable the OpenCL dynamic tuner.
  * --enable-cl-cache  : Toggle option to load the prebuilt opencl kernels from a cache file.
+ * --raw_output       : Output raw output to output stream.
  * --fast-math        : Toggle option to enable the fast math option.
  * --data             : Path that contains the trainable parameter files of graph layers.
  * --image            : Image to load and operate on. Image types supported: PPM, JPEG, NPY.
@@ -103,6 +104,7 @@ struct CommonGraphParams
     arm_compute::DataLayout          data_layout{DataLayout::NHWC};
     bool                             enable_tuner{false};
     bool                             enable_cl_cache{false};
+    bool                             raw_output{false};
     arm_compute::CLTunerMode         tuner_mode{CLTunerMode::NORMAL};
     arm_compute::graph::FastMathHint fast_math_hint{arm_compute::graph::FastMathHint::Disabled};
     std::string                      data_path{};
@@ -164,6 +166,7 @@ public:
     EnumOption<arm_compute::DataLayout>    *data_layout;      /**< Graph data layout */
     ToggleOption                           *enable_tuner;     /**< Enable tuner */
     ToggleOption                           *enable_cl_cache;  /**< Enable opencl kernels cache */
+    ToggleOption                           *raw_output;       /**< Output raw data */
     SimpleOption<arm_compute::CLTunerMode> *tuner_mode;       /**< Tuner mode */
     ToggleOption                           *fast_math_hint;   /**< Fast math hint */
     SimpleOption<std::string>              *data_path;        /**< Trainable parameters path */
