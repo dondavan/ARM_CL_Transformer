@@ -25,6 +25,7 @@
 #define ARM_COMPUTE_GRAPH_CLTENSORHANDLE_H
 
 #include "arm_compute/graph/ITensorHandle.h"
+
 #include "arm_compute/runtime/CL/CLTensor.h"
 
 namespace arm_compute
@@ -50,20 +51,27 @@ public:
     CLTensorHandle &operator=(CLTensorHandle &&) = default;
 
     // Inherited overridden methods
-    void                        allocate() override;
-    void                        free() override;
-    void                        manage(IMemoryGroup *mg) override;
-    void                        map(bool blocking) override;
+    void allocate() override;
+    void free() override;
+    void manage(IMemoryGroup *mg) override;
+    void map(bool blocking) override;
     void                        unmap() override;
     void                        release_if_unused() override;
     arm_compute::ITensor       &tensor() override;
     const arm_compute::ITensor &tensor() const override;
+
+    //Ehsan
+    void set_tensor(arm_compute::ITensor*) override;
+    arm_compute::ITensor *tensor_ptr() override;
+
     ITensorHandle              *parent_handle() override;
     bool                        is_subtensor() const override;
     Target                      target() const override;
 
 private:
-    arm_compute::CLTensor _tensor; /**< Backend Tensor */
+    //arm_compute::CLTensor _tensor; /**< Backend Tensor */
+    //Ehsan
+    arm_compute::CLTensor* _tensor2;
 };
 } // namespace backends
 } // namespace graph

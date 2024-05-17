@@ -1935,6 +1935,52 @@ std::unique_ptr<IFunction> create_layer_norm_layer(LayerNormNode &node)
     return func;
 }
 
+
+//Ehsan
+template <typename NPUFunction, typename TargetInfo>
+std::unique_ptr<IFunction> create_npu_function(NPUNode &node)
+{
+	//std::cerr<<"validate node\n";
+    validate_node<TargetInfo>(node, 1 /* expected inputs */, 1 /* expected outputs */);
+
+    // Create function
+    //std::cerr<<"creating a NPU function for node: "<<node.name()<<std::endl;
+    static int id=0;
+    auto func = std::make_unique<NPUFunction>(id++);
+
+	// Extract IO and info
+	/*typename TargetInfo::TensorType *input    = get_backing_tensor<TargetInfo>(node.input(0));
+	typename TargetInfo::TensorType *output   = get_backing_tensor<TargetInfo>(node.output(0));
+	func->configure(input, output);*/
+
+    std::vector<typename TargetInfo::TensorType *> inputs;
+    std::vector<typename TargetInfo::TensorType *> outputs;
+    for(auto i=0;i<node.num_inputs();i++){
+    	inputs.emplace_back(get_backing_tensor<TargetInfo>(node.input(i)));
+    }
+    for(auto i=0;i<node.num_outputs();i++){
+		outputs.emplace_back(get_backing_tensor<TargetInfo>(node.output(i)));
+	}
+	//func->configure(node.num_inputs(), node.num_outputs());
+	func->configure(node.name(), inputs, outputs);
+
+    ARM_COMPUTE_LOG_GRAPH_INFO("Instantiated "
+                               << node.name()
+                               << " Type: " << node.type()
+                               << " Target: " << TargetInfo::TargetType
+                               << " Data Type: " << input->info()->data_type()
+                               << " Shape: " << input->info()->tensor_shape()
+                               << " Activation function: " << act_info.activation()
+                               << " a: " << act_info.a()
+                               << " b: " << act_info.b()
+                               << " InPlace : " << is_in_place_operation(input, output)
+                               << std::endl);
+
+    return std::move(func);
+}
+
+
+
 } // namespace detail
 } // namespace backends
 } // namespace graph
