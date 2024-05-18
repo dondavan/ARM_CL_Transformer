@@ -1095,5 +1095,78 @@ NodeID GraphBuilder::add_yolo_node(Graph &g, NodeParams params, NodeIdxPair inpu
 
     return concat;
 }
+
+//************************************************ Ehsan ***********************************************
+
+//Ehsan Early Exit
+NodeID GraphBuilder::add_early_exit_output_node(Graph &g, NodeParams params, NodeIdxPair input, ITensorAccessorUPtr accessor)
+{
+    check_nodeidx_pair(input, g);
+
+    NodeID nid = g.add_node<OutputNode>();
+    g.add_connection(input.node_id, input.index, nid, 0);
+    set_node_params(g, nid, params);
+    //auto t=ITensorAccessorUPtr();
+    set_accessor_on_node(g, nid, false, 0, std::move(accessor));
+
+    return nid;
+}
+
+NodeID GraphBuilder::add_receiver_node(Graph &g, NodeParams params, const TensorDescriptor &desc, ITensorAccessorUPtr accessor)
+{
+	std::string s;
+	s="Adding "+params.name+" to graph "+std::to_string(g.id())+" with target "+std::to_string((int)(params.target))+'\n';
+	std::cerr<<s;
+    auto nid = g.add_node<ReceiverNode>(desc);
+    set_node_params(g, nid, params);
+    if(accessor==nullptr && false){
+		std::string ss;
+		std::cerr<<"null accessor\n";
+		std::cin>>ss;
+	}
+    set_accessor_on_node(g, nid, true, 0, std::move(accessor));
+    return nid;
+}
+
+NodeID GraphBuilder::add_sender_node(Graph &g, NodeParams params, NodeIdxPair input, ITensorAccessorUPtr accessor)
+{
+	std::string s;
+	s="Adding "+params.name+" to graph "+std::to_string(g.id())+" with target "+std::to_string((int)(params.target))+'\n';
+	std::cerr<<s;
+    check_nodeidx_pair(input, g);
+
+    NodeID nid = g.add_node<SenderNode>(params);
+    g.add_connection(input.node_id, input.index, nid, 0);
+    set_node_params(g, nid, params);
+    if(accessor==nullptr && false){
+    	std::string ss;
+    	std::cerr<<"null accessor\n";
+    	std::cin>>ss;
+    }
+    set_accessor_on_node(g, nid, false, 0, std::move(accessor));
+
+    return nid;
+}
+
+NodeID GraphBuilder::add_npu_node(Graph &g, NodeParams params, std::vector<NodeIdxPair> inputs, std::vector<NodeIdxPair> outputs)
+{
+	std::string s;
+	s="Adding NPU Node "+params.name+" to graph "+std::to_string(g.id())+" with target "+std::to_string((int)(params.target))+'\n';
+	std::cerr<<s;
+
+    NodeID nid = g.add_node<NPUNode>(inputs, outputs);
+    NPUNode* n=dynamic_cast<NPUNode*>(g.node(nid));
+    n->restructure_graph();
+    std::cerr<<"npu node created\n\n";
+    set_node_params(g, nid, params);
+
+
+    return nid;
+}
+
+
+//*****************************************************************************************************
+
+
 } // namespace graph
 } // namespace arm_compute

@@ -72,6 +72,8 @@
         "concepts": "cpp",
         "numeric": "cpp",
         "iterator": "cpp",
-        "version": "cpp"
+        "version": "cpp",
+        "queue": "cpp",
+        "unordered_set": "cpp"
     }
 }

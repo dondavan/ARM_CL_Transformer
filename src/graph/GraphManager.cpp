@@ -35,6 +35,9 @@
 
 #include "src/common/utils/Log.h"
 
+//Ehsan
+#include<chrono>
+
 namespace arm_compute
 {
 namespace graph
@@ -43,6 +46,7 @@ GraphManager::GraphManager() : _workloads()
 {
 }
 
+/*
 void GraphManager::finalize_graph(Graph &graph, GraphContext &ctx, PassManager &pm, Target target)
 {
     ARM_COMPUTE_LOG_INFO_WITH_FUNCNAME_ACL("Initiate graph configuration!");
@@ -119,7 +123,140 @@ void GraphManager::finalize_graph(Graph &graph, GraphContext &ctx, PassManager &
     _workloads.insert(std::make_pair(graph.id(), std::move(workload)));
     ARM_COMPUTE_LOG_GRAPH_VERBOSE("Created workload for graph with ID : " << graph.id() << std::endl);
 }
+*/
+void GraphManager::finalize_graph(Graph &graph, GraphContext &ctx, PassManager &pm, Target target, std::set<int> *blocking_set, int blocking)
+{
+    // Check if graph has been registered
+    if(_workloads.find(graph.id()) != std::end(_workloads))
+    {
+        ARM_COMPUTE_ERROR("Graph is already registered!");
+    }
 
+    pm.run_type(graph, IGraphMutator::MutationType::IR);
+    // Force target to all graph construct
+    // TODO (COMPMID-2014) : Support heterogeneous execution
+    Target forced_target = target;
+    if(!is_target_supported(target))
+    {
+        forced_target = get_default_target();
+        ARM_COMPUTE_LOG_GRAPH_INFO("Switching target from " << target << " to " << forced_target << std::endl);
+    }
+
+    force_target_to_graph(graph, forced_target);
+
+
+    // Setup backend context
+    // TODO (COMPMID-2014) : Setup all backends needed by the graph
+
+    setup_requested_backend_context(ctx, forced_target);
+    // Configure all tensors
+    /*Ehsan:
+     * set TensforHandle for all tensors which TensorInfo of TensorAllocator for each TensorHandle is set based on information of each tensor such as shape,datatype,
+     * quantinfo and ...
+     * strides in bytes for all dimensions also is set in tensorInfo
+     */
+    detail::configure_all_tensors(graph);
+    // Apply backend mutating passes
+
+    pm.run_type(graph, IGraphMutator::MutationType::Backend);
+    // Perform topological sort
+    std::vector<NodeID> topological_sorted_nodes = dfs(graph);
+    // Validate all nodes
+    detail::validate_all_nodes(graph);
+
+    // Configure all nodes
+    auto workload = detail::configure_all_nodes(graph, ctx, topological_sorted_nodes);
+    ARM_COMPUTE_ERROR_ON_MSG(workload.tasks.empty(), "Could not configure all nodes!");
+
+    // Allocate const tensors and call accessors
+    detail::allocate_const_tensors(graph);
+    detail::call_all_const_node_accessors(graph);
+    // Prepare graph
+    detail::prepare_all_tasks(workload);
+    //Ehsan
+    int ii=0;
+    if(blocking_set!=nullptr){
+		for(auto &task : workload.tasks)
+		{
+			std::cerr<<task.node->name()<<std::endl;
+			if(!task.task){
+				continue;
+			}
+			bool b=false;
+			if(blocking_set->find(ii) != blocking_set->end()){
+				  b=true;
+				  task.ending=true;
+			}
+			if(blocking==1){
+				if(blocking_set!=NULL and b && target==arm_compute::graph::Target ::CL)
+					task.block=1;
+			}
+			if(blocking==2){
+				if(blocking_set!=NULL && target==arm_compute::graph::Target ::CL){
+					task.block=1;
+				}
+			}
+			ii++;
+		}
+    }
+    // Setup tensor memory (Allocate all tensors or setup transition manager)
+    if(ctx.config().use_transition_memory_manager)
+    {
+        detail::configure_transition_manager(graph, ctx, workload);
+    }
+    else
+    {
+        detail::allocate_all_tensors(graph);
+    }
+    // Finalize Graph context
+    ctx.finalize();
+    std::cerr<<'ee\n';
+    // Register graph
+    _workloads.insert(std::make_pair(graph.id(), std::move(workload)));
+    ARM_COMPUTE_LOG_GRAPH_VERBOSE("Created workload for graph with ID : " << graph.id() << std::endl);
+}
+
+void GraphManager::print_times(Graph &graph, int n)
+{
+	auto it = _workloads.find(graph.id());
+	ExecutionWorkload *workload = &it->second;
+	double sum=0;
+	int c=0;
+	int l=0;
+	double tt=0;
+	for(auto &task:workload->tasks){
+		if(!task.task){
+			std::cerr<<"nadareeeeeeeee\n";
+			continue;
+		}
+		std::cout<<c++<<"\tLayer Name: "<<task.node->name()
+				<<" \t Layer time: "<<task.time(n)
+				<<" \t number of inputs: "<<task.node->num_inputs()
+				<<" \t input shape: "<<task.node->input(0)->desc().shape
+				<<" \t output shape: "<<task.node->output(0)->desc().shape<<std::endl;
+
+		tt+=task.time(n);
+		if(task.ending){
+			std::cout<<"Layer Number: "<<l<<" \t time: "<<tt<<std::endl;
+			tt=0;
+			l++;
+			std::cout<<"----------------------------\n";
+		}
+		sum+=task.time(n);
+	}
+	std::cout<<"\n Sum of Layers time: "<<sum<<std::endl;
+}
+
+void GraphManager::reset(Graph &graph)
+{
+	auto it = _workloads.find(graph.id());
+	ExecutionWorkload *workload = &it->second;
+	for(auto &task:workload->tasks){
+		task.reset();
+	}
+}
+
+/*
 void GraphManager::execute_graph(Graph &graph)
 {
     ARM_COMPUTE_LOG_INFO_WITH_FUNCNAME_ACL("Initiate graph execution!");
@@ -147,6 +284,53 @@ void GraphManager::execute_graph(Graph &graph)
 
     }
 }
+*/
+
+void GraphManager::execute_graph(Graph &graph, int nn)
+{
+    auto it = _workloads.find(graph.id());
+    ARM_COMPUTE_ERROR_ON_MSG(it == std::end(_workloads), "Graph is not registered!");
+    //Ehsan measure input, task and output timings:
+    while(true)
+    {
+        // Call input accessors
+	auto tstart=std::chrono::high_resolution_clock::now();
+        if(!detail::call_all_input_node_accessors(it->second))
+        {
+            return;
+        }
+	auto tfinish=std::chrono::high_resolution_clock::now();
+
+	_input_time += std::chrono::duration_cast<std::chrono::duration<double>>(tfinish - tstart).count();
+
+    detail::call_all_tasks(it->second,nn);
+
+	tstart=std::chrono::high_resolution_clock::now();
+	_task_time += std::chrono::duration_cast<std::chrono::duration<double>>(tstart-tfinish).count();
+
+    // Call output accessors
+    if(!detail::call_all_output_node_accessors(it->second))
+    {
+    tfinish=std::chrono::high_resolution_clock::now();
+    _output_time += std::chrono::duration_cast<std::chrono::duration<double>>(tfinish - tstart).count();
+        return;
+    }
+	tfinish=std::chrono::high_resolution_clock::now();
+	_output_time += std::chrono::duration_cast<std::chrono::duration<double>>(tfinish - tstart).count();
+	
+    }
+}
+
+//Ehsan
+void GraphManager::execute_graph(Graph &graph, bool anotate, int nn)
+{
+	if(!anotate)
+	{
+		execute_graph(graph, nn);
+		return;
+	}
+}
+
 
 void GraphManager::invalidate_graph(Graph &graph)
 {

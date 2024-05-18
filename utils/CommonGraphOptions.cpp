@@ -30,6 +30,8 @@
 #include "support/StringSupport.h"
 
 #include <map>
+//Ehsan
+#include <dirent.h>
 
 using namespace arm_compute::graph;
 
@@ -80,6 +82,7 @@ namespace utils
     std::string true_str  = std::string("true");
 
     os << "Threads : " << common_params.threads << std::endl;
+    os << "Small Cores Threads : " << common_params.threads2 << std::endl;
     os << "Target : " << common_params.target << std::endl;
     os << "Data type : " << common_params.data_type << std::endl;
     os << "Data layout : " << common_params.data_layout << std::endl;
@@ -125,6 +128,57 @@ namespace utils
             os << "Validation path : " << common_params.validation_path << std::endl;
         }
     }
+    os << "Partition point is : "
+       << common_params.partition_point
+       << std::endl;
+
+    os << "Second partition point is : "
+       << common_params.partition_point2
+       << std::endl;
+
+    os << "Order is : "
+       << common_params.order
+       << std::endl;
+    os << "freqs of layers : "
+       << common_params.freqs
+       << std::endl;
+    os << "power_profile_mode : "
+       << common_params.power_profile_mode
+       << std::endl;
+
+    os << "GPU host is: "
+       << common_params.gpu_host
+       << std::endl;
+
+    os << "NPU host is: "
+       << common_params.npu_host
+       << std::endl;
+
+    os << "Number of totla cores is : "
+       << common_params.total_cores
+       << std::endl;
+    os << "Number of little cores is : "
+       << common_params.little_cores
+       << std::endl;
+    os << "Number of big cores is : "
+       << common_params.big_cores
+       << std::endl;
+    os << "Print task names : "
+       << common_params.print_tasks
+       << std::endl;
+
+    if(common_params.save)
+    {
+        os << "Saving model to " << common_params.data_path << std::endl;
+    }
+
+    if(common_params.annotate)
+    {
+        os << "Streamline annotation is enable" << std::endl;
+    }
+
+    os << "Run network for " << common_params.n << " times.\n";
+    os << "Layer timing: " << common_params.layer_time << std::endl;
 
     return os;
 }
@@ -151,7 +205,28 @@ CommonGraphOptions::CommonGraphOptions(CommandLineParser &parser)
       validation_path(parser.add_option<SimpleOption<std::string>>("validation-path")),
       validation_range(parser.add_option<SimpleOption<std::string>>("validation-range")),
       tuner_file(parser.add_option<SimpleOption<std::string>>("tuner-file")),
-      mlgo_file(parser.add_option<SimpleOption<std::string>>("mlgo-file"))
+      mlgo_file(parser.add_option<SimpleOption<std::string>>("mlgo-file")),
+
+      partition_point(parser.add_option<SimpleOption<int>>("partition_point", 0)),
+      partition_point2(parser.add_option<SimpleOption<int>>("partition_point2", 0)),
+      annotate(parser.add_option<SimpleOption<int>>("annotate", 0)),
+      save(parser.add_option<SimpleOption<int>>("save", 0)),
+      n(parser.add_option<SimpleOption<int>>("n", 1)),
+      total_cores(parser.add_option<SimpleOption<int>>("total_cores", 6)),
+      little_cores(parser.add_option<SimpleOption<int>>("little_cores", 4)),
+      big_cores(parser.add_option<SimpleOption<int>>("big_cores", 2)),
+      layer_time(parser.add_option<SimpleOption<int>>("layer_time", 0)),
+      order(parser.add_option<SimpleOption<std::string>>("order")),
+      freqs(parser.add_option<SimpleOption<std::string>>("freqs")),
+      power_profile_mode(parser.add_option<SimpleOption<std::string>>("power_profile_mode", "whole")),
+      gpu_host(parser.add_option<SimpleOption<char>>("gpu_host", 'B')),
+      npu_host(parser.add_option<SimpleOption<char>>("npu_host", 'B')),
+      input_s(parser.add_option<SimpleOption<int>>("input_s", 227)),
+      input_c(parser.add_option<SimpleOption<int>>("input_c", 3)),
+      kernel_s(parser.add_option<SimpleOption<int>>("kernel_s", 11)),
+      kernel_c(parser.add_option<SimpleOption<int>>("kernel_c", 96)),
+      stride(parser.add_option<SimpleOption<int>>("stride", 2)),
+      print_tasks(parser.add_option<SimpleOption<int>>("print_tasks", 0))
 {
     std::set<arm_compute::graph::Target> supported_targets{
         Target::NEON,
@@ -180,6 +255,7 @@ CommonGraphOptions::CommonGraphOptions(CommandLineParser &parser)
 
     help->set_help("Show this help message");
     threads->set_help("Number of threads to use");
+    threads2->set_help("Number of little threads to use");
     batches->set_help("Number of batches to use for the inputs");
     target->set_help("Target to execute on");
     data_type->set_help("Data type to use");
@@ -204,6 +280,22 @@ CommonGraphOptions::CommonGraphOptions(CommandLineParser &parser)
     validation_range->set_help("Range of the images to validate for (Format : start,end)");
     tuner_file->set_help("File to load/save CLTuner values");
     mlgo_file->set_help("File to load MLGO heuristics");
+
+    partition_point->set_help("Point at which graph wanted to be partitioned");
+    partition_point2->set_help("Second point at which graph wanted to be partitioned");
+    annotate->set_help("Use streamline for annotation");
+    save->set_help("Save graph parameters");
+    n->set_help("number of run");
+    total_cores->set_help("Number of total cores");
+    little_cores->set_help("Number of little cores");
+    big_cores->set_help("Number of big cores");
+    layer_time->set_help("Layer timing");
+    order->set_help("order of processors for sub graphs, eg., B-L-G");
+    freqs->set_help("Frequency index for each element seperated with - ");
+    power_profile_mode->set_help("power_profile_mode layers/transfers/whole");
+    gpu_host->set_help("GPU host B or L");
+    npu_host->set_help("NPU host B or L");
+    print_tasks->set_help("print tasks of the graph and starting and ending tasks");
 }
 
 CommonGraphParams consume_common_graph_parameters(CommonGraphOptions &options)
@@ -215,6 +307,7 @@ CommonGraphParams consume_common_graph_parameters(CommonGraphOptions &options)
     CommonGraphParams common_params;
     common_params.help      = options.help->is_set() ? options.help->value() : false;
     common_params.threads   = options.threads->value();
+    common_params.threads2  = options.threads2->value();
     common_params.batches   = options.batches->value();
     common_params.target    = options.target->value();
     common_params.data_type = options.data_type->value();
@@ -239,6 +332,27 @@ CommonGraphParams consume_common_graph_parameters(CommonGraphOptions &options)
     common_params.validation_range_end   = validation_range.second;
     common_params.tuner_file             = options.tuner_file->value();
     common_params.mlgo_file              = options.mlgo_file->value();
+
+    common_params.partition_point    = options.partition_point->value();
+    common_params.partition_point2   = options.partition_point2->value();
+    common_params.annotate           = options.annotate->value();
+    common_params.save               = options.save->value();
+    common_params.n                  = options.n->value();
+    common_params.total_cores        = options.total_cores->value();
+    common_params.little_cores       = options.little_cores->value();
+    common_params.big_cores          = options.big_cores->value();
+    common_params.layer_time         = options.layer_time->value();
+    common_params.order              = options.order->value();
+    common_params.freqs              = options.freqs->value();
+    common_params.power_profile_mode = options.power_profile_mode->value();
+    common_params.gpu_host           = options.gpu_host->value();
+    common_params.npu_host           = options.npu_host->value();
+    common_params.input_c            = options.input_c->value();
+    common_params.input_s            = options.input_s->value();
+    common_params.kernel_c           = options.kernel_c->value();
+    common_params.kernel_s           = options.kernel_s->value();
+    common_params.stride             = options.stride->value();
+    common_params.print_tasks        = options.print_tasks->value();
 
     return common_params;
 }

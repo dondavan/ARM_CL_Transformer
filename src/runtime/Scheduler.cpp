@@ -47,6 +47,8 @@ Scheduler::Type Scheduler::_scheduler_type = Scheduler::Type::CPP;
 Scheduler::Type Scheduler::_scheduler_type = Scheduler::Type::ST;
 #endif /* ARM_COMPUTE_*_SCHEDULER */
 
+const int Little_cores = 4;
+
 std::shared_ptr<IScheduler> Scheduler::_custom_scheduler = nullptr;
 
 namespace
@@ -56,7 +58,8 @@ std::map<Scheduler::Type, std::unique_ptr<IScheduler>> init()
     std::map<Scheduler::Type, std::unique_ptr<IScheduler>> m;
     m[Scheduler::Type::ST] = std::make_unique<SingleThreadScheduler>();
 #if defined(ARM_COMPUTE_CPP_SCHEDULER)
-    m[Scheduler::Type::CPP] = std::make_unique<CPPScheduler>();
+    m[Scheduler::Type::CPP]  = std::make_unique<CPPScheduler>();
+    m[Scheduler::Type::CPP2] = std::make_unique<CPPScheduler>();
 #endif // defined(ARM_COMPUTE_CPP_SCHEDULER)
 #if defined(ARM_COMPUTE_OPENMP_SCHEDULER)
     m[Scheduler::Type::OMP] = std::make_unique<OMPScheduler>();
@@ -76,7 +79,7 @@ void Scheduler::set(Type t)
 
 bool Scheduler::is_available(Type t)
 {
-    if (t == Type::CUSTOM)
+    if(t == Type::CUSTOM)
     {
         return _custom_scheduler != nullptr;
     }
@@ -93,12 +96,13 @@ Scheduler::Type Scheduler::get_type()
 
 IScheduler &Scheduler::get()
 {
-    if (_scheduler_type == Type::CUSTOM)
+    if(_scheduler_type == Type::CUSTOM)
     {
-        if (_custom_scheduler == nullptr)
+        if(_custom_scheduler == nullptr)
         {
-            ARM_COMPUTE_ERROR("No custom scheduler has been setup. Call set(std::shared_ptr<IScheduler> &scheduler) "
-                              "before Scheduler::get()");
+            ARM_COMPUTE_ERROR(
+                "No custom scheduler has been setup. Call set(std::shared_ptr<IScheduler> &scheduler) "
+                "before Scheduler::get()");
         }
         else
         {
@@ -107,13 +111,28 @@ IScheduler &Scheduler::get()
     }
     else
     {
-        if (_schedulers.empty())
+        if(_schedulers.empty())
         {
             _schedulers = init();
         }
 
+        if(sched_getcpu() > (Little_cores - 1))
+        {
+            if(_scheduler_type == Scheduler::Type::CPP)
+            {
+                _scheduler_type = Scheduler::Type::CPP2;
+            }
+        }
+        if(sched_getcpu() < (Little_cores))
+        {
+            if(_scheduler_type == Scheduler::Type::CPP2)
+            {
+                _scheduler_type = Scheduler::Type::CPP;
+            }
+        }
+
         auto it = _schedulers.find(_scheduler_type);
-        if (it != _schedulers.end())
+        if(it != _schedulers.end())
         {
             return *it->second;
         }

@@ -46,7 +46,7 @@ namespace graph_utils
 /** Preprocessor interface **/
 class IPreprocessor
 {
-public:
+    public:
     /** Default destructor. */
     virtual ~IPreprocessor() = default;
     /** Preprocess the given tensor.
@@ -59,7 +59,7 @@ public:
 /** WordPiece preprocessor */
 class WordPiecePreprocessor : public IPreprocessor
 {
-public:
+    public:
     /** Default Constructor
      * 
      * @param[in] vocab_file Path to vocab list txt file
@@ -67,9 +67,9 @@ public:
     WordPiecePreprocessor(const std::string &vocab_file);
     void preprocess(ITensor &tensor) override;
 
-private:
+    private:
     template <typename T, typename... Args>
-    void preprocess_typed(ITensor &tensor,Args &&... tokens);
+    void preprocess_typed(ITensor &tensor, Args &&...tokens);
 
     std::string _vocab_file;
 };
@@ -77,7 +77,7 @@ private:
 /** Convert input text to Int preprocessor */
 class atoiPreprocessor : public IPreprocessor
 {
-public:
+    public:
     /** Default Constructor */
     atoiPreprocessor() = default;
     void preprocess(ITensor &tensor) override;
@@ -86,17 +86,17 @@ public:
 /** Caffe preproccessor */
 class CaffePreproccessor : public IPreprocessor
 {
-public:
+    public:
     /** Default Constructor
      *
      * @param[in] mean  Mean array in RGB ordering
      * @param[in] bgr   Boolean specifying if the preprocessing should assume BGR format
      * @param[in] scale Scale value
      */
-    CaffePreproccessor(std::array<float, 3> mean = std::array<float, 3>{{0, 0, 0}}, bool bgr = true, float scale = 1.f);
+    CaffePreproccessor(std::array<float, 3> mean = std::array<float, 3>{ { 0, 0, 0 } }, bool bgr = true, float scale = 1.f);
     void preprocess(ITensor &tensor) override;
 
-private:
+    private:
     template <typename T>
     void preprocess_typed(ITensor &tensor);
 
@@ -108,7 +108,7 @@ private:
 /** TF preproccessor */
 class TFPreproccessor : public IPreprocessor
 {
-public:
+    public:
     /** Constructor
      *
      * @param[in] min_range Min normalization range. (Defaults to -1.f)
@@ -119,7 +119,7 @@ public:
     // Inherited overriden methods
     void preprocess(ITensor &tensor) override;
 
-private:
+    private:
     template <typename T>
     void preprocess_typed(ITensor &tensor);
 
@@ -130,7 +130,7 @@ private:
 /** PPM writer class */
 class PPMWriter : public graph::ITensorAccessor
 {
-public:
+    public:
     /** Constructor
      *
      * @param[in] name    PPM file name
@@ -143,7 +143,7 @@ public:
     // Inherited methods overriden:
     bool access_tensor(ITensor &tensor) override;
 
-private:
+    private:
     const std::string _name;
     unsigned int      _iterator;
     unsigned int      _maximum;
@@ -152,7 +152,7 @@ private:
 /** Dummy accessor class */
 class DummyAccessor final : public graph::ITensorAccessor
 {
-public:
+    public:
     /** Constructor
      *
      * @param[in] maximum Maximum elements to write
@@ -165,7 +165,7 @@ public:
     bool access_tensor_data() override;
     bool access_tensor(ITensor &tensor) override;
 
-private:
+    private:
     unsigned int _iterator;
     unsigned int _maximum;
 };
@@ -173,7 +173,7 @@ private:
 /** NumPy accessor class */
 class NumPyAccessor final : public graph::ITensorAccessor
 {
-public:
+    public:
     /** Constructor
      *
      * @param[in]  npy_path      Path to npy file.
@@ -197,7 +197,7 @@ public:
     // Inherited methods overriden:
     bool access_tensor(ITensor &tensor) override;
 
-private:
+    private:
     template <typename T>
     void access_numpy_tensor(ITensor &tensor, T tolerance);
 
@@ -209,7 +209,7 @@ private:
 /** SaveNumPy accessor class */
 class SaveNumPyAccessor final : public graph::ITensorAccessor
 {
-public:
+    public:
     /** Constructor
      *
      * @param[in] npy_name   Npy file name.
@@ -226,7 +226,7 @@ public:
     // Inherited methods overriden:
     bool access_tensor(ITensor &tensor) override;
 
-private:
+    private:
     const std::string _npy_name;
     const bool        _is_fortran;
 };
@@ -236,7 +236,7 @@ private:
  *  */
 class PrintAccessor final : public graph::ITensorAccessor
 {
-public:
+    public:
     /** Constructor
      *
      * @param[out] output_stream (Optional) Output stream
@@ -253,7 +253,7 @@ public:
     // Inherited methods overriden:
     bool access_tensor(ITensor &tensor) override;
 
-private:
+    private:
     std::ostream &_output_stream;
     IOFormatInfo  _io_fmt;
 };
@@ -261,7 +261,7 @@ private:
 /** Image accessor class */
 class ImageAccessor final : public graph::ITensorAccessor
 {
-public:
+    public:
     /** Constructor
      *
      * @param[in] filename     Image file
@@ -275,17 +275,21 @@ public:
     // Inherited methods overriden:
     bool access_tensor(ITensor &tensor) override;
 
-private:
-    bool                           _already_loaded;
-    const std::string              _filename;
+    private:
+    bool _already_loaded;
+    //const std::string              _filename;
+    std::string                    _filename;
     const bool                     _bgr;
     std::unique_ptr<IPreprocessor> _preprocessor;
+    int                            _iterator = 0;
+    int                            _frame    = 0;
+    std::vector<std::string>       _image_list;
 };
 
 /** Text accessor class */
 class TextAccessor final : public graph::ITensorAccessor
 {
-public:
+    public:
     /** Constructor
      *
      * @param[in] filename     Text file
@@ -298,7 +302,7 @@ public:
     // Inherited methods overriden:
     bool access_tensor(ITensor &tensor) override;
 
-private:
+    private:
     bool                           _already_loaded;
     const std::string              _filename;
     std::unique_ptr<IPreprocessor> _preprocessor;
@@ -307,7 +311,7 @@ private:
 /** Token accessor class */
 class TokenAccessor final : public graph::ITensorAccessor
 {
-public:
+    public:
     /** Constructor
      *
      * @param[in] filename     Path to text file
@@ -321,18 +325,17 @@ public:
     // Inherited methods overriden:
     bool access_tensor(ITensor &tensor) override;
 
-private:
+    private:
     bool                           _already_loaded;
     const std::string              _filename;
     const std::string              _vocabname;
     std::unique_ptr<IPreprocessor> _preprocessor;
 };
 
-
 /** Input Accessor used for network validation */
 class ValidationInputAccessor final : public graph::ITensorAccessor
 {
-public:
+    public:
     /** Constructor
      *
      * @param[in]  image_list    File containing all the images to validate
@@ -356,7 +359,7 @@ public:
     // Inherited methods overriden:
     bool access_tensor(ITensor &tensor) override;
 
-private:
+    private:
     std::string                    _path;
     std::vector<std::string>       _images;
     std::unique_ptr<IPreprocessor> _preprocessor;
@@ -368,7 +371,7 @@ private:
 /** Output Accessor used for network validation */
 class ValidationOutputAccessor final : public graph::ITensorAccessor
 {
-public:
+    public:
     /** Default Constructor
      *
      * @param[in]  image_list    File containing all the images and labels results
@@ -388,7 +391,7 @@ public:
     // Inherited methods overriden:
     bool access_tensor(ITensor &tensor) override;
 
-private:
+    private:
     /** Access predictions of the tensor
      *
      * @tparam T Tensor elements type
@@ -413,7 +416,7 @@ private:
      */
     void report_top_n(size_t top_n, size_t total_samples, size_t positive_samples);
 
-private:
+    private:
     std::vector<int> _results;
     std::ostream    &_output_stream;
     size_t           _offset;
@@ -424,7 +427,7 @@ private:
 /** Detection output accessor class */
 class DetectionOutputAccessor final : public graph::ITensorAccessor
 {
-public:
+    public:
     /** Constructor
      *
      * @param[in]  labels_path        Path to labels text file.
@@ -444,7 +447,7 @@ public:
     // Inherited methods overriden:
     bool access_tensor(ITensor &tensor) override;
 
-private:
+    private:
     template <typename T>
     void access_predictions_tensor(ITensor &tensor);
 
@@ -456,7 +459,7 @@ private:
 /** Result accessor class */
 class TopNPredictionsAccessor final : public graph::ITensorAccessor
 {
-public:
+    public:
     /** Constructor
      *
      * @param[in]  labels_path   Path to labels text file.
@@ -474,7 +477,7 @@ public:
     // Inherited methods overriden:
     bool access_tensor(ITensor &tensor) override;
 
-private:
+    private:
     template <typename T>
     void access_predictions_tensor(ITensor &tensor);
 
@@ -486,7 +489,7 @@ private:
 /** Raw result accessor class */
 class RawResultAccessor final : public graph::ITensorAccessor
 {
-public:
+    public:
     /** Constructor
      * 
      * @param[out] output_stream Output stream
@@ -502,17 +505,17 @@ public:
     // Inherited methods overriden:
     bool access_tensor(ITensor &tensor) override;
 
-private:
+    private:
     template <typename T>
     void access_typed_tensor(ITensor &tensor);
 
-    std::ostream            &_output_stream;
+    std::ostream &_output_stream;
 };
 
 /** Random accessor class */
 class RandomAccessor final : public graph::ITensorAccessor
 {
-public:
+    public:
     /** Constructor
      *
      * @param[in] lower Lower bound value.
@@ -526,7 +529,7 @@ public:
     // Inherited methods overriden:
     bool access_tensor(ITensor &tensor) override;
 
-private:
+    private:
     template <typename T, typename D>
     void                            fill(ITensor &tensor, D &&distribution);
     PixelValue                      _lower;
@@ -537,7 +540,7 @@ private:
 /** Numpy Binary loader class*/
 class NumPyBinLoader final : public graph::ITensorAccessor
 {
-public:
+    public:
     /** Default Constructor
      *
      * @param[in] filename    Binary file name
@@ -550,7 +553,7 @@ public:
     // Inherited methods overriden:
     bool access_tensor(ITensor &tensor) override;
 
-private:
+    private:
     bool              _already_loaded;
     const std::string _filename;
     const DataLayout  _file_layout;
@@ -583,7 +586,7 @@ get_random_accessor(PixelValue lower, PixelValue upper, const std::random_device
 inline std::unique_ptr<graph::ITensorAccessor>
 get_weights_accessor(const std::string &path, const std::string &data_file, DataLayout file_layout = DataLayout::NCHW)
 {
-    if (path.empty())
+    if(path.empty())
     {
         return std::make_unique<DummyAccessor>();
     }
@@ -606,7 +609,7 @@ get_input_accessor(const arm_compute::utils::CommonGraphParams &graph_parameters
                    std::unique_ptr<IPreprocessor>               preprocessor = nullptr,
                    bool                                         bgr          = true)
 {
-    if (!graph_parameters.validation_file.empty())
+    if(!graph_parameters.validation_file.empty())
     {
         return std::make_unique<ValidationInputAccessor>(
             graph_parameters.validation_file, graph_parameters.validation_path, std::move(preprocessor), bgr,
@@ -614,25 +617,23 @@ get_input_accessor(const arm_compute::utils::CommonGraphParams &graph_parameters
     }
     else
     {
-        const std::string &image_file           = graph_parameters.image;
-        const std::string &image_file_lower     = lower_string(image_file);
-        const std::string &text_file            = graph_parameters.text;
-        const std::string &text_file_lower      = lower_string(text_file);
-        if (arm_compute::utility::endswith(image_file_lower, ".npy"))
+        const std::string &image_file       = graph_parameters.image;
+        const std::string &image_file_lower = lower_string(image_file);
+        const std::string &text_file        = graph_parameters.text;
+        const std::string &text_file_lower  = lower_string(text_file);
+        if(arm_compute::utility::endswith(image_file_lower, ".npy"))
         {
             return std::make_unique<NumPyBinLoader>(image_file, graph_parameters.data_layout);
         }
-        else if (arm_compute::utility::endswith(image_file_lower, ".jpeg") ||
-                 arm_compute::utility::endswith(image_file_lower, ".jpg") ||
-                 arm_compute::utility::endswith(image_file_lower, ".ppm"))
+        else if(arm_compute::utility::endswith(image_file_lower, ".jpeg") || arm_compute::utility::endswith(image_file_lower, ".jpg") || arm_compute::utility::endswith(image_file_lower, ".ppm"))
         {
             return std::make_unique<ImageAccessor>(image_file, bgr, std::move(preprocessor));
         }
-        else if (arm_compute::utility::endswith(text_file_lower, ".txt"))
+        else if(arm_compute::utility::endswith(text_file_lower, ".txt"))
         {
             return std::make_unique<TextAccessor>(text_file, std::move(preprocessor));
         }
-        else 
+        else
         {
             return std::make_unique<DummyAccessor>();
         }
@@ -647,16 +648,16 @@ get_input_accessor(const arm_compute::utils::CommonGraphParams &graph_parameters
  * @return An appropriate tensor accessor
  */
 inline std::unique_ptr<graph::ITensorAccessor>
-get_segment_accessor(const std::string &path_to_file,
-                   std::unique_ptr<IPreprocessor> preprocessor = nullptr)
+get_segment_accessor(const std::string             &path_to_file,
+                     std::unique_ptr<IPreprocessor> preprocessor = nullptr)
 {
-     if (path_to_file.empty())
+    if(path_to_file.empty())
     {
         return std::make_unique<DummyAccessor>();
     }
     else
     {
-        const std::string &segment_file_lower   = lower_string(path_to_file);
+        const std::string &segment_file_lower = lower_string(path_to_file);
         return std::make_unique<TextAccessor>(path_to_file, std::move(preprocessor));
     }
 }
@@ -673,16 +674,16 @@ inline std::unique_ptr<graph::ITensorAccessor>
 get_token_accessor(const arm_compute::utils::CommonGraphParams &graph_parameters,
                    std::unique_ptr<IPreprocessor>               preprocessor = nullptr)
 {
-    if (!graph_parameters.validation_file.empty())
+    if(!graph_parameters.validation_file.empty())
     {
         return std::make_unique<DummyAccessor>();
     }
     else
     {
-        const std::string &text_file            = graph_parameters.text;
-        const std::string &text_file_lower      = lower_string(text_file);
-        const std::string &vocab_file           = graph_parameters.vocabulary;
-        const std::string &vocab_file_lower     = lower_string(vocab_file);
+        const std::string &text_file        = graph_parameters.text;
+        const std::string &text_file_lower  = lower_string(text_file);
+        const std::string &vocab_file       = graph_parameters.vocabulary;
+        const std::string &vocab_file_lower = lower_string(vocab_file);
         return std::make_unique<TokenAccessor>(text_file_lower,
                                                vocab_file_lower, std::move(preprocessor));
     }
@@ -711,13 +712,13 @@ get_output_accessor(const arm_compute::utils::CommonGraphParams &graph_parameter
     {
         return std::make_unique<RawResultAccessor>(output_stream);
     }
-    else if (!graph_parameters.validation_file.empty())
+    else if(!graph_parameters.validation_file.empty())
     {
         return std::make_unique<ValidationOutputAccessor>(graph_parameters.validation_file, output_stream,
                                                           graph_parameters.validation_range_start,
                                                           graph_parameters.validation_range_end);
     }
-    else if (graph_parameters.labels.empty())
+    else if(graph_parameters.labels.empty())
     {
         return std::make_unique<DummyAccessor>(0);
     }
@@ -745,13 +746,13 @@ get_detection_output_accessor(const arm_compute::utils::CommonGraphParams &graph
                               std::ostream                                &output_stream = std::cout)
 {
     ARM_COMPUTE_UNUSED(is_validation);
-    if (!graph_parameters.validation_file.empty())
+    if(!graph_parameters.validation_file.empty())
     {
         return std::make_unique<ValidationOutputAccessor>(graph_parameters.validation_file, output_stream,
                                                           graph_parameters.validation_range_start,
                                                           graph_parameters.validation_range_end);
     }
-    else if (graph_parameters.labels.empty())
+    else if(graph_parameters.labels.empty())
     {
         return std::make_unique<DummyAccessor>(0);
     }
@@ -775,10 +776,10 @@ get_detection_output_accessor(const arm_compute::utils::CommonGraphParams &graph
 inline std::unique_ptr<graph::ITensorAccessor> get_npy_output_accessor(const std::string &npy_path,
                                                                        TensorShape        shape,
                                                                        DataType           data_type,
-                                                                       DataLayout    data_layout   = DataLayout::NCHW,
-                                                                       std::ostream &output_stream = std::cout)
+                                                                       DataLayout         data_layout   = DataLayout::NCHW,
+                                                                       std::ostream      &output_stream = std::cout)
 {
-    if (npy_path.empty())
+    if(npy_path.empty())
     {
         return std::make_unique<DummyAccessor>(0);
     }
@@ -800,7 +801,7 @@ inline std::unique_ptr<graph::ITensorAccessor> get_npy_output_accessor(const std
 inline std::unique_ptr<graph::ITensorAccessor> get_save_npy_output_accessor(const std::string &npy_name,
                                                                             const bool         is_fortran = false)
 {
-    if (npy_name.empty())
+    if(npy_name.empty())
     {
         return std::make_unique<DummyAccessor>(0);
     }
@@ -831,11 +832,9 @@ inline std::unique_ptr<graph::ITensorAccessor> get_print_output_accessor(std::os
  */
 inline TensorShape permute_shape(TensorShape tensor_shape, DataLayout in_data_layout, DataLayout out_data_layout)
 {
-    if (in_data_layout != out_data_layout)
+    if(in_data_layout != out_data_layout)
     {
-        arm_compute::PermutationVector perm_vec = (in_data_layout == DataLayout::NCHW)
-                                                      ? arm_compute::PermutationVector(2U, 0U, 1U)
-                                                      : arm_compute::PermutationVector(1U, 2U, 0U);
+        arm_compute::PermutationVector perm_vec = (in_data_layout == DataLayout::NCHW) ? arm_compute::PermutationVector(2U, 0U, 1U) : arm_compute::PermutationVector(1U, 2U, 0U);
         arm_compute::permute(tensor_shape, perm_vec);
     }
     return tensor_shape;
@@ -850,7 +849,7 @@ inline TensorShape permute_shape(TensorShape tensor_shape, DataLayout in_data_la
 inline graph::Target set_target_hint(int target)
 {
     ARM_COMPUTE_ERROR_ON_MSG(target > 2, "Invalid target. Target must be 0 (NEON), 1 (OpenCL), 2 (OpenCL + Tuner)");
-    if ((target == 1 || target == 2))
+    if((target == 1 || target == 2))
     {
         return graph::Target::CL;
     }

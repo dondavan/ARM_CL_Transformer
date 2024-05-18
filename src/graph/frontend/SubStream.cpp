@@ -36,12 +36,14 @@ SubStream::SubStream(IStream &s) : _s(s)
 {
     _hints     = s.hints();
     _tail_node = s.tail_node();
+    tail_graph_id=s.get_tail_graph_id();
 }
 
 void SubStream::add_layer(ILayer &layer)
 {
     auto nid   = layer.create_layer(*this);
     _tail_node = nid;
+    tail_graph_id=IStreamPipeline::_target_graph;
 }
 
 const Graph &SubStream::graph() const
@@ -53,6 +55,24 @@ Graph &SubStream::graph()
 {
     return _s.graph();
 }
+
+//Ehsan
+
+SubStream & SubStream::operator<<(ILayer &layer)
+{
+	layer.add_input_node(_tail_node,tail_graph_id);
+	_s.next_layer(layer.get_input_nodes(), _tail_node, tail_graph_id, layer.name());
+    add_layer(layer);
+    return *this;
+}
+SubStream & SubStream::operator<<(ILayer &&layer)
+{
+	layer.add_input_node(_tail_node,tail_graph_id);
+	_s.next_layer(layer.get_input_nodes(), _tail_node, tail_graph_id, layer.name());
+	add_layer(layer);
+    return *this;
+}
+
 } // namespace frontend
 } // namespace graph
 } // namespace arm_compute

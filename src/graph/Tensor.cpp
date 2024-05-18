@@ -21,6 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+//Ehsan
+#include<chrono>
+
 #include "arm_compute/graph/Tensor.h"
 #include <typeinfo>
 
@@ -104,6 +107,26 @@ bool Tensor::call_accessor()
         _handle->unmap();
     }
 
+    return retval;
+}
+
+
+//Ehsan
+bool Tensor::my_call_accessor()
+{
+    if(!_accessor || !_handle)
+    {
+        return false;
+    }
+    
+    _handle->map(true);
+    if(_handle->tensor().buffer() == nullptr)
+    {
+        return false;
+    }
+
+    bool retval = _accessor->access_tensor(_handle->tensor());
+    _handle->unmap();
     return retval;
 }
 

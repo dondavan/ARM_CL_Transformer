@@ -96,17 +96,18 @@ namespace utils
 /** Structure holding all the common graph parameters */
 struct CommonGraphParams
 {
-    bool                             help{false};
-    int                              threads{0};
-    int                              batches{1};
-    arm_compute::graph::Target       target{arm_compute::graph::Target::NEON};
-    arm_compute::DataType            data_type{DataType::F32};
-    arm_compute::DataLayout          data_layout{DataLayout::NHWC};
-    bool                             enable_tuner{false};
-    bool                             enable_cl_cache{false};
-    bool                             raw_output{false};
-    arm_compute::CLTunerMode         tuner_mode{CLTunerMode::NORMAL};
-    arm_compute::graph::FastMathHint fast_math_hint{arm_compute::graph::FastMathHint::Disabled};
+    bool                             help{ false };
+    int                              threads{ 2 };
+    int                              threads2{ 4 };
+    int                              batches{ 1 };
+    arm_compute::graph::Target       target{ arm_compute::graph::Target::NEON };
+    arm_compute::DataType            data_type{ DataType::F32 };
+    arm_compute::DataLayout          data_layout{ DataLayout::NHWC };
+    bool                             enable_tuner{ false };
+    bool                             enable_cl_cache{ false };
+    bool                             raw_output{ false };
+    arm_compute::CLTunerMode         tuner_mode{ CLTunerMode::NORMAL };
+    arm_compute::graph::FastMathHint fast_math_hint{ arm_compute::graph::FastMathHint::Disabled };
     std::string                      data_path{};
     std::string                      image{};
     std::string                      text{};
@@ -117,8 +118,30 @@ struct CommonGraphParams
     std::string                      validation_path{};
     std::string                      tuner_file{};
     std::string                      mlgo_file{};
-    unsigned int                     validation_range_start{0};
-    unsigned int                     validation_range_end{std::numeric_limits<unsigned int>::max()};
+    unsigned int                     validation_range_start{ 0 };
+    unsigned int                     validation_range_end{ std::numeric_limits<unsigned int>::max() };
+
+    //Ehsan
+    int         partition_point{ 0 };
+    int         partition_point2{ 0 };
+    int         annotate{ 0 };
+    int         save{ 0 };
+    int         n{ 1 };
+    int         total_cores{ 6 };
+    int         little_cores{ 4 };
+    int         big_cores{ 2 };
+    int         layer_time{ 0 };
+    std::string order{ "B-L-G" };
+    std::string freqs{};
+    std::string power_profile_mode{ "whole" };
+    char        gpu_host{ 'B' };
+    char        npu_host{ 'B' };
+    int         input_c{ 3 };
+    int         input_s{ 227 };
+    int         kernel_c{ 96 };
+    int         kernel_s{ 11 };
+    int         stride{ 2 };
+    int         print_tasks{ 0 };
 };
 
 /** Formatted output of the CommonGraphParams type
@@ -141,7 +164,7 @@ struct CommonGraphParams
  */
 class CommonGraphOptions
 {
-public:
+    public:
     /** Constructor
      *
      * @param[in,out] parser A parser on which "parse()" hasn't been called yet.
@@ -159,7 +182,8 @@ public:
     ~CommonGraphOptions() = default;
 
     ToggleOption                           *help;             /**< Show help option */
-    SimpleOption<int>                      *threads;          /**< Number of threads option */
+    SimpleOption<int>                      *threads;          /**< Number of big core threads option */
+    SimpleOption<int>                      *threads2;         /**< Number of little cores threads option */
     SimpleOption<int>                      *batches;          /**< Number of batches */
     EnumOption<arm_compute::graph::Target> *target;           /**< Graph execution target */
     EnumOption<arm_compute::DataType>      *data_type;        /**< Graph data type */
@@ -180,6 +204,28 @@ public:
     SimpleOption<std::string>              *validation_range; /**< Validation range */
     SimpleOption<std::string>              *tuner_file;       /**< File to load/store the tuner's values from */
     SimpleOption<std::string>              *mlgo_file;        /**< File to load the MLGO heuristics from */
+
+    //Ehsan
+    SimpleOption<std::string> *order;              /**< Order of processors eg. B-L-G */
+    SimpleOption<std::string> *freqs;              /* freqs of each element */
+    SimpleOption<std::string> *power_profile_mode; /* power_profile_mode */
+    SimpleOption<char>        *gpu_host;           /**< GPU host */
+    SimpleOption<char>        *npu_host;           /**< NPU host */
+    SimpleOption<int>         *partition_point;    /**< Partition point */
+    SimpleOption<int>         *partition_point2;   /**< Partition point2 */
+    SimpleOption<int>         *annotate;
+    SimpleOption<int>         *save;
+    SimpleOption<int>         *n;
+    SimpleOption<int>         *total_cores;
+    SimpleOption<int>         *little_cores;
+    SimpleOption<int>         *big_cores;
+    SimpleOption<int>         *layer_time;
+    SimpleOption<int>         *input_c;
+    SimpleOption<int>         *input_s;
+    SimpleOption<int>         *kernel_c;
+    SimpleOption<int>         *kernel_s;
+    SimpleOption<int>         *stride;
+    SimpleOption<int>         *print_tasks;
 };
 
 /** Consumes the common graph options and creates a structure containing any information

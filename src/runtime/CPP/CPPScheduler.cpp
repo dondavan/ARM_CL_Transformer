@@ -176,6 +176,11 @@ public:
     /** Function ran by the worker thread. */
     void worker_thread();
 
+    //Ehsan
+    int get_core_pin(){
+        return _core_pin;
+    }
+
     /** Set the scheduling strategy to be linear */
     void set_linear_mode()
     {
@@ -339,6 +344,7 @@ struct CPPScheduler::Impl final
         _threads.resize(_num_threads - 1);
         auto_switch_mode(_num_threads);
     }
+    /*
     void set_num_threads_with_affinity(unsigned int num_threads, unsigned int thread_hint, BindFunc func)
     {
         _num_threads = num_threads == 0 ? thread_hint : num_threads;
@@ -353,6 +359,21 @@ struct CPPScheduler::Impl final
             _threads.emplace_back(func(i, thread_hint));
         }
         auto_switch_mode(_num_threads);
+    }*/
+    void set_num_threads_with_affinity(unsigned int num_threads, unsigned int thread_hint, arm_compute::graph::GraphConfig cfg, BindFunc func)
+    {
+        _num_threads = num_threads == 0 ? thread_hint : num_threads;
+
+        // Set affinity on main thread
+        int host_core=func(0, thread_hint, cfg);
+        set_thread_affinity(func(0, thread_hint, cfg));
+
+        // Set affinity on worked threads
+        _threads.clear();
+        for(auto i = 1U; i < _num_threads; ++i)
+        {
+            _threads.emplace_back(func(i, thread_hint, cfg));
+        }
     }
     void auto_switch_mode(unsigned int num_threads_to_use)
     {
@@ -404,6 +425,12 @@ struct CPPScheduler::Impl final
     {
         return _num_threads;
     }
+    void print_threads(){
+       std::cerr<<"Num_threads: "<<_num_threads<<std::endl;
+       for(auto &t :_threads){
+               std::cerr<<"core_pin: "<<t.get_core_pin()<<std::endl;
+       }
+    }
     unsigned int wake_fanout() const
     {
         return _wake_fanout;
@@ -445,16 +472,28 @@ void CPPScheduler::set_num_threads(unsigned int num_threads)
     _impl->set_num_threads(num_threads, num_threads_hint());
 }
 
+/*
 void CPPScheduler::set_num_threads_with_affinity(unsigned int num_threads, BindFunc func)
 {
     // No changes in the number of threads while current workloads are running
     arm_compute::lock_guard<std::mutex> lock(_impl->_run_workloads_mutex);
     _impl->set_num_threads_with_affinity(num_threads, num_threads_hint(), func);
 }
+*/
+void CPPScheduler::set_num_threads_with_affinity(unsigned int num_threads, arm_compute::graph::GraphConfig cfg, BindFunc func)
+{
+    // No changes in the number of threads while current workloads are running
+    arm_compute::lock_guard<std::mutex> lock(_impl->_run_workloads_mutex);
+    _impl->set_num_threads_with_affinity(num_threads, num_threads_hint(), cfg, func);
+}
 
 unsigned int CPPScheduler::num_threads() const
 {
     return _impl->num_threads();
+}
+
+void CPPScheduler::print_threads(){
+       _impl->print_threads();
 }
 
 #ifndef DOXYGEN_SKIP_THIS

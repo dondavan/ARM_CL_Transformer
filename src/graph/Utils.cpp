@@ -47,9 +47,14 @@ Target get_default_target()
     {
         return Target::CL;
     }
+    if(is_target_supported(Target::NPU))
+	{
+		return Target::NPU;
+	}
     ARM_COMPUTE_ERROR("No backend exists!");
 }
 
+/*
 void force_target_to_graph(Graph &g, Target target)
 {
     auto &nodes = g.nodes();
@@ -70,7 +75,30 @@ void force_target_to_graph(Graph &g, Target target)
         }
     }
 }
+*/
+void force_target_to_graph(Graph &g, Target target)
+{
+    auto &nodes = g.nodes();
+    for(auto &node : nodes)
+    {
+        if(node)
+        {
+            node->set_assigned_target(target);
+        }
+    }
 
+    auto &tensors = g.tensors();
+    for(auto &tensor : tensors)
+    {
+        if(tensor)
+        {
+        	if(target==Target::NPU){
+        		target=Target::NEON;
+        	}
+            tensor->desc().target = target;
+        }
+    }
+}
 PassManager create_default_pass_manager(Target target, const GraphConfig &cfg)
 {
     ARM_COMPUTE_UNUSED(target);
@@ -105,7 +133,7 @@ PassManager create_default_pass_manager(Target target, const GraphConfig &cfg)
 
     return pm;
 }
-
+/*
 void release_default_graph_context(GraphContext &ctx)
 {
     for (const auto &backend : backends::BackendRegistry::get().backends())
@@ -115,6 +143,25 @@ void release_default_graph_context(GraphContext &ctx)
             backend.second->release_backend_context(ctx);
         }
     }
+}
+*/
+
+void release_default_graph_context(GraphContext &ctx)
+{
+
+	int t = ctx.config().cluster;
+	Target target;
+	if(t<2){
+		target=static_cast<arm_compute::graph::Target>(1);
+	}
+	else if(t==2){
+		target=static_cast<arm_compute::graph::Target>(2);
+	}
+	const auto &backend = backends::BackendRegistry::get().find_backend(target);
+	if(backend->is_backend_supported()){
+		backend->release_backend_context(ctx);
+	}
+
 }
 
 void sync_backends()

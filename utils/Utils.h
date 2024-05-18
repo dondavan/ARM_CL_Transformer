@@ -55,6 +55,8 @@
 #include <tuple>
 #include <vector>
 
+#include <unistd.h>
+
 namespace arm_compute
 {
 namespace utils
@@ -97,6 +99,8 @@ public:
     virtual void do_run(){};
     /** Teardown the example. */
     virtual void do_teardown(){};
+
+    virtual void do_finish(){};
 
     /** Default destructor. */
     virtual ~Example() = default;
@@ -818,6 +822,71 @@ void fill_tensor_vector(TensorType &tensor, std::vector<T> vec)
     Iterator it_tensor(&tensor, window);
     execute_window_loop(
         window, [&](const Coordinates &) { *reinterpret_cast<T *>(it_tensor.ptr()) = vec.at(i++); }, it_tensor);
+
+    unmap(tensor);
+}
+
+
+//Ehsan
+template <typename T, typename TensorType>
+void fill_tensor_array(TensorType &tensor, T* array, int sz)
+{
+    ARM_COMPUTE_ERROR_ON(tensor.info()->tensor_shape().total_size() != sz);
+
+    map(tensor, true);
+
+    Window window;
+    window.use_tensor_dimensions(tensor.info()->tensor_shape());
+
+    int      i = 0;
+    Iterator it_tensor(&tensor, window);
+    execute_window_loop(window, [&](const Coordinates &)
+    {
+        *reinterpret_cast<T *>(it_tensor.ptr()) = array[i++];
+    },
+    it_tensor);
+
+    unmap(tensor);
+}
+template <typename T, typename TensorType>
+void fill_tensor_array2(TensorType &tensor, T* array, int sz)
+{
+    ARM_COMPUTE_ERROR_ON(tensor.info()->tensor_shape().total_size() != sz);
+
+    map(tensor, true);
+
+    Window window;
+    window.use_tensor_dimensions(tensor.info()->tensor_shape());
+    int		 i = 0;
+    int      it2 = 0;
+    int		 it1 = 0;
+    int      it0 = 0;
+    int strides[]={(int)tensor.info()->tensor_shape()[1]*(int)tensor.info()->tensor_shape()[2],
+    		(int)tensor.info()->tensor_shape()[2],
+			1};
+
+    int strides_permuted[]={strides[1],strides[2],strides[0]};
+    int shape_permuted[]={(int)tensor.info()->tensor_shape()[1],
+    		(int)tensor.info()->tensor_shape()[2],
+			(int)tensor.info()->tensor_shape()[0]};
+    
+    Iterator it_tensor(&tensor, window);
+    execute_window_loop(window, [&](const Coordinates &)
+    {
+    	i=it2*strides_permuted[2]+it1*strides_permuted[1]+it0*strides_permuted[0];
+        *reinterpret_cast<T *>(it_tensor.ptr()) = array[i];
+        it2++;
+        if(it2==shape_permuted[2]){
+        	it2=0;
+        	it1++;
+        	if(it1==shape_permuted[1]){
+        		it1=0;
+        		it0++;
+        	}
+        }
+
+    },
+    it_tensor);
 
     unmap(tensor);
 }

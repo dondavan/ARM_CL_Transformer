@@ -36,16 +36,31 @@ Stream::Stream(size_t id, std::string name) : _ctx(), _manager(), _g(id, std::mo
 {
 }
 
-void Stream::finalize(Target target, const GraphConfig &config)
+void Stream::finalize(Target target, const GraphConfig &config, std::set<int> *b, int blocking)
 {
     PassManager pm = create_default_pass_manager(target, config);
     _ctx.set_config(config);
-    _manager.finalize_graph(_g, _ctx, pm, target);
+    _manager.finalize_graph(_g, _ctx, pm, target, b, blocking);
 }
 
-void Stream::run()
+void Stream::measure(int n)
 {
-    _manager.execute_graph(_g);
+	_manager.print_times(_g, n);
+}
+
+void Stream::reset()
+{
+	_manager.reset(_g);
+}
+
+void Stream::run(int n)
+{
+    _manager.execute_graph(_g,n);
+}
+
+void Stream::run(bool anotate, int nn)
+{
+    _manager.execute_graph(_g, anotate, nn);
 }
 
 void Stream::add_layer(ILayer &layer)
@@ -63,6 +78,13 @@ Graph &Stream::graph()
 {
     return _g;
 }
+
+Stream & Stream::operator<<(ILayer &layer)
+{
+    add_layer(layer);
+    return *this;
+}
+
 } // namespace frontend
 } // namespace graph
 } // namespace arm_compute

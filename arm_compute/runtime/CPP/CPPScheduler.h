@@ -62,7 +62,8 @@ class CPPScheduler final : public IScheduler
     unsigned int num_threads() const override;
     void         schedule(ICPPKernel *kernel, const Hints &hints) override;
     void         schedule_op(ICPPKernel *kernel, const Hints &hints, const Window &window, ITensorPack &tensors) override;
-
+    void print_threads() override;
+    
     protected:
     /** Will run the workloads in parallel using num_threads
      *

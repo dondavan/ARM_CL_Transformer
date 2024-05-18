@@ -85,20 +85,121 @@ void discard_comments_and_spaces(std::ifstream &fs)
 }
 } // namespace
 
+#define Frequency_Setting 1
+
 #ifndef BENCHMARK_EXAMPLES
+int LittleFrequencyTable[] = {408000, 600000, 816000, 1008000, 1200000, 1416000};
+int BigFrequencyTable[] = {408000, 600000, 816000, 1008000, 1200000, 1416000, 1608000, 1800000};
+int GPUFrequencyTable[] = {200000000, 300000000, 400000000, 600000000, 800000000};
+bool get_freqs(int &l, int &b, int &g){
+	std::string freqs;
+	std::cin>>freqs;
+	std::cerr<<"the input freq is "<<freqs<<std::endl;
+	//bool finished=false;
+	if (freqs=="end"){
+		return true;
+	}
+	if (freqs.size() >= 2 && freqs.front() == '{' && freqs.back() == '}') {
+			freqs = freqs.substr(1, freqs.size() - 2);
+			if (freqs.size() >= 2 && freqs.front() == '{' && freqs.back() == '}'){
+				freqs = freqs.substr(1, freqs.size() - 2);
+			    std::replace(freqs.begin(), freqs.end(), '-', ' '); // Replace '-' with whitespace
+			    std::istringstream iss(freqs);
+			    if (!(iss >> l >> b >> g)) {
+			        std::cerr << "Parsing error!" << std::endl;
+			        return true;
+			    }
+			}
+			else{
+				std::cerr<<"freqs format is not supported\n";
+			}
+	}
+	else{
+		l=std::stoi(freqs);
+		std::cin>>b;
+		std::cin>>g;
+	}
+	if(l<1000){
+		l=LittleFrequencyTable[l];
+		b=BigFrequencyTable[b];
+		g=GPUFrequencyTable[g];
+	}
+	return false;
+}
+
 int run_example(int argc, char **argv, std::unique_ptr<Example> example)
 {
     std::cout << "\n" << argv[0] << "\n\n";
 
     try
     {
+#if Frequency_Setting
+        system("echo userspace > /sys/devices/system/cpu/cpufreq/policy0/scaling_governor");
+        system("echo userspace > /sys/devices/system/cpu/cpufreq/policy4/scaling_governor");
+        system("echo userspace > /sys/devices/platform/ff9a0000.gpu/devfreq/ff9a0000.gpu/governor");
+        int f_i=1;
+#endif
         bool status = example->do_setup(argc, argv);
         if (!status)
         {
             return 1;
         }
+#if Frequency_Setting
+        //Min
+        //int LFreq=408000, BFreq=408000, GFreq=200000000;
+        //Max
+        int LFreq=1416000, BFreq=1800000, GFreq=800000000;
+
+        std::string cmd="";
+
+        /*
+        //Set Little CPU Frequency
+		cmd="echo " + to_string(LFreq) + " > /sys/devices/system/cpu/cpufreq/policy0/scaling_setspeed";
+		system(cmd.c_str());
+
+		//Set Big CPU Frequency
+		cmd="echo " + to_string(BFreq) + " > /sys/devices/system/cpu/cpufreq/policy4/scaling_setspeed";
+		system(cmd.c_str());
+
+		//Set GPU Frequency
+		cmd="echo " + to_string(GFreq) + " > /sys/devices/platform/ff9a0000.gpu/devfreq/ff9a0000.gpu/userspace/set_freq";
+		system(cmd.c_str());
+		*/
+        /*
+        std::cin>>LFreq;
+		std::cin>>BFreq;
+		std::cin>>GFreq;
+		*/
+        get_freqs(LFreq, BFreq, GFreq);
+        //while (BFreq && LFreq && GFreq){
+        bool finish=false;
+        while (!finish){
+
+        	std::cerr<<f_i++<<" Running Graph with Frequency: "<<LFreq<<','<<BFreq<<','<<GFreq<<std::endl;
+			//Set Little CPU Frequency
+			cmd="echo " + to_string(LFreq) + " > /sys/devices/system/cpu/cpufreq/policy0/scaling_setspeed";
+			system(cmd.c_str());
+			//Set Big CPU Frequency
+			cmd="echo " + to_string(BFreq) + " > /sys/devices/system/cpu/cpufreq/policy4/scaling_setspeed";
+			system(cmd.c_str());
+			//Set GPU Frequency
+			cmd="echo " + to_string(GFreq) + " > /sys/devices/platform/ff9a0000.gpu/devfreq/ff9a0000.gpu/userspace/set_freq";
+			system(cmd.c_str());
+        	sleep(2);
+        	example->do_run();
+        	std::cerr<<"enter freqs of Little, big, GPU:\n";
+        	/*std::cin>>LFreq;
+        	std::cin>>BFreq;
+        	std::cin>>GFreq;*/
+        	finish=get_freqs(LFreq, BFreq, GFreq);
+
+        }
+        example->do_finish();
+#else
         example->do_run();
+        example->do_finish();
         example->do_teardown();
+#endif
 
         std::cout << "\nTest passed\n";
         return 0;

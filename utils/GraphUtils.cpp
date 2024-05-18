@@ -40,6 +40,9 @@
 #include <iomanip>
 #include <limits>
 
+//Ehsan
+#include <dirent.h>
+
 using namespace arm_compute::graph_utils;
 
 namespace
@@ -378,12 +381,40 @@ bool SaveNumPyAccessor::access_tensor(ITensor &tensor)
 ImageAccessor::ImageAccessor(std::string filename, bool bgr, std::unique_ptr<IPreprocessor> preprocessor)
     : _already_loaded(false), _filename(std::move(filename)), _bgr(bgr), _preprocessor(std::move(preprocessor))
 {
+    std::cerr<<"****************************\nGraphUtils.cpp- reading images: "<<_filename<<std::endl;
+	if(arm_compute::utility::endswith(_filename, ".ppm") || arm_compute::utility::endswith(_filename, ".jpg")){
+		_image_list.push_back(_filename);
+		return;
+	}
+	DIR* dirp = opendir(_filename.c_str());
+	struct dirent * dp;
+	while ((dp = readdir(dirp)) != NULL) {
+		if(arm_compute::utility::endswith(dp->d_name, ".ppm") || arm_compute::utility::endswith(dp->d_name, ".jpg"))
+		   _image_list.push_back(_filename+(dp->d_name));
+	}
+	closedir(dirp);
+	for(auto img:_image_list){
+		std::cerr<<img<<std::endl;
+	}
+	std::cerr<<"*****************************\n\n\n\n";
+	if(_image_list.size()==0){
+		std::cerr<<"GraphUtils.cpp- Error: image list is empty\n";
+	}
 }
 
 bool ImageAccessor::access_tensor(ITensor &tensor)
 {
     if (!_already_loaded)
     {
+        //iterator=(iterator+1)%(image_list.size());
+    	_iterator=(_iterator)%(_image_list.size());
+    	_filename=_image_list[_iterator];
+    	std::cerr<<"\n\n************\nPhoto_index:"<<_iterator<<"\tFrame Index:"<<_frame<<std::endl;
+    	std::cerr<<"Reading image: "<<_filename<<"\n*************\n\n\n";
+    	_iterator++;
+        _frame++;
+
+
         auto image_loader = utils::ImageLoaderFactory::create(_filename);
         ARM_COMPUTE_EXIT_ON_MSG(image_loader == nullptr, "Unsupported image type");
 
@@ -668,6 +699,33 @@ std::vector<size_t> ValidationOutputAccessor::access_predictions_tensor(arm_comp
     std::sort(std::begin(index), std::end(index), [&](size_t a, size_t b) { return output_net[a] > output_net[b]; });
 
     return index;
+
+    // Ehsan
+    /*
+    if(num_detection > 0)
+    {
+        _output_stream << "---------------------- Detections ----------------------" << std::endl
+                       << std::endl;
+
+        _output_stream << std::left << std::setprecision(4) << std::setw(8) << "Image | " << std::setw(8) << "Label | " << std::setw(12) << "Confidence | "
+                       << "[ xmin, ymin, xmax, ymax ]" << std::endl;
+
+        for(size_t i = 0; i < num_detection; ++i)
+        {
+            auto im = static_cast<const int>(output_prt[i * 7]);
+            _output_stream << std::setw(8) << im << std::setw(8)
+                           << _labels[output_prt[i * 7 + 1]] << std::setw(12) << output_prt[i * 7 + 2]
+                           << " [" << (output_prt[i * 7 + 3] * _tensor_shapes[im].x())
+                           << ", " << (output_prt[i * 7 + 4] * _tensor_shapes[im].y())
+                           << ", " << (output_prt[i * 7 + 5] * _tensor_shapes[im].x())
+                           << ", " << (output_prt[i * 7 + 6] * _tensor_shapes[im].y())
+                           << "]" << std::endl;
+        }
+    }
+    else
+    {
+        _output_stream << "No detection found." << std::endl;
+    }*/
 }
 
 void ValidationOutputAccessor::aggregate_sample(const std::vector<size_t> &res,
@@ -692,6 +750,7 @@ void ValidationOutputAccessor::report_top_n(size_t top_n, size_t total_samples, 
     _output_stream << "Positive samples : " << positive_samples << std::endl;
     _output_stream << "Negative samples : " << negative_samples << std::endl;
     _output_stream << "Accuracy : " << accuracy << std::endl;
+
 }
 
 DetectionOutputAccessor::DetectionOutputAccessor(const std::string        &labels_path,
