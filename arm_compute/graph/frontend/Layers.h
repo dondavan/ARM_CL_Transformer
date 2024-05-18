@@ -104,12 +104,41 @@ public:
     OutputLayer(ITensorAccessorUPtr accessor, unsigned int connection_idx = 0)
         : _accessor(std::move(accessor)), _connection_idx(connection_idx)
     {
+        _name="output";
     }
 
     NodeID create_layer(IStream &s) override
     {
         NodeParams  common_params = {name(), s.hints().target_hint};
         NodeIdxPair input         = {s.tail_node(), _connection_idx};
+        return GraphBuilder::add_output_node(s.graph(), common_params, input, std::move(_accessor));
+    }
+
+private:
+    ITensorAccessorUPtr _accessor;
+    unsigned int        _connection_idx;
+};
+
+//Ehsan Early Exit
+/** Output Layer */
+class EarlyExitOutputLayer final : public ILayer
+{
+public:
+    /** Construct an output layer.
+     *
+     * @param[in] accessor       Accessor to give output tensor data to.
+     * @param[in] connection_idx (Optional) Input connection index
+     */
+	EarlyExitOutputLayer(ITensorAccessorUPtr accessor, unsigned int connection_idx = 0)
+        : _accessor(std::move(accessor)), _connection_idx(connection_idx)
+    {
+    	_name="output";
+    }
+
+    NodeID create_layer(IStream &s) override
+    {
+        NodeParams  common_params = { name(), s.hints().target_hint };
+        NodeIdxPair input         = { s.tail_node(), _connection_idx };
         return GraphBuilder::add_output_node(s.graph(), common_params, input, std::move(_accessor));
     }
 
@@ -309,6 +338,10 @@ public:
         utility::for_each([&](SubStream &&sub_stream)
                           { _sub_streams.push_back(std::make_unique<SubStream>(std::move(sub_stream))); },
                           std::move(rest_sub_streams)...);
+        //Ehsan
+        for (unsigned int i=0;i<_sub_streams.size();i++){
+        	input_nodes.push_back( std::make_pair(_sub_streams[i]->tail_node(), _sub_streams[i]->get_tail_graph_id()));
+        }
     }
     /** Construct a concatenation layer
      *
@@ -330,6 +363,11 @@ public:
         utility::for_each([&](SubStream &&sub_stream)
                           { _sub_streams.push_back(std::make_unique<SubStream>(std::move(sub_stream))); },
                           std::move(rest_sub_streams)...);
+        //Ehsan
+        for (unsigned int i=0;i<_sub_streams.size();i++){
+			input_nodes.push_back( std::make_pair(_sub_streams[i]->tail_node(), _sub_streams[i]->get_tail_graph_id()));
+		}
+
     }
     /** Construct a concat layer
      *
@@ -339,6 +377,11 @@ public:
     ConcatLayer(SubStream &&sub_stream) : _sub_streams(), _concat_descriptor(DataLayoutDimension::CHANNEL)
     {
         _sub_streams.push_back(std::make_unique<SubStream>(std::move(sub_stream)));
+        //Ehsan
+        for (unsigned int i=0;i<_sub_streams.size();i++){
+			input_nodes.push_back( std::make_pair(_sub_streams[i]->tail_node(), _sub_streams[i]->get_tail_graph_id()));
+		}
+        _name="concat";
     }
     NodeID create_layer(IStream &s) override
     {
@@ -681,6 +724,9 @@ public:
     EltwiseLayer(SubStream &&sub_stream0, SubStream &&sub_stream1, EltwiseOperation op)
         : _ss0(std::move(sub_stream0)), _ss1(std::move(sub_stream1)), _op(op)
     {
+        //Ehsan
+		_input_nodes.push_back( std::make_pair(_ss0.tail_node(), _ss0.get_tail_graph_id()));
+		_input_nodes.push_back( std::make_pair(_ss1.tail_node(), _ss1.get_tail_graph_id()));
     }
 
     NodeID create_layer(IStream &s) override

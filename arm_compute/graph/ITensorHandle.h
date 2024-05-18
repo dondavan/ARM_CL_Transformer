@@ -69,6 +69,11 @@ public:
     virtual arm_compute::ITensor &tensor() = 0;
     /** Backend tensor object const accessor */
     virtual const arm_compute::ITensor &tensor() const = 0;
+    
+    //Ehsan
+    virtual void set_tensor(arm_compute::ITensor*){};
+    virtual arm_compute::ITensor *tensor_ptr(){return nullptr;};
+
     /** Return the parent tensor handle if is a subtensor else this
      *
      * @return Parent tensor handle

@@ -28,6 +28,7 @@
 #include "arm_compute/graph/Tensor.h"
 #include "arm_compute/runtime/IFunction.h"
 #include "arm_compute/runtime/IMemoryGroup.h"
+#include "arm_compute/graph/TensorPipeline.h"
 
 #include <functional>
 #include <memory>
@@ -45,6 +46,7 @@ class Graph;
 struct ExecutionTask;
 
 void execute_task(ExecutionTask &task);
+double execute_task2(ExecutionTask &task,int nn);
 
 /** Task executor */
 class TaskExecutor final
@@ -61,6 +63,7 @@ public:
     static TaskExecutor &get();
     /** Function that is responsible for executing tasks */
     std::function<decltype(execute_task)> execute_function;
+    std::function<decltype(execute_task2)> execute_function2;
 };
 
 /** Execution task
@@ -88,9 +91,47 @@ struct ExecutionTask
 
     /** Function operator */
     void operator()();
+    void operator()(int nn);
 
     /** Prepare execution task */
     void prepare();
+
+    double time(int n);
+    void reset();
+    
+    /*DVFS */
+    void set_freq(std::array<int, 3> freqs){
+		LittleFreq=freqs[0];
+		bigFreq=freqs[1];
+		GPUFreq=freqs[2];
+		return;
+	}
+
+	void apply_freq(std::string name="");
+	void switch_GPIO_starting();
+	void switch_GPIO_ending();
+	static void init();
+	static void finish();
+
+	static int get_max_l();
+	static int get_max_b();
+	static int get_max_g();
+
+	int LittleFreq=-1;
+	int bigFreq=-1;
+	int GPUFreq=-1;
+	bool starting=false;
+
+    double t;
+    int n=0;
+    bool block=0;
+    bool ending=0;
+    bool governor=0;
+    bool starting_gpio_switch=0;
+    bool ending_gpio_switch=0;
+    bool profile_layers=0;
+    bool profile_transfers=0;
+    char processor='B';
 };
 
 /** Execution workload */
@@ -101,6 +142,9 @@ struct ExecutionWorkload
     std::vector<ExecutionTask> tasks   = {};        /**< Execution workload */
     Graph                     *graph   = {nullptr}; /**< Graph bound to the workload */
     GraphContext              *ctx     = {nullptr}; /**< Graph execution context */
+
+    std::vector<TensorPipelineReceiver *>   receivers = {};          /**< receiver handles */
+    std::vector<TensorPipelineSender *>     senders = {};
 };
 } // namespace graph
 } // namespace arm_compute

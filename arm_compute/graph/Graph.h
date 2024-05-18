@@ -220,7 +220,7 @@ private:
      */
     TensorID create_tensor(const TensorDescriptor &desc = TensorDescriptor());
 
-private:
+protected:
     GraphID                                 _id           = GraphID(0); /**< Graph id */
     std::string                             _name         = {};         /**< Graph name */
     std::vector<std::unique_ptr<INode>>     _nodes        = {};         /**< Graph nodes */

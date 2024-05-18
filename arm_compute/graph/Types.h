@@ -98,6 +98,11 @@ struct GraphConfig
     std::string   tuner_file{"acl_tuner.csv"};         /**< File to load/store tuning values from */
     std::string   mlgo_file{"heuristics.mlgo"};        /**< Filename to load MLGO heuristics from */
     CLBackendType backend_type{CLBackendType::Native}; /**< CL backend type to use */
+    int 	    cluster{1};
+    int			total_cores{6};
+    int			big_cores{2};
+    int			little_cores{4};
+    bool		first_big{false};
 };
 
 /**< Device target types */
@@ -107,6 +112,7 @@ enum class Target
     NEON,        /**< Arm® Neon™ capable target device */
     CL,          /**< OpenCL capable target device */
     CLVK,        /**< CLVK capable target device */
+    NPU,		 /**< NPU Devices */
 };
 
 /** Supported Element-wise operations */
@@ -211,6 +217,11 @@ enum class NodeType
     Const,
 
     Dummy,
+    //Ehsan
+	Receiver,
+	Sender,
+	NPU,
+	EarlyExitOutput,
 };
 
 /** Backend Memory Manager affinity **/

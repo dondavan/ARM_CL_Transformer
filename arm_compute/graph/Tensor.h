@@ -37,7 +37,8 @@ namespace arm_compute
 namespace graph
 {
 /** Tensor object **/
-class Tensor final
+//Ehsan remove final
+class Tensor
 {
 public:
     /** Default constructor
@@ -93,6 +94,10 @@ public:
      * @return True if the accessor was called else false
      */
     bool call_accessor();
+    
+    //Ehsan
+    virtual bool my_call_accessor();
+
     /** Binds the tensor with an edge
      *
      * @param[in] eid Edge ID that is bound to the tensor

@@ -31,56 +31,73 @@ namespace graph
 {
 namespace backends
 {
-CLTensorHandle::CLTensorHandle(const ITensorInfo &info) : _tensor()
+CLTensorHandle::CLTensorHandle(const ITensorInfo &info) 
+    //: _tensor()
 {
-    _tensor.allocator()->init(info);
+    //_tensor.allocator()->init(info);
+    // Ehsan
+    _tensor2=new arm_compute::CLTensor();
+    _tensor2->allocator()->init(info);
 }
 
 void CLTensorHandle::allocate()
 {
-    _tensor.allocator()->allocate();
+    //_tensor.allocator()->allocate();
+    _tensor2->allocator()->allocate();
 }
 
 void CLTensorHandle::free()
 {
-    _tensor.allocator()->free();
+    //_tensor.allocator()->free();
+    _tensor2->allocator()->free();
 }
 
 void CLTensorHandle::manage(IMemoryGroup *mg)
 {
     if (mg != nullptr)
     {
-        mg->manage(&_tensor);
+        //mg->manage(&_tensor);
+        mg->manage(_tensor2);
     }
 }
 
 void CLTensorHandle::map(bool blocking)
 {
-    _tensor.map(blocking);
+    //_tensor.map(blocking);
+    _tensor2->map(blocking);
 }
 
 void CLTensorHandle::unmap()
 {
-    _tensor.unmap();
+    //_tensor.unmap();
+    _tensor2->unmap();
 }
 
 void CLTensorHandle::release_if_unused()
 {
     // TODO (geopin01): Release tensor only if all sub-tensors are marked as not used
+    /*
     if (!_tensor.is_used())
     {
         _tensor.allocator()->free();
+    }
+    */
+    if(!_tensor2->is_used())
+    {
+    	_tensor2->allocator()->free();
     }
 }
 
 const arm_compute::ITensor &CLTensorHandle::tensor() const
 {
-    return _tensor;
+    //return _tensor;
+    return *_tensor2;
 }
 
 arm_compute::ITensor &CLTensorHandle::tensor()
 {
-    return _tensor;
+    //return _tensor;
+    return *_tensor2;
 }
 
 ITensorHandle *CLTensorHandle::parent_handle()
@@ -97,6 +114,12 @@ Target CLTensorHandle::target() const
 {
     return Target::CL;
 }
+
+//Ehsan
+void CLTensorHandle::set_tensor(arm_compute::ITensor* _t){
+	_tensor2=dynamic_cast<arm_compute::CLTensor*>(_t);
+}
+
 } // namespace backends
 } // namespace graph
 } // namespace arm_compute

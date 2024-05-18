@@ -21,10 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include "arm_compute/graph/backends/NEON/NETensorHandle.h"
+#include "arm_compute/graph/backends/NPU/NPUTensorHandle.h"
 
 #include "arm_compute/runtime/MemoryGroup.h"
-
 #include "support/Cast.h"
 
 namespace arm_compute
@@ -33,92 +32,92 @@ namespace graph
 {
 namespace backends
 {
-NETensorHandle::NETensorHandle(const ITensorInfo &info)
-// : _tensor()
+NPUTensorHandle::NPUTensorHandle(const ITensorInfo &info)
+    //: _tensor()
 {
     //_tensor.allocator()->init(info);
-    _tensor=new arm_compute::Tensor();
+	_tensor=new arm_compute::Tensor();
 	_tensor->allocator()->init(info);
 }
 
-void NETensorHandle::allocate()
+void NPUTensorHandle::allocate()
 {
     //_tensor.allocator()->allocate();
-    _tensor->allocator()->allocate();
+	_tensor->allocator()->allocate();
 }
 
-void NETensorHandle::free()
+void NPUTensorHandle::free()
 {
     //_tensor.allocator()->free();
-    _tensor->allocator()->free();
+	_tensor->allocator()->free();
 }
 
-void NETensorHandle::manage(IMemoryGroup *mg)
+void NPUTensorHandle::manage(IMemoryGroup *mg)
 {
-    if (mg != nullptr)
+    if(mg != nullptr)
     {
         //mg->manage(&_tensor);
-        mg->manage(_tensor);
+    	mg->manage(_tensor);
     }
 }
 
-void NETensorHandle::map(bool blocking)
+void NPUTensorHandle::map(bool blocking)
 {
     ARM_COMPUTE_UNUSED(blocking);
 }
 
-void NETensorHandle::unmap()
+void NPUTensorHandle::unmap()
 {
 }
 
-void NETensorHandle::release_if_unused()
+void NPUTensorHandle::release_if_unused()
 {
     // TODO (geopin01): Release tensor only if all sub-tensors are marked as not used
-    /*
-    if (!_tensor.is_used())
+    /*if(!_tensor.is_used())
     {
         _tensor.allocator()->free();
-    }
-    */
-    if(!_tensor->is_used())
+    }*/
+	if(!_tensor->is_used())
 	{
 		_tensor->allocator()->free();
 	}
 }
 
-const arm_compute::ITensor &NETensorHandle::tensor() const
+const arm_compute::ITensor &NPUTensorHandle::tensor() const
 {
+	//std::cerr<<"const tensor in neon\n";
+    //return _tensor;
+	return *_tensor;
+}
+
+arm_compute::ITensor &NPUTensorHandle::tensor()
+{
+	//std::cerr<<"tensor in neon\n";
     //return _tensor;
     return *_tensor;
 }
 
-arm_compute::ITensor &NETensorHandle::tensor()
-{
-    //return _tensor;
-    return *_tensor;
-}
-
-ITensorHandle *NETensorHandle::parent_handle()
+ITensorHandle *NPUTensorHandle::parent_handle()
 {
     return this;
 }
 
-bool NETensorHandle::is_subtensor() const
+bool NPUTensorHandle::is_subtensor() const
 {
     return false;
 }
 
-Target NETensorHandle::target() const
+Target NPUTensorHandle::target() const
 {
     return Target::NEON;
 }
 
 //Ehsan
-void NETensorHandle::set_tensor(arm_compute::ITensor* _t){
+void NPUTensorHandle::set_tensor(arm_compute::ITensor* _t){
 	_tensor=dynamic_cast<arm_compute::Tensor*>(_t);
 }
 //Ehsan
-arm_compute::ITensor *NETensorHandle::tensor_ptr(){
+arm_compute::ITensor *NPUTensorHandle::tensor_ptr(){
 	return _tensor;
 }
 

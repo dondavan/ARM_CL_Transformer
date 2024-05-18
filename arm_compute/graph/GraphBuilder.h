@@ -42,6 +42,44 @@ class Graph;
 class GraphBuilder final
 {
 public:
+    //************************************************ Ehsan *******************************************************
+    /** Adds an Receiver layer node to the graph
+	 *
+	 * @param[in] g        Graph to add the node to
+	 * @param[in] params   Common node parameters
+	 * @param[in] desc     Tensor descriptor of the Tensor
+	 * @param[in] accessor (Optional) Accessor of the receiver node data
+	 *
+	 * @return Node ID of the created node, EmptyNodeID in case of error
+	 */
+    static NodeID add_receiver_node(Graph &g, NodeParams params, const TensorDescriptor &desc, ITensorAccessorUPtr accessor = nullptr);
+
+    /** Adds an input layer node to the graph
+	 *
+	 * @param[in] g        Graph to add the node to
+	 * @param[in] params   Common node parameters
+	 * @param[in] desc     Tensor descriptor of the Tensor
+	 * @param[in] accessor (Optional) Accessor of the input node data
+	 *
+	 * @return Node ID of the created node, EmptyNodeID in case of error
+	 */
+    static NodeID add_sender_node(Graph &g, NodeParams params, NodeIdxPair input, ITensorAccessorUPtr accessor = nullptr);
+
+    static NodeID add_npu_node(Graph &g, NodeParams params, std::vector<NodeIdxPair> inputs, std::vector<NodeIdxPair> outputs);
+    /** Adds an early exit output layer node to the graph
+     *
+     * @param[in] g        Graph to add the node to
+     * @param[in] params   Common node parameters
+     * @param[in] input    Input to the output node as a NodeID-Index pair
+     * @param[in] accessor (Optional) Accessor of the output node data
+     *
+     * @return Node ID of the created node, EmptyNodeID in case of error
+     */
+    static NodeID add_early_exit_output_node(Graph &g, NodeParams params, NodeIdxPair input, ITensorAccessorUPtr accessor = nullptr);
+    
+    //**************************************************************************************************************
+
+
     /** Adds a Const node to the graph
      *
      * @param[in] g        Graph to add the node to

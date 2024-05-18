@@ -24,16 +24,16 @@
 #include "arm_compute/graph/backends/NEON/NEDeviceBackend.h"
 
 #include "arm_compute/core/TensorInfo.h"
-#include "arm_compute/graph/backends/BackendRegistrar.h"
-#include "arm_compute/graph/backends/NEON/NEFunctionFactory.h"
-#include "arm_compute/graph/backends/NEON/NENodeValidator.h"
-#include "arm_compute/graph/backends/NEON/NESubTensorHandle.h"
-#include "arm_compute/graph/backends/NEON/NETensorHandle.h"
 #include "arm_compute/graph/Graph.h"
 #include "arm_compute/graph/GraphContext.h"
 #include "arm_compute/graph/INode.h"
 #include "arm_compute/graph/Logger.h"
 #include "arm_compute/graph/Tensor.h"
+#include "arm_compute/graph/backends/BackendRegistrar.h"
+#include "arm_compute/graph/backends/NEON/NEFunctionFactory.h"
+#include "arm_compute/graph/backends/NEON/NENodeValidator.h"
+#include "arm_compute/graph/backends/NEON/NESubTensorHandle.h"
+#include "arm_compute/graph/backends/NEON/NETensorHandle.h"
 #include "arm_compute/runtime/Allocator.h"
 #include "arm_compute/runtime/BlobLifetimeManager.h"
 #include "arm_compute/runtime/IWeightsManager.h"
@@ -52,7 +52,8 @@ namespace backends
 /** Register CPU backend */
 static detail::BackendRegistrar<NEDeviceBackend> NEDeviceBackend_registrar(Target::NEON);
 
-NEDeviceBackend::NEDeviceBackend() : _allocator()
+NEDeviceBackend::NEDeviceBackend()
+    : _allocator()
 {
 }
 
@@ -70,13 +71,40 @@ void NEDeviceBackend::release_backend_context(GraphContext &ctx)
 void NEDeviceBackend::setup_backend_context(GraphContext &ctx)
 {
     // Set number of threads
-    if (ctx.config().num_threads >= 0)
+    if(ctx.config().num_threads >= 0)
     {
-        Scheduler::get().set_num_threads(ctx.config().num_threads);
+        Scheduler::get().set_num_threads_with_affinity(ctx.config().num_threads, ctx.config(),
+                                                       [](int t_id, int max_cores, arm_compute::graph::GraphConfig cfg)
+                                                       {
+#if My_print > 0
+                                                           std::cout << "max_cores: " << max_cores << std::endl;
+#endif
+                                                           int  total_cores  = cfg.total_cores;
+                                                           int  big_cores    = cfg.big_cores;
+                                                           int  little_cores = cfg.little_cores;
+                                                           bool first_big    = cfg.first_big;
+
+                                                           if(first_big)
+                                                           {
+                                                               //big
+                                                               if(cfg.cluster == 1)
+                                                                   return t_id;
+                                                               //little
+                                                               else if(cfg.cluster == 0)
+                                                                   return (big_cores + t_id) % total_cores;
+                                                           }
+                                                           else
+                                                           {
+                                                               if(cfg.cluster == 1)
+                                                                   return (little_cores + t_id) % total_cores;
+                                                               else if(cfg.cluster == 0)
+                                                                   return t_id;
+                                                           }
+                                                       });
     }
 
     // Create function level memory manager
-    if (ctx.memory_management_ctx(Target::NEON) == nullptr)
+    if(ctx.memory_management_ctx(Target::NEON) == nullptr)
     {
         MemoryManagerContext mm_ctx;
         mm_ctx.target      = Target::NEON;
@@ -89,7 +117,7 @@ void NEDeviceBackend::setup_backend_context(GraphContext &ctx)
     }
 
     // Create function level weights manager
-    if (ctx.weights_management_ctx(Target::NEON) == nullptr)
+    if(ctx.weights_management_ctx(Target::NEON) == nullptr)
     {
         WeightsManagerContext wm_ctx;
         wm_ctx.target = Target::NEON;
@@ -125,7 +153,7 @@ std::unique_ptr<ITensorHandle> NEDeviceBackend::create_tensor(const Tensor &tens
 std::unique_ptr<ITensorHandle>
 NEDeviceBackend::create_subtensor(ITensorHandle *parent, TensorShape shape, Coordinates coords, bool extend_parent)
 {
-    if (parent == nullptr)
+    if(parent == nullptr)
     {
         return nullptr;
     }
@@ -153,7 +181,7 @@ arm_compute::Status NEDeviceBackend::validate_node(INode &node)
 std::shared_ptr<arm_compute::IMemoryManager> NEDeviceBackend::create_memory_manager(MemoryManagerAffinity affinity)
 {
     std::shared_ptr<ILifetimeManager> lifetime_mgr = nullptr;
-    if (affinity == MemoryManagerAffinity::Buffer)
+    if(affinity == MemoryManagerAffinity::Buffer)
     {
         lifetime_mgr = std::make_shared<BlobLifetimeManager>();
     }

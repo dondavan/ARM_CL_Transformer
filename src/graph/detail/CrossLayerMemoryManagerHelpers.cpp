@@ -78,7 +78,8 @@ IMemoryGroup *get_memory_group_from_handle(GraphContext &ctx, ITensorHandle *han
  */
 std::set<ITensorHandle *> get_const_handles(const Graph &g)
 {
-    std::set<NodeType> const_node_types = {NodeType::Input, NodeType::Output, NodeType::Const};
+    //std::set<NodeType> const_node_types = {NodeType::Input, NodeType::Output, NodeType::Const};
+    std::set<NodeType> const_node_types = { NodeType::Input, NodeType::Output, NodeType::Const, NodeType::Receiver, NodeType::Sender };
 
     std::set<ITensorHandle *> const_tensors;
 

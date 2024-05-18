@@ -24,6 +24,9 @@
 #ifndef ARM_COMPUTE_GRAPH_ILAYER_H
 #define ARM_COMPUTE_GRAPH_ILAYER_H
 
+//Ehsan
+#include "arm_compute/graph/frontend/SubStream.h"
+
 namespace arm_compute
 {
 namespace graph
@@ -65,9 +68,15 @@ public:
     {
         return _name;
     }
+    //Ehsan
+    std::vector<std::pair<NodeID,int>>& get_input_nodes(){return _input_nodes;};
+    void add_input_node(NodeID node, int graph_id){ _input_nodes.push_back(std::make_pair(node,graph_id));};
+    void add_input_node_ptr(NodeID node, int graph_id){ _input_nodes.push_back(std::make_pair(node,graph_id));};
 
-private:
+protected:
     std::string _name = {};
+    //Ehsan
+    std::vector<std::pair<NodeID,int>> _input_nodes;
 };
 } // namespace frontend
 } // namespace graph

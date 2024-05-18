@@ -41,7 +41,7 @@ namespace arm_compute
 */
 class CPPScheduler final : public IScheduler
 {
-public:
+    public:
     /** Constructor: create a pool of threads. */
     CPPScheduler();
     /** Default destructor */
@@ -55,20 +55,22 @@ public:
     static CPPScheduler &get();
 
     // Inherited functions overridden
-    void         set_num_threads(unsigned int num_threads) override;
-    void         set_num_threads_with_affinity(unsigned int num_threads, BindFunc func) override;
+    void set_num_threads(unsigned int num_threads) override;
+    //void set_num_threads_with_affinity(unsigned int num_threads, BindFunc func) override;
+    void set_num_threads_with_affinity(unsigned int num_threads, arm_compute::graph::GraphConfig cfg, BindFunc func) override;
+
     unsigned int num_threads() const override;
     void         schedule(ICPPKernel *kernel, const Hints &hints) override;
-    void schedule_op(ICPPKernel *kernel, const Hints &hints, const Window &window, ITensorPack &tensors) override;
+    void         schedule_op(ICPPKernel *kernel, const Hints &hints, const Window &window, ITensorPack &tensors) override;
 
-protected:
+    protected:
     /** Will run the workloads in parallel using num_threads
      *
      * @param[in] workloads Workloads to run
      */
     void run_workloads(std::vector<Workload> &workloads) override;
 
-private:
+    private:
     struct Impl;
     std::unique_ptr<Impl> _impl;
 };

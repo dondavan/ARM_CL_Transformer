@@ -66,20 +66,52 @@ public:
      * @param[in] pm     Pass manager to use for any optimization passes
      * @param[in] target Execution target (Single target execution is currently supported)
      */
-    void finalize_graph(Graph &graph, GraphContext &ctx, PassManager &pm, Target target);
+    //void finalize_graph(Graph &graph, GraphContext &ctx, PassManager &pm, Target target);
+    void finalize_graph(Graph &graph, GraphContext &ctx, PassManager &pm, Target target, std::set<int> *b=NULL, int blocking=0);
     /** Executes a graph
      *
      * @param[in] graph Graph to execute
      */
-    void execute_graph(Graph &graph);
+    //Ehsan
+	//void execute_graph(Graph &graph);
+	void execute_graph(Graph &graph, int nn=0);
+	void execute_graph(Graph &graph, bool annotate, int nn=0);
     /** Invalidates the graph execution workload
      *
      * @param[in] graph Graph to invalidate
      */
     void invalidate_graph(Graph &graph);
 
+    //Ehsan
+    void print_times(Graph &graph, int n);
+    void reset(Graph &graph);
+
+    void set_input_time(double t){
+    	_input_time=t;
+    }
+    void set_task_time(double t){
+        _task_time=t;
+    }
+    void set_output_time(double t){
+        _output_time=t;
+    }
+
+    double get_input_time(){
+    	return _input_time;
+    }
+    double get_task_time(){
+    	return _task_time;
+    }
+    double get_output_time(){
+    	return _output_time;
+    }
+
 private:
     std::map<GraphID, ExecutionWorkload> _workloads = {}; /**< Graph workloads */
+    double _input_time=0;
+    double _task_time=0;
+    double _output_time=0;
+
 };
 } // namespace graph
 } // namespace arm_compute

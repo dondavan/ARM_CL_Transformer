@@ -89,6 +89,17 @@ std::vector<NodeID> bfs(Graph &g)
         }
     }
 
+    // Ehsan Pipeline
+    // Push receivers and mark as visited
+	for(auto &input : g.nodes(NodeType::Receiver))
+	{
+		if(input != EmptyNodeID)
+		{
+			visited[input] = true;
+			stack.push(input);
+		}
+	}
+
     // Push const nodes and mark as visited
     for (auto &const_node : g.nodes(NodeType::Const))
     {

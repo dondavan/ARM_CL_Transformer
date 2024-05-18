@@ -21,52 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef ARM_COMPUTE_GRAPH_SUB_STREAM_H
-#define ARM_COMPUTE_GRAPH_SUB_STREAM_H
+#ifndef ARM_COMPUTE_GRAPH_SENDER_NODE_H
+#define ARM_COMPUTE_GRAPH_SENDER_NODE_H
 
-#include "arm_compute/graph/frontend/IStream.h"
-#include "arm_compute/graph/frontend/IStreamPipeline.h"
-#include "arm_compute/graph/frontend/IStreamOperators.h"
-#include "arm_compute/graph/frontend/Types.h"
-
-#include <memory>
-#include <vector>
+#include "arm_compute/graph/INode.h"
+#include "arm_compute/graph/TensorPipeline.h"
 
 namespace arm_compute
 {
 namespace graph
 {
-// Forward declarations
-class Graph;
-
-namespace frontend
-{
-// Forward declarations
-class ILayer;
-
-/** Sub stream class*/
-class SubStream final : public IStreamPipeline
+/** Intermediate Output Layer node */
+class SenderNode final : public INode
 {
 public:
-    /** Default Constructor
-     *
-     * @param[in] s Parent stream
-     */
-    SubStream(IStream &s);
+    /** Default Constructor */
+	SenderNode(NodeParams params);
 
-    // Inherited overridden methods
-    void         add_layer(ILayer &layer) override;
-    Graph       &graph() override;
-    const Graph &graph() const override;
-    
-    //Ehsan
-	SubStream &operator<<(ILayer &layer);
-	SubStream &operator<<(ILayer &&layer);
-
+    // Inherited overridden methods:
+    NodeType         type() const override;
+    bool             forward_descriptors() override;
+    TensorDescriptor configure_output(size_t idx) const override;
+    void accept(INodeVisitor &v) override;
+    void set_tensor(Tensor *t);
+    TensorPipelineSender* get_sender_tensor(){return sender_tensor;};
 private:
-    IStream &_s; /**< Parent stream (assume that the lifetime of the parent is longer) */
+    TensorPipelineSender *sender_tensor;
 };
-} // namespace frontend
 } // namespace graph
 } // namespace arm_compute
-#endif /* ARM_COMPUTE_GRAPH_SUB_STREAM_H */
+#endif /* ARM_COMPUTE_GRAPH_OUTPUT_NODE_H */
