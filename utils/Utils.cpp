@@ -134,9 +134,10 @@ int run_example(int argc, char **argv, std::unique_ptr<Example> example)
     try
     {
 #if Frequency_Setting
-        system("echo userspace > /sys/devices/system/cpu/cpufreq/policy0/scaling_governor");
-        system("echo userspace > /sys/devices/system/cpu/cpufreq/policy4/scaling_governor");
-        system("echo userspace > /sys/devices/platform/ff9a0000.gpu/devfreq/ff9a0000.gpu/governor");
+        int ret;
+        ret = system("echo userspace > /sys/devices/system/cpu/cpufreq/policy0/scaling_governor");
+        ret = system("echo userspace > /sys/devices/system/cpu/cpufreq/policy4/scaling_governor");
+        ret = system("echo userspace > /sys/devices/platform/ff9a0000.gpu/devfreq/ff9a0000.gpu/governor");
         int f_i=1;
 #endif
         bool status = example->do_setup(argc, argv);
@@ -178,13 +179,13 @@ int run_example(int argc, char **argv, std::unique_ptr<Example> example)
         	std::cerr<<f_i++<<" Running Graph with Frequency: "<<LFreq<<','<<BFreq<<','<<GFreq<<std::endl;
 			//Set Little CPU Frequency
 			cmd="echo " + to_string(LFreq) + " > /sys/devices/system/cpu/cpufreq/policy0/scaling_setspeed";
-			system(cmd.c_str());
+			ret = system(cmd.c_str());
 			//Set Big CPU Frequency
 			cmd="echo " + to_string(BFreq) + " > /sys/devices/system/cpu/cpufreq/policy4/scaling_setspeed";
-			system(cmd.c_str());
+			ret = system(cmd.c_str());
 			//Set GPU Frequency
 			cmd="echo " + to_string(GFreq) + " > /sys/devices/platform/ff9a0000.gpu/devfreq/ff9a0000.gpu/userspace/set_freq";
-			system(cmd.c_str());
+			ret = system(cmd.c_str());
         	sleep(2);
         	example->do_run();
         	std::cerr<<"enter freqs of Little, big, GPU:\n";
@@ -192,6 +193,8 @@ int run_example(int argc, char **argv, std::unique_ptr<Example> example)
         	std::cin>>BFreq;
         	std::cin>>GFreq;*/
         	finish=get_freqs(LFreq, BFreq, GFreq);
+
+            ARM_COMPUTE_UNUSED(ret);
 
         }
         example->do_finish();
