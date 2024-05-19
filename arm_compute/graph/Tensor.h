@@ -38,7 +38,7 @@ namespace graph
 {
 /** Tensor object **/
 //Ehsan remove final
-class Tensor
+class Tensor final
 {
 public:
     /** Default constructor
