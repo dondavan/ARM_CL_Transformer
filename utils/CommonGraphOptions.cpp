@@ -186,6 +186,7 @@ namespace utils
 CommonGraphOptions::CommonGraphOptions(CommandLineParser &parser)
     : help(parser.add_option<ToggleOption>("help")),
       threads(parser.add_option<SimpleOption<int>>("threads", 1)),
+      threads2(parser.add_option<SimpleOption<int>>("threads2", 1)),
       batches(parser.add_option<SimpleOption<int>>("batches", 1)),
       target(),
       data_type(),
