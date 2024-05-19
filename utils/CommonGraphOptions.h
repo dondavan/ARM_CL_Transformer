@@ -206,9 +206,9 @@ class CommonGraphOptions
     SimpleOption<std::string>              *mlgo_file;        /**< File to load the MLGO heuristics from */
 
     //Ehsan
-    SimpleOption<std::string> *order;              /**< Order of processors eg. B-L-G */
-    SimpleOption<std::string> *freqs;              /* freqs of each element */
-    SimpleOption<std::string> *power_profile_mode; /* power_profile_mode */
+    SimpleOption<std::string> *order;              /** Order of processors eg. B-L-G */
+    SimpleOption<std::string> *freqs;              /** freqs of each element */
+    SimpleOption<std::string> *power_profile_mode; /** power_profile_mode */
     SimpleOption<char>        *gpu_host;           /**< GPU host */
     SimpleOption<char>        *npu_host;           /**< NPU host */
     SimpleOption<int>         *partition_point;    /**< Partition point */

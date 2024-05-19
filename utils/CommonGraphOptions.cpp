@@ -207,6 +207,12 @@ CommonGraphOptions::CommonGraphOptions(CommandLineParser &parser)
       tuner_file(parser.add_option<SimpleOption<std::string>>("tuner-file")),
       mlgo_file(parser.add_option<SimpleOption<std::string>>("mlgo-file")),
 
+      order(parser.add_option<SimpleOption<std::string>>("order")),
+      freqs(parser.add_option<SimpleOption<std::string>>("freqs")),
+      power_profile_mode(parser.add_option<SimpleOption<std::string>>("power_profile_mode", "whole")),
+      gpu_host(parser.add_option<SimpleOption<char>>("gpu_host", 'B')),
+      npu_host(parser.add_option<SimpleOption<char>>("npu_host", 'B')),
+
       partition_point(parser.add_option<SimpleOption<int>>("partition_point", 0)),
       partition_point2(parser.add_option<SimpleOption<int>>("partition_point2", 0)),
       annotate(parser.add_option<SimpleOption<int>>("annotate", 0)),
@@ -216,15 +222,10 @@ CommonGraphOptions::CommonGraphOptions(CommandLineParser &parser)
       little_cores(parser.add_option<SimpleOption<int>>("little_cores", 4)),
       big_cores(parser.add_option<SimpleOption<int>>("big_cores", 2)),
       layer_time(parser.add_option<SimpleOption<int>>("layer_time", 0)),
-      order(parser.add_option<SimpleOption<std::string>>("order")),
-      freqs(parser.add_option<SimpleOption<std::string>>("freqs")),
-      power_profile_mode(parser.add_option<SimpleOption<std::string>>("power_profile_mode", "whole")),
-      gpu_host(parser.add_option<SimpleOption<char>>("gpu_host", 'B')),
-      npu_host(parser.add_option<SimpleOption<char>>("npu_host", 'B')),
-      input_s(parser.add_option<SimpleOption<int>>("input_s", 227)),
       input_c(parser.add_option<SimpleOption<int>>("input_c", 3)),
-      kernel_s(parser.add_option<SimpleOption<int>>("kernel_s", 11)),
+      input_s(parser.add_option<SimpleOption<int>>("input_s", 227)),
       kernel_c(parser.add_option<SimpleOption<int>>("kernel_c", 96)),
+      kernel_s(parser.add_option<SimpleOption<int>>("kernel_s", 11)),
       stride(parser.add_option<SimpleOption<int>>("stride", 2)),
       print_tasks(parser.add_option<SimpleOption<int>>("print_tasks", 0))
 {
