@@ -366,6 +366,7 @@ struct CPPScheduler::Impl final
 
         // Set affinity on main thread
         int host_core=func(0, thread_hint, cfg);
+        ARM_COMPUTE_UNUSED(host_core);
         set_thread_affinity(func(0, thread_hint, cfg));
 
         // Set affinity on worked threads
