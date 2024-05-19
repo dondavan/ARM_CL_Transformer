@@ -283,7 +283,7 @@ class ImageAccessor final : public graph::ITensorAccessor
     std::unique_ptr<IPreprocessor> _preprocessor;
     int                            _iterator = 0;
     int                            _frame    = 0;
-    std::vector<std::string>       _image_list;
+    std::unique_ptr<std::vector<std::string>>       _image_list;
 };
 
 /** Text accessor class */
