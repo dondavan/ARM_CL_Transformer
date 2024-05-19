@@ -57,6 +57,8 @@
 
 #include <unistd.h>
 
+#include "utils/TypePrinter.h"
+
 namespace arm_compute
 {
 namespace utils
