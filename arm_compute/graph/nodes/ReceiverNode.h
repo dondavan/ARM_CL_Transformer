@@ -56,7 +56,7 @@ class ReceiverNode final : public INode
     };
 
     private:
-    TensorPipelineReceiver *_receiver_tensor = {};
+    TensorPipelineReceiver *_receiver_tensor = nullptr;
     TensorDescriptor        _desc;
 };
 } // namespace graph
