@@ -346,7 +346,7 @@ void StreamPipeline::run_w_parallel(int i, int n)
 
     set_cores(&set, cluster);
     ARM_COMPUTE_EXIT_ON_MSG(sched_setaffinity(0, sizeof(set), &set), "Error setting thread affinity");
-	
+
     std::this_thread::sleep_for(std::chrono::milliseconds(5));
     bool pipeline = false;
     if(pipeline)
@@ -549,7 +549,7 @@ void StreamPipeline::add_graph(int start, int end, char PE, char Host_PE)
     /*GraphContext ctx;
 		_ctxs.emplace_back(std::move(ctx));*/
     _ctxs.emplace_back(GraphContext());
-    std::cout << "Adding Graph" << id << " target " << std::to_string((int)(target)) << " PE: " << PE << " Host PE: " << _Host_PE << " num threads: " << num_threads << " Layers: " << start << "-" << end << std::endl;
+    std::cout << "Adding Graph" << id << " target " << std::to_string((int)(target)) << " PE: " << PE << " Host PE: " << Host_PE << " num threads: " << num_threads << " Layers: " << start << "-" << end << std::endl;
 }
 NodeID StreamPipeline::next_layer(std::vector<std::pair<NodeID, int>> input_nodes, NodeID &last_tail_node, int &last_tail_graph, std::string layer_name)
 {
