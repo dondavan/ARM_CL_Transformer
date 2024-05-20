@@ -1,20 +1,20 @@
 //Ehsan Power:
-#include <sys/stat.h>
-#include <sys/types.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <unistd.h>
-#define IN  0
+#define IN 0
 #define OUT 1
 
-#define LOW  0
+#define LOW 0
 #define HIGH 1
 
 //Khadas
 //#define POUT 432
 //RockPi
-#define POUT 157  /* P1-07 */
+#define POUT 157 /* P1-07 */
 
 /*
 * -Werror=unused-function
@@ -70,26 +70,28 @@ GPIODirection(int pin, int dir)
 static int
 GPIOWrite(int pin, int value)
 {
-	#define VALUE_MAX 30
-	static const char s_values_str[] = "01";
+#define VALUE_MAX 30
+    static const char s_values_str[] = "01";
 
-	char path[VALUE_MAX];
-	int fd;
+    char path[VALUE_MAX];
+    int  fd;
 
-	snprintf(path, VALUE_MAX, "/sys/class/gpio/gpio%d/value", pin);
-	fd = open(path, O_WRONLY);
-	if (-1 == fd) {
-		fprintf(stderr, "Failed to open gpio value for writing!\n");
-		return(-1);
-	}
+    snprintf(path, VALUE_MAX, "/sys/class/gpio/gpio%d/value", pin);
+    fd = open(path, O_WRONLY);
+    if(-1 == fd)
+    {
+        fprintf(stderr, "Failed to open gpio value for writing!\n");
+        return (-1);
+    }
 
-	if (1 != write(fd, &s_values_str[LOW == value ? 0 : 1], 1)) {
-		fprintf(stderr, "Failed to write value!\n");
-		return(-1);
-	}
+    if(1 != write(fd, &s_values_str[LOW == value ? 0 : 1], 1))
+    {
+        fprintf(stderr, "Failed to write value!\n");
+        return (-1);
+    }
 
-	close(fd);
-	return(0);
+    close(fd);
+    return (0);
 }
 
 /*
