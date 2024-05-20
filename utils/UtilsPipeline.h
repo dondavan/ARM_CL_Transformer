@@ -51,11 +51,11 @@ std::string removeNetFromEnd(std::string str);
 class Example_Pipeline : public Example
 {
     public:
-    Example_Pipeline(int _id, std::string _name)
+    Example_Pipeline(int _id, std::string name)
         //:	cmd_parser(), common_opts(cmd_parser), common_params(), graph(_id,std::move(_name))
-        : cmd_parser(), common_opts(cmd_parser), common_params(), graph(0, _name), _name(_name)
+        : cmd_parser(), common_opts(cmd_parser), common_params(), graph(0, name), _name(name)
     {
-        graph::frontend::IStreamPipeline::graph_name = toLowerCase(_name);
+        graph::frontend::IStreamPipeline::_graph_name = toLowerCase(name);
         //graph::frontend::IStreamPipeline::ending_tasks=get_end_task_names(graph::frontend::IStreamPipeline::graph_name);
     }
 

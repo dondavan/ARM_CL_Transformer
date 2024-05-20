@@ -143,7 +143,7 @@ class NodeMap
     //A mapping that records the mapping of NodeID-GraphID to antoher NodeID-GraphID (mapping of a node in a subgraph to another node in another subgraph)
     //So that when input node of a layer is a node in another subgraph we should create a node in this subgraph(R node) and add a node to that node(T node) to send data from that subgraph to
     //the R in this subgraph. So, instead of that node we use R node in this subgraph which have same data
-    std::map<std::pair<NodeID, int>, std::vector<std::pair<NodeID, int>>> _mm ={};
+    std::map<std::pair<NodeID, int>, std::vector<std::pair<NodeID, int>>> _mm = {};
 };
 
 /** Stream interface **/
@@ -243,12 +243,16 @@ class IStreamPipeline : public IStream
         return _start_layer.size() - 1;
     }
 
+    std::string graph_name()
+    {
+        return _graph_name;
+    }
+
     static bool is_next_layer(std::string name);
     static bool is_end_layer(std::string name);
 
-    static std::string _graph_name;
-
     protected:
+    std::string      _graph_name;
     int              _current_layer = 0;
     int              _target_graph  = 0;
     int              _tail_graph_id = 0;
