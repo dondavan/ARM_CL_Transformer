@@ -35,16 +35,11 @@ namespace graph
 namespace frontend
 {
 
-
-
-
-
-
 void IStreamPipeline::add_layer(ILayer &layer)
 {
-    auto nid   = layer.create_layer(*this);
-    std::cerr<<"(IStreamPipeline) Adding layer "<<layer.name()<<" "<<_tail_node<<"->"<<nid<<std::endl;
-    _tail_node=nid;
+    auto nid = layer.create_layer(*this);
+    std::cerr << "(IStreamPipeline) Adding layer " << layer.name() << " " << _tail_node << "->" << nid << std::endl;
+    _tail_node = nid;
 }
 
 #define Operation 1
@@ -52,61 +47,57 @@ void IStreamPipeline::add_layer(ILayer &layer)
 //Select Granularity Here:
 #define Granularity Conv
 
-
-
 #if Granularity == Operation
-bool IStreamPipeline::is_next_layer(std::string name){
+bool IStreamPipeline::is_next_layer(std::string name)
+{
+    //Method 1:
+    std::string formatPattern = "^(?!.*_g\\d*)(?!.*relu)(?!$)";
 
+    std::regex pattern(formatPattern, std::regex_constants::icase);
+    if(regex_search(name, pattern))
+    {
+        std::cerr << "layer: " << name << std::endl;
+        return true;
+    }
+    else
+    {
+        std::cerr << "skipping layer: " << name << std::endl;
+        return false;
+    }
 
+    //Method2:
+    if(name == "")
+    {
+        std::cerr << "Skipping layer: " << name << std::endl;
+        return false;
+    }
+    // patterns that are skipped:
+    std::vector<std::string> formats = {
+        ".*_g\\d*", //all names with _g then a digit like _g2 (for group convs)
+        ".*relu.*", //all names with relu because in python models relu layers all not separate layers
+    };
+    std::vector<std::regex> patterns;
+    for(auto format : formats)
+    {
+        patterns.push_back(std::regex(format, std::regex_constants::icase));
+    }
+    bool contains = false;
+    for(auto pattern : patterns)
+    {
+        contains = contains || (regex_search(name, pattern));
+    }
+    if(contains)
+    {
+        std::cerr << "Skipping layer: " << name << std::endl;
+        return false;
+    }
+    else
+    {
+        std::cerr << "layer: " << name << std::endl;
+        return true;
+    }
 
-
-		//Method 1:
-		std::string formatPattern = "^(?!.*_g\\d*)(?!.*relu)(?!$)";
-
-
-
-		std::regex pattern(formatPattern, std::regex_constants::icase);
-		if(regex_search(name,pattern)){
-			std::cerr << "layer: "<<name << std::endl;
-			return true;
-		}
-		else{
-			std::cerr << "skipping layer: "<<name << std::endl;
-			return false;
-		}
-
-
-
-
-		//Method2:
-		if (name==""){
-					std::cerr << "Skipping layer: "<<name << std::endl;
-					return false;
-		}
-		// patterns that are skipped:
-		std::vector<std::string> formats={
-				".*_g\\d*",	//all names with _g then a digit like _g2 (for group convs)
-				".*relu.*",	//all names with relu because in python models relu layers all not separate layers
-		};
-		std::vector<std::regex> patterns;
-		for(auto format:formats){
-			patterns.push_back(std::regex(format, std::regex_constants::icase));
-		}
-		bool contains = false;
-		for(auto pattern:patterns){
-			contains=contains || (regex_search(name,pattern));
-		}
-		if (contains){
-    		std::cerr << "Skipping layer: "<<name << std::endl;
-    		return false;
-		}
-		else{
-			std::cerr << "layer: "<<name << std::endl;
-			return true;
-		}
-
-
-		/*
+    /*
 		 * if (name==""){
 					std::cerr << "Skipping layer: "<<name << std::endl;
 					return false;
@@ -121,12 +112,10 @@ bool IStreamPipeline::is_next_layer(std::string name){
     	else{
     		return true;
     	}*/
-    }
+}
 #endif
 
 #if Granularity == Conv
-
-
 
 /*bool IStreamPipeline::is_next_layer(std::string name){
 		static int index=0;
@@ -153,36 +142,41 @@ bool IStreamPipeline::is_next_layer(std::string name){
 
     }*/
 
-bool IStreamPipeline::is_next_layer(std::string name){
-		static int index=-1;
-		bool starting=check_starting(_graph_name,name);
-		if(starting){
-			index++;
-			std::string indent=(index%2)?"":"\t\t\t";
-			std::cerr <<indent<< index<<" layer: "<<name << std::endl;
-			return true;
-		}
-		else{
-			std::string indent=(index%2)?"":"\t\t\t";
-			std::cerr <<indent<<index<< " skipping layer: "<<name << std::endl;
-			return false;
-		}
-
+bool IStreamPipeline::is_next_layer(std::string name)
+{
+    static int index    = -1;
+    bool       starting = check_starting(_graph_name, name);
+    if(starting)
+    {
+        index++;
+        std::string indent = (index % 2) ? "" : "\t\t\t";
+        std::cerr << indent << index << " layer: " << name << std::endl;
+        return true;
     }
-bool IStreamPipeline::is_end_layer(std::string name){
-		static int index=0;
-		if (check_ending(_graph_name, name)){
-			std::string indent=(index%2)?"":"\t\t\t";
-			std::cerr <<indent<< index<<" layer: "<<name << std::endl;
-			index++;
-			return true;
-		}
-		else{
-			std::string indent=(index%2)?"":"\t\t\t";
-			std::cerr <<indent<<index<< " skipping layer: "<<name << std::endl;
-			return false;
-		}
+    else
+    {
+        std::string indent = (index % 2) ? "" : "\t\t\t";
+        std::cerr << indent << index << " skipping layer: " << name << std::endl;
+        return false;
     }
+}
+bool IStreamPipeline::is_end_layer(std::string name)
+{
+    static int index = 0;
+    if(check_ending(_graph_name, name))
+    {
+        std::string indent = (index % 2) ? "" : "\t\t\t";
+        std::cerr << indent << index << " layer: " << name << std::endl;
+        index++;
+        return true;
+    }
+    else
+    {
+        std::string indent = (index % 2) ? "" : "\t\t\t";
+        std::cerr << indent << index << " skipping layer: " << name << std::endl;
+        return false;
+    }
+}
 #endif
 /*
 const Graph &IStreamPipeline::graph() const
@@ -226,7 +220,6 @@ NodeID IStreamPipeline::tail_node()
 
 }
 */
-
 
 } // namespace frontend
 } // namespace graph
