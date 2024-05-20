@@ -48,6 +48,10 @@ public:
      * @param[in] desc Tensor information
      */
 	TensorPipelineReceiver();
+
+	/** Prevent instances of this class from being copied (As this class contains pointers) */
+	TensorPipelineReceiver(const arm_compute::graph::TensorPipelineReceiver&) = delete;
+
 	double send_data(Tensor* _tensor);
 	double send_data(double* _npu_output);
 	void wait_for_receiver();
