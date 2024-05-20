@@ -117,6 +117,7 @@ src finished -> utils
 = arm_compute/graph/GraphManager.h
 = arm_compute/graph/frontend/ILayer.h
 = arm_compute/graph/frontend/Stream.h
+= arm_compute/graph/frontend/StreamPipeline.h
 
 = src/graph/GraphManager.cpp              
 = src/graph/GraphManagerPipeline.cpp            !!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -124,6 +125,7 @@ src finished -> utils
 = src/graph/detail/ExecutionHelpersPipeline.cpp
 = src/graph/Workload.cpp
 = src/graph/frontend/StreamPipeline.cpp
+= src/graph/frontend/SubStream.cpp
 
 = utils/DVFS/DVFS.h                             !!!!!!!!!!!!!!!!!!!!!!!!!!!! inline static
 = utils/main_layer_checker.h                    !!!!!!!!!!!!!!!!!!!!!!!!!!!! inline static
