@@ -656,7 +656,7 @@ void GraphManagerPipeline::warmup_and_execute_graph_serial(Graph &graph, int nn)
 
 void GraphManagerPipeline::print_times(int n)
 {
-    for(int id = 0; id < _num_graphs; id++)
+    for(unsigned int id = 0; id < _num_graphs; id++)
     {
         print_times_details(id, n);
 
