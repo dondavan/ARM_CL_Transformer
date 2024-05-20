@@ -34,23 +34,27 @@ namespace graph
 /** Intermediate Output Layer node */
 class SenderNode final : public INode
 {
-public:
+    public:
     /** Default Constructor */
-	SenderNode(NodeParams params);
+    SenderNode(NodeParams params);
     /** Prevent instances of this class from being copied (As this class contains pointers) */
-    SenderNode(const arm_compute::graph::SenderNode&) = delete;
+    SenderNode(const arm_compute::graph::SenderNode &) = delete;
     /** Prevent instances of this class from being copied (As this class contains pointers) */
     SenderNode &operator=(const SenderNode &) = delete;
 
     // Inherited overridden methods:
-    NodeType         type() const override;
-    bool             forward_descriptors() override;
-    TensorDescriptor configure_output(size_t idx) const override;
-    void accept(INodeVisitor &v) override;
-    void set_tensor(Tensor *t);
-    TensorPipelineSender* get_sender_tensor(){return sender_tensor;};
-private:
-    TensorPipelineSender *sender_tensor;
+    NodeType              type() const override;
+    bool                  forward_descriptors() override;
+    TensorDescriptor      configure_output(size_t idx) const override;
+    void                  accept(INodeVisitor &v) override;
+    void                  set_tensor(Tensor *t);
+    TensorPipelineSender *get_sender_tensor()
+    {
+        return _sender_tensor;
+    };
+
+    private:
+    TensorPipelineSender *_sender_tensor = nullptr;
 };
 } // namespace graph
 } // namespace arm_compute

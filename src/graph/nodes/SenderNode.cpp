@@ -35,14 +35,13 @@ namespace graph
 SenderNode::SenderNode(NodeParams params)
 {
     _input_edges.resize(1, EmptyEdgeID);
-    sender_tensor=new TensorPipelineSender();
-    sender_tensor->set_is_npu(params.target==arm_compute::graph::Target::NPU);
+    _sender_tensor = new TensorPipelineSender();
+    _sender_tensor->set_is_npu(params.target == arm_compute::graph::Target::NPU);
 }
 
 bool SenderNode::forward_descriptors()
 {
-
-	/*********
+    /*********
 	 This function is called twice in GraphBuilder::add_sender_node:
 	1-When creating node g.add_node<SenderNode>()
 	2-When add connection between this node and previous node, at the end of this function: g.add_connection(input.node_id, input.index, nid, 0);
@@ -56,12 +55,10 @@ bool SenderNode::forward_descriptors()
 	Interesting method is that g.add<NodeType>() first create an instance of NodeType and each node type resize the _input_edges or _output_edges
 	With EmptyEdgeId then g.add<NodeType>() function for each output_edge creates a tensor
 	********/
-	//if(input_edges.size()>0)
-	//std::cerr<<"Tensor Sender: "<<input(0)<<std::endl;
-	auto tt=input(0);
+    auto tt = input(0);
 
-	sender_tensor->set_tensor(input(0));
-	sender_tensor->set_graph_id(_graph->id());
+    _sender_tensor->set_tensor(input(0));
+    _sender_tensor->set_graph_id(_graph->id());
     return true;
 }
 
@@ -80,9 +77,10 @@ void SenderNode::accept(INodeVisitor &v)
 {
     v.visit(*this);
 }
-void SenderNode::set_tensor(Tensor *t){
-	//Add tensor to TensorPipelineSender
-	sender_tensor->set_tensor(t);
+void SenderNode::set_tensor(Tensor *t)
+{
+    //Add tensor to TensorPipelineSender
+    _sender_tensor->set_tensor(t);
 }
 } // namespace graph
 } // namespace arm_compute

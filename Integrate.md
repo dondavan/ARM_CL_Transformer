@@ -129,3 +129,6 @@ src finished -> utils
 
 = utils/DVFS/DVFS.h                             !!!!!!!!!!!!!!!!!!!!!!!!!!!! inline static
 = utils/main_layer_checker.h                    !!!!!!!!!!!!!!!!!!!!!!!!!!!! inline static
+
+= arm_compute/graph/nodes/ReceiverNode.h    
+= src/graph/nodes/ReceiverNode.cpp
