@@ -93,13 +93,8 @@ class TensorPipelineReceiver
     unsigned int Input_size = 0;
     bool         _Transpose = true;
 
-    //std::atomic<bool> receiver_ready;
-    //std::atomic<bool> data_sent;
     std::string name;
     int         graph_id;
-    /*double	t_sender_wait;
-	double	t_receiver_wait;
-	double	t_transmition;*/
     double t_sender_write    = 0;
     double t_sender_transfer = 0;
     double t_receiver_read   = 0;
