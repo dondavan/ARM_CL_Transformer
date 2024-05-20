@@ -1036,7 +1036,7 @@ void GraphManagerPipeline::set_freq_map(std::string freqs, std::string _order, c
     //TODO: Set just in use processor to its max fequency
     if(freqs == "max" or freqs == "[max]")
     {
-        unsigned int  i        = 0;
+        unsigned int i = 0;
         //bool Prev_NPU = false;
         for(auto task : _governor_tasks)
         {
@@ -1101,7 +1101,7 @@ void GraphManagerPipeline::set_freq_map(std::string freqs, std::string _order, c
     //for iterating over governor_tasks (for consequitive Ns in order there is one gevernor task just)
     int  governor_task_index = _governor_tasks.size() - 1;
     int  _method             = 1;
-    char prev_p={};
+    char prev_p              = {};
     while(std::getline(ss, token, '-'))
     {
         int  j = (i + 1) % _order.size();
