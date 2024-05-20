@@ -112,7 +112,7 @@ src finished -> utils
 = arm_compute/graph/nodes/ReceiverNode.h
 = arm_compute/graph/Tensor.h
 = arm_compute/graph/TensorPipeline.h            
-= arm_compute/graph/frontend/IStreamPipeline.h  !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+= arm_compute/graph/frontend/IStreamPipeline.h  !!!!!!!!!!!!!!!!!!!!!!!!!!!! inline static
 = arm_compute/graph/frontend/IStream.h          !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 = arm_compute/graph/GraphManager.h
 

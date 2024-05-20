@@ -111,7 +111,6 @@ class NodeMap
                 {
                     if(v.second == key.second)
                     {
-                        //std::cerr<<"The T node in that graph is node: "<<v.first<<"\n";
                         r = v;
                         //create a R node in new graph (and add it to mapping)
                         //add R node into the T node(v.first) of origin graph
@@ -132,11 +131,9 @@ class NodeMap
     {
         for(auto entry : mm)
         {
-            std::cerr << "\n\n\n"
-                      << entry.first.first << " in graph " << entry.first.second << std::endl;
             for(auto v : entry.second)
             {
-                std::cerr << "equals to: " << v.first << " in graph " << v.second << std::endl;
+
             }
         }
     }
@@ -174,12 +171,10 @@ class IStreamPipeline : public IStream
      */
     NodeID tail_node()
     {
-        //std::cerr<<"ISTREAMPipeline callin tail_node() "<<_tail_node<<std::endl;
-        //return _tail_node;
-        auto _n = node_map.find(std::make_pair(_tail_node, tail_graph_id), _target_graph);
+        auto _n = _node_map.find(std::make_pair(_tail_node, _tail_graph_id), _target_graph);
         if(_n.second == _target_graph)
         {
-            tail_graph_id = _target_graph;
+            _tail_graph_id = _target_graph;
             _tail_node    = _n.first;
             return _n.first;
         }
@@ -191,16 +186,15 @@ class IStreamPipeline : public IStream
 
     NodeID tail_node(int target_graph)
     {
-        auto _n = node_map.find(std::make_pair(_tail_node, tail_graph_id), target_graph);
+        auto _n = _node_map.find(std::make_pair(_tail_node, _tail_graph_id), target_graph);
         if(_n.second == target_graph)
         {
-            tail_graph_id = target_graph;
+            _tail_graph_id = target_graph;
             _tail_node    = _n.first;
             return _n.first;
         }
         else
         {
-            //std::cerr<<"\n\n\n\n\nERROR! There is no node in target graph for tail node\n\n\n\n";
             return _tail_node;
         }
     }
@@ -212,8 +206,6 @@ class IStreamPipeline : public IStream
     virtual StreamHints &hints()
     {
         std::string s;
-        //s="__calling hints in IstreamPipeline is "+ std::to_string((int)(_hints.target_hint)) +"\n";
-        //std::cerr<<s;
         return _hints;
     }
     /** Forwards tail of stream to a given nid
@@ -224,20 +216,10 @@ class IStreamPipeline : public IStream
     {
         _tail_node = (nid != NullTensorID) ? nid : _tail_node;
     }
-    //virtual StreamHints &hints();
-
-    //IStreamPipeline & operator<<(ILayer &layer);
-    //IStreamPipeline & operator<<(ILayer &&layer);
-    //virtual void next_layer();
-    /*NodeID* get_tail_p(){
-    	return &_tail_node;
-    }
-    int* get_graph_id_p(){
-    	return &graph_id;
-    }*/
+    
     int get_tail_graph_id() override
     {
-        return tail_graph_id;
+        return _tail_graph_id;
     }
     std::pair<NodeID, int> get_position()
     {
@@ -246,35 +228,32 @@ class IStreamPipeline : public IStream
 
     int target_graph(int layer)
     {
-        if(start_layer.size() == 0)
+        if(_start_layer.size() == 0)
         {
             return 0;
         }
-        for(int i = 0; i < start_layer.size(); i++)
+        for(int i = 0; i < _start_layer.size(); i++)
         {
-            if(layer >= start_layer[i] && layer <= end_layer[i])
+            if(layer >= _start_layer[i] && layer <= _end_layer[i])
             {
                 return i;
             }
         }
-        return start_layer.size() - 1;
-        //return -1;
+        return _start_layer.size() - 1;
     }
 
     static bool is_next_layer(std::string name);
     static bool is_end_layer(std::string name);
 
-    inline static std::string graph_name;
-    //inline static std::unordered_set<std::string> ending_tasks;
+    std::string graph_name;
 
     protected:
-    inline static int current_layer = { 0 };
-
-    inline static int              _target_graph = { 0 };
-    int                            tail_graph_id = 0;
-    inline static NodeMap          node_map;
-    inline static std::vector<int> start_layer;
-    inline static std::vector<int> end_layer;
+    int _current_layer = 0;
+    int              _target_graph = 0;
+    int              _tail_graph_id = 0;
+    NodeMap          _node_map;
+    std::vector<int> _start_layer;
+    std::vector<int> _end_layer;
 
     //StreamHints _hints     = {};              /**< Execution and algorithmic hints */
     //NodeID      _tail_node = { EmptyNodeID }; /**< NodeID pointing to the last(tail) node of the graph */
