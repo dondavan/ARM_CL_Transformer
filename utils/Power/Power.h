@@ -15,9 +15,15 @@
 //#define POUT 432
 //RockPi
 #define POUT 157 /* P1-07 */
+#define DIRECTION_MAX 35
+#define VALUE_MAX 30
 
-static int
-GPIOExport(int pin)
+
+static const char s_directions_str[] = "in\0out";
+static const char s_values_str[] = "01";
+
+
+int GPIOExport(int pin)
 {
 #define BUFFER_MAX 3
     char    buffer[BUFFER_MAX];
@@ -37,12 +43,8 @@ GPIOExport(int pin)
     return (0);
 }
 
-static int
-GPIODirection(int pin, int dir)
+int GPIODirection(int pin, int dir)
 {
-    static const char s_directions_str[] = "in\0out";
-
-#define DIRECTION_MAX 35
     char path[DIRECTION_MAX];
     int  fd;
 
@@ -64,12 +66,8 @@ GPIODirection(int pin, int dir)
     return (0);
 }
 
-static int
-GPIOWrite(int pin, int value)
+int GPIOWrite(int pin, int value)
 {
-#define VALUE_MAX 30
-    static const char s_values_str[] = "01";
-
     char path[VALUE_MAX];
     int  fd;
 
@@ -91,8 +89,7 @@ GPIOWrite(int pin, int value)
     return (0);
 }
 
-static int
-GPIOUnexport(int pin)
+int GPIOUnexport(int pin)
 {
     char    buffer[BUFFER_MAX];
     ssize_t bytes_written;
