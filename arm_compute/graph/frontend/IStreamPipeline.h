@@ -233,7 +233,7 @@ class IStreamPipeline : public IStream
         {
             return 0;
         }
-        for(int i = 0; i < _start_layer.size(); i++)
+        for(size_t i = 0; i < _start_layer.size(); i++)
         {
             if(layer >= _start_layer[i] && layer <= _end_layer[i])
             {
