@@ -113,7 +113,7 @@ src finished -> utils
 = arm_compute/graph/Tensor.h
 = arm_compute/graph/TensorPipeline.h            
 = arm_compute/graph/frontend/IStreamPipeline.h  !!!!!!!!!!!!!!!!!!!!!!!!!!!! inline static
-= arm_compute/graph/frontend/IStream.h          !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+= arm_compute/graph/frontend/IStream.h          !!!!!!!!!!!!!!!!!!!!!!!!!!!! inline static
 = arm_compute/graph/GraphManager.h
 = arm_compute/graph/frontend/ILayer.h
 
@@ -122,3 +122,4 @@ src finished -> utils
 = src/graph/TensorPipeline.cpp
 
 = utils/DVFS/DVFS.h                             !!!!!!!!!!!!!!!!!!!!!!!!!!!! inline static
+= utils/main_layer_checker.h                    !!!!!!!!!!!!!!!!!!!!!!!!!!!! inline static

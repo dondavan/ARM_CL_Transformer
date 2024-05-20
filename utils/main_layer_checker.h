@@ -8,7 +8,7 @@
 
 
 
-inline std::map<std::string, std::unordered_set<std::string>> ending_task_names{
+std::map<std::string, std::unordered_set<std::string>> ending_task_names{
 	{
 		"alexnet",
 		{
