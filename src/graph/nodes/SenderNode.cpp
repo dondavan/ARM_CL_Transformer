@@ -55,7 +55,6 @@ bool SenderNode::forward_descriptors()
 	Interesting method is that g.add<NodeType>() first create an instance of NodeType and each node type resize the _input_edges or _output_edges
 	With EmptyEdgeId then g.add<NodeType>() function for each output_edge creates a tensor
 	********/
-    auto tt = input(0);
 
     _sender_tensor->set_tensor(input(0));
     _sender_tensor->set_graph_id(_graph->id());
