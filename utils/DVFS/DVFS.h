@@ -218,10 +218,6 @@ public:
 	        }
 	        return 0;
 	}
-	/*static DVFS& get(){
-		static DVFS instance;
-		return instance;
-	}*/
 
 	int fd;
 
@@ -237,9 +233,9 @@ public:
 		return max_g;
 	}
 
-	inline static int max_l=5;
-	inline static int max_b=7;
-	inline static int max_g=4;
+	const static int max_l=5;
+	const static int max_b=7;
+	const static int max_g=4;
 };
 
 //int DVFS::fd=-1;
