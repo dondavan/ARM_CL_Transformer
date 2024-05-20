@@ -153,24 +153,6 @@ int run_example(int argc, char **argv, std::unique_ptr<Example> example)
 
         std::string cmd="";
 
-        /*
-        //Set Little CPU Frequency
-		cmd="echo " + to_string(LFreq) + " > /sys/devices/system/cpu/cpufreq/policy0/scaling_setspeed";
-		system(cmd.c_str());
-
-		//Set Big CPU Frequency
-		cmd="echo " + to_string(BFreq) + " > /sys/devices/system/cpu/cpufreq/policy4/scaling_setspeed";
-		system(cmd.c_str());
-
-		//Set GPU Frequency
-		cmd="echo " + to_string(GFreq) + " > /sys/devices/platform/ff9a0000.gpu/devfreq/ff9a0000.gpu/userspace/set_freq";
-		system(cmd.c_str());
-		*/
-        /*
-        std::cin>>LFreq;
-		std::cin>>BFreq;
-		std::cin>>GFreq;
-		*/
         get_freqs(LFreq, BFreq, GFreq);
         //while (BFreq && LFreq && GFreq){
         bool finish=false;
@@ -189,9 +171,7 @@ int run_example(int argc, char **argv, std::unique_ptr<Example> example)
         	sleep(2);
         	example->do_run();
         	std::cerr<<"enter freqs of Little, big, GPU:\n";
-        	/*std::cin>>LFreq;
-        	std::cin>>BFreq;
-        	std::cin>>GFreq;*/
+            
         	finish=get_freqs(LFreq, BFreq, GFreq);
 
             ARM_COMPUTE_UNUSED(ret);
