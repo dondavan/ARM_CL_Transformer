@@ -81,10 +81,10 @@ class TensorPipelineReceiver
 
     private:
     Tensor                                                 *_tensor = nullptr;
-    std::queue<std::unique_ptr<arm_compute::graph::Tensor>> _buffer;
-    std::queue<double *>                                    _NPU_buffer;
-    std::mutex                                              _mutex_;
-    std::condition_variable                                 _condVar;
+    std::queue<std::unique_ptr<arm_compute::graph::Tensor>> _buffer ={};
+    std::queue<double *>                                    _NPU_buffer ={};
+    std::mutex                                              _mutex_ = {};
+    std::condition_variable                                 _condVar ={};
     bool                                                   *_receiver_ready = new bool(false);
     bool                                                   *_data_sent      = new bool(false);
 
@@ -93,8 +93,8 @@ class TensorPipelineReceiver
     unsigned int _Input_size = 0;
     bool         _Transpose = true;
 
-    std::string _name;
-    int         _graph_id;
+    std::string _name = {};
+    int         _graph_id = 0;
     double      _t_sender_write    = 0;
     double      _t_sender_transfer = 0;
     double      _t_receiver_read   = 0;
