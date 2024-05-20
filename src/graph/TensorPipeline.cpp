@@ -212,6 +212,7 @@ double TensorPipelineReceiver::send_data(Tensor *_tensor)
                 _tensor->handle()->tensor().copy_from(_tensor->handle()->tensor());
                 const auto output_net2 = reinterpret_cast<double *>(_tensor->handle()->tensor().buffer() + _tensor->handle()->tensor().info()->offset_first_element_in_bytes());
                 _tensor->handle()->unmap();
+				ARM_COMPUTE_UNUSED(output_net,output_net2);
 
                 *_data_sent = true;
                 _condVar.notify_all();
@@ -245,7 +246,8 @@ double TensorPipelineReceiver::send_data(Tensor *_tensor)
                 const auto output_net = reinterpret_cast<double *>(_tensor->handle()->tensor().buffer() + _tensor->handle()->tensor().info()->offset_first_element_in_bytes());
                 _tensor->handle()->tensor().copy_from(_tensor->handle()->tensor());
                 const auto output_net2 = reinterpret_cast<double *>(_tensor->handle()->tensor().buffer() + _tensor->handle()->tensor().info()->offset_first_element_in_bytes());
-                
+				ARM_COMPUTE_UNUSED(output_net,output_net2);
+				
                 _tensor->handle()->unmap();
 
                 //t2->handle()->unmap();
