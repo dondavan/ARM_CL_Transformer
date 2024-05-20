@@ -369,7 +369,7 @@ void GraphManagerPipeline::warmup_and_execute_graph_no_buffer(Graph &graph, int 
     		if(graph.id()==_num_graphs-1){
 				std::this_thread::sleep_for(std::chrono::milliseconds(20000));
     		}
-    		if(!parallel){
+    		if(!_parallel){
     			//start power measurement
     		}
     	}
