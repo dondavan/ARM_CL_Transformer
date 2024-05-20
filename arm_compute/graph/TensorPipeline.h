@@ -74,33 +74,33 @@ class TensorPipelineReceiver
 
     int  get_graph_id();
     void set_graph_id(int g_id);
-    void set_is_npu(bool _is_npu)
+    void set_is_npu(bool is_npu)
     {
-        is_npu = _is_npu;
+        _is_npu = is_npu;
     }
 
     private:
-    Tensor                                                 *tensor = nullptr;
-    std::queue<std::unique_ptr<arm_compute::graph::Tensor>> buffer;
-    std::queue<double *>                                    NPU_buffer;
-    std::mutex                                              mutex_;
-    std::condition_variable                                 condVar;
-    bool                                                   *receiver_ready = new bool(false);
-    bool                                                   *data_sent      = new bool(false);
+    Tensor                                                 *_tensor = nullptr;
+    std::queue<std::unique_ptr<arm_compute::graph::Tensor>> _buffer;
+    std::queue<double *>                                    _NPU_buffer;
+    std::mutex                                              _mutex_;
+    std::condition_variable                                 _condVar;
+    bool                                                   *_receiver_ready = new bool(false);
+    bool                                                   *_data_sent      = new bool(false);
 
     //For NPU
-    bool         is_npu     = false;
-    unsigned int Input_size = 0;
+    bool         _is_npu     = false;
+    unsigned int _Input_size = 0;
     bool         _Transpose = true;
 
-    std::string name;
-    int         graph_id;
-    double      t_sender_write    = 0;
-    double      t_sender_transfer = 0;
-    double      t_receiver_read   = 0;
-    double      t_receiver_wait   = 0;
-    int         num_run           = 0;
-    int         Frame             = 0;
+    std::string _name;
+    int         _graph_id;
+    double      _t_sender_write    = 0;
+    double      _t_sender_transfer = 0;
+    double      _t_receiver_read   = 0;
+    double      _t_receiver_wait   = 0;
+    int         _num_run           = 0;
+    int         _Frame             = 0;
 };
 
 class TensorPipelineSender

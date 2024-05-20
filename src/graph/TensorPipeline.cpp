@@ -110,70 +110,71 @@ TensorPipelineReceiver::TensorPipelineReceiver()
 {
     //receiver_ready.store(false);
     //data_sent.store(false);
-    buffer            = {};
-    *receiver_ready   = false;
-    *data_sent        = false;
-    t_sender_write    = 0;
-    t_sender_transfer = 0;
-    t_receiver_read   = 0;
-    t_receiver_wait   = 0;
-    num_run           = 0;
+    _buffer            = {};
+    *_receiver_ready   = false;
+    *_data_sent        = false;
+
+    _t_sender_write    = 0;
+    _t_sender_transfer = 0;
+    _t_receiver_read   = 0;
+    _t_receiver_wait   = 0;
+    _num_run           = 0;
 }
 bool TensorPipelineReceiver::get_receiver_ready()
 {
     //return receiver_ready.load();
-    return *receiver_ready;
+    return *_receiver_ready;
 }
 bool TensorPipelineReceiver::get_data_sent()
 {
     //return data_sent.load();
-    return *data_sent;
+    return *_data_sent;
 }
 void TensorPipelineReceiver::set_tensor(Tensor *t)
 {
-    tensor = t;
+    _tensor = t;
 }
 Tensor *TensorPipelineReceiver::get_tensor()
 {
-    return tensor;
+    return _tensor;
 }
 
 void TensorPipelineReceiver::set_name(std::string _name)
 {
-    name = std::string(_name);
+    _name = std::string(_name);
 }
 
 void TensorPipelineReceiver::reset_timing()
 {
-    t_sender_write    = 0;
-    t_sender_transfer = 0;
-    t_receiver_read   = 0;
-    t_receiver_wait   = 0;
-    num_run           = 0;
+    _t_sender_write    = 0;
+    _t_sender_transfer = 0;
+    _t_receiver_read   = 0;
+    _t_receiver_wait   = 0;
+    _num_run           = 0;
 }
 double TensorPipelineReceiver::get_transmition_time()
 {
-    return t_sender_transfer;
+    return _t_sender_transfer;
 }
 double TensorPipelineReceiver::get_receiver_wait_time()
 {
-    return t_receiver_wait;
+    return _t_receiver_wait;
 }
 double TensorPipelineReceiver::get_receiver_read_time()
 {
-    return t_receiver_read;
+    return _t_receiver_read;
 }
 double TensorPipelineReceiver::get_sender_write_time()
 {
-    return t_sender_write;
+    return _t_sender_write;
 }
 int TensorPipelineReceiver::get_graph_id()
 {
-    return graph_id;
+    return _graph_id;
 }
 void TensorPipelineReceiver::set_graph_id(int g_id)
 {
-    graph_id = g_id;
+    _graph_id = g_id;
 }
 
 double TensorPipelineReceiver::send_data(Tensor *_tensor)
@@ -182,78 +183,78 @@ double TensorPipelineReceiver::send_data(Tensor *_tensor)
         std::string s;
         double      duration_write    = 0;
         double      duration_transfer = 0;
-        num_run++;
-        Frame++;
+        _num_run++;
+        _Frame++;
         auto                         tstart = std::chrono::high_resolution_clock::now();
-        std::unique_lock<std::mutex> lck(mutex_);
+        std::unique_lock<std::mutex> lck(_mutex_);
 
         /******************** If is receiver of a NPU ************************/
-        if(is_npu)
+        if(_is_npu)
         {
             //std::cerr<<"sending data to an NPU receiver\n";
-            if(!get_receiver_ready() || !NPU_buffer.empty())
+            if(!get_receiver_ready() || !_NPU_buffer.empty())
             {
                 //add to queue (maybe tensor.map required)
                 const auto output_net = reinterpret_cast<double *>(_tensor->handle()->tensor().buffer() + _tensor->handle()->tensor().info()->offset_first_element_in_bytes());
-                NPU_buffer.emplace(output_net);
+                _NPU_buffer.emplace(output_net);
                 auto tend      = std::chrono::high_resolution_clock::now();
                 duration_write = 1000 * (std::chrono::duration_cast<std::chrono::duration<double>>(tend - tstart).count());
-                t_sender_write += duration_write;
+                _t_sender_write += duration_write;
             }
             else
             {
                
-                tensor->handle()->map(true);
+                _tensor->handle()->map(true);
 
-                *receiver_ready = false;
+                *_receiver_ready = false;
                 //Transfer data
                 const auto output_net = reinterpret_cast<double *>(_tensor->handle()->tensor().buffer() + _tensor->handle()->tensor().info()->offset_first_element_in_bytes());
-                tensor->handle()->tensor().copy_from(_tensor->handle()->tensor());
-                const auto output_net2 = reinterpret_cast<double *>(tensor->handle()->tensor().buffer() + tensor->handle()->tensor().info()->offset_first_element_in_bytes());
-                tensor->handle()->unmap();
+                _tensor->handle()->tensor().copy_from(_tensor->handle()->tensor());
+                const auto output_net2 = reinterpret_cast<double *>(_tensor->handle()->tensor().buffer() + _tensor->handle()->tensor().info()->offset_first_element_in_bytes());
+                _tensor->handle()->unmap();
 
-                *data_sent = true;
-                condVar.notify_all();
+                *_data_sent = true;
+                _condVar.notify_all();
                 auto tend         = std::chrono::high_resolution_clock::now();
                 duration_transfer = 1000 * (std::chrono::duration_cast<std::chrono::duration<double>>(tend - tstart).count());
-                t_sender_transfer += duration_transfer;
+                _t_sender_transfer += duration_transfer;
             }
         }
         /********************* If is not receiver of a NPU *******************/
         else
         {
-            if(!get_receiver_ready() || !buffer.empty())
+            if(!get_receiver_ready() || !_buffer.empty())
             {
                 //add to queue
-                auto t2 = create_and_setup_tensor(tensor);
+                auto t2 = create_and_setup_tensor(_tensor);
                 t2->handle()->map(true);
                 t2->handle()->tensor().copy_from(_tensor->handle()->tensor());
                 t2->handle()->unmap();
-                buffer.emplace(std::move(t2));
+                _buffer.emplace(std::move(t2));
                 auto tend      = std::chrono::high_resolution_clock::now();
                 duration_write = 1000 * (std::chrono::duration_cast<std::chrono::duration<double>>(tend - tstart).count());
-                t_sender_write += duration_write;
+                _t_sender_write += duration_write;
             }
             else
             {
-                tensor->handle()->map(true);
+                _tensor->handle()->map(true);
 
                 //receiver_ready.store(false);
-                *receiver_ready = false;
+                *_receiver_ready = false;
                 //Transfer data
                 const auto output_net = reinterpret_cast<double *>(_tensor->handle()->tensor().buffer() + _tensor->handle()->tensor().info()->offset_first_element_in_bytes());
-                tensor->handle()->tensor().copy_from(_tensor->handle()->tensor());
-                const auto output_net2 = reinterpret_cast<double *>(tensor->handle()->tensor().buffer() + tensor->handle()->tensor().info()->offset_first_element_in_bytes());
+                _tensor->handle()->tensor().copy_from(_tensor->handle()->tensor());
+                const auto output_net2 = reinterpret_cast<double *>(_tensor->handle()->tensor().buffer() + _tensor->handle()->tensor().info()->offset_first_element_in_bytes());
                 
-                tensor->handle()->unmap();
+                _tensor->handle()->unmap();
 
                 //t2->handle()->unmap();
                 //data_sent.store(true);
-                *data_sent = true;
-                condVar.notify_all();
+                *_data_sent = true;
+                _condVar.notify_all();
                 auto tend         = std::chrono::high_resolution_clock::now();
                 duration_transfer = 1000 * (std::chrono::duration_cast<std::chrono::duration<double>>(tend - tstart).count());
-                t_sender_transfer += duration_transfer;
+                _t_sender_transfer += duration_transfer;
                 
             }
         }
@@ -265,8 +266,8 @@ double TensorPipelineReceiver::send_data(Tensor *_tensor)
 void TensorPipelineReceiver::wait_for_receiver()
 {
     {
-        std::unique_lock<std::mutex> lck(mutex_);
-        condVar.wait(lck, [this]
+        std::unique_lock<std::mutex> lck(_mutex_);
+        _condVar.wait(lck, [this]
                      { return get_receiver_ready(); });
         lck.unlock();
     }
@@ -275,12 +276,12 @@ void TensorPipelineReceiver::wait_for_receiver()
 void TensorPipelineReceiver::signal_receiver()
 {
     {
-        std::unique_lock<std::mutex> lck(mutex_);
+        std::unique_lock<std::mutex> lck(_mutex_);
         //data_sent.store(true);
-        *data_sent = true;
+        *_data_sent = true;
         //receiver_ready.store(false);
-        *receiver_ready = false;
-        condVar.notify_all();
+        *_receiver_ready = false;
+        _condVar.notify_all();
         lck.unlock();
     }
 }
@@ -291,31 +292,31 @@ bool TensorPipelineReceiver::receive_data()
         double duration_read = 0;
         auto   tstart        = std::chrono::high_resolution_clock::now();
 
-        std::unique_lock<std::mutex> lck(mutex_);
+        std::unique_lock<std::mutex> lck(_mutex_);
         /******************** If is receiver of a NPU ************************/
-        if(is_npu)
+        if(_is_npu)
         {
-            if(NPU_buffer.empty() || get_data_sent())
+            if(_NPU_buffer.empty() || get_data_sent())
             {
                 if(!get_data_sent())
                 {
                 }
-                condVar.wait(lck, [this]
+                _condVar.wait(lck, [this]
                              { return get_data_sent(); });
                 auto tend     = std::chrono::high_resolution_clock::now();
                 duration_wait = 1000 * (std::chrono::duration_cast<std::chrono::duration<double>>(tend - tstart).count());
-                t_receiver_wait += duration_wait;
+                _t_receiver_wait += duration_wait;
                 //data_sent.store(false);
-                *data_sent = false;
+                *_data_sent = false;
             }
             else
             {
-                *receiver_ready = false;
+                *_receiver_ready = false;
                 std::string s;
                 //Here Read from double* NPU_buffer into the inupt of the NPU
                 auto tend     = std::chrono::high_resolution_clock::now();
                 duration_read = 1000 * (std::chrono::duration_cast<std::chrono::duration<double>>(tend - tstart).count());
-                t_receiver_read += duration_read;
+                _t_receiver_read += duration_read;
                 
 			}
         }
@@ -323,31 +324,31 @@ bool TensorPipelineReceiver::receive_data()
         /********************* If is not receiver of a NPU *******************/
         else
         {
-            if(buffer.empty() || get_data_sent())
+            if(_buffer.empty() || get_data_sent())
             {
                 if(!get_data_sent())
                 {
                 }
-                condVar.wait(lck, [this]
+                _condVar.wait(lck, [this]
                              { return get_data_sent(); });
                 auto tend     = std::chrono::high_resolution_clock::now();
                 duration_wait = 1000 * (std::chrono::duration_cast<std::chrono::duration<double>>(tend - tstart).count());
-                t_receiver_wait += duration_wait;
-                *data_sent = false;
+                _t_receiver_wait += duration_wait;
+                *_data_sent = false;
             }
             else
             {
-                *receiver_ready = false;
+                *_receiver_ready = false;
                 std::string s;
-                tensor->handle()->map(true);
-                buffer.front()->handle()->map(true);
-                tensor->handle()->tensor().copy_from(buffer.front()->handle()->tensor());
-                buffer.front()->handle()->unmap();
-                buffer.pop();
-                tensor->handle()->unmap();
+                _tensor->handle()->map(true);
+                _buffer.front()->handle()->map(true);
+                _tensor->handle()->tensor().copy_from(_buffer.front()->handle()->tensor());
+                _buffer.front()->handle()->unmap();
+                _buffer.pop();
+                _tensor->handle()->unmap();
                 auto tend     = std::chrono::high_resolution_clock::now();
                 duration_read = 1000 * (std::chrono::duration_cast<std::chrono::duration<double>>(tend - tstart).count());
-                t_receiver_read += duration_read;
+                _t_receiver_read += duration_read;
             }
         }
         lck.unlock();
@@ -358,7 +359,7 @@ bool TensorPipelineReceiver::receive_data()
 
 void TensorPipelineReceiver::set_receiver_ready()
 {
-    *receiver_ready = true;
+    *_receiver_ready = true;
 }
 
 void TensorPipelineSender::add_receiver(TensorPipelineReceiver *d)
