@@ -54,8 +54,6 @@ bool NPUNode::restructure_graph()
     for(auto output : _outputs_pair)
     {
         auto output_node = _graph->node(output.node_id);
-        auto idx         = output.index;
-        int  j           = 0;
         int  n_inputs    = output_node->num_inputs();
 
         for(int j = 0; j < n_inputs; j++)
@@ -81,7 +79,6 @@ bool NPUNode::restructure_graph()
     {
         auto             input_node        = _graph->node(input.node_id);
         auto             index             = input.index;
-        int              j                 = 0;
         int              n_output_edges    = input_node->output_edges().size();
         std::set<EdgeID> output_edges_copy = input_node->output_edges();
         std::cerr << "re-struct input node " << input_node->name() << " with " << n_output_edges << "out edges to the npu node\n";
