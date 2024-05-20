@@ -252,9 +252,9 @@ class IStreamPipeline : public IStream
     int              _current_layer = 0;
     int              _target_graph  = 0;
     int              _tail_graph_id = 0;
-    NodeMap          _node_map;
-    std::vector<int> _start_layer;
-    std::vector<int> _end_layer;
+    NodeMap          _node_map      = {};
+    std::vector<int> _start_layer   = {};
+    std::vector<int> _end_layer     = {};
 
     //StreamHints _hints     = {};              /**< Execution and algorithmic hints */
     //NodeID      _tail_node = { EmptyNodeID }; /**< NodeID pointing to the last(tail) node of the graph */
