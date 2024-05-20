@@ -132,3 +132,6 @@ src finished -> utils
 
 = arm_compute/graph/nodes/ReceiverNode.h    
 = src/graph/nodes/ReceiverNode.cpp
+
+= arm_compute/graph/nodes/SenderNode.h
+= src/graph/nodes/SenderNode.cpp
