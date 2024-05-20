@@ -28,10 +28,8 @@
 #include <condition_variable>
 #include <thread>
 
-#include <queue>
 #include "arm_compute/runtime/Tensor.h"
-
-
+#include <queue>
 
 namespace arm_compute
 {
@@ -41,133 +39,127 @@ namespace graph
 
 class TensorPipelineReceiver
 {
-public:
+    public:
     /** Default constructor
      *
      * @param[in] id   Tensor ID
      * @param[in] desc Tensor information
      */
-	TensorPipelineReceiver();
+    TensorPipelineReceiver();
 
-	/** Prevent instances of this class from being copied (As this class contains pointers) */
-	TensorPipelineReceiver(const arm_compute::graph::TensorPipelineReceiver&) = delete;
-	/** Prevent instances of this class from being copied (As this class contains pointers) */
-	TensorPipelineReceiver &operator=(const arm_compute::graph::TensorPipelineReceiver&) = delete;
+    /** Prevent instances of this class from being copied (As this class contains pointers) */
+    TensorPipelineReceiver(const arm_compute::graph::TensorPipelineReceiver &) = delete;
+    /** Prevent instances of this class from being copied (As this class contains pointers) */
+    TensorPipelineReceiver &operator=(const arm_compute::graph::TensorPipelineReceiver &) = delete;
 
-	double send_data(Tensor* _tensor);
-	double send_data(double* _npu_output);
-	void wait_for_receiver();
-	void signal_receiver();
-	bool receive_data();
+    double send_data(Tensor *_tensor);
+    double send_data(double *_npu_output);
+    void   wait_for_receiver();
+    void   signal_receiver();
+    bool   receive_data();
 
-	bool get_receiver_ready();
-	void set_receiver_ready();
-	bool get_data_sent();
-	void set_tensor(Tensor* t);
-	Tensor* get_tensor();
+    bool    get_receiver_ready();
+    void    set_receiver_ready();
+    bool    get_data_sent();
+    void    set_tensor(Tensor *t);
+    Tensor *get_tensor();
 
-	void set_name(std::string _name);
+    void set_name(std::string _name);
 
-	void reset_timing();
-	/*{
-		t_sender_write=0;
-		t_sender_transfer=0;
-		t_receiver_read=0;
-		t_receiver_wait=0;
-		num_run=0;
-	}*/
-	double get_transmition_time();
-	double get_sender_write_time();
-	double get_receiver_wait_time();
-	double get_receiver_read_time();
+    void   reset_timing();
+    double get_transmition_time();
+    double get_sender_write_time();
+    double get_receiver_wait_time();
+    double get_receiver_read_time();
 
-	int get_graph_id();
-	void set_graph_id(int g_id);
-	void set_is_npu(bool _is_npu){
-		is_npu=_is_npu;
-	}
+    int  get_graph_id();
+    void set_graph_id(int g_id);
+    void set_is_npu(bool _is_npu)
+    {
+        is_npu = _is_npu;
+    }
 
-private:
-	Tensor* tensor = nullptr;
-	std::queue<std::unique_ptr<arm_compute::graph::Tensor>> buffer;
-	std::queue<double*> NPU_buffer;
-	std::mutex mutex_;
-	std::condition_variable condVar;
-	bool* receiver_ready=new bool(false);
-	bool* data_sent=new bool (false);
+    private:
+    Tensor                                                 *tensor = nullptr;
+    std::queue<std::unique_ptr<arm_compute::graph::Tensor>> buffer;
+    std::queue<double *>                                    NPU_buffer;
+    std::mutex                                              mutex_;
+    std::condition_variable                                 condVar;
+    bool                                                   *receiver_ready = new bool(false);
+    bool                                                   *data_sent      = new bool(false);
 
-	//For NPU
-	bool  is_npu = false;
-	unsigned int	Input_size=0;
-	bool	_Transpose=true;
+    //For NPU
+    bool         is_npu     = false;
+    unsigned int Input_size = 0;
+    bool         _Transpose = true;
 
-
-
-	//std::atomic<bool> receiver_ready;
-	//std::atomic<bool> data_sent;
-	std::string		name;
-	int				graph_id;
-	/*double	t_sender_wait;
+    //std::atomic<bool> receiver_ready;
+    //std::atomic<bool> data_sent;
+    std::string name;
+    int         graph_id;
+    /*double	t_sender_wait;
 	double	t_receiver_wait;
 	double	t_transmition;*/
-	double	t_sender_write=0;
-	double	t_sender_transfer=0;
-	double	t_receiver_read=0;
-	double	t_receiver_wait=0;
-	int		num_run=0;
-	int		Frame=0;
+    double t_sender_write    = 0;
+    double t_sender_transfer = 0;
+    double t_receiver_read   = 0;
+    double t_receiver_wait   = 0;
+    int    num_run           = 0;
+    int    Frame             = 0;
 };
-
-
-
 
 class TensorPipelineSender
 {
-public:
+    public:
     /** Default constructor
      *
      * @param[in] id   Tensor ID
      * @param[in] desc Tensor information
      */
-	void add_receiver(TensorPipelineReceiver* d);
-	std::vector<TensorPipelineReceiver*> get_dest();
-	bool send_data();
+    void                                  add_receiver(TensorPipelineReceiver *d);
+    std::vector<TensorPipelineReceiver *> get_dest();
+    bool                                  send_data();
 
-	void set_tensor(Tensor* t);
-	Tensor* get_tensor();
-	void set_name(std::string _name);
-	int get_graph_id();
-	void set_graph_id(int g_id);
-	void set_is_npu(bool _is_npu){
-		is_npu=_is_npu;
-	}
-	double get_sending_time(){
-		return sending_time;
-	}
-	void reset_timing(){
-		sending_time=num_run=0;
-	}
-private:
-	Tensor* tensor = nullptr;
-	//vector of receivers instead of one receiver
-	std::vector<TensorPipelineReceiver*> receivers;
-	std::string name;
-	int graph_id;
-	bool is_npu = false;
-	double	sending_time=0;
-	int		num_run=0;
-	int		Frame=0;
+    void    set_tensor(Tensor *t);
+    Tensor *get_tensor();
+    void    set_name(std::string _name);
+    int     get_graph_id();
+    void    set_graph_id(int g_id);
+    void    set_is_npu(bool _is_npu)
+    {
+        is_npu = _is_npu;
+    }
+    double get_sending_time()
+    {
+        return sending_time;
+    }
+    void reset_timing()
+    {
+        sending_time = num_run = 0;
+    }
+
+    private:
+    Tensor *tensor = nullptr;
+    //vector of receivers instead of one receiver
+    std::vector<TensorPipelineReceiver *> receivers;
+    std::string                           name;
+    int                                   graph_id;
+    bool                                  is_npu       = false;
+    double                                sending_time = 0;
+    int                                   num_run      = 0;
+    int                                   Frame        = 0;
 };
 
-
-class TensorPipelineNPU : public Tensor {
-public:
-	bool my_call_accessor() override{
-		return true;
-	}
-	virtual ~TensorPipelineNPU() {}
-
-
+class TensorPipelineNPU : public Tensor
+{
+    public:
+    bool my_call_accessor() override
+    {
+        return true;
+    }
+    virtual ~TensorPipelineNPU()
+    {
+    }
 };
 
 } // namespace graph
