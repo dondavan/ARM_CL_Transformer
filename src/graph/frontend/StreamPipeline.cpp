@@ -326,7 +326,7 @@ void StreamPipeline::run_parallel(int i, int n)
     }
     cpu_set_t set;
     char      cluster = 'B';
-    if(PE[i] == 'L')
+    if(_PE[i] == 'L')
         cluster = 'L';
     std::stringstream stream;
     //stream<<"Graph "<<i<<" setting affinity to "<<cluster<<std::endl;
@@ -343,6 +343,7 @@ void StreamPipeline::run_parallel(int i, int n)
 
 void StreamPipeline::run_w_parallel(int i, int n)
 {
+	ARM_COMPUTE_UNUSED(n);
     if(_gs[i]->nodes().size() == 0)
     {
         std::cerr << "Ignoring empty graph " << i << std::endl;
@@ -505,25 +506,25 @@ StreamPipeline &StreamPipeline::operator<<(FastMathHint fast_math_hint)
 	return _tail_node;
 
 }*/
-void StreamPipeline::add_graph(int start, int end, char _PE, char _Host_PE)
+void StreamPipeline::add_graph(int start, int end, char PE, char Host_PE)
 {
     int id = _num_graphs;
     _num_graphs++;
     //_gs.push_back(std::make_unique<GraphPipeline>(id, name, _PE, _Host_PE, start, end));
-    _gs.emplace_back(new GraphPipeline(id, _name, _PE, _Host_PE, start, end));
+    _gs.emplace_back(new GraphPipeline(id, _name, PE, Host_PE, start, end));
     _input_time.push_back(0);
     _task_time.push_back(0);
     _output_time.push_back(0);
     _cost.push_back(0);
-    _PE.push_back(_PE);
-    _Host_PE.push_back(_PE);
+    _PE.push_back(PE);
+    _Host_PE.push_back(PE);
     _start_layer.push_back(start);
     _end_layer.push_back(end);
     /*arm_compute::graph::Target       target_GPU{ arm_compute::graph::Target::CL };
 		arm_compute::graph::Target       target_CPU{ arm_compute::graph::Target::NEON };
 		arm_compute::graph::Target       target=(_PE=='G')?target_GPU:target_CPU;*/
     arm_compute::graph::Target target;
-    switch(_PE)
+    switch(PE)
     {
         case 'L':
         case 'B':
@@ -543,12 +544,12 @@ void StreamPipeline::add_graph(int start, int end, char _PE, char _Host_PE)
     GraphConfig config;
     int         num_threads = 0;
     int         cluster     = 0;
-    if(_PE == 'B')
+    if(PE == 'B')
     {
         num_threads = _common_params.threads;
         cluster     = 1;
     }
-    if(_PE == 'L')
+    if(PE == 'L')
     {
         num_threads = _common_params.threads2;
         cluster     = 0;
