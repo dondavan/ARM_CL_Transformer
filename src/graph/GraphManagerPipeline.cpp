@@ -842,7 +842,7 @@ void GraphManagerPipeline::set_GPIO_tasks(std::string power_profie_mode)
         }
     }
 
-    bool simultaneously = false;
+    //bool simultaneously = false;
 
     auto &_workload = _workloads.find(0)->second;
     if(_workload.graph->name() == "YOLOv3" && power_profie_mode != "whole")
@@ -850,7 +850,7 @@ void GraphManagerPipeline::set_GPIO_tasks(std::string power_profie_mode)
         for(unsigned int id = 0; id < _workloads.size(); ++id)
         {
             auto &workload = _workloads.find(id)->second;
-            int   n        = workload.tasks.size();
+            //int   n        = workload.tasks.size();
             for(auto &task : workload.tasks)
             {
                 if(isInList(not_starting, task.node->name()))
@@ -869,7 +869,7 @@ void GraphManagerPipeline::set_GPIO_tasks(std::string power_profie_mode)
     for(unsigned int id = 0; id < _workloads.size(); ++id)
     {
         auto &workload = _workloads.find(id)->second;
-        int   n        = workload.tasks.size();
+        //int   n        = workload.tasks.size();
         for(auto &task : workload.tasks)
         {
             std::cerr << i++ << " task name: " << task.node->name() << "\t";
@@ -932,7 +932,7 @@ void GraphManagerPipeline::extract_governor_tasks(std::string mode)
         for(unsigned int id = 0; id < _workloads.size(); ++id)
         {
             auto &workload = _workloads.find(id)->second;
-            int   n        = workload.tasks.size();
+            //int   n        = workload.tasks.size();
             for(auto &task : workload.tasks)
             {
                 if(isInList(not_governor, task.node->name()))
@@ -943,7 +943,7 @@ void GraphManagerPipeline::extract_governor_tasks(std::string mode)
             }
         }
     }
-    int k = 0;
+    //int k = 0;
 }
 
 std::string removeConsecutiveDuplicates(const std::string &input)
@@ -1036,7 +1036,7 @@ void GraphManagerPipeline::set_freq_map(std::string freqs, std::string _order, c
     //TODO: Set just in use processor to its max fequency
     if(freqs == "max" or freqs == "[max]")
     {
-        int  i        = 0;
+        unsigned int  i        = 0;
         bool Prev_NPU = false;
         for(auto task : _governor_tasks)
         {
@@ -1177,7 +1177,6 @@ void GraphManagerPipeline::set_freq_map(std::string freqs, std::string _order, c
 
 void GraphManagerPipeline::set_governor_freqs()
 {
-    int i = 0;
     for(auto p : _governor_freqs)
     {
     }
