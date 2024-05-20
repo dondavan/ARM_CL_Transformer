@@ -210,7 +210,7 @@ void GraphManager::finalize_graph(Graph &graph, GraphContext &ctx, PassManager &
     }
     // Finalize Graph context
     ctx.finalize();
-    std::cerr<<'ee\n';
+    
     // Register graph
     _workloads.insert(std::make_pair(graph.id(), std::move(workload)));
     ARM_COMPUTE_LOG_GRAPH_VERBOSE("Created workload for graph with ID : " << graph.id() << std::endl);

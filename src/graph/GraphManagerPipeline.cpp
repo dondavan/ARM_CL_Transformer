@@ -1489,9 +1489,8 @@ void GraphManagerPipeline::set_freq_map(std::string freqs, std::string _order, c
 				}
 			}
 			i++;
-			//governor_freqs[task]={arm_compute::graph::ExecutionTask::get_max_l(),\
-					arm_compute::graph::ExecutionTask::get_max_b(),\
-					arm_compute::graph::ExecutionTask::get_max_g()};
+			//governor_freqs[task]={arm_compute::graph::ExecutionTask::get_max_l(),arm_compute::graph::ExecutionTask::get_max_b(),arm_compute::graph::ExecutionTask::get_max_g()};
+			
 		}
 		return;
 	}
