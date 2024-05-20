@@ -80,21 +80,21 @@ class TensorPipelineReceiver
     }
 
     private:
-    Tensor                                                 *_tensor = nullptr;
-    std::queue<std::unique_ptr<arm_compute::graph::Tensor>> _buffer ={};
-    std::queue<double *>                                    _NPU_buffer ={};
-    std::mutex                                              _mutex_ = {};
-    std::condition_variable                                 _condVar ={};
+    Tensor                                                 *_tensor         = nullptr;
+    std::queue<std::unique_ptr<arm_compute::graph::Tensor>> _buffer         = {};
+    std::queue<double *>                                    _NPU_buffer     = {};
+    std::mutex                                              _mutex_         = {};
+    std::condition_variable                                 _condVar        = {};
     bool                                                   *_receiver_ready = new bool(false);
     bool                                                   *_data_sent      = new bool(false);
 
     //For NPU
     bool         _is_npu     = false;
     unsigned int _Input_size = 0;
-    bool         _Transpose = true;
+    bool         _Transpose  = true;
 
-    std::string _name = {};
-    int         _graph_id = 0;
+    std::string _name              = {};
+    int         _graph_id          = 0;
     double      _t_sender_write    = 0;
     double      _t_sender_transfer = 0;
     double      _t_receiver_read   = 0;
@@ -136,9 +136,9 @@ class TensorPipelineSender
     private:
     Tensor *_tensor = nullptr;
     //vector of receivers instead of one receiver
-    std::vector<TensorPipelineReceiver *> _receivers;
-    std::string                           _name;
-    int                                   _graph_id;
+    std::vector<TensorPipelineReceiver *> _receivers    = {};
+    std::string                           _name         = {};
+    int                                   _graph_id     = 0;
     bool                                  _is_npu       = false;
     double                                _sending_time = 0;
     int                                   _num_run      = 0;
