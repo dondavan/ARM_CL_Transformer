@@ -109,3 +109,4 @@ src finished -> utils
 
 ****************************************************************************
 = arm_compute/graph/TensorPipeline.h
+= arm_compute/graph/frontend/IStreamPipeline.h
