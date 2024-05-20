@@ -6,7 +6,7 @@
 #include <string>
 #include <unordered_set>
 
-std::map<std::string, std::unordered_set<std::string>> ending_task_names{
+static std::map<std::string, std::unordered_set<std::string>> ending_task_names{
     { "alexnet",
       { "pool1",
         "pool2",
@@ -183,7 +183,7 @@ std::map<std::string, std::unordered_set<std::string>> ending_task_names{
 
 };
 
-std::map<std::string, std::unordered_set<std::string>> starting_task_names{
+static std::map<std::string, std::unordered_set<std::string>> starting_task_names{
     { "alexnet",
       {
           "conv1",
@@ -349,7 +349,7 @@ std::map<std::string, std::unordered_set<std::string>> starting_task_names{
 
 };
 
-std::string toLowerCase(std::string str)
+inline std::string toLowerCase(std::string str)
 {
     std::transform(str.begin(), str.end(), str.begin(),
                    [](unsigned char c)
@@ -357,7 +357,7 @@ std::string toLowerCase(std::string str)
     return str;
 }
 
-bool check_ending(std::string model, std::string layer)
+inline bool check_ending(std::string model, std::string layer)
 {
     if(layer.compare(0, 4, "NPU_") == 0)
     {
@@ -366,7 +366,7 @@ bool check_ending(std::string model, std::string layer)
     return (ending_task_names[toLowerCase(model)].count(layer) > 0);
 }
 
-bool check_starting(std::string model, std::string layer)
+inline bool check_starting(std::string model, std::string layer)
 {
     if(layer.compare(0, 4, "NPU_") == 0)
     {
