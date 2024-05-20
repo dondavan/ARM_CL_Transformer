@@ -49,7 +49,7 @@ namespace graph
  *
  * Represents a multiple source - multiple sink directed graph
  */
-class Graph final
+class Graph
 {
 public:
     Graph() = default;
