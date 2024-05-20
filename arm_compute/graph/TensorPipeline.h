@@ -95,12 +95,12 @@ class TensorPipelineReceiver
 
     std::string name;
     int         graph_id;
-    double t_sender_write    = 0;
-    double t_sender_transfer = 0;
-    double t_receiver_read   = 0;
-    double t_receiver_wait   = 0;
-    int    num_run           = 0;
-    int    Frame             = 0;
+    double      t_sender_write    = 0;
+    double      t_sender_transfer = 0;
+    double      t_receiver_read   = 0;
+    double      t_receiver_wait   = 0;
+    int         num_run           = 0;
+    int         Frame             = 0;
 };
 
 class TensorPipelineSender
@@ -122,27 +122,27 @@ class TensorPipelineSender
     void    set_graph_id(int g_id);
     void    set_is_npu(bool _is_npu)
     {
-        is_npu = _is_npu;
+        _is_npu = _is_npu;
     }
     double get_sending_time()
     {
-        return sending_time;
+        return _sending_time;
     }
     void reset_timing()
     {
-        sending_time = num_run = 0;
+        _sending_time = _num_run = 0;
     }
 
     private:
-    Tensor *tensor = nullptr;
+    Tensor *_tensor = nullptr;
     //vector of receivers instead of one receiver
-    std::vector<TensorPipelineReceiver *> receivers;
-    std::string                           name;
-    int                                   graph_id;
-    bool                                  is_npu       = false;
-    double                                sending_time = 0;
-    int                                   num_run      = 0;
-    int                                   Frame        = 0;
+    std::vector<TensorPipelineReceiver *> _receivers;
+    std::string                           _name;
+    int                                   _graph_id;
+    bool                                  _is_npu       = false;
+    double                                _sending_time = 0;
+    int                                   _num_run      = 0;
+    int                                   _Frame        = 0;
 };
 
 class TensorPipelineNPU : public Tensor
