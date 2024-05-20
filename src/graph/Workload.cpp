@@ -175,6 +175,7 @@ void execute_task(ExecutionTask &task)
 
 double execute_task2(ExecutionTask &task, int nn)
 {
+    ARM_COMPUTE_UNUSED(nn);
     double t = 0;
     if(task.task)
     {
