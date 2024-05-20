@@ -121,6 +121,11 @@ void CLTensorHandle::set_tensor(arm_compute::ITensor *_t)
     _tensor2 = dynamic_cast<arm_compute::CLTensor *>(_t);
 }
 
+arm_compute::ITensor *CLTensorHandle::tensor_ptr()
+{
+    return _tensor2;
+}
+
 } // namespace backends
 } // namespace graph
 } // namespace arm_compute
