@@ -210,6 +210,7 @@ class DVFS
     {
         init_rockpi();
         int         fdd = open_pandoon();
+		ARM_COMPUTE_UNUSED(fdd);
         std::string s;
         /*while(true){
 	                std::cout<<"Please enter freqs: ";
