@@ -80,30 +80,19 @@ std::vector<NodeID> bfs(Graph &g)
     std::list<NodeID> queue;
 
     // Push inputs and mark as visited
-    for (auto &input : g.nodes(NodeType::Input))
+    for(auto &input : g.nodes(NodeType::Input))
     {
-        if (input != EmptyNodeID)
+        if(input != EmptyNodeID)
         {
             visited[input] = true;
             queue.push_back(input);
         }
     }
 
-    // Ehsan Pipeline
-    // Push receivers and mark as visited
-	for(auto &input : g.nodes(NodeType::Receiver))
-	{
-		if(input != EmptyNodeID)
-		{
-			visited[input] = true;
-			stack.push(input);
-		}
-	}
-
     // Push const nodes and mark as visited
-    for (auto &const_node : g.nodes(NodeType::Const))
+    for(auto &const_node : g.nodes(NodeType::Const))
     {
-        if (const_node != EmptyNodeID)
+        if(const_node != EmptyNodeID)
         {
             visited[const_node] = true;
             queue.push_back(const_node);
@@ -111,7 +100,7 @@ std::vector<NodeID> bfs(Graph &g)
     }
 
     // Iterate over vector and edges
-    while (!queue.empty())
+    while(!queue.empty())
     {
         // Dequeue a node from queue and process
         NodeID n = queue.front();
@@ -120,11 +109,11 @@ std::vector<NodeID> bfs(Graph &g)
 
         const INode *node = g.node(n);
         ARM_COMPUTE_ERROR_ON(node == nullptr);
-        for (const auto &eid : node->output_edges())
+        for(const auto &eid : node->output_edges())
         {
             const Edge *e = g.edge(eid);
             ARM_COMPUTE_ERROR_ON(e == nullptr);
-            if (!visited[e->consumer_id()] && detail::all_inputs_are_visited(e->consumer(), visited))
+            if(!visited[e->consumer_id()] && detail::all_inputs_are_visited(e->consumer(), visited))
             {
                 visited[e->consumer_id()] = true;
                 queue.push_back(e->consumer_id());
@@ -134,6 +123,7 @@ std::vector<NodeID> bfs(Graph &g)
 
     return bfs_order_vector;
 }
+
 
 std::vector<NodeID> dfs(Graph &g)
 {
@@ -146,19 +136,30 @@ std::vector<NodeID> dfs(Graph &g)
     std::stack<NodeID> stack;
 
     // Push inputs and mark as visited
-    for (auto &input : g.nodes(NodeType::Input))
+    for(auto &input : g.nodes(NodeType::Input))
     {
-        if (input != EmptyNodeID)
+        if(input != EmptyNodeID)
         {
             visited[input] = true;
             stack.push(input);
         }
     }
 
+    //Pipeline
+    // Push receivers and mark as visited
+	for(auto &input : g.nodes(NodeType::Receiver))
+	{
+		if(input != EmptyNodeID)
+		{
+			visited[input] = true;
+			stack.push(input);
+		}
+	}
+
     // Push const nodes and mark as visited
-    for (auto &const_node : g.nodes(NodeType::Const))
+    for(auto &const_node : g.nodes(NodeType::Const))
     {
-        if (const_node != EmptyNodeID)
+        if(const_node != EmptyNodeID)
         {
             visited[const_node] = true;
             stack.push(const_node);
@@ -166,15 +167,18 @@ std::vector<NodeID> dfs(Graph &g)
     }
 
     // Iterate over vector and edges
-    while (!stack.empty())
+    while(!stack.empty())
     {
         // Pop a node from stack and process
         NodeID n = stack.top();
         dfs_order_vector.push_back(n);
+        //Ehsan
+        //std::cout<<"DFS; Node name: "<<g.node(n)->name()<<" num inputs: "<<g.node(n)->num_inputs()<<" num outputs: "<<g.node(n)->num_outputs()<<std::endl;
+
         stack.pop();
 
         // Mark node as visited
-        if (!visited[n])
+        if(!visited[n])
         {
             visited[n] = true;
         }
@@ -182,11 +186,11 @@ std::vector<NodeID> dfs(Graph &g)
         const INode *node = g.node(n);
         ARM_COMPUTE_ERROR_ON(node == nullptr);
         // Reverse iterate to push branches from right to left and pop on the opposite order
-        for (const auto &eid : arm_compute::utils::iterable::reverse_iterate(node->output_edges()))
+        for(const auto &eid : arm_compute::utils::iterable::reverse_iterate(node->output_edges()))
         {
             const Edge *e = g.edge(eid);
             ARM_COMPUTE_ERROR_ON(e == nullptr);
-            if (!visited[e->consumer_id()] && detail::all_inputs_are_visited(e->consumer(), visited))
+            if(!visited[e->consumer_id()] && detail::all_inputs_are_visited(e->consumer(), visited))
             {
                 stack.push(e->consumer_id());
             }
