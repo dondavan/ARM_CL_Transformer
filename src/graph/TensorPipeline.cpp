@@ -646,64 +646,49 @@ void TensorPipelineReceiver::set_receiver_ready()
 
 void TensorPipelineSender::add_receiver(TensorPipelineReceiver *d)
 {
-    receivers.emplace_back(d);
+    _receivers.emplace_back(d);
 }
 std::vector<TensorPipelineReceiver *> TensorPipelineSender::get_dest()
 {
-    return receivers;
+    return _receivers;
 }
 
 void TensorPipelineSender::set_tensor(Tensor *t)
 {
-    tensor = t;
+    _tensor = t;
 }
 Tensor *TensorPipelineSender::get_tensor()
 {
-    return tensor;
+    return _tensor;
 }
 void TensorPipelineSender::set_name(std::string _name)
 {
-    name = std::string(_name);
+    _name = std::string(_name);
 }
 int TensorPipelineSender::get_graph_id()
 {
-    return graph_id;
+    return _graph_id;
 }
 void TensorPipelineSender::set_graph_id(int g_id)
 {
-    graph_id = g_id;
+    _graph_id = g_id;
 }
 
 bool TensorPipelineSender::send_data()
 {
-    //std::string s;
-    //s="graph:" + std::to_string(graph_id) +"_"+name+ " before check dest_tensor\n";
-    //std::cerr<<s;
     double duration_sender_sending = 0;
     auto   start                   = std::chrono::high_resolution_clock::now();
-    tensor->handle()->map(true);
-    for(auto rec : receivers)
+    _tensor->handle()->map(true);
+    for(auto rec : _receivers)
     {
-        /*if(is_npu){
-				double* output=nullptr;
-				//output=get npu output
-				rec->send_data(output);
-			}
-			else{
-				rec->send_data(tensor);
-			}*/
-        rec->send_data(tensor);
-        //std::cerr<<"graph:" + std::to_string(graph_id) +name +" send to "+rec->name()+" done!"<<std::endl;
+        rec->send_data(_tensor);
     }
-    tensor->handle()->unmap();
+    _tensor->handle()->unmap();
     auto end = std::chrono::high_resolution_clock::now();
-    num_run++;
-    Frame++;
+    _num_run++;
+    _Frame++;
     duration_sender_sending = 1000 * (std::chrono::duration_cast<std::chrono::duration<double>>(end - start).count());
-    //std::cerr<<name<<" Frame "<<Frame-1<<" sender whole sending time: "<<duration_sender_sending<<std::endl;
-    sending_time += duration_sender_sending;
-    //s="graph:" + std::to_string(graph_id) +"_"+name+" after check dest_tensor\n";
-    //std::cerr<<s;
+    _sending_time += duration_sender_sending;
     return true;
 }
 
