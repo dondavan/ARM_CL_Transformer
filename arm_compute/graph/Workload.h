@@ -122,7 +122,7 @@ struct ExecutionTask
 	int GPUFreq=-1;
 	bool starting=false;
 
-    double t;
+    double t=0;
     int n=0;
     bool block=0;
     bool ending=0;
