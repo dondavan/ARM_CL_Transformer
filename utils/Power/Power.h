@@ -16,6 +16,8 @@
 //RockPi
 #define POUT 157  /* P1-07 */
 
+/*
+* -Werror=unused-function
 static int
 GPIOExport(int pin)
 {
@@ -35,7 +37,10 @@ GPIOExport(int pin)
 	close(fd);
 	return(0);
 }
+*/
 
+/*
+* -Werror=unused-function
 static int
 GPIODirection(int pin, int dir)
 {
@@ -60,6 +65,7 @@ GPIODirection(int pin, int dir)
 	close(fd);
 	return(0);
 }
+*/
 
 static int
 GPIOWrite(int pin, int value)
@@ -86,6 +92,8 @@ GPIOWrite(int pin, int value)
 	return(0);
 }
 
+/*
+* -Werror=unused-function
 static int
 GPIOUnexport(int pin)
 {
@@ -104,3 +112,4 @@ GPIOUnexport(int pin)
 	close(fd);
 	return(0);
 }
+*/
