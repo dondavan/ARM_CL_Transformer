@@ -84,12 +84,18 @@ class IStream
     }
 
     //Ehsan
-    virtual NodeID next_layer(std::vector<std::pair<NodeID, int>>, NodeID &, int &, std::string) {};
-    virtual int    get_tail_graph_id()
+    virtual NodeID next_layer(std::vector<std::pair<NodeID, int>>, NodeID &, int &, std::string)
     {
         return 0;
     };
-    virtual std::pair<NodeID, int> get_position() {};
+    virtual int get_tail_graph_id()
+    {
+        return 0;
+    };
+    virtual std::pair<NodeID, int> get_position()
+    {
+        return std::make_pair<NodeID, int>(0, 0);
+    };
 
     protected:
     //inline static StreamHints _hints    = {};   /**< Execution and algorithmic hints */

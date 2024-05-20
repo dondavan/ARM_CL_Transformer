@@ -23,8 +23,8 @@
  */
 #include "arm_compute/graph/frontend/SubStream.h"
 
-#include "arm_compute/graph/frontend/ILayer.h"
 #include "arm_compute/graph/Graph.h"
+#include "arm_compute/graph/frontend/ILayer.h"
 
 namespace arm_compute
 {
@@ -32,18 +32,19 @@ namespace graph
 {
 namespace frontend
 {
-SubStream::SubStream(IStream &s) : _s(s)
+SubStream::SubStream(IStream &s)
+    : _s(s)
 {
-    _hints     = s.hints();
-    _tail_node = s.tail_node();
-    tail_graph_id=s.get_tail_graph_id();
+    _hints        = s.hints();
+    _tail_node    = s.tail_node();
+    tail_graph_id = s.get_tail_graph_id();
 }
 
 void SubStream::add_layer(ILayer &layer)
 {
-    auto nid   = layer.create_layer(*this);
-    _tail_node = nid;
-    tail_graph_id=IStreamPipeline::_target_graph;
+    auto nid      = layer.create_layer(*this);
+    _tail_node    = nid;
+    tail_graph_id = IStreamPipeline::_target_graph;
 }
 
 const Graph &SubStream::graph() const
@@ -57,19 +58,18 @@ Graph &SubStream::graph()
 }
 
 //Ehsan
-
-SubStream & SubStream::operator<<(ILayer &layer)
+SubStream &SubStream::operator<<(ILayer &layer)
 {
-	layer.add_input_node(_tail_node,tail_graph_id);
-	_s.next_layer(layer.get_input_nodes(), _tail_node, tail_graph_id, layer.name());
+    layer.add_input_node(_tail_node, tail_graph_id);
+    _s.next_layer(layer.get_input_nodes(), _tail_node, tail_graph_id, layer.name());
     add_layer(layer);
     return *this;
 }
-SubStream & SubStream::operator<<(ILayer &&layer)
+SubStream &SubStream::operator<<(ILayer &&layer)
 {
-	layer.add_input_node(_tail_node,tail_graph_id);
-	_s.next_layer(layer.get_input_nodes(), _tail_node, tail_graph_id, layer.name());
-	add_layer(layer);
+    layer.add_input_node(_tail_node, tail_graph_id);
+    _s.next_layer(layer.get_input_nodes(), _tail_node, tail_graph_id, layer.name());
+    add_layer(layer);
     return *this;
 }
 
