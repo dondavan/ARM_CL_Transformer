@@ -76,7 +76,7 @@ class CLTensorHandle final : public ITensorHandle
     private:
     //arm_compute::CLTensor _tensor; /**< Backend Tensor */
     //Ehsan
-    arm_compute::CLTensor *_tensor2;
+    arm_compute::CLTensor *_tensor2 = nullptr;
 };
 } // namespace backends
 } // namespace graph

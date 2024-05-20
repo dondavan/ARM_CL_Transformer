@@ -139,3 +139,4 @@ src finished -> utils
 = arm_compute/graph/TensorPipeline.h
 = src/graph/backends/CL/CLDeviceBackend.cpp
 = arm_compute/graph/backends/CL/CLTensorHandle.h
+= src/graph/backends/CL/CLTensorHandle.cpp

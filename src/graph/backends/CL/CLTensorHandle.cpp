@@ -31,12 +31,12 @@ namespace graph
 {
 namespace backends
 {
-CLTensorHandle::CLTensorHandle(const ITensorInfo &info) 
-    //: _tensor()
+CLTensorHandle::CLTensorHandle(const ITensorInfo &info)
+//: _tensor()
 {
     //_tensor.allocator()->init(info);
     // Ehsan
-    _tensor2=new arm_compute::CLTensor();
+    _tensor2 = new arm_compute::CLTensor();
     _tensor2->allocator()->init(info);
 }
 
@@ -54,7 +54,7 @@ void CLTensorHandle::free()
 
 void CLTensorHandle::manage(IMemoryGroup *mg)
 {
-    if (mg != nullptr)
+    if(mg != nullptr)
     {
         //mg->manage(&_tensor);
         mg->manage(_tensor2);
@@ -84,7 +84,7 @@ void CLTensorHandle::release_if_unused()
     */
     if(!_tensor2->is_used())
     {
-    	_tensor2->allocator()->free();
+        _tensor2->allocator()->free();
     }
 }
 
@@ -116,8 +116,9 @@ Target CLTensorHandle::target() const
 }
 
 //Ehsan
-void CLTensorHandle::set_tensor(arm_compute::ITensor* _t){
-	_tensor2=dynamic_cast<arm_compute::CLTensor*>(_t);
+void CLTensorHandle::set_tensor(arm_compute::ITensor *_t)
+{
+    _tensor2 = dynamic_cast<arm_compute::CLTensor *>(_t);
 }
 
 } // namespace backends
