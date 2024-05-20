@@ -129,13 +129,14 @@ class NodeMap
 
     void print()
     {
+        /*
         for(auto entry : mm)
         {
             for(auto v : entry.second)
             {
-                ARM_COMPUTE_UNUSED(entry,v);
             }
         }
+        */
     }
 
     private:
