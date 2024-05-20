@@ -37,7 +37,7 @@ namespace backends
 /** Neon Tensor handle interface object **/
 class NETensorHandle final : public ITensorHandle
 {
-public:
+    public:
     /** Default Constructor
      *
      * @param[in] info Tensor metadata
@@ -49,28 +49,32 @@ public:
     NETensorHandle(NETensorHandle &&) = default;
     /** Allow instances of this class to be moved */
     NETensorHandle &operator=(NETensorHandle &&) = default;
+    /** Prevent instances of this class from being copied (As this class contains pointers) */
+    NETensorHandle(const NETensorHandle &) = delete;
+    /** Prevent instances of this class from being copied (As this class contains pointers) */
+    NETensorHandle &operator=(const NETensorHandle &) = delete;
 
     // Inherited overridden methods
-    void allocate() override;
-    void free() override;
-    void manage(IMemoryGroup *mg) override;
-    void map(bool blocking) override;
+    void                        allocate() override;
+    void                        free() override;
+    void                        manage(IMemoryGroup *mg) override;
+    void                        map(bool blocking) override;
     void                        unmap() override;
     void                        release_if_unused() override;
     arm_compute::ITensor       &tensor() override;
     const arm_compute::ITensor &tensor() const override;
 
     //Ehsan
-    void set_tensor(arm_compute::ITensor*) override;
+    void                          set_tensor(arm_compute::ITensor *) override;
     virtual arm_compute::ITensor *tensor_ptr() override;
 
-    ITensorHandle              *parent_handle() override;
-    bool                        is_subtensor() const override;
-    Target                      target() const override;
+    ITensorHandle *parent_handle() override;
+    bool           is_subtensor() const override;
+    Target         target() const override;
 
-private:
+    private:
     //Ehsan
-    arm_compute::Tensor* _tensor;
+    arm_compute::Tensor *_tensor = nullptr;
     //arm_compute::Tensor _tensor; /**< Backend Tensor */
 };
 } // namespace backends

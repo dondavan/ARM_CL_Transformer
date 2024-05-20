@@ -140,3 +140,4 @@ src finished -> utils
 = src/graph/backends/CL/CLDeviceBackend.cpp
 = arm_compute/graph/backends/CL/CLTensorHandle.h
 = src/graph/backends/CL/CLTensorHandle.cpp
+= arm_compute/graph/backends/NEON/NETensorHandle.h
