@@ -155,7 +155,7 @@ bool IStreamPipeline::is_next_layer(std::string name){
 
 bool IStreamPipeline::is_next_layer(std::string name){
 		static int index=-1;
-		bool starting=check_starting(graph_name,name);
+		bool starting=check_starting(_graph_name,name);
 		if(starting){
 			index++;
 			std::string indent=(index%2)?"":"\t\t\t";
@@ -171,7 +171,7 @@ bool IStreamPipeline::is_next_layer(std::string name){
     }
 bool IStreamPipeline::is_end_layer(std::string name){
 		static int index=0;
-		if (check_ending(graph_name, name)){
+		if (check_ending(_graph_name, name)){
 			std::string indent=(index%2)?"":"\t\t\t";
 			std::cerr <<indent<< index<<" layer: "<<name << std::endl;
 			index++;

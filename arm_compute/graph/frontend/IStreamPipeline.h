@@ -246,7 +246,7 @@ class IStreamPipeline : public IStream
     static bool is_next_layer(std::string name);
     static bool is_end_layer(std::string name);
 
-    std::string graph_name;
+    static std::string _graph_name;
 
     protected:
     int              _current_layer = 0;
