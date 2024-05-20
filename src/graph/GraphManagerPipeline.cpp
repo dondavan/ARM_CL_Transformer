@@ -586,7 +586,7 @@ void GraphManagerPipeline::warmup_and_execute_graph_serial(Graph &graph, int nn)
             _condVar_serial.wait(lck, [this]
                                  { return _ready; });
 
-            if(-1 == GPIOWrite(POUT, 1))
+            if(-1 == power::GPIOWrite(POUT, 1))
             {
                 std::cerr << "could not write 1\n";
             }
@@ -645,7 +645,7 @@ void GraphManagerPipeline::warmup_and_execute_graph_serial(Graph &graph, int nn)
     if(graph.id() == _num_graphs - 1)
     {
         std::this_thread::sleep_for(std::chrono::milliseconds(8));
-        if(-1 == GPIOWrite(POUT, 0))
+        if(-1 == power::GPIOWrite(POUT, 0))
         {
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(200));

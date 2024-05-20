@@ -15,18 +15,21 @@
 //#define POUT 432
 //RockPi
 #define POUT 157 /* P1-07 */
+
+#define BUFFER_MAX 3
 #define DIRECTION_MAX 35
 #define VALUE_MAX 30
 
-
 static const char s_directions_str[] = "in\0out";
 static const char s_values_str[] = "01";
+
+namespace power
+{
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 int GPIOExport(int pin)
 {
-#define BUFFER_MAX 3
     char    buffer[BUFFER_MAX];
     ssize_t bytes_written;
     int     fd;
@@ -109,3 +112,5 @@ int GPIOUnexport(int pin)
     return (0);
 }
 #pragma GCC diagnostic pop
+
+}// namespace power

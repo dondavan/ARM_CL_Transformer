@@ -62,7 +62,7 @@ void ExecutionTask::switch_GPIO_starting()
 {
     if(starting_gpio_switch)
     {
-        if(-1 == GPIOWrite(POUT, 0))
+        if(-1 == power::GPIOWrite(POUT, 0))
             std::cerr << "Could not write 0 to GPIO\n";
     }
 }
@@ -70,7 +70,7 @@ void ExecutionTask::switch_GPIO_ending()
 {
     if(ending_gpio_switch)
     {
-        if(-1 == GPIOWrite(POUT, 1))
+        if(-1 == power::GPIOWrite(POUT, 1))
             std::cerr << "Could not write 1 to GPIO\n";
     }
 }

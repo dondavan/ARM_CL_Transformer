@@ -110,6 +110,7 @@ struct ExecutionTask
 	void apply_freq(std::string name="");
 	void switch_GPIO_starting();
 	void switch_GPIO_ending();
+    
 	static void init();
 	static void finish();
 
