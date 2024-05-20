@@ -162,18 +162,20 @@ class DVFS
         std::string IOCTL_path = "/dev/pandoon_device";
         std::string Command    = "chmod 666 " + IOCTL_path;
         Command                = "echo pandoon > " + CPU_path + "policy4/scaling_governor";
-        system(Command.c_str());
+		int ret;
+		ARM_COMPUTE_UNUSED(ret);
+        ret = system(Command.c_str());
         Command = "echo pandoon > " + CPU_path + "policy0/scaling_governor";
-        system(Command.c_str());
+        ret = system(Command.c_str());
         Command = "echo pandoon > " + GPU_path + "/governor";
-        system(Command.c_str());
+        ret = system(Command.c_str());
 
         Command = "cat " + CPU_path + "policy4/scaling_governor";
-        system(Command.c_str());
+        ret = system(Command.c_str());
         Command = "cat " + CPU_path + "policy4/scaling_governor";
-        system(Command.c_str());
+        ret = system(Command.c_str());
         Command = "cat " + GPU_path + "/governor";
-        system(Command.c_str());
+        ret = system(Command.c_str());
         return 0;
     }
 
