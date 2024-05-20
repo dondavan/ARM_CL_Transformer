@@ -423,7 +423,7 @@ void call_all_tasks_pipeline(ExecutionWorkload &workload, int nn)
     static int cc = 0;
     static int c  = 0;
 #endif
-    int               ii = 0;
+    size_t               ii = 0;
     std::stringstream stream;
     //stream<<"--size of tasks: "<<workload.tasks.size()<<std::endl;
     //std::cerr<<stream.str();
