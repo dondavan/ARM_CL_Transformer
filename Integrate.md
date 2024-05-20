@@ -115,6 +115,7 @@ src finished -> utils
 = arm_compute/graph/frontend/IStreamPipeline.h  !!!!!!!!!!!!!!!!!!!!!!!!!!!! inline static
 = arm_compute/graph/frontend/IStream.h          !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 = arm_compute/graph/GraphManager.h
+= arm_compute/graph/frontend/ILayer.h
 
 = src/graph/GraphManager.cpp              
 = src/graph/GraphManagerPipeline.cpp            !!!!!!!!!!!!!!!!!!!!!!!!!!!!

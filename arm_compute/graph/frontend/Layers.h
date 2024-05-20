@@ -340,7 +340,7 @@ public:
                           std::move(rest_sub_streams)...);
         //Ehsan
         for (unsigned int i=0;i<_sub_streams.size();i++){
-        	input_nodes.push_back( std::make_pair(_sub_streams[i]->tail_node(), _sub_streams[i]->get_tail_graph_id()));
+        	_input_nodes.push_back( std::make_pair(_sub_streams[i]->tail_node(), _sub_streams[i]->get_tail_graph_id()));
         }
     }
     /** Construct a concatenation layer
@@ -365,7 +365,7 @@ public:
                           std::move(rest_sub_streams)...);
         //Ehsan
         for (unsigned int i=0;i<_sub_streams.size();i++){
-			input_nodes.push_back( std::make_pair(_sub_streams[i]->tail_node(), _sub_streams[i]->get_tail_graph_id()));
+			_input_nodes.push_back( std::make_pair(_sub_streams[i]->tail_node(), _sub_streams[i]->get_tail_graph_id()));
 		}
 
     }
@@ -379,7 +379,7 @@ public:
         _sub_streams.push_back(std::make_unique<SubStream>(std::move(sub_stream)));
         //Ehsan
         for (unsigned int i=0;i<_sub_streams.size();i++){
-			input_nodes.push_back( std::make_pair(_sub_streams[i]->tail_node(), _sub_streams[i]->get_tail_graph_id()));
+			_input_nodes.push_back( std::make_pair(_sub_streams[i]->tail_node(), _sub_streams[i]->get_tail_graph_id()));
 		}
         _name="concat";
     }

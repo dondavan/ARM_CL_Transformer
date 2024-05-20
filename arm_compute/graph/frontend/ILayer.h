@@ -76,7 +76,7 @@ public:
 protected:
     std::string _name = {};
     //Ehsan
-    std::vector<std::pair<NodeID,int>> _input_nodes;
+    std::vector<std::pair<NodeID,int>> _input_nodes = {};
 };
 } // namespace frontend
 } // namespace graph
