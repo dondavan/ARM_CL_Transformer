@@ -40,13 +40,17 @@ namespace graph
 //Ehsan remove final
 class Tensor
 {
-public:
+    public:
     /** Default constructor
      *
      * @param[in] id   Tensor ID
      * @param[in] desc Tensor information
      */
     Tensor(TensorID id, TensorDescriptor desc);
+    /** Default virtual deconstructor
+      * 
+      */
+    virtual ~Tensor() = default;
     /** Tensor ID accessor
      *
      * @return Tensor ID
@@ -94,7 +98,7 @@ public:
      * @return True if the accessor was called else false
      */
     bool call_accessor();
-    
+
     //Ehsan
     virtual bool my_call_accessor();
 
@@ -114,7 +118,7 @@ public:
      */
     std::set<EdgeID> bound_edges() const;
 
-private:
+    private:
     TensorID                         _id;          /**< Tensor id */
     TensorDescriptor                 _desc;        /**< Tensor metadata */
     std::unique_ptr<ITensorHandle>   _handle;      /**< Tensor Handle */
