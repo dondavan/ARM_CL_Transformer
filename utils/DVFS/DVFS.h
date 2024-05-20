@@ -119,6 +119,7 @@ class DVFS
         }
         clock_gettime(CLOCK_MONOTONIC, &t_end);
         unsigned long int ioctltime = diff_time(t_start, t_end);
+		ARM_COMPUTE_UNUSED(ioctltime);
         return 0;
     }
 
