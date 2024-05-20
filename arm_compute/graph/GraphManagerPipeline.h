@@ -194,8 +194,6 @@ class GraphManagerPipeline : public GraphManager
 
     std::vector<std::string>                  _governor_tasks = {};
     std::map<std::string, std::array<int, 3>> _governor_freqs = {};
-    //std::map<std::string, std::array<int, 3>> graphs_freqs;
-    //std::map<std::string, std::array<int, 3>> PEs_freqs;
 };
 } // namespace graph
 } // namespace arm_compute
