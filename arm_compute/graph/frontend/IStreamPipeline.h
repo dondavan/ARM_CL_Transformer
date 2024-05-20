@@ -46,9 +46,9 @@ class NodeMap
     public:
     void insert(std::pair<NodeID, int> key, std::pair<NodeID, int> value)
     {
-        if(mm.find(key) != mm.end())
+        if(_mm.find(key) != _mm.end())
         {
-            auto vv    = mm[key];
+            auto vv    = _mm[key];
             bool exist = false;
             for(auto v : vv)
             {
@@ -60,14 +60,14 @@ class NodeMap
             }
             if(!exist)
             {
-                mm[key].push_back(value);
+                _mm[key].push_back(value);
             }
         }
         else
         {
             std::vector<std::pair<NodeID, int>> vv;
             vv.push_back(value);
-            mm.insert(std::make_pair(key, vv));
+            _mm.insert(std::make_pair(key, vv));
         }
     }
     //There are three cases:
@@ -79,7 +79,7 @@ class NodeMap
     {
         std::pair<NodeID, int> r = { 0, -2 };
         //There is no mapping for this node-graph, so create T and R in source and destination subgraphs and add them to the mapping records
-        if(mm.find(key) == mm.end())
+        if(_mm.find(key) == _mm.end())
         {
             //std::cerr<<"There is no mapping for node graph \n";
             r = { 0, -1 };
@@ -89,7 +89,7 @@ class NodeMap
         //There is a record for this NodeID-GraphID so it already created the T and R nodes and are added to mapping records
         else
         {
-            auto maps  = mm[key];
+            auto maps  = _mm[key];
             bool exist = false;
             //If there is a mapped node from that source node that is in this target subgraph
             for(auto v : maps)
@@ -143,7 +143,7 @@ class NodeMap
     //A mapping that records the mapping of NodeID-GraphID to antoher NodeID-GraphID (mapping of a node in a subgraph to another node in another subgraph)
     //So that when input node of a layer is a node in another subgraph we should create a node in this subgraph(R node) and add a node to that node(T node) to send data from that subgraph to
     //the R in this subgraph. So, instead of that node we use R node in this subgraph which have same data
-    std::map<std::pair<NodeID, int>, std::vector<std::pair<NodeID, int>>> mm;
+    std::map<std::pair<NodeID, int>, std::vector<std::pair<NodeID, int>>> _mm ={};
 };
 
 /** Stream interface **/
