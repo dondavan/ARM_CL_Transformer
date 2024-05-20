@@ -792,7 +792,7 @@ void GraphManagerPipeline::set_GPIO_tasks(std::string power_profie_mode)
         for(unsigned int id = 0; id < _workloads.size(); ++id)
         {
             auto &workload = _workloads.find(id)->second;
-            int   n        = workload.tasks.size();
+            //int   n        = workload.tasks.size();
             for(auto &task : workload.tasks)
             {
                 task.starting_gpio_switch = task.starting;
@@ -807,7 +807,7 @@ void GraphManagerPipeline::set_GPIO_tasks(std::string power_profie_mode)
         for(unsigned int id = 0; id < _workloads.size(); ++id)
         {
             auto &workload = _workloads.find(id)->second;
-            int   n        = workload.tasks.size();
+            //int   n        = workload.tasks.size();
             for(auto &task : workload.tasks)
             {
                 task.starting_gpio_switch = task.starting;
@@ -822,7 +822,7 @@ void GraphManagerPipeline::set_GPIO_tasks(std::string power_profie_mode)
         for(unsigned int id = 0; id < _workloads.size(); ++id)
         {
             auto &workload = _workloads.find(id)->second;
-            int   n        = workload.tasks.size();
+            //int   n        = workload.tasks.size();
             for(auto &task : workload.tasks)
             {
                 task.starting_gpio_switch = false;
