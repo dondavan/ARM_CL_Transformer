@@ -24,13 +24,13 @@
 #ifndef ARM_COMPUTE_GRAPH_STREAM_H
 #define ARM_COMPUTE_GRAPH_STREAM_H
 
-#include "arm_compute/graph/frontend/IStream.h"
-#include "arm_compute/graph/frontend/IStreamOperators.h"
-#include "arm_compute/graph/frontend/Types.h"
 #include "arm_compute/graph/Graph.h"
 #include "arm_compute/graph/GraphContext.h"
 #include "arm_compute/graph/GraphManager.h"
 #include "arm_compute/graph/GraphManagerPipeline.h"
+#include "arm_compute/graph/frontend/IStream.h"
+#include "arm_compute/graph/frontend/IStreamOperators.h"
+#include "arm_compute/graph/frontend/Types.h"
 
 namespace arm_compute
 {
@@ -44,7 +44,7 @@ class ILayer;
 /** Stream frontend class to construct simple graphs in a stream fashion */
 class Stream final : public IStream
 {
-public:
+    public:
     /** Constructor
      *
      * @param[in] id   Stream id
@@ -61,43 +61,56 @@ public:
      * @param[in] config (Optional) Graph configuration to use
      */
     //void finalize(Target target, const GraphConfig &config);
-    void finalize(Target target, const GraphConfig &config, std::set<int> *b=NULL, int blocking=0);
+    void finalize(Target target, const GraphConfig &config, std::set<int> *b = NULL, int blocking = 0);
     /** Executes the stream **/
-    void run();
+    //Ehsan
+    void run(int nn = 0);
+    void run(bool annotate, int nn = 0);
+
+    void measure(int n);
+    void reset();
 
     // Inherited overridden methods
     void         add_layer(ILayer &layer) override;
     Graph       &graph() override;
     const Graph &graph() const override;
 
-    void set_input_time(double t){
-    	_manager.set_input_time(t);
+    void set_input_time(double t)
+    {
+        _manager.set_input_time(t);
     }
-    void set_task_time(double t){
+    void set_task_time(double t)
+    {
         _manager.set_task_time(t);
     }
-    void set_output_time(double t){
+    void set_output_time(double t)
+    {
         _manager.set_output_time(t);
     }
-    void set_cost_time(double t){
-    	cost=t;
+    void set_cost_time(double t)
+    {
+        cost = t;
     }
 
-    double get_input_time(){
-    	return _manager.get_input_time();
+    double get_input_time()
+    {
+        return _manager.get_input_time();
     }
-    double get_task_time(){
-    	return _manager.get_task_time();
+    double get_task_time()
+    {
+        return _manager.get_task_time();
     }
-    double get_output_time(){
-    	return _manager.get_output_time();
+    double get_output_time()
+    {
+        return _manager.get_output_time();
     }
-    double get_cost_time(){
+    double get_cost_time()
+    {
         return cost;
     }
     Stream &operator<<(ILayer &layer);
 
-private:
+    private:
     //Important: GraphContext must be declared *before* the GraphManager because the GraphManager
     //allocates resources from the context and therefore needs to be destroyed before the context during clean up.
     GraphContext _ctx;     /**< Graph context to use */
@@ -105,12 +118,12 @@ private:
     Graph        _g;       /**< Internal graph representation of the stream */
 
     //Ehsan
-    std::chrono::time_point<std::chrono::high_resolution_clock> start;
-    std::chrono::time_point<std::chrono::high_resolution_clock> finish;
-    double input_time=0;
-    double task_time=0;
-    double output_time=0;
-    double cost=0;
+    std::chrono::time_point<std::chrono::high_resolution_clock> _start      = {};
+    std::chrono::time_point<std::chrono::high_resolution_clock> _finish     = {};
+    double                                                      input_time  = 0;
+    double                                                      task_time   = 0;
+    double                                                      output_time = 0;
+    double                                                      cost        = 0;
 };
 } // namespace frontend
 } // namespace graph
