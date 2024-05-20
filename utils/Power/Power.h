@@ -38,7 +38,8 @@ int GPIOExport(int pin)
     }
 
     bytes_written = snprintf(buffer, BUFFER_MAX, "%d", pin);
-    write(fd, buffer, bytes_written);
+    int ret = write(fd, buffer, bytes_written);
+	ARM_COMPUTE_UNUSED(ret);
     close(fd);
     return (0);
 }
@@ -103,7 +104,8 @@ int GPIOUnexport(int pin)
     }
 
     bytes_written = snprintf(buffer, BUFFER_MAX, "%d", pin);
-    write(fd, buffer, bytes_written);
+    int ret = write(fd, buffer, bytes_written);
+	ARM_COMPUTE_UNUSED(ret);
     close(fd);
     return (0);
 }
