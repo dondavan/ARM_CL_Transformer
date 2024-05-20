@@ -34,22 +34,22 @@ namespace graph
 /** Intermediate Output Layer node */
 class NPUNode final : public INode
 {
-public:
+    public:
     /** Default Constructor */
-	NPUNode(std::vector<NodeIdxPair> inputs,std::vector<NodeIdxPair> outputs);
+    NPUNode(std::vector<NodeIdxPair> inputs, std::vector<NodeIdxPair> outputs);
 
     // Inherited overridden methods:
     NodeType         type() const override;
     bool             forward_descriptors() override;
     TensorDescriptor configure_output(size_t idx) const override;
-    void accept(INodeVisitor &v) override;
-    bool restructure_graph();
+    void             accept(INodeVisitor &v) override;
+    bool             restructure_graph();
 
     //void set_tensor(Tensor *t);
     //TensorPipelineSender* get_sender_tensor(){return sender_tensor;};
-private:
-    std::vector<NodeIdxPair> _inputs_pair;
-    std::vector<NodeIdxPair> _outputs_pair;
+    private:
+    std::vector<NodeIdxPair> _inputs_pair = {};
+    std::vector<NodeIdxPair> _outputs_pair{};
     //TensorPipelineSender *sender_tensor;
 };
 } // namespace graph
