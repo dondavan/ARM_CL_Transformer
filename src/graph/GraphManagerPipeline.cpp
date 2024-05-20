@@ -271,7 +271,7 @@ void GraphManagerPipeline::execute_graph(Graph &graph, int nn)
     //Ehsan measure input, task and output timings:
 
     int n = 4;
-    for(int k = 0; k < n; k++)
+    for(size_t k = 0; k < n; k++)
     {
         if(_measure_when_full)
         {
