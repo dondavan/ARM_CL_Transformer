@@ -105,28 +105,28 @@ class GraphManagerPipeline : public GraphManager
 
     void set_input_time(int target, double t)
     {
-        input_time[target] = t;
+        _input_time[target] = t;
     }
     void set_task_time(int target, double t)
     {
-        task_time[target] = t;
+        _task_time[target] = t;
     }
     void set_output_time(int target, double t)
     {
-        output_time[target] = t;
+        _output_time[target] = t;
     }
 
     double get_input_time(int target)
     {
-        return input_time[target];
+        return _input_time[target];
     }
     double get_task_time(int target)
     {
-        return task_time[target];
+        return _task_time[target];
     }
     double get_output_time(int target)
     {
-        return output_time[target];
+        return _output_time[target];
     }
 
     void print_times(int n);
@@ -135,13 +135,13 @@ class GraphManagerPipeline : public GraphManager
     void reset(Graph &graph);
     void set_num_graphs(int n)
     {
-        num_graphs = n;
-        input_time.resize(n);
-        receive_time.resize(n);
-        task_time.resize(n);
-        send_time.resize(n);
-        output_time.resize(n);
-        transmition_time.resize(n);
+        _num_graphs = n;
+        _input_time.resize(n);
+        _receive_time.resize(n);
+        _task_time.resize(n);
+        _send_time.resize(n);
+        _output_time.resize(n);
+        _transmition_time.resize(n);
     }
     void print_tasks();
     void reset_timing(int graph_id);
@@ -150,11 +150,11 @@ class GraphManagerPipeline : public GraphManager
 
     bool *get_ready()
     {
-        return &ready;
+        return &_ready;
     }
     std::vector<std::string> &get_input_list()
     {
-        return input_images;
+        return _input_images;
     }
 
     std::map<GraphID, ExecutionWorkload> &get_workloads()
