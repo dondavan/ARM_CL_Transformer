@@ -48,8 +48,8 @@ public:
     //void set_tensor(Tensor *t);
     //TensorPipelineSender* get_sender_tensor(){return sender_tensor;};
 private:
-    std::vector<NodeIdxPair> Inputs;
-    std::vector<NodeIdxPair> Outputs;
+    std::vector<NodeIdxPair> _inputs_pair;
+    std::vector<NodeIdxPair> _outputs_pair;
     //TensorPipelineSender *sender_tensor;
 };
 } // namespace graph

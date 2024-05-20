@@ -35,16 +35,8 @@ namespace graph
 NPUNode::NPUNode(std::vector<NodeIdxPair> inputs, std::vector<NodeIdxPair> outputs)
     //: _info(info), _out_quant_info(std::move(out_quant_info))
 {
-    //_input_edges.resize(inputs.size(), EmptyEdgeID);
-    //We do not resize outputs to real number of outputs, because the output tensors are already created(unlike normal routine which
-    //output tensors always create by source node but because the nodes and tensors alreay created and we just want to replace
-    //this node we use the already created tensors so now we set the number of outputs to 0, and in addnode function it does not
-    //create tensor for each output but after that we set number of outputs to correct value
-    //_outputs.resize(outputs.size(), NullTensorID);
-    //_outputs.resize(0,NullTensorID);
-	//std::cerr<<"init NPU node\n";
-    Inputs=inputs;
-    Outputs=outputs;
+    _inputs_pair=inputs;
+    _outputs_pair=outputs;
 }
 
 
@@ -58,16 +50,15 @@ bool NPUNode::forward_descriptors()
 }
 
 bool NPUNode::restructure_graph(){
-	_input_edges.resize(Inputs.size(), EmptyEdgeID);
-	//_outputs.resize(Outputs.size(), NullTensorID);
+	_input_edges.resize(_inputs_pair.size(), EmptyEdgeID);
 	int i=0;
-	for(auto output:Outputs){
+	for(auto output:_outputs_pair){
 
 		auto output_node=_graph->node(output.node_id);
-		std::cerr<<"re-struct output node "<<output_node->name()<<" to the npu node\n";
-		auto indx=output.index;
+		auto idx=output.index;
 		int j=0;
 		int n_inputs=output_node->num_inputs();
+
 		for (int j=0;j<n_inputs;j++){
 			auto edge=output_node->input_edge(j);
 			if(edge->producer()->type()!=arm_compute::graph::NodeType::NPU){
@@ -85,7 +76,7 @@ bool NPUNode::restructure_graph(){
 	}
 
 	i=0;
-	for(auto input:Inputs){
+	for(auto input:_inputs_pair){
 		auto input_node=_graph->node(input.node_id);
 		auto index=input.index;
 		int j=0;
@@ -95,11 +86,7 @@ bool NPUNode::restructure_graph(){
 		for(auto edge_id:output_edges_copy){
 			auto edge=_graph->edge(edge_id);
 			if(edge->consumer()->type()!=arm_compute::graph::NodeType::NPU){
-				std::cerr<<"consumer is "<<edge->consumer()->name()<<std::endl;
-				//edge->producer()=nullptr;
-				std::cerr<<"removing edge between input and the consumer\n";
 				_graph->remove_connection(edge_id);
-				std::cerr<<"adding edge between input and NPU node\n";
 				_graph->add_connection(input.node_id, index, _id, i);
 				i++;
 			}
@@ -118,11 +105,6 @@ TensorDescriptor NPUNode::configure_output(size_t idx) const
     ARM_COMPUTE_ERROR_ON(src == nullptr);
 
     TensorDescriptor output_info = t->desc();
-    /*if(!_out_quant_info.empty())
-    {
-        output_info.quant_info = _out_quant_info;
-    }*/
-
     return output_info;
 }
 
