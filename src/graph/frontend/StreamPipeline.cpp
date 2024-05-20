@@ -48,7 +48,7 @@ void StreamPipeline::set_common_params(arm_compute::utils::CommonGraphParams _co
 StreamPipeline::StreamPipeline(size_t id, std::string _name)
     : _manager(), _num_graphs(0), _name(std::move(_name)) //, current_layer(0)
 {
-	ARM_COMPUTE_UNUSED(id);
+    ARM_COMPUTE_UNUSED(id);
     _tail_graph_id = 0;
 }
 
@@ -115,14 +115,14 @@ class JustAccessor final : public graph::ITensorAccessor
     // Inherited methods overriden:
     bool access_tensor(ITensor &tensor) override
     {
-		ARM_COMPUTE_UNUSED(tensor);
+        ARM_COMPUTE_UNUSED(tensor);
         return true;
     };
 };
 
 void StreamPipeline::finalize(Target target, const GraphConfig &config, std::set<int> *b, int blocking)
 {
-	ARM_COMPUTE_UNUSED(target,config);
+    ARM_COMPUTE_UNUSED(target, config);
     std::vector<int> indicesToRemove;
     for(size_t k = 0; k < _gs.size(); k++)
     {
@@ -167,7 +167,6 @@ void StreamPipeline::finalize(Target target, const GraphConfig &config, std::set
                     //std::cerr<<"adding output node "<<node->name()<<" to outputs\n";
                     outputs.push_back({ node->id(), 0 });
                 }
-                
             }
 
             //add npu node:
@@ -185,7 +184,7 @@ void StreamPipeline::finalize(Target target, const GraphConfig &config, std::set
             NodeParams common_params_node = { name, _all_hints[k].target_hint };
             NodeID     nid                = GraphBuilder::add_npu_node(g, common_params_node, inputs, outputs);
             NPUNode   *n                  = dynamic_cast<NPUNode *>(g.node(nid));
-			ARM_COMPUTE_UNUSED(n);
+            ARM_COMPUTE_UNUSED(n);
             //Remove all nodes except preserved node types
             for(auto &node : g.nodes())
             {
@@ -266,6 +265,7 @@ void StreamPipeline::run(int n)
         auto t2 = std::chrono::high_resolution_clock::now();
         reset_timings();
         double x1 = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1).count();
+        ARM_COMPUTE_UNUSED(x1);
         std::vector<std::thread> threads;
         t1 = std::chrono::high_resolution_clock::now();
         for(size_t i = 0; i < _gs.size(); i++)
@@ -295,14 +295,17 @@ void StreamPipeline::run(int n)
 }
 void StreamPipeline::warmup(int nn)
 {
-    std::cerr << "start  warming up...\n";
     std::vector<std::thread> threads;
-    auto                     t1 = std::chrono::high_resolution_clock::now();
+
+    auto t1 = std::chrono::high_resolution_clock::now();
+	ARM_COMPUTE_UNUSED(t1);
     for(size_t i = 0; i < _gs.size(); i++)
     {
         threads.push_back(std::thread(&StreamPipeline::run_parallel, this, i, nn));
     }
+
     auto t2 = std::chrono::high_resolution_clock::now();
+	ARM_COMPUTE_UNUSED(t2);
     for(size_t i = 0; i < _gs.size(); i++)
     {
         threads[i].join();
@@ -332,7 +335,7 @@ void StreamPipeline::run_parallel(int i, int n)
 
 void StreamPipeline::run_w_parallel(int i, int n)
 {
-	ARM_COMPUTE_UNUSED(n);
+    ARM_COMPUTE_UNUSED(n);
     if(_gs[i]->nodes().size() == 0)
     {
         std::cerr << "Ignoring empty graph " << i << std::endl;
@@ -391,7 +394,7 @@ void StreamPipeline::add_layer(ILayer &layer)
     //std::cerr<<"StreamPipeline add_layer, on graph: "<<tail_graph_id<<"("<<IStreamPipeline::_target_graph<<") tail_node: "<<tail_node()<<" with "<< graph().nodes().size()<<" nodes\n";
     auto nid = layer.create_layer(*this);
     //std::cerr<<"Graph:"<<IStreamPipeline::_target_graph<<"  "<<_tail_node<<"->"<<nid<<std::endl;
-    _tail_node    = nid;
+    _tail_node     = nid;
     _tail_graph_id = IStreamPipeline::_target_graph;
 }
 
@@ -520,6 +523,9 @@ void StreamPipeline::add_graph(int start, int end, char PE, char Host_PE)
             break;
         case 'N':
             target = arm_compute::graph::Target::NPU;
+			break;
+		default:
+			target = arm_compute::graph::Target::UNSPECIFIED;
     }
 
     //*(_gs[graph_id])<< target;
@@ -597,8 +603,8 @@ NodeID StreamPipeline::next_layer(std::vector<std::pair<NodeID, int>> input_node
             {
                 //create a T node and append to the node key.first in graph key.second (and add it to mapping: node_map.insert(key,std::make_pair(node_id,key.second))))
                 //create a R node in new graph (and add it to mapping: node_map.insert(key,std::make_pair(node_id,new__target_graph)) )
-                
-				// Add Transmitter to the previous graph containing input node for this node
+
+                // Add Transmitter to the previous graph containing input node for this node
                 //ITensorAccessorUPtr _accessor=get_Sender_accessor(common_params);
                 //GraphBuilder::add_sender_node(*(_gs[i]), common_params_node, input, std::move(_accessor));
                 int    g_id = input_node.second;
@@ -608,7 +614,7 @@ NodeID StreamPipeline::next_layer(std::vector<std::pair<NodeID, int>> input_node
                 std::string node_name          = g.node(input_node.first)->name();
                 NodeIdxPair input              = { input_node.first, 0 };
                 NodeParams  common_params_node = { "Sender_" + node_name, _all_hints[g_id].target_hint };
-                _common_params.labels           = "Sender";
+                _common_params.labels          = "Sender";
                 auto   just_accessor_sender    = std::make_unique<JustAccessor>();
                 NodeID tail_sender             = GraphBuilder::add_sender_node(g, common_params_node, input, std::move(just_accessor_sender)); //arm_compute::graph_utils::get_output_accessor(common_params, 5)
                 //NodeID tail_sender=GraphBuilder::add_sender_node(g, common_params_node, input);
@@ -647,7 +653,7 @@ NodeID StreamPipeline::next_layer(std::vector<std::pair<NodeID, int>> input_node
                 //NodeParams  common_params_node = { "Receiver", hints().target_hint };
                 std::string node_name          = g.node(input_node.first)->name();
                 NodeParams  common_params_node = { "Receiver_" + node_name, _all_hints[IStreamPipeline::_target_graph].target_hint };
-                _common_params.labels           = "Receiver";
+                _common_params.labels          = "Receiver";
                 //ITensorAccessorUPtr _accessor=get_Sender_accessor(common_params);
                 //GraphBuilder::add_sender_node(*(_gs[i]), common_params_node, input, std::move(_accessor));
                 //Add Receiver Node to the next graph
