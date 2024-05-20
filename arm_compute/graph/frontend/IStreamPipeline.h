@@ -133,7 +133,7 @@ class NodeMap
         {
             for(auto v : entry.second)
             {
-
+                ARM_COMPUTE_UNUSED(entry,v);
             }
         }
     }
@@ -175,7 +175,7 @@ class IStreamPipeline : public IStream
         if(_n.second == _target_graph)
         {
             _tail_graph_id = _target_graph;
-            _tail_node    = _n.first;
+            _tail_node     = _n.first;
             return _n.first;
         }
         else
@@ -190,7 +190,7 @@ class IStreamPipeline : public IStream
         if(_n.second == target_graph)
         {
             _tail_graph_id = target_graph;
-            _tail_node    = _n.first;
+            _tail_node     = _n.first;
             return _n.first;
         }
         else
@@ -216,7 +216,7 @@ class IStreamPipeline : public IStream
     {
         _tail_node = (nid != NullTensorID) ? nid : _tail_node;
     }
-    
+
     int get_tail_graph_id() override
     {
         return _tail_graph_id;
@@ -248,8 +248,8 @@ class IStreamPipeline : public IStream
     std::string graph_name;
 
     protected:
-    int _current_layer = 0;
-    int              _target_graph = 0;
+    int              _current_layer = 0;
+    int              _target_graph  = 0;
     int              _tail_graph_id = 0;
     NodeMap          _node_map;
     std::vector<int> _start_layer;
