@@ -219,7 +219,7 @@ public:
 	        return 0;
 	}
 
-	int fd;
+	int fd = 0;
 
 	static int get_max_l(){
 		return max_l;
