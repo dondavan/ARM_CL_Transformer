@@ -28,7 +28,7 @@ namespace power
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-int GPIOExport(int pin)
+inline int GPIOExport(int pin)
 {
     char    buffer[BUFFER_MAX];
     ssize_t bytes_written;
@@ -47,7 +47,7 @@ int GPIOExport(int pin)
     return (0);
 }
 
-int GPIODirection(int pin, int dir)
+inline int GPIODirection(int pin, int dir)
 {
     char path[DIRECTION_MAX];
     int  fd;
@@ -70,7 +70,7 @@ int GPIODirection(int pin, int dir)
     return (0);
 }
 
-int GPIOWrite(int pin, int value)
+inline int GPIOWrite(int pin, int value)
 {
     char path[VALUE_MAX];
     int  fd;
@@ -93,7 +93,7 @@ int GPIOWrite(int pin, int value)
     return (0);
 }
 
-int GPIOUnexport(int pin)
+inline int GPIOUnexport(int pin)
 {
     char    buffer[BUFFER_MAX];
     ssize_t bytes_written;
