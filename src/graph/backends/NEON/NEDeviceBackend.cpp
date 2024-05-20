@@ -76,6 +76,7 @@ void NEDeviceBackend::setup_backend_context(GraphContext &ctx)
         Scheduler::get().set_num_threads_with_affinity(ctx.config().num_threads, ctx.config(),
                                                        [](int t_id, int max_cores, arm_compute::graph::GraphConfig cfg)
                                                        {
+                                                           ARM_COMPUTE_UNUSED(max_cores);
 #if My_print > 0
                                                            std::cout << "max_cores: " << max_cores << std::endl;
 #endif
@@ -100,6 +101,7 @@ void NEDeviceBackend::setup_backend_context(GraphContext &ctx)
                                                                else if(cfg.cluster == 0)
                                                                    return t_id;
                                                            }
+                                                           return t_id;
                                                        });
     }
 
