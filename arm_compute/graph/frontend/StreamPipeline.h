@@ -178,32 +178,32 @@ class StreamPipeline final : public IStreamPipeline
 
     GraphManagerPipeline _manager; /**< Graph manager */
     //std::vector<GraphContext> _ctxs;     /**< Graph context to use */
-    GraphContext                        _ctx = {}; /**< Graph context to use */
-    std::vector<GraphContext>           _ctxs ={};
-    std::vector<std::unique_ptr<Graph>> _gs = {}; /**< Internal graph representation of the stream */
-    Graph                               _g ={};  /**< Internal graph representation of the stream */
+    GraphContext                        _ctx  = {}; /**< Graph context to use */
+    std::vector<GraphContext>           _ctxs = {};
+    std::vector<std::unique_ptr<Graph>> _gs   = {}; /**< Internal graph representation of the stream */
+    Graph                               _g    = {}; /**< Internal graph representation of the stream */
 
     //Ehsan
     //std::chrono::time_point<std::chrono::high_resolution_clock> start;
     //std::chrono::time_point<std::chrono::high_resolution_clock> finish;
-    std::vector<double> _input_time = {};
-    std::vector<double> _task_time = {};
+    std::vector<double> _input_time  = {};
+    std::vector<double> _task_time   = {};
     std::vector<double> _output_time = {};
-    std::vector<double> _cost = {};
-    int                 _num_graphs = 0;
+    std::vector<double> _cost        = {};
+    int                 _num_graphs  = 0;
 
     std::string       _name = {};
-    std::vector<char> _PE = {};
+    std::vector<char> _PE   = {};
     //Start and end layer of subgraphs(i)
     //std::vector<int>	start_layer;
     //std::vector<int>	end_layer;
-    std::vector<char>        _Host_PE = {};
-    std::vector<StreamHints> _all_hints = { };
+    std::vector<char>        _Host_PE   = {};
+    std::vector<StreamHints> _all_hints = {};
     //std::vector<NodeID>	Tail_node;
     //The current layer that should be checked
     //int					current_layer;
     arm_compute::utils::CommonGraphParams _common_params = {};
-    std::vector<GraphConfig>              _configs = {};
+    std::vector<GraphConfig>              _configs       = {};
     //NodeMap				node_map;
     int n_warmup = 3;
     int n_runs   = 1;

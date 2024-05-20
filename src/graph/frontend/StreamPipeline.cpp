@@ -48,6 +48,7 @@ void StreamPipeline::set_common_params(arm_compute::utils::CommonGraphParams _co
 StreamPipeline::StreamPipeline(size_t id, std::string _name)
     : _manager(), _num_graphs(0), _name(std::move(_name)) //, current_layer(0)
 {
+	ARM_COMPUTE_UNUSED(id);
     _tail_graph_id = 0;
 }
 
@@ -114,6 +115,7 @@ class JustAccessor final : public graph::ITensorAccessor
     // Inherited methods overriden:
     bool access_tensor(ITensor &tensor) override
     {
+		ARM_COMPUTE_UNUSED(tensor);
         return true;
     };
 };
@@ -121,7 +123,7 @@ class JustAccessor final : public graph::ITensorAccessor
 void StreamPipeline::finalize(Target target, const GraphConfig &_config, std::set<int> *b, int blocking)
 {
     std::vector<int> indicesToRemove;
-    for(auto k = 0; k < _gs.size(); k++)
+    for(size_t k = 0; k < _gs.size(); k++)
     {
         if(_gs[k]->nodes().size() == 0)
         {
@@ -130,9 +132,9 @@ void StreamPipeline::finalize(Target target, const GraphConfig &_config, std::se
     }
     _num_graphs = _num_graphs - indicesToRemove.size();
     _manager.set_num_graphs(_num_graphs);
-    //std::cerr<<"\n\n\nWorking on NPU Graphs\n";
+
     std::set<NodeType> PreservedTypes = { NodeType::NPU, NodeType::Input, NodeType::Receiver, NodeType::Output, NodeType::Sender };
-    for(auto k = 0; k < _gs.size(); k++)
+    for(size_t k = 0; k < _gs.size(); k++)
     {
         std::vector<NodeIdxPair> inputs;
         std::vector<NodeIdxPair> outputs;
@@ -182,6 +184,7 @@ void StreamPipeline::finalize(Target target, const GraphConfig &_config, std::se
             NodeParams common_params_node = { name, _all_hints[k].target_hint };
             NodeID     nid                = GraphBuilder::add_npu_node(g, common_params_node, inputs, outputs);
             NPUNode   *n                  = dynamic_cast<NPUNode *>(g.node(nid));
+			ARM_COMPUTE_UNUSED(n);
             //Remove all nodes except preserved node types
             for(auto &node : g.nodes())
             {
