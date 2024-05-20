@@ -1037,7 +1037,7 @@ void GraphManagerPipeline::set_freq_map(std::string freqs, std::string _order, c
     if(freqs == "max" or freqs == "[max]")
     {
         unsigned int  i        = 0;
-        bool Prev_NPU = false;
+        //bool Prev_NPU = false;
         for(auto task : _governor_tasks)
         {
             if(_order[i] == 'L')
@@ -1097,7 +1097,7 @@ void GraphManagerPipeline::set_freq_map(std::string freqs, std::string _order, c
     std::stringstream ss(freqs);
     std::string       token;
     //For iterating over orders mapping letters
-    int i = _order.size() - 1;
+    size_t i = _order.size() - 1;
     //for iterating over governor_tasks (for consequitive Ns in order there is one gevernor task just)
     int  governor_task_index = _governor_tasks.size() - 1;
     int  _method             = 1;
