@@ -270,8 +270,8 @@ void GraphManagerPipeline::execute_graph(Graph &graph, int nn)
     ARM_COMPUTE_ERROR_ON_MSG(it == std::end(_workloads), "Graph is not registered!");
     //Ehsan measure input, task and output timings:
 
-    int n = 4;
-    for(size_t k = 0; k < n; k++)
+    unsigned int n = 4;
+    for(unsigned int k = 0; k < n; k++)
     {
         if(_measure_when_full)
         {
