@@ -188,7 +188,7 @@ class GraphManagerPipeline : public GraphManager
     std::condition_variable  _condVar           = {};
     std::condition_variable  _condVar_serial    = {};
     bool                     _ready             = true;
-    int                      _c                 = 0;
+    unsigned int             _c                 = 0;
     std::atomic<bool>        _pipeline_ready    = {};
     std::vector<std::string> _input_images      = {};
 
