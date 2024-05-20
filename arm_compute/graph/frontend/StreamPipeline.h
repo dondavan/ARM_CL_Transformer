@@ -178,10 +178,10 @@ class StreamPipeline final : public IStreamPipeline
 
     GraphManagerPipeline _manager; /**< Graph manager */
     //std::vector<GraphContext> _ctxs;     /**< Graph context to use */
-    GraphContext                        _ctx; /**< Graph context to use */
-    std::vector<GraphContext>           _ctxs;
-    std::vector<std::unique_ptr<Graph>> _gs; /**< Internal graph representation of the stream */
-    Graph                               _g;  /**< Internal graph representation of the stream */
+    GraphContext                        _ctx = {}; /**< Graph context to use */
+    std::vector<GraphContext>           _ctxs ={};
+    std::vector<std::unique_ptr<Graph>> _gs = {}; /**< Internal graph representation of the stream */
+    Graph                               _g ={};  /**< Internal graph representation of the stream */
 
     //Ehsan
     //std::chrono::time_point<std::chrono::high_resolution_clock> start;
