@@ -116,4 +116,5 @@ src finished -> utils
 = arm_compute/graph/frontend/IStream.h          !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 = arm_compute/graph/GraphManager.h
 
-= src/graph/GraphManager.cpp                    
+= src/graph/GraphManager.cpp              
+= src/graph/GraphManagerPipeline.cpp      

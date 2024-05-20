@@ -173,27 +173,27 @@ class GraphManagerPipeline : public GraphManager
     private:
     std::map<GraphID, ExecutionWorkload> _workloads = {}; /**< Graph workloads */
 
-    std::vector<double>      input_time        = {};
-    std::vector<double>      receive_time      = {};
-    std::vector<double>      task_time         = {};
-    std::vector<double>      output_time       = {};
-    std::vector<double>      send_time         = {};
-    std::vector<double>      transmition_time  = {};
-    double                   latency_time      = 0;
-    int                      num_graphs        = 1;
-    int                      warmup_n          = 3;
-    bool                     parallel          = true;
-    bool                     measure_when_full = true && parallel;
-    std::mutex               _mtx              = {};
-    std::condition_variable  condVar           = {};
-    std::condition_variable  condVar_serial    = {};
-    bool                     ready             = true;
-    int                      c                 = 0;
-    std::atomic<bool>        pipeline_ready    = {};
-    std::vector<std::string> input_images      = {};
+    std::vector<double>      _input_time        = {};
+    std::vector<double>      _receive_time      = {};
+    std::vector<double>      _task_time         = {};
+    std::vector<double>      _output_time       = {};
+    std::vector<double>      _send_time         = {};
+    std::vector<double>      _transmition_time  = {};
+    double                   _latency_time      = 0;
+    unsigned int             _num_graphs        = 1;
+    int                      _warmup_n          = 3;
+    bool                     _parallel          = true;
+    bool                     _measure_when_full = true && parallel;
+    std::mutex               _mtx               = {};
+    std::condition_variable  _condVar           = {};
+    std::condition_variable  _condVar_serial    = {};
+    bool                     _ready             = true;
+    int                      _c                 = 0;
+    std::atomic<bool>        _pipeline_ready    = {};
+    std::vector<std::string> _input_images      = {};
 
-    std::vector<std::string>                  governor_tasks = {};
-    std::map<std::string, std::array<int, 3>> governor_freqs = {};
+    std::vector<std::string>                  _governor_tasks = {};
+    std::map<std::string, std::array<int, 3>> _governor_freqs = {};
     //std::map<std::string, std::array<int, 3>> graphs_freqs;
     //std::map<std::string, std::array<int, 3>> PEs_freqs;
 };
