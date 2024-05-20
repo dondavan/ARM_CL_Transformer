@@ -150,7 +150,7 @@ void release_default_graph_context(GraphContext &ctx)
 {
 
 	int t = ctx.config().cluster;
-	Target target;
+	Target target = {};
 	if(t<2){
 		target=static_cast<arm_compute::graph::Target>(1);
 	}
