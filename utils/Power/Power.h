@@ -22,7 +22,8 @@
 static const char s_directions_str[] = "in\0out";
 static const char s_values_str[] = "01";
 
-
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-variable"
 int GPIOExport(int pin)
 {
 #define BUFFER_MAX 3
@@ -107,3 +108,4 @@ int GPIOUnexport(int pin)
     close(fd);
     return (0);
 }
+#pragma GCC diagnostic pop
