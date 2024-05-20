@@ -117,35 +117,10 @@ bool IStreamPipeline::is_next_layer(std::string name)
 
 #if Granularity == Conv
 
-/*bool IStreamPipeline::is_next_layer(std::string name){
-		static int index=0;
-		static bool ended=false;
-		bool starting=false;
-		//concat is considered for mobilenet graph which in layers there is concat after ending layer but in tasks this is not exist
-		//So we ingonre it here in layers
-		if(ended and name!="concat"){
-			index++;
-			std::string indent=(index%2)?"":"\t\t\t";
-			std::cerr <<indent<< index<<" layer: "<<name << std::endl;
-			ended=false;
-			starting=true;
-		}
-		else{
-			std::string indent=(index%2)?"":"\t\t\t";
-			std::cerr <<indent<<index<< " skipping layer: "<<name << std::endl;
-			//return false;
-		}
-		if (check_ending(graph_name, name)){
-			ended=true;
-		}
-		return starting;
-
-    }*/
-
 bool IStreamPipeline::is_next_layer(std::string name)
 {
     static int index    = -1;
-    bool       starting = check_starting(_graph_name, name);
+    bool       starting = check_starting(graph_name(), name);
     if(starting)
     {
         index++;
@@ -163,7 +138,7 @@ bool IStreamPipeline::is_next_layer(std::string name)
 bool IStreamPipeline::is_end_layer(std::string name)
 {
     static int index = 0;
-    if(check_ending(_graph_name, name))
+    if(check_ending(graph_name(), name))
     {
         std::string indent = (index % 2) ? "" : "\t\t\t";
         std::cerr << indent << index << " layer: " << name << std::endl;
@@ -178,48 +153,7 @@ bool IStreamPipeline::is_end_layer(std::string name)
     }
 }
 #endif
-/*
-const Graph &IStreamPipeline::graph() const
-{
-	//std::cerr<<"calling graph const\n";
-	return this->graph();
-	//return _g;
-}
 
-Graph &IStreamPipeline::graph()
-{
-    return this->graph();
-	//return _g;
-}
-
-IStreamPipeline & IStreamPipeline::operator<<(ILayer &layer)
-{
-
-	std::cerr<<"(IStreamPipeline) "<<current_layer++<<" Layer Name:"<<layer.name()<<std::endl;
-    add_layer(layer);
-    std::cerr<<"*******************************\n";
-    return *this;
-}
-IStreamPipeline & IStreamPipeline::operator<<(ILayer &&layer)
-{
-
-	std::cerr<<"(IStreamPipeline) "<<current_layer++<<" Layer Name:"<<layer.name()<<std::endl;
-    add_layer(layer);
-    std::cerr<<"*******************************\n";
-    return *this;
-}
-
-
-
-NodeID IStreamPipeline::tail_node()
-{
-	//std::cerr<<"(IStreamPipeline) tail_node()- Tail_node: "<<Tail_node[target_graph]<<std::endl;
-	//return Tail_node[target_graph];
-	std::cerr<<"(IStreamPipeline) tail_node()- Tail_node: "<<_tail_node<<std::endl;
-	return _tail_node;
-
-}
-*/
 
 } // namespace frontend
 } // namespace graph

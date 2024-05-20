@@ -349,7 +349,7 @@ static std::map<std::string, std::unordered_set<std::string>> starting_task_name
 
 };
 
-inline std::string toLowerCase(std::string str)
+inline static std::string toLowerCase(std::string str)
 {
     std::transform(str.begin(), str.end(), str.begin(),
                    [](unsigned char c)
@@ -357,7 +357,7 @@ inline std::string toLowerCase(std::string str)
     return str;
 }
 
-inline bool check_ending(std::string model, std::string layer)
+inline static bool check_ending(std::string model, std::string layer)
 {
     if(layer.compare(0, 4, "NPU_") == 0)
     {
@@ -366,7 +366,7 @@ inline bool check_ending(std::string model, std::string layer)
     return (ending_task_names[toLowerCase(model)].count(layer) > 0);
 }
 
-inline bool check_starting(std::string model, std::string layer)
+inline static bool check_starting(std::string model, std::string layer)
 {
     if(layer.compare(0, 4, "NPU_") == 0)
     {
