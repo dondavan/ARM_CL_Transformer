@@ -48,6 +48,8 @@ bool ReceiverNode::forward_descriptors()
         t->desc() = configure_output(0);
         //Add the tensor pointer into the TensorPipelineReceiver
         Edge *e  = _graph->edge(*_output_edges.begin());
+        auto  tt = (e != nullptr) ? e->tensor() : nullptr;
+        ARM_COMPUTE_UNUSED(e,tt);
 
         _receiver_tensor->set_tensor(t);
         _receiver_tensor->set_graph_id(_graph->id());
