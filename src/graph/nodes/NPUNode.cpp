@@ -101,9 +101,7 @@ TensorDescriptor NPUNode::configure_output(size_t idx) const
     ARM_COMPUTE_UNUSED(idx);
     ARM_COMPUTE_ERROR_ON(idx >= _outputs.size());
 
-    const Tensor *src = input(0);
     const Tensor *t   = _graph->tensor(_outputs[idx]);
-    ARM_COMPUTE_ERROR_ON(src == nullptr);
 
     TensorDescriptor output_info = t->desc();
     return output_info;
