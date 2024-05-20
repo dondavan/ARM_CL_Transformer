@@ -42,7 +42,7 @@ class PassManager;
  *
  * Manages a list of graphs along with their resources
  */
-class GraphManager final
+class GraphManager
 {
 public:
     /** Default Constructor **/
