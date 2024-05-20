@@ -202,7 +202,7 @@ class StreamPipeline final : public IStreamPipeline
     //std::vector<NodeID>	Tail_node;
     //The current layer that should be checked
     //int					current_layer;
-    arm_compute::utils::CommonGraphParams _common_params;
+    arm_compute::utils::CommonGraphParams _common_params = {};
     std::vector<GraphConfig>              _configs = {};
     //NodeMap				node_map;
     int n_warmup = 3;

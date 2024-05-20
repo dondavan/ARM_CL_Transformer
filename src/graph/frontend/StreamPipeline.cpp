@@ -43,8 +43,8 @@ namespace frontend
 void StreamPipeline::set_common_params(arm_compute::utils::CommonGraphParams _common_params)
 {
     _common_params = _common_params;
-    //std::cerr<<"set common params; num threads: "<<common_params.threads<<std::endl;
 }
+
 StreamPipeline::StreamPipeline(size_t id, std::string _name)
     : _manager(), _num_graphs(0), _name(std::move(_name)) //, current_layer(0)
 {
