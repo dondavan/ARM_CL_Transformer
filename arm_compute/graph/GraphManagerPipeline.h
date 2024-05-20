@@ -183,7 +183,7 @@ class GraphManagerPipeline : public GraphManager
     unsigned int             _num_graphs        = 1;
     int                      _warmup_n          = 3;
     bool                     _parallel          = true;
-    bool                     _measure_when_full = true && parallel;
+    bool                     _measure_when_full = true && _parallel;
     std::mutex               _mtx               = {};
     std::condition_variable  _condVar           = {};
     std::condition_variable  _condVar_serial    = {};
