@@ -34,27 +34,30 @@ namespace graph
 /** Intermediate Input Layer node */
 class ReceiverNode final : public INode
 {
-public:
+    public:
     /** Constructor
      *
      * @param[in] desc Tensor descriptor
      */
-	ReceiverNode(TensorDescriptor desc);
+    ReceiverNode(TensorDescriptor desc);
     /** Prevent instances of this class from being copied (As this class contains pointers) */
-    ReceiverNode(const arm_compute::graph::ReceiverNode&) = delete;
+    ReceiverNode(const arm_compute::graph::ReceiverNode &) = delete;
     /** Prevent instances of this class from being copied (As this class contains pointers) */
     ReceiverNode &operator=(const ReceiverNode &) = delete;
 
     // Inherited overridden methods:
-    NodeType         type() const override;
-    bool             forward_descriptors() override;
-    TensorDescriptor configure_output(size_t idx) const override;
-    void accept(INodeVisitor &v) override;
-    TensorPipelineReceiver* get_receiver_tensor(){return receiver_tensor;};
+    NodeType                type() const override;
+    bool                    forward_descriptors() override;
+    TensorDescriptor        configure_output(size_t idx) const override;
+    void                    accept(INodeVisitor &v) override;
+    TensorPipelineReceiver *get_receiver_tensor()
+    {
+        return _receiver_tensor;
+    };
 
-private:
-    TensorPipelineReceiver *receiver_tensor;
-    TensorDescriptor _desc;
+    private:
+    TensorPipelineReceiver *_receiver_tensor = {};
+    TensorDescriptor        _desc;
 };
 } // namespace graph
 } // namespace arm_compute

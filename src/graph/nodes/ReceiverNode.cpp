@@ -31,12 +31,12 @@ namespace arm_compute
 namespace graph
 {
 ReceiverNode::ReceiverNode(TensorDescriptor desc)
-		: _desc(desc)
-    //: _desc(std::move(desc))
+    : _desc(desc)
+//: _desc(std::move(desc))
 {
     _outputs.resize(1, NullTensorID);
-    receiver_tensor=new TensorPipelineReceiver();
-    receiver_tensor->set_is_npu(desc.target==arm_compute::graph::Target::NPU);
+    receiver_tensor = new TensorPipelineReceiver();
+    receiver_tensor->set_is_npu(desc.target == arm_compute::graph::Target::NPU);
 }
 
 bool ReceiverNode::forward_descriptors()
@@ -48,10 +48,8 @@ bool ReceiverNode::forward_descriptors()
         //std::cerr<<"Tensor receiver: "<<t<<std::endl;
         t->desc() = configure_output(0);
         //Add the tensor pointer into the TensorPipelineReceiver
-        Edge *e = _graph->edge(*_output_edges.begin());
-        auto tt= (e != nullptr) ? e->tensor() : nullptr;
-
-
+        Edge *e  = _graph->edge(*_output_edges.begin());
+        auto  tt = (e != nullptr) ? e->tensor() : nullptr;
 
         receiver_tensor->set_tensor(t);
         receiver_tensor->set_graph_id(_graph->id());
