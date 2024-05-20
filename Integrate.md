@@ -121,6 +121,7 @@ src finished -> utils
 = src/graph/GraphManagerPipeline.cpp            !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 = src/graph/TensorPipeline.cpp
 = src/graph/detail/ExecutionHelpersPipeline.cpp
+= src/graph/Workload.cpp
 
 = utils/DVFS/DVFS.h                             !!!!!!!!!!!!!!!!!!!!!!!!!!!! inline static
 = utils/main_layer_checker.h                    !!!!!!!!!!!!!!!!!!!!!!!!!!!! inline static

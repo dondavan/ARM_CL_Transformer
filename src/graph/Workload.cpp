@@ -51,6 +51,7 @@ void ExecutionTask::finish()
 
 void ExecutionTask::apply_freq(std::string _name)
 {
+    ARM_COMPUTE_UNUSED(_name);
     if(governor)
     {
         dvfs.commit_freq(LittleFreq, bigFreq, GPUFreq);
