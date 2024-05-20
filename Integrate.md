@@ -135,3 +135,7 @@ src finished -> utils
 
 = arm_compute/graph/nodes/SenderNode.h
 = src/graph/nodes/SenderNode.cpp
+
+= arm_compute/graph/TensorPipeline.h
+= src/graph/backends/CL/CLDeviceBackend.cpp
+= arm_compute/graph/backends/CL/CLTensorHandle.h

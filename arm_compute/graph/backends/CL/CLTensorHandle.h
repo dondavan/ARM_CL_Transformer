@@ -37,7 +37,7 @@ namespace backends
 /** OpenCL Tensor handle interface object **/
 class CLTensorHandle final : public ITensorHandle
 {
-public:
+    public:
     /** Default Constructor
      *
      * @param[in] info Tensor metadata
@@ -49,29 +49,34 @@ public:
     CLTensorHandle(CLTensorHandle &&) = default;
     /** Allow instances of this class to be moved */
     CLTensorHandle &operator=(CLTensorHandle &&) = default;
+    /** Prevent instances of this class from being copied (As this class contains pointers) */
+    CLTensorHandle(const CLTensorHandle &) = delete;
+    /** Prevent instances of this class from being copied (As this class contains pointers) */
+    CLTensorHandle &operator=(const CLTensorHandle &) = delete;
+
 
     // Inherited overridden methods
-    void allocate() override;
-    void free() override;
-    void manage(IMemoryGroup *mg) override;
-    void map(bool blocking) override;
+    void                        allocate() override;
+    void                        free() override;
+    void                        manage(IMemoryGroup *mg) override;
+    void                        map(bool blocking) override;
     void                        unmap() override;
     void                        release_if_unused() override;
     arm_compute::ITensor       &tensor() override;
     const arm_compute::ITensor &tensor() const override;
 
     //Ehsan
-    void set_tensor(arm_compute::ITensor*) override;
+    void                  set_tensor(arm_compute::ITensor *) override;
     arm_compute::ITensor *tensor_ptr() override;
 
-    ITensorHandle              *parent_handle() override;
-    bool                        is_subtensor() const override;
-    Target                      target() const override;
+    ITensorHandle *parent_handle() override;
+    bool           is_subtensor() const override;
+    Target         target() const override;
 
-private:
+    private:
     //arm_compute::CLTensor _tensor; /**< Backend Tensor */
     //Ehsan
-    arm_compute::CLTensor* _tensor2;
+    arm_compute::CLTensor *_tensor2;
 };
 } // namespace backends
 } // namespace graph

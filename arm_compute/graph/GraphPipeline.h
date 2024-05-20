@@ -27,7 +27,6 @@
 
 #include "arm_compute/graph/Graph.h"
 
-
 namespace arm_compute
 {
 namespace graph
@@ -36,26 +35,25 @@ namespace graph
  *
  * Represents a multiple source - multiple sink directed graph
  */
-class GraphPipeline:public Graph
+class GraphPipeline : public Graph
 {
-public:
-
-	/*GraphPipeline(GraphID id, std::string name)
+    public:
+    /*GraphPipeline(GraphID id, std::string name)
 	    : _id(id), _name(std::move(name)), _nodes(), _edges(), _tensors(), _tagged_nodes(), _mtx()
 	{
 	}*/
-	GraphPipeline(GraphID id, std::string name, char _PE, char _Host_PE, int _start, int _end)
-		    : Graph(id, name), start_layer(_start), end_layer(_end), PE(_PE), Host_PE(_Host_PE)
-	{
-	}
+    GraphPipeline(GraphID id, std::string name, char _PE, char _Host_PE, int _start, int _end)
+        : Graph(id, name), start_layer(_start), end_layer(_end), PE(_PE), Host_PE(_Host_PE)
+    {
+    }
 
-private:
-    int		start_layer;
-    int		end_layer;
-    char	PE;
-    char	Host_PE;
+    private:
+    int  start_layer;
+    int  end_layer;
+    char PE;
+    char Host_PE;
 };
-}
-}
+} // namespace graph
+} // namespace arm_compute
 
 #endif /* ARM_COMPUTE_GRAPH_GRAPH_PIPELINE_H */
