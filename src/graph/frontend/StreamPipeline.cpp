@@ -120,8 +120,9 @@ class JustAccessor final : public graph::ITensorAccessor
     };
 };
 
-void StreamPipeline::finalize(Target target, const GraphConfig &_config, std::set<int> *b, int blocking)
+void StreamPipeline::finalize(Target target, const GraphConfig &config, std::set<int> *b, int blocking)
 {
+	ARM_COMPUTE_UNUSED(target,config);
     std::vector<int> indicesToRemove;
     for(size_t k = 0; k < _gs.size(); k++)
     {
@@ -202,31 +203,24 @@ void StreamPipeline::finalize(Target target, const GraphConfig &_config, std::se
     bool                     p = false;
     if(p)
     {
-        for(auto i = 0; i < _gs.size(); i++)
+        for(size_t i = 0; i < _gs.size(); i++)
         {
             _ctxs[i].set_config(_configs[i]);
             threads.push_back(std::thread(&StreamPipeline::finalize_parallel, this, i, b, blocking));
         }
-        for(auto i = 0; i < _gs.size(); i++)
+        for(size_t i = 0; i < _gs.size(); i++)
         {
             threads[i].join();
         }
     }
     else
     {
-        for(auto i = 0; i < _gs.size(); i++)
+        for(size_t i = 0; i < _gs.size(); i++)
         {
             _ctxs[i].set_config(_configs[i]);
             finalize_parallel(i, b, blocking);
         }
     }
-    /*for (int c=0;c<_ctxs.size();c++){
-		//std::cerr<<"context:\n";
-		for(const auto& elem : _ctxs[c].memory_managers())
-		{
-		   std::cout << std::to_string((int)elem.first) << " " << std::to_string((int)elem.second.target)  << "\n";
-		}
-	}*/
 }
 
 void StreamPipeline::finalize_parallel(int i, std::set<int> *b, int blocking)
@@ -272,16 +266,14 @@ void StreamPipeline::run(int n)
         auto t2 = std::chrono::high_resolution_clock::now();
         reset_timings();
         double x1 = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1).count();
-        std::cerr << "Warm up took " << x1 * 1000 << "ms\n";
-        std::cerr << "Start running graphs\n";
         std::vector<std::thread> threads;
         t1 = std::chrono::high_resolution_clock::now();
-        for(auto i = 0; i < _gs.size(); i++)
+        for(size_t i = 0; i < _gs.size(); i++)
         {
             threads.push_back(std::thread(&StreamPipeline::run_parallel, this, i, n_runs));
         }
         t2 = std::chrono::high_resolution_clock::now();
-        for(auto i = 0; i < _gs.size(); i++)
+        for(size_t i = 0; i < _gs.size(); i++)
         {
             threads[i].join();
         }
@@ -290,11 +282,11 @@ void StreamPipeline::run(int n)
     {
         std::cerr << "\n\n\n*********************************************\nstart running graphs\n*************************************************\n\n\n";
         std::vector<std::thread> threads;
-        for(auto i = 0; i < _gs.size(); i++)
+        for(size_t i = 0; i < _gs.size(); i++)
         {
             threads.push_back(std::thread(&StreamPipeline::run_w_parallel, this, i, n_runs));
         }
-        for(auto i = 0; i < _gs.size(); i++)
+        for(size_t i = 0; i < _gs.size(); i++)
         {
             threads[i].join();
         }
@@ -306,12 +298,12 @@ void StreamPipeline::warmup(int nn)
     std::cerr << "start  warming up...\n";
     std::vector<std::thread> threads;
     auto                     t1 = std::chrono::high_resolution_clock::now();
-    for(auto i = 0; i < _gs.size(); i++)
+    for(size_t i = 0; i < _gs.size(); i++)
     {
         threads.push_back(std::thread(&StreamPipeline::run_parallel, this, i, nn));
     }
     auto t2 = std::chrono::high_resolution_clock::now();
-    for(auto i = 0; i < _gs.size(); i++)
+    for(size_t i = 0; i < _gs.size(); i++)
     {
         threads[i].join();
     }
@@ -329,14 +321,11 @@ void StreamPipeline::run_parallel(int i, int n)
     if(_PE[i] == 'L')
         cluster = 'L';
     std::stringstream stream;
-    //stream<<"Graph "<<i<<" setting affinity to "<<cluster<<std::endl;
-    std::cerr << stream.str();
-    stream.str(std::string());
+
     set_cores(&set, cluster);
     ARM_COMPUTE_EXIT_ON_MSG(sched_setaffinity(0, sizeof(set), &set), "Error setting thread affinity");
     stream.str(std::string());
-    //stream<<"runing graph "<<i<<std::endl;
-    std::cerr << stream.str();
+
     _manager.execute_graph(*_gs[i], n);
     //_manager.execute_graph(_g,n);
 }
@@ -354,14 +343,10 @@ void StreamPipeline::run_w_parallel(int i, int n)
     if(_PE[i] == 'L')
         cluster = 'L';
     std::stringstream stream;
-    //stream<<"Graph "<<i<<" setting affinity to "<<cluster<<std::endl;
-    //std::cerr<<stream.str();
-    //stream.str(std::string());
+
     set_cores(&set, cluster);
     ARM_COMPUTE_EXIT_ON_MSG(sched_setaffinity(0, sizeof(set), &set), "Error setting thread affinity");
-    //stream.str(std::string());
-    //stream<<"runing graph "<<i<<std::endl;
-    //std::cerr<<stream.str();
+	
     std::this_thread::sleep_for(std::chrono::milliseconds(5));
     bool pipeline = false;
     if(pipeline)
@@ -564,7 +549,7 @@ void StreamPipeline::add_graph(int start, int end, char PE, char Host_PE)
     /*GraphContext ctx;
 		_ctxs.emplace_back(std::move(ctx));*/
     _ctxs.emplace_back(GraphContext());
-    std::cout << "Adding Graph" << id << " target " << std::to_string((int)(target)) << " PE: " << _PE << " Host PE: " << _Host_PE << " num threads: " << num_threads << " Layers: " << start << "-" << end << std::endl;
+    std::cout << "Adding Graph" << id << " target " << std::to_string((int)(target)) << " PE: " << PE << " Host PE: " << _Host_PE << " num threads: " << num_threads << " Layers: " << start << "-" << end << std::endl;
 }
 NodeID StreamPipeline::next_layer(std::vector<std::pair<NodeID, int>> input_nodes, NodeID &last_tail_node, int &last_tail_graph, std::string layer_name)
 {
