@@ -37,6 +37,10 @@ class SenderNode final : public INode
 public:
     /** Default Constructor */
 	SenderNode(NodeParams params);
+    /** Prevent instances of this class from being copied (As this class contains pointers) */
+    SenderNode(const arm_compute::graph::SenderNode&) = delete;
+    /** Prevent instances of this class from being copied (As this class contains pointers) */
+    SenderNode &operator=(const SenderNode &) = delete;
 
     // Inherited overridden methods:
     NodeType         type() const override;

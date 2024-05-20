@@ -40,6 +40,10 @@ public:
      * @param[in] desc Tensor descriptor
      */
 	ReceiverNode(TensorDescriptor desc);
+    /** Prevent instances of this class from being copied (As this class contains pointers) */
+    ReceiverNode(const arm_compute::graph::ReceiverNode&) = delete;
+    /** Prevent instances of this class from being copied (As this class contains pointers) */
+    ReceiverNode &operator=(const ReceiverNode &) = delete;
 
     // Inherited overridden methods:
     NodeType         type() const override;

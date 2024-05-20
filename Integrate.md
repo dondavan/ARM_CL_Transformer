@@ -108,5 +108,8 @@ src finished -> utils
 
 
 ****************************************************************************
+= arm_compute/graph/nodes/SenderNode.h
+= arm_compute/graph/nodes/ReceiverNode.h
+= arm_compute/graph/Tensor.h
 = arm_compute/graph/TensorPipeline.h
 = arm_compute/graph/frontend/IStreamPipeline.h
