@@ -41,7 +41,7 @@ class ILayer;
 /** Stream interface **/
 class IStream
 {
-public:
+    public:
     virtual ~IStream() = default;
     /** Adds a layer to the stream
      *
@@ -84,14 +84,17 @@ public:
     }
 
     //Ehsan
-    virtual NodeID next_layer(std::vector<std::pair<NodeID,int>>, NodeID&, int&, std::string){};
-    virtual int get_tail_graph_id(){return 0;};
-	virtual std::pair<NodeID,int> get_position(){};
-    
-protected:
-    inline static StreamHints _hints    = {};   /**< Execution and algorithmic hints */
-    //StreamHints _hints     = {};              /**< Execution and algorithmic hints */
-    NodeID      _tail_node = {EmptyNodeID};     /**< NodeID pointing to the last(tail) node of the graph */
+    virtual NodeID next_layer(std::vector<std::pair<NodeID, int>>, NodeID &, int &, std::string) {};
+    virtual int    get_tail_graph_id()
+    {
+        return 0;
+    };
+    virtual std::pair<NodeID, int> get_position() {};
+
+    protected:
+    //inline static StreamHints _hints    = {};   /**< Execution and algorithmic hints */
+    StreamHints _hints     = {};              /**< Execution and algorithmic hints */
+    NodeID      _tail_node = { EmptyNodeID }; /**< NodeID pointing to the last(tail) node of the graph */
 };
 } // namespace frontend
 } // namespace graph
