@@ -23,26 +23,27 @@
  */
 #include "arm_compute/graph/GraphManager.h"
 
-#include "arm_compute/graph/algorithms/TopologicalSort.h"
-#include "arm_compute/graph/detail/CrossLayerMemoryManagerHelpers.h"
-#include "arm_compute/graph/detail/ExecutionHelpers.h"
 #include "arm_compute/graph/Graph.h"
 #include "arm_compute/graph/GraphContext.h"
 #include "arm_compute/graph/Logger.h"
 #include "arm_compute/graph/PassManager.h"
 #include "arm_compute/graph/TypePrinter.h"
 #include "arm_compute/graph/Utils.h"
+#include "arm_compute/graph/algorithms/TopologicalSort.h"
+#include "arm_compute/graph/detail/CrossLayerMemoryManagerHelpers.h"
+#include "arm_compute/graph/detail/ExecutionHelpers.h"
 
 #include "src/common/utils/Log.h"
 
 //Ehsan
-#include<chrono>
+#include <chrono>
 
 namespace arm_compute
 {
 namespace graph
 {
-GraphManager::GraphManager() : _workloads()
+GraphManager::GraphManager()
+    : _workloads()
 {
 }
 
@@ -144,7 +145,6 @@ void GraphManager::finalize_graph(Graph &graph, GraphContext &ctx, PassManager &
 
     force_target_to_graph(graph, forced_target);
 
-
     // Setup backend context
     // TODO (COMPMID-2014) : Setup all backends needed by the graph
 
@@ -174,30 +174,35 @@ void GraphManager::finalize_graph(Graph &graph, GraphContext &ctx, PassManager &
     // Prepare graph
     detail::prepare_all_tasks(workload);
     //Ehsan
-    int ii=0;
-    if(blocking_set!=nullptr){
-		for(auto &task : workload.tasks)
-		{
-			std::cerr<<task.node->name()<<std::endl;
-			if(!task.task){
-				continue;
-			}
-			bool b=false;
-			if(blocking_set->find(ii) != blocking_set->end()){
-				  b=true;
-				  task.ending=true;
-			}
-			if(blocking==1){
-				if(blocking_set!=NULL and b && target==arm_compute::graph::Target ::CL)
-					task.block=1;
-			}
-			if(blocking==2){
-				if(blocking_set!=NULL && target==arm_compute::graph::Target ::CL){
-					task.block=1;
-				}
-			}
-			ii++;
-		}
+    int ii = 0;
+    if(blocking_set != nullptr)
+    {
+        for(auto &task : workload.tasks)
+        {
+            if(!task.task)
+            {
+                continue;
+            }
+            bool b = false;
+            if(blocking_set->find(ii) != blocking_set->end())
+            {
+                b           = true;
+                task.ending = true;
+            }
+            if(blocking == 1)
+            {
+                if(blocking_set != NULL and b && target == arm_compute::graph::Target ::CL)
+                    task.block = 1;
+            }
+            if(blocking == 2)
+            {
+                if(blocking_set != NULL && target == arm_compute::graph::Target ::CL)
+                {
+                    task.block = 1;
+                }
+            }
+            ii++;
+        }
     }
     // Setup tensor memory (Allocate all tensors or setup transition manager)
     if(ctx.config().use_transition_memory_manager)
@@ -210,7 +215,7 @@ void GraphManager::finalize_graph(Graph &graph, GraphContext &ctx, PassManager &
     }
     // Finalize Graph context
     ctx.finalize();
-    
+
     // Register graph
     _workloads.insert(std::make_pair(graph.id(), std::move(workload)));
     ARM_COMPUTE_LOG_GRAPH_VERBOSE("Created workload for graph with ID : " << graph.id() << std::endl);
@@ -218,42 +223,46 @@ void GraphManager::finalize_graph(Graph &graph, GraphContext &ctx, PassManager &
 
 void GraphManager::print_times(Graph &graph, int n)
 {
-	auto it = _workloads.find(graph.id());
-	ExecutionWorkload *workload = &it->second;
-	double sum=0;
-	int c=0;
-	int l=0;
-	double tt=0;
-	for(auto &task:workload->tasks){
-		if(!task.task){
-			std::cerr<<"nadareeeeeeeee\n";
-			continue;
-		}
-		std::cout<<c++<<"\tLayer Name: "<<task.node->name()
-				<<" \t Layer time: "<<task.time(n)
-				<<" \t number of inputs: "<<task.node->num_inputs()
-				<<" \t input shape: "<<task.node->input(0)->desc().shape
-				<<" \t output shape: "<<task.node->output(0)->desc().shape<<std::endl;
+    auto               it       = _workloads.find(graph.id());
+    ExecutionWorkload *workload = &it->second;
+    double             sum      = 0;
+    int                c        = 0;
+    int                l        = 0;
+    double             tt       = 0;
+    for(auto &task : workload->tasks)
+    {
+        if(!task.task)
+        {
+            std::cerr << "nadareeeeeeeee\n";
+            continue;
+        }
+        std::cout << c++ << "\tLayer Name: " << task.node->name()
+                  << " \t Layer time: " << task.time(n)
+                  << " \t number of inputs: " << task.node->num_inputs()
+                  << " \t input shape: " << task.node->input(0)->desc().shape
+                  << " \t output shape: " << task.node->output(0)->desc().shape << std::endl;
 
-		tt+=task.time(n);
-		if(task.ending){
-			std::cout<<"Layer Number: "<<l<<" \t time: "<<tt<<std::endl;
-			tt=0;
-			l++;
-			std::cout<<"----------------------------\n";
-		}
-		sum+=task.time(n);
-	}
-	std::cout<<"\n Sum of Layers time: "<<sum<<std::endl;
+        tt += task.time(n);
+        if(task.ending)
+        {
+            std::cout << "Layer Number: " << l << " \t time: " << tt << std::endl;
+            tt = 0;
+            l++;
+            std::cout << "----------------------------\n";
+        }
+        sum += task.time(n);
+    }
+    std::cout << "\n Sum of Layers time: " << sum << std::endl;
 }
 
 void GraphManager::reset(Graph &graph)
 {
-	auto it = _workloads.find(graph.id());
-	ExecutionWorkload *workload = &it->second;
-	for(auto &task:workload->tasks){
-		task.reset();
-	}
+    auto               it       = _workloads.find(graph.id());
+    ExecutionWorkload *workload = &it->second;
+    for(auto &task : workload->tasks)
+    {
+        task.reset();
+    }
 }
 
 /*
@@ -294,43 +303,41 @@ void GraphManager::execute_graph(Graph &graph, int nn)
     while(true)
     {
         // Call input accessors
-	auto tstart=std::chrono::high_resolution_clock::now();
+        auto tstart = std::chrono::high_resolution_clock::now();
         if(!detail::call_all_input_node_accessors(it->second))
         {
             return;
         }
-	auto tfinish=std::chrono::high_resolution_clock::now();
+        auto tfinish = std::chrono::high_resolution_clock::now();
 
-	_input_time += std::chrono::duration_cast<std::chrono::duration<double>>(tfinish - tstart).count();
+        _input_time += std::chrono::duration_cast<std::chrono::duration<double>>(tfinish - tstart).count();
 
-    detail::call_all_tasks(it->second,nn);
+        detail::call_all_tasks(it->second, nn);
 
-	tstart=std::chrono::high_resolution_clock::now();
-	_task_time += std::chrono::duration_cast<std::chrono::duration<double>>(tstart-tfinish).count();
+        tstart = std::chrono::high_resolution_clock::now();
+        _task_time += std::chrono::duration_cast<std::chrono::duration<double>>(tstart - tfinish).count();
 
-    // Call output accessors
-    if(!detail::call_all_output_node_accessors(it->second))
-    {
-    tfinish=std::chrono::high_resolution_clock::now();
-    _output_time += std::chrono::duration_cast<std::chrono::duration<double>>(tfinish - tstart).count();
-        return;
-    }
-	tfinish=std::chrono::high_resolution_clock::now();
-	_output_time += std::chrono::duration_cast<std::chrono::duration<double>>(tfinish - tstart).count();
-	
+        // Call output accessors
+        if(!detail::call_all_output_node_accessors(it->second))
+        {
+            tfinish = std::chrono::high_resolution_clock::now();
+            _output_time += std::chrono::duration_cast<std::chrono::duration<double>>(tfinish - tstart).count();
+            return;
+        }
+        tfinish = std::chrono::high_resolution_clock::now();
+        _output_time += std::chrono::duration_cast<std::chrono::duration<double>>(tfinish - tstart).count();
     }
 }
 
 //Ehsan
 void GraphManager::execute_graph(Graph &graph, bool anotate, int nn)
 {
-	if(!anotate)
-	{
-		execute_graph(graph, nn);
-		return;
-	}
+    if(!anotate)
+    {
+        execute_graph(graph, nn);
+        return;
+    }
 }
-
 
 void GraphManager::invalidate_graph(Graph &graph)
 {
