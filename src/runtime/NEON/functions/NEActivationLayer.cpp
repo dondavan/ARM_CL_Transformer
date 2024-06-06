@@ -27,6 +27,11 @@
 
 #include "src/cpu/operators/CpuActivation.h"
 
+#ifdef MEASURE_TIME
+#include <chrono>
+#include <fstream>
+#endif
+
 namespace arm_compute
 {
 struct NEActivationLayer::Impl
