@@ -43,7 +43,7 @@ void NESegmentEmbeddingLayer::configure(ITensor *input, ITensor *segment, ITenso
 #ifdef MEASURE_TIME
     auto   end_time  = std::chrono::high_resolution_clock::now();
     double cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
-    std::ofstream measure_out("measure_output.txt");
+    std::ofstream measure_out("measure_output.txt",std::ios::app);
     measure_out.precision(5);
     measure_out << std::scientific << "NESegmentEmbeddingLayer::configure cost: " << cost_time << std::endl;
     measure_out.close();
@@ -72,7 +72,7 @@ void NESegmentEmbeddingLayer::run()
 #ifdef MEASURE_TIME
     auto   end_time  = std::chrono::high_resolution_clock::now();
     double cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
-    std::ofstream measure_out("measure_output.txt");
+    std::ofstream measure_out("measure_output.txt",std::ios::app);
     measure_out.precision(5);
     measure_out << std::scientific <<  "NESegmentEmbeddingLayer::run cost: " << cost_time << std::endl;
     measure_out.close();
