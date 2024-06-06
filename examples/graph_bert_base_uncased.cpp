@@ -156,11 +156,15 @@ class GraphVanillaTransformerExample : public Example
 
     void do_run() override
     {
-        std::cout << "Do run" << std::endl; 
+        auto start_time = std::chrono::high_resolution_clock::now();
+
         // Run graph
         graph.run();
 
-        std::cout << "Do run finished" << std::endl;
+        auto end_time = std::chrono::high_resolution_clock::now();
+
+        double cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
+        std::cout << "Run cost: " << cost_time << std::endl;
     }
 
     private:

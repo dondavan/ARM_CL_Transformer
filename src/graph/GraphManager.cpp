@@ -35,6 +35,8 @@
 
 #include "src/common/utils/Log.h"
 
+#include <chrono>
+
 namespace arm_compute
 {
 namespace graph
