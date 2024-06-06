@@ -156,8 +156,11 @@ class GraphVanillaTransformerExample : public Example
 
     void do_run() override
     {
+        std::cout << "Do run" << std::endl; 
         // Run graph
         graph.run();
+
+        std::cout << "Do run finished" << std::endl;
     }
 
     private:
