@@ -175,7 +175,7 @@ class GraphVanillaTransformerExample : public Example
         double cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
         std::ofstream measure_out("measure_output.txt", std::ios::app);
         measure_out.precision(5);
-        measure_out << std::scientific << "Run cost: " << cost_time << std::endl
+        measure_out << std::scientific << "Run cost: " << cost_time << std::endl;
         measure_out.close();
 
         std::cout << "Run cost: " << cost_time << std::endl;
