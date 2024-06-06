@@ -3,6 +3,8 @@
 #include "arm_compute/core/Validate.h"
 
 #include "src/cpu/operators/CpuTokenEmbed.h"
+#include <chrono>
+
 // operator to be added 
 
 namespace arm_compute
