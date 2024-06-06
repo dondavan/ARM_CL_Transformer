@@ -143,6 +143,7 @@ void GraphManager::execute_graph(Graph &graph)
         #ifdef MEASURE_TIME
         auto input_end_time = std::chrono::high_resolution_clock::now();
         double input_cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(input_end_time - input_start_time).count();
+        std::cout.precision(5);
         std::cout << "Input cost: " << input_cost_time << std::endl;
         #endif
 
@@ -154,6 +155,7 @@ void GraphManager::execute_graph(Graph &graph)
         #ifdef MEASURE_TIME
         auto all_task_end_time = std::chrono::high_resolution_clock::now();
         double all_task_cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(all_task_end_time - all_task_start_time).count();
+        std::cout.precision(5);
         std::cout << "All_task cost: " << all_task_cost_time << std::endl;
         #endif
 
@@ -168,6 +170,7 @@ void GraphManager::execute_graph(Graph &graph)
         #ifdef MEASURE_TIME
         auto output_end_time = std::chrono::high_resolution_clock::now();
         double output_cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(output_end_time - output_start_time).count();
+        std::cout.precision(5);
         std::cout << "Output cost: " << output_cost_time << std::endl;
         #endif
 

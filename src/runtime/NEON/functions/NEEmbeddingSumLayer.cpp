@@ -47,6 +47,7 @@ void NEEmbeddingSumLayer::configure(ITensor *token, ITensor *segment, ITensor *p
 #ifdef MEASURE_TIME
     auto   end_time  = std::chrono::high_resolution_clock::now();
     double cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
+    std::cout.precision(5);
     std::cout << "NEEmbeddingSumLayer::configure cost: " << cost_time << std::endl;
 #endif
 }
@@ -72,6 +73,7 @@ void NEEmbeddingSumLayer::run()
 #ifdef MEASURE_TIME
     auto   end_time  = std::chrono::high_resolution_clock::now();
     double cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
+    std::cout.precision(5);
     std::cout << "NEEmbeddingSumLayer::run cost: " << cost_time << std::endl;
 #endif
 }
