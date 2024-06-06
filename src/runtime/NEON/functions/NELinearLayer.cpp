@@ -6,6 +6,11 @@
 #include "src/common/utils/Log.h"
 #include "src/cpu/operators/CpuLinear.h"
 
+#ifdef MEASURE_TIME
+#include <chrono>
+#include <fstream>
+#endif
+
 namespace arm_compute
 {
 
