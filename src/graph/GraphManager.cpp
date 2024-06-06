@@ -149,7 +149,11 @@ void GraphManager::execute_graph(Graph &graph)
         auto   input_end_time  = std::chrono::high_resolution_clock::now();
         double input_cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(input_end_time - input_start_time).count();
 
-        std::ofstream measure_out("measure_output.txt",std::ios::app);
+        // Clear previous output
+        std::ofstream ofs;
+        ofs.open("measure_output.txt", std::ofstream::out | std::ofstream::trunc);
+        ofs.close();
+        std::ofstream measure_out("measure_output.txt", std::ios::app);
         measure_out.precision(5);
         measure_out << std::scientific << "Input cost: " << input_cost_time << std::endl;
 
