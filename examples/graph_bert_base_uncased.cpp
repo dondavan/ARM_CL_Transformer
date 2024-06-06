@@ -157,7 +157,10 @@ class GraphVanillaTransformerExample : public Example
     void do_run() override
     {
         #ifdef MEASURE_TIME
-        
+        // Clear previous output
+        std::ofstream ofs;
+        ofs.open("measure_output.txt", std::ofstream::out | std::ofstream::trunc);
+        ofs.close();
         auto start_time = std::chrono::high_resolution_clock::now();
         #endif
 
