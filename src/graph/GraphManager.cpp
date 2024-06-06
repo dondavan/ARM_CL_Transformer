@@ -37,7 +37,7 @@
 
 #ifdef MEASURE_TIME
 #include <chrono>
-#include <iostream>
+#include <fstream>
 #endif
 
 namespace arm_compute
