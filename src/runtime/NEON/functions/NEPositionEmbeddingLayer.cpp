@@ -41,7 +41,8 @@ void NEPositionEmbeddingLayer::configure(ITensor *input, ITensor *position, ITen
 #ifdef MEASURE_TIME
     auto   end_time  = std::chrono::high_resolution_clock::now();
     double cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
-    std::cout.precision(5) << std::scientific << "NEPositionEmbeddingLayer::configure cost: " << cost_time << std::endl;
+    std::cout.precision(5);
+    std::cout << std::scientific << "NEPositionEmbeddingLayer::configure cost: " << cost_time << std::endl;
 #endif
 }
 
@@ -64,7 +65,8 @@ void NEPositionEmbeddingLayer::run()
 #ifdef MEASURE_TIME
     auto   end_time  = std::chrono::high_resolution_clock::now();
     double cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
-    std::cout.precision(5) << std::scientific << "NEPositionEmbeddingLayer::run cost: " << cost_time << std::endl;
+    std::cout.precision(5);
+    std::cout << std::scientific << "NEPositionEmbeddingLayer::run cost: " << cost_time << std::endl;
 #endif
 }
 
