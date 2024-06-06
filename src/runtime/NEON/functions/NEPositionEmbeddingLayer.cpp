@@ -4,7 +4,10 @@
 
 #include "src/cpu/operators/CpuPositionEmbed.h"
 
+#ifdef MEASURE_TIME
 #include <chrono>
+#include <iostream>
+#endif
 
 namespace arm_compute
 {

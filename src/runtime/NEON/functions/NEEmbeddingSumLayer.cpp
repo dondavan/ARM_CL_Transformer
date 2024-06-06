@@ -4,8 +4,10 @@
 
 #include "src/cpu/operators/CpuEmbedSum.h"
 
+#ifdef MEASURE_TIME
 #include <chrono>
-
+#include <iostream>
+#endif
 namespace arm_compute
 {
 

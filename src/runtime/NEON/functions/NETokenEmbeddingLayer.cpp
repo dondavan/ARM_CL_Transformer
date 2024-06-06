@@ -4,9 +4,11 @@
 
 #include "src/cpu/operators/CpuTokenEmbed.h"
 
+#ifdef MEASURE_TIME
 #include <chrono>
+#include <iostream>
+#endif
 
-// operator to be added
 
 namespace arm_compute
 {
