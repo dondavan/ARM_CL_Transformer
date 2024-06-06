@@ -31,6 +31,10 @@ void NELinearLayer::configure(const ITensor *input,
     ARM_COMPUTE_LOG_PARAMS(input, output);
     ARM_COMPUTE_UNUSED(linear_info);
 
+#ifdef MEASURE_TIME
+    auto start_time = std::chrono::high_resolution_clock::now();
+#endif
+
     _impl->src      = input;
     _impl->weight   = weight;
     _impl->bias     = bias;
@@ -38,6 +42,18 @@ void NELinearLayer::configure(const ITensor *input,
 
     _impl->kernel = std::make_unique<cpu::CpuLinear>();
     _impl->kernel->configure(input->info(), weight->info(), bias->info(), output->info(), 1.0f, 1.0f);
+
+#ifdef MEASURE_TIME
+    auto   end_time  = std::chrono::high_resolution_clock::now();
+    double cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
+    std::ofstream measure_out("measure_output.txt",std::ios::app);
+    measure_out.precision(5);
+    measure_out << std::scientific << "NELinearLayer::configure cost: " << cost_time << std::endl;
+    measure_out.close();
+
+    std::cout.precision(5);
+    std::cout << std::scientific << "NELinearLayer::configure cost: " << cost_time << std::endl;
+#endif
 }
 
 Status NELinearLayer::validate(const ITensor *input, 
@@ -50,6 +66,10 @@ Status NELinearLayer::validate(const ITensor *input,
 
 void NELinearLayer::run()
 {
+#ifdef MEASURE_TIME
+    auto start_time = std::chrono::high_resolution_clock::now();
+#endif
+
     ITensorPack pack;
 
     pack.add_tensor(TensorType::ACL_SRC_0, _impl->src);
@@ -58,6 +78,18 @@ void NELinearLayer::run()
     pack.add_tensor(TensorType::ACL_DST, _impl->dst);
     
     _impl->kernel->run(pack);
+
+#ifdef MEASURE_TIME
+    auto   end_time  = std::chrono::high_resolution_clock::now();
+    double cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
+    std::ofstream measure_out("measure_output.txt",std::ios::app);
+    measure_out.precision(5);
+    measure_out << std::scientific << "NELinearLayer::run cost: " << cost_time << std::endl;
+    measure_out.close();
+
+    std::cout.precision(5);
+    std::cout << std::scientific << "NELinearLayer::run cost: " << cost_time << std::endl;
+#endif
 
 }
 
