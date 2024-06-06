@@ -146,7 +146,7 @@ void GraphManager::execute_graph(Graph &graph)
         
         std::ofstream measure_out("measure_output.txt");
         measure_out.precision(5);
-        measure_out << "Input cost: " << input_cost_time << std::endl;
+        measure_out << std::scientific << "Input cost: " << input_cost_time << std::endl;
 
         std::cout.precision(5);
         std::cout << "Input cost: " << input_cost_time << std::endl;
@@ -162,7 +162,7 @@ void GraphManager::execute_graph(Graph &graph)
         double all_task_cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(all_task_end_time - all_task_start_time).count();
 
         measure_out.precision(5);
-        measure_out << "All_task cost: " << all_task_cost_time << std::endl;
+        measure_out << std::scientific << "All_task cost: " << all_task_cost_time << std::endl;
 
         std::cout.precision(5);
         std::cout << "All_task cost: " << all_task_cost_time << std::endl;
@@ -181,7 +181,7 @@ void GraphManager::execute_graph(Graph &graph)
         double output_cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(output_end_time - output_start_time).count();
 
         measure_out.precision(5);
-        measure_out << "Output cost: " << output_cost_time << std::endl;
+        measure_out<< std::scientific << "Output cost: " << output_cost_time << std::endl;
 
         std::cout.precision(5);
         std::cout << "Output cost: " << output_cost_time << std::endl;
