@@ -47,6 +47,10 @@ NEActivationLayer::~NEActivationLayer()                               = default;
 
 void NEActivationLayer::configure(ITensor *input, ITensor *output, ActivationLayerInfo activation_info)
 {
+#ifdef MEASURE_TIME
+    auto start_time = std::chrono::high_resolution_clock::now();
+#endif
+
     _impl->src = input;
     _impl->dst = output == nullptr ? input : output;
 
@@ -54,6 +58,18 @@ void NEActivationLayer::configure(ITensor *input, ITensor *output, ActivationLay
 
     _impl->op = std::make_unique<cpu::CpuActivation>();
     _impl->op->configure(_impl->src->info(), _impl->dst->info(), activation_info);
+
+#ifdef MEASURE_TIME
+    auto   end_time  = std::chrono::high_resolution_clock::now();
+    double cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
+    std::ofstream measure_out("measure_output.txt",std::ios::app);
+    measure_out.precision(5);
+    measure_out << std::scientific << "NEActivationLayer::configure cost: " << cost_time << std::endl;
+    measure_out.close();
+
+    std::cout.precision(5);
+    std::cout << std::scientific << "NEActivationLayer::configure cost: " << cost_time << std::endl;
+#endif
 }
 
 Status
@@ -64,9 +80,25 @@ NEActivationLayer::validate(const ITensorInfo *input, const ITensorInfo *output,
 
 void NEActivationLayer::run()
 {
+#ifdef MEASURE_TIME
+    auto start_time = std::chrono::high_resolution_clock::now();
+#endif
+
     ITensorPack pack;
     pack.add_tensor(TensorType::ACL_SRC, _impl->src);
     pack.add_tensor(TensorType::ACL_DST, _impl->dst);
     _impl->op->run(pack);
+
+#ifdef MEASURE_TIME
+    auto   end_time  = std::chrono::high_resolution_clock::now();
+    double cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
+    std::ofstream measure_out("measure_output.txt",std::ios::app);
+    measure_out.precision(5);
+    measure_out << std::scientific << "NEActivationLayer::run cost: " << cost_time << std::endl;
+    measure_out.close();
+
+    std::cout.precision(5);
+    std::cout << std::scientific << "NEActivationLayer::run cost: " << cost_time << std::endl;
+#endif
 }
 } // namespace arm_compute

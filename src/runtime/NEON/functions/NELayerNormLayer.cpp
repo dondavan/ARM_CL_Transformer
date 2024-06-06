@@ -6,6 +6,11 @@
 #include "src/common/utils/Log.h"
 #include "src/cpu/operators/CpuLayerNorm.h"
 
+#ifdef MEASURE_TIME
+#include <chrono>
+#include <fstream>
+#endif
+
 namespace arm_compute
 {
 
@@ -25,6 +30,10 @@ void NELayerNormLayer::configure(const ITensor *input,
                               ITensor *output,
                               const LayerNormLayerInfo& LayerNorm_info)
 {
+#ifdef MEASURE_TIME
+    auto start_time = std::chrono::high_resolution_clock::now();
+#endif
+
     ARM_COMPUTE_ERROR_ON_NULLPTR(input, output);
     ARM_COMPUTE_LOG_PARAMS(input, output);
 
@@ -33,6 +42,18 @@ void NELayerNormLayer::configure(const ITensor *input,
 
     _impl->op = std::make_unique<cpu::CpuLayerNorm>();
     _impl->op->configure(input->info(), output->info(), LayerNorm_info);
+
+#ifdef MEASURE_TIME
+    auto   end_time  = std::chrono::high_resolution_clock::now();
+    double cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
+    std::ofstream measure_out("measure_output.txt",std::ios::app);
+    measure_out.precision(5);
+    measure_out << std::scientific << "NELayerNormLayer::configure cost: " << cost_time << std::endl;
+    measure_out.close();
+
+    std::cout.precision(5);
+    std::cout << std::scientific << "NELayerNormLayer::configure cost: " << cost_time << std::endl;
+#endif
 }
 
 Status NELayerNormLayer::validate(const ITensor *input,
@@ -45,6 +66,10 @@ Status NELayerNormLayer::validate(const ITensor *input,
 
 void NELayerNormLayer::run()
 {
+#ifdef MEASURE_TIME
+    auto start_time = std::chrono::high_resolution_clock::now();
+#endif
+
     ITensorPack pack;
 
     pack.add_tensor(TensorType::ACL_SRC, _impl->src);
@@ -52,15 +77,17 @@ void NELayerNormLayer::run()
     
     _impl->op->run(pack);
 
-    /*
-    std::cout <<"src/runtime/NEON/functions/NELayerNormLayer.cpp x: " << _impl->dst->info()->tensor_shape().x() << std::endl;
-    std::cout <<"src/runtime/NEON/functions/NELayerNormLayer.cpp y: " << _impl->dst->info()->tensor_shape().y() << std::endl;
-    std::cout <<"src/runtime/NEON/functions/NELayerNormLayer.cpp z: " << _impl->dst->info()->tensor_shape().z() << std::endl;
-    std::cout << *reinterpret_cast<float *>(_impl->dst->ptr_to_element(Coordinates(0,0)))  << std::endl;
-    std::cout << *reinterpret_cast<float *>(_impl->dst->ptr_to_element(Coordinates(1,0,0)))  << std::endl;
-    std::cout << *reinterpret_cast<float *>(_impl->dst->ptr_to_element(Coordinates(2,0,0)))  << std::endl;
-    std::cout << *reinterpret_cast<float *>(_impl->dst->ptr_to_element(Coordinates(0,1)))  << std::endl;
-    */
+#ifdef MEASURE_TIME
+    auto   end_time  = std::chrono::high_resolution_clock::now();
+    double cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
+    std::ofstream measure_out("measure_output.txt",std::ios::app);
+    measure_out.precision(5);
+    measure_out << std::scientific << "NELayerNormLayer::run cost: " << cost_time << std::endl;
+    measure_out.close();
+
+    std::cout.precision(5);
+    std::cout << std::scientific << "NELayerNormLayer::run cost: " << cost_time << std::endl;
+#endif
 
 }
 

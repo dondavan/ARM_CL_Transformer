@@ -29,6 +29,11 @@
 
 #include <utility>
 
+#ifdef MEASURE_TIME
+#include <chrono>
+#include <fstream>
+#endif
+
 namespace arm_compute
 {
 struct NEArithmeticAddition::Impl
@@ -61,20 +66,53 @@ void NEArithmeticAddition::configure(const ITensor             *input1,
                                      ConvertPolicy              policy,
                                      const ActivationLayerInfo &act_info)
 {
+#ifdef MEASURE_TIME
+    auto start_time = std::chrono::high_resolution_clock::now();
+#endif
+
     _impl->src_0 = input1;
     _impl->src_1 = input2;
     _impl->dst   = output;
     _impl->op    = std::make_unique<cpu::CpuAdd>();
     _impl->op->configure(_impl->src_0->info(), _impl->src_1->info(), _impl->dst->info(), policy, act_info);
+
+#ifdef MEASURE_TIME
+    auto   end_time  = std::chrono::high_resolution_clock::now();
+    double cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
+    std::ofstream measure_out("measure_output.txt",std::ios::app);
+    measure_out.precision(5);
+    measure_out << std::scientific << "NEArithmeticAddition::configure cost: " << cost_time << std::endl;
+    measure_out.close();
+
+    std::cout.precision(5);
+    std::cout << std::scientific << "NEArithmeticAddition::configure cost: " << cost_time << std::endl;
+#endif
+
 }
 
 void NEArithmeticAddition::run()
 {
+#ifdef MEASURE_TIME
+    auto start_time = std::chrono::high_resolution_clock::now();
+#endif
+
     ITensorPack pack;
     pack.add_tensor(TensorType::ACL_SRC_0, _impl->src_0);
     pack.add_tensor(TensorType::ACL_SRC_1, _impl->src_1);
     pack.add_tensor(TensorType::ACL_DST, _impl->dst);
 
     _impl->op->run(pack);
+
+#ifdef MEASURE_TIME
+    auto   end_time  = std::chrono::high_resolution_clock::now();
+    double cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
+    std::ofstream measure_out("measure_output.txt",std::ios::app);
+    measure_out.precision(5);
+    measure_out << std::scientific << "NEScaleDotProductionAttentionLayer::run cost: " << cost_time << std::endl;
+    measure_out.close();
+
+    std::cout.precision(5);
+    std::cout << std::scientific << "NEScaleDotProductionAttentionLayer::run cost: " << cost_time << std::endl;
+#endif
 }
 } // namespace arm_compute
