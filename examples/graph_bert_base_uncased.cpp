@@ -149,6 +149,13 @@ class GraphVanillaTransformerExample : public Example
         config.tuner_file  = common_params.tuner_file;
         config.mlgo_file   = common_params.mlgo_file;
 
+        #ifdef MEASURE_TIME
+        // Clear previous output
+        std::ofstream ofs;
+        ofs.open("measure_output.txt", std::ofstream::out | std::ofstream::trunc);
+        ofs.close();
+        #endif
+
         graph.finalize(common_params.target, config);
 
         return true;
@@ -157,10 +164,6 @@ class GraphVanillaTransformerExample : public Example
     void do_run() override
     {
         #ifdef MEASURE_TIME
-        // Clear previous output
-        std::ofstream ofs;
-        ofs.open("measure_output.txt", std::ofstream::out | std::ofstream::trunc);
-        ofs.close();
         auto start_time = std::chrono::high_resolution_clock::now();
         #endif
 
@@ -170,6 +173,11 @@ class GraphVanillaTransformerExample : public Example
         #ifdef MEASURE_TIME
         auto end_time = std::chrono::high_resolution_clock::now();
         double cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
+        std::ofstream measure_out("measure_output.txt", std::ios::app);
+        measure_out.precision(5);
+        measure_out << std::scientific << "Run cost: " << cost_time << std::endl
+        measure_out.close();
+
         std::cout << "Run cost: " << cost_time << std::endl;
         #endif
     }
