@@ -42,8 +42,13 @@ void NETokenEmbeddingLayer::configure(ITensor *input, ITensor *vocab, ITensor *o
 #ifdef MEASURE_TIME
     auto   end_time  = std::chrono::high_resolution_clock::now();
     double cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
+    std::ofstream measure_out("measure_output.txt");
+    measure_out.precision(5);
+    measure_out << std::scientific << "NETokenEmbeddingLayer::configure cost: " << cost_time << std::endl;
+    measure_out.close();
+
     std::cout.precision(5);
-    std::cout << "NETokenEmbeddingLayer::configure cost: " << cost_time << std::endl;
+    std::cout << std::scientific << "NETokenEmbeddingLayer::configure cost: " << cost_time << std::endl;
 #endif
 }
 
@@ -66,8 +71,13 @@ void NETokenEmbeddingLayer::run()
 #ifdef MEASURE_TIME
     auto   end_time  = std::chrono::high_resolution_clock::now();
     double cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
+    std::ofstream measure_out("measure_output.txt");
+    measure_out.precision(5);
+    measure_out << std::scientific << "NETokenEmbeddingLayer::run cost: " << cost_time << std::endl;
+    measure_out.close();
+
     std::cout.precision(5);
-    std::cout << "NETokenEmbeddingLayer::run cost: " << cost_time << std::endl;
+    std::cout << std::scientific << "NETokenEmbeddingLayer::run cost: " << cost_time << std::endl;
 #endif
 }
 
