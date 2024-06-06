@@ -139,6 +139,7 @@ vars.AddVariables(
     ListVariable("data_layout_support", "Enable a list of data layout to support", "all", ["nhwc", "nchw"]),
     ("toolchain_prefix", "Override the toolchain prefix; used by all toolchain components: compilers, linker, assembler etc. If unspecified, use default(auto) prefixes; if passed an empty string '' prefixes would be disabled", "auto"),
     ("compiler_prefix", "Override the compiler prefix; used by just compilers (CC,CXX); further overrides toolchain_prefix for compilers; this is for when the compiler prefixes are different from that of the linkers, archivers etc. If unspecified, this is the same as toolchain_prefix; if passed an empty string '' prefixes would be disabled", "auto"),
+    BoolVariable("measure", "Measure Runtime", False),
     BoolVariable("thread_sanitizer", "Enable ThreadSanitizer", False),
     ("extra_cxx_flags", "Extra CXX flags to be appended to the build command", ""),
     ("extra_link_flags", "Extra LD flags to be appended to the build command", ""),
@@ -195,6 +196,9 @@ Help(vars.GenerateHelpText(env))
 if env.get("export_compile_commands", False):
     env.Tool("compilation_db")
     env.CompilationDatabase("%s/compile_commands.json" % build_path)
+
+if env['measure'] == 1:
+    env.Append(CXXFLAGS = ['-DMEASURE_TIME'])
 
 if 'armv7a' in env['arch'] and env['os'] == 'android':
     print("WARNING: armv7a on Android is no longer maintained")
