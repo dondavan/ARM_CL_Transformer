@@ -4,6 +4,8 @@
 
 #include "src/cpu/operators/CpuSegmentEmbed.h"
 
+#include <chrono>
+
 namespace arm_compute
 {
 

@@ -3,7 +3,8 @@
 #include "arm_compute/core/Validate.h"
 
 #include "src/cpu/operators/CpuEmbedSum.h"
-// operator to be added
+
+#include <chrono>
 
 namespace arm_compute
 {

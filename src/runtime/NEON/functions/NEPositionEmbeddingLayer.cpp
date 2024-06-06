@@ -4,6 +4,8 @@
 
 #include "src/cpu/operators/CpuPositionEmbed.h"
 
+#include <chrono>
+
 namespace arm_compute
 {
 
