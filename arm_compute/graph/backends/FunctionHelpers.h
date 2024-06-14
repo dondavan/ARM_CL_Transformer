@@ -1838,23 +1838,26 @@ std::unique_ptr<IFunction> create_linear_layer(LinearLayerNode &node)
 template <typename ForwardLayerFunction, typename TargetInfo>
 std::unique_ptr<IFunction> create_simple_forward_layer(SimpleForwardLayerNode &node)
 {
+    /*
     typename TargetInfo::TensorType *src1   = get_backing_tensor<TargetInfo>(node.input(0));
     typename TargetInfo::TensorType *src2   = get_backing_tensor<TargetInfo>(node.input(1));
     typename TargetInfo::TensorType *src3   = get_backing_tensor<TargetInfo>(node.input(2));
     typename TargetInfo::TensorType *dst1   = get_backing_tensor<TargetInfo>(node.output(0));
     typename TargetInfo::TensorType *dst2   = get_backing_tensor<TargetInfo>(node.output(1));
     typename TargetInfo::TensorType *dst3   = get_backing_tensor<TargetInfo>(node.output(2));
-    /*
+    
+    auto func = std::make_unique<ForwardLayerFunction>();
+    func->configure(src1,src2,src3,dst1,dst2,dst3);
+    */
+    
     for(size_t idx=0; idx <node.num_inputs(); idx++)
     {
         // Update accessor
-        //node.input(idx)->set_accessor(node.output(idx)->extract_accessor());
+        node.input(idx)->set_accessor(node.output(idx)->extract_accessor());
         // Update output
         node.set_output_tensor(node.input(idx)->id(),idx);
     }
-    */
-    auto func = std::make_unique<ForwardLayerFunction>();
-    func->configure(src1,src2,src3,dst1,dst2,dst3);
+    
     // Update accessor
     //node.input(0)->set_accessor(node.output(0)->extract_accessor());
     // Update output
@@ -1864,7 +1867,7 @@ std::unique_ptr<IFunction> create_simple_forward_layer(SimpleForwardLayerNode &n
 
     // Create function
 
-    return func;
+    return nullptr;
 }
 
 /** Creates a backend scale dot production function
