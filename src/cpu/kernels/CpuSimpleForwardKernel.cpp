@@ -65,10 +65,6 @@ void CpuSimpleForwardKernel::run_op(ITensorPack &tensors, const Window &window, 
     dst2->copy_from(*src2);
     dst3->copy_from(*src3);
     
-
-
-    std::cout << "sb " <<std::endl;
-    
 }
 
 const char *CpuSimpleForwardKernel::name() const
