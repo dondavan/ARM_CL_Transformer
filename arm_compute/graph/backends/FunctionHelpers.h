@@ -1858,6 +1858,8 @@ std::unique_ptr<IFunction> create_simple_forward_layer(SimpleForwardLayerNode &n
         node.input(idx)->set_accessor(node.output(idx)->extract_accessor());
         // Update output
         node.set_output_tensor(node.input(idx)->id(),idx);
+        std::cout << "After Id: " << idx << 
+                     " Input: " << node.input(idx)->id() << " Output: " << node.output(idx)->id() << std::endl;
     }
     
 
