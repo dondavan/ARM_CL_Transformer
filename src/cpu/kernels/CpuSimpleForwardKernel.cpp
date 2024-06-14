@@ -53,7 +53,7 @@ void CpuSimpleForwardKernel::run_op(ITensorPack &tensors, const Window &window, 
     ARM_COMPUTE_UNUSED(tensors);
     ARM_COMPUTE_ERROR_ON_UNCONFIGURED_KERNEL(this);
     
-    /*
+    
     const auto src1 = tensors.get_const_tensor(TensorType::ACL_SRC_0);
     auto       dst1 = tensors.get_tensor(TensorType::ACL_DST_0);
     const auto src2 = tensors.get_const_tensor(TensorType::ACL_SRC_1);
@@ -64,7 +64,7 @@ void CpuSimpleForwardKernel::run_op(ITensorPack &tensors, const Window &window, 
     dst1->copy_from(*src1);
     dst2->copy_from(*src2);
     dst3->copy_from(*src3);
-    */
+    
 
 
     std::cout << "sb " <<std::endl;

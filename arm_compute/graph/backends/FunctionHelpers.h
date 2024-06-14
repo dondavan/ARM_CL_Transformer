@@ -1851,7 +1851,7 @@ std::unique_ptr<IFunction> create_simple_forward_layer(SimpleForwardLayerNode &n
     func->configure(src1,src2,src3,dst1,dst2,dst3);
     
     
-
+    /*
     for(size_t idx=0; idx <node.num_inputs(); idx++)
     {
         std::cout << "Id: " << idx << 
@@ -1863,6 +1863,7 @@ std::unique_ptr<IFunction> create_simple_forward_layer(SimpleForwardLayerNode &n
         std::cout << "After Id: " << idx << 
                      " Input: " << node.input(idx)->id() << " Output: " << node.output(idx)->id() << std::endl;
     }
+    */
     
 
     return func;
