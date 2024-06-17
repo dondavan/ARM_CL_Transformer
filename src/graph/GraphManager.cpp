@@ -65,6 +65,25 @@ void GraphManager::finalize_graph(Graph &graph, GraphContext &ctx, PassManager &
     // Force target to all graph construct
     Target forced_target = target;
 
+    switch (target)
+    {
+    case Target::UNSPECIFIED:
+        std::cout << "Target::UNSPECIFIED " << std::endl;
+        break;
+    case Target::NEON:
+        std::cout << "Target::NEON " << std::endl;
+        break;
+    case Target::CL:
+        std::cout << "Target::CL " << std::endl;
+        break;
+    case Target::CLVK:
+        std::cout << "Target::CLVK " << std::endl;
+        break;
+    
+    default:
+        break;
+    }
+
     // In case CLVK is selected, use the CL backend and
     // update config
     if(target == Target::CLVK)
