@@ -256,4 +256,54 @@ Original modified:
 src/cpu/kernels/CpuGemmMatrixMultiplyKernel.cpp : ARM_COMPUTE_RETURN_ERROR_ON_MISMATCHING_SHAPES(rhs, &tensor_info_reshaped1);
 
 
-# CL
+# CL Support
+## Layer
+NETokenEmbeddingLayer, NESegmentEmbeddingLayer, NEPositionEmbeddingLayer -> ?
+NEEmbeddingSumLayer -> CLEmbeddingSumLayer
+NELayerNormLayer -> CLLayerNormLayer
+NEScaleDotProductionAttentionLayer -> CLScaleDotProductionAttentionLayer
+NESimpleForwardLayer -> CLSimpleForwardLayer
+NELinearLayer -> ClLinearLayer
+NEEltwiseFunctions -> ClEltwiseFunctions
+
+## Operation
+cpu::CpuTokenEmbed
+  ->kernels::CpuVectorizeKernel
+
+cpu::CpuSegmentEmbed
+  ->kernels::CpuVectorizeKernel
+
+cpu::CpuPositionEmbed
+  ->kernels::CpuPositionEmbeddingKernel
+
+cpu::CpuEmbedSum
+  ->kernels::CpuAddKernel -> ClElementwiseKernel
+
+NESimpleForwardLayer : copy tensor
+
+cpu::CpuLayerNorm
+  ->kernels::CpuLayerNormKernel (This is 100% missing)
+
+cpu::CpuScaleDotProduction
+  ->CpuPermute -> ClPermuteKernel
+  ->kernels::CpuReshapeKernel -> ClReshapeKernel          |
+  ->cpu::kernels::CpuGemmInterleave4x4Kernel              |
+  ->cpu::kernels::CpuGemmTranspose1xWKernel               | These 4 are for matrix multiplcation
+  ->cpu::kernels::CpuGemmMatrixMultiplyKernel             |
+
+cpu::CpuLinear
+  ->CpuTranspose -> ClTransposeKernel                     |
+  ->cpu::kernels::CpuGemmMatrixMultiplyKernel             |
+  ->cpu::kernels::CpuGemmInterleave4x4Kernel              | These 4 are for matrix multiplcation
+  ->cpu::kernels::CpuGemmTranspose1xWKernel               |
+  ->cpu::kernels::CpuAddVecKernel -> ClElementwiseKernel
+
+cpu::CpuAdd
+  ->kernels::CpuAddKernel -> ClElementwiseKernel
+
+
+src/runtime/CL/CLScheduler.cpp
+
+src/core/CL/CLHelpers.cpp
+
+src/core/CL/CLCompileContext.cpp
