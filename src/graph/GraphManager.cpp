@@ -68,16 +68,16 @@ void GraphManager::finalize_graph(Graph &graph, GraphContext &ctx, PassManager &
     switch (target)
     {
     case Target::UNSPECIFIED:
-        std::cout << "Target::UNSPECIFIED " << std::endl;
+        std::cout << "src/graph/GraphManager.cpp Target::UNSPECIFIED " << std::endl;
         break;
     case Target::NEON:
-        std::cout << "Target::NEON " << std::endl;
+        std::cout << "src/graph/GraphManager.cpp Target::NEON " << std::endl;
         break;
     case Target::CL:
-        std::cout << "Target::CL " << std::endl;
+        std::cout << "src/graph/GraphManager.cpp Target::CL " << std::endl;
         break;
     case Target::CLVK:
-        std::cout << "Target::CLVK " << std::endl;
+        std::cout << "src/graph/GraphManager.cpp Target::CLVK " << std::endl;
         break;
     
     default:
@@ -99,6 +99,7 @@ void GraphManager::finalize_graph(Graph &graph, GraphContext &ctx, PassManager &
     {
         forced_target = get_default_target();
         ARM_COMPUTE_LOG_GRAPH_INFO("Switching target from " << target << " to " << forced_target << std::endl);
+        std::cout << "Switching target from " << target << " to " << forced_target << std::endl;
     }
     force_target_to_graph(graph, forced_target);
 
