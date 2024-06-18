@@ -1,10 +1,9 @@
-#ifndef ARM_COMPUTE_CLTOKENEMBEDDINGLAYER_H
-#define ARM_COMPUTE_CLTOKENEMBEDDINGLAYER_H
+#ifndef ARM_COMPUTE_CLPOSITIONEMBEDDINGLAYER_H
+#define ARM_COMPUTE_CLPOSITIONEMBEDDINGLAYER_H
 
 #include "arm_compute/core/Types.h"
 #include "arm_compute/runtime/IFunction.h"
 #include "arm_compute/runtime/IRuntimeContext.h"
-
 
 #include <memory>
 
@@ -14,34 +13,32 @@ namespace arm_compute
 class ITensor;
 class ITensorInfo;
 
-class CLTokenEmbeddingLayer : public IFunction
+class CLPositionEmbeddingLayer : public IFunction
 {
 public:
     /** Default Constructor */
-    CLTokenEmbeddingLayer();
+    CLPositionEmbeddingLayer();
     /** Default Destructor */
-    ~CLTokenEmbeddingLayer();
+    ~CLPositionEmbeddingLayer();
     /** Prevent instances of this class from being copied (As this class contains pointers) */
-    CLTokenEmbeddingLayer(const CLTokenEmbeddingLayer &) = delete;
+    CLPositionEmbeddingLayer(const CLPositionEmbeddingLayer &) = delete;
     /** Prevent instances of this class from being copied (As this class contains pointers) */
-    CLTokenEmbeddingLayer &operator=(const CLTokenEmbeddingLayer &) = delete;
+    CLPositionEmbeddingLayer &operator=(const CLPositionEmbeddingLayer &) = delete;
 
     /** Set the input and output tensor.
      * 
      * @param[in]  input        Input tensor of char text, Data type supported: U8
-     * @param[in]  vocab        Const tenser of char 2 vec, Data type supported: F32
-     * @param[in]  emb_info     Token Embedding Layer Info.
+     * @param[in]  Position     Const tenser of Position vector, Data type supported: F32
      * @param[out] output       Output tensor, shape (seq_len,d_model). Data type supported: F32
      */
-    void configure(ITensor *input, ITensor *vocab, ITensor *output, const EmbeddingLayerInfo& emb_info);
-    /** Static function to check if given info will lead to a valid configuration of @ref CLTokenEmbeddingLayer
+    void configure(ITensor *input, ITensor *Position, ITensor *output);
+    /** Static function to check if given info will lead to a valid configuration of @ref CLPositionEmbeddingLayer
      *
      * @param[in] output Destination tensor info. Data type supported: same as @p input
-     * @param[in] tkemb_info Token Embedding Layer Info.
      *
      * @return a status
      */
-    static Status validate(ITensor *output, const EmbeddingLayerInfo& tkemb_info);
+    static Status validate(ITensor *output);
 
     void prepare() override;
     // Inherited methods overridden:
@@ -52,4 +49,4 @@ private:
 };
 } // namespace arm_compute
 
-#endif /* ARM_COMPUTE_CLTOKENEMBEDDINGLAYER_H */
+#endif /* ARM_COMPUTE_CLPOSITIONEMBEDDINGLAYER_H */
