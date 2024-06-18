@@ -281,6 +281,7 @@ std::string CLCompileContext::generate_build_options(const StringSet   &build_op
     }
     else
     {
+        std::cout << "Non uniform workgroup size is not supported!!" << std::endl;
         ARM_COMPUTE_ERROR("Non uniform workgroup size is not supported!!");
     }
 
