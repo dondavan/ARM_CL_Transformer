@@ -118,27 +118,6 @@ public:
      */
     CLVersion version() const
     {
-        switch (_options.version)
-        {
-        case CLVersion::CL10:
-            std::cout << "CLVersion version() 1.0"  << std::endl;
-            break;
-        case CLVersion::CL11:
-            std::cout << "CLVersion version() 1.1"  << std::endl;
-            break;
-        case CLVersion::CL12:
-            std::cout << "CLVersion version() 1.2"  << std::endl;
-            break;
-        case CLVersion::CL20:
-            std::cout << "CLVersion version() 2.x"  << std::endl;
-            break;
-        case CLVersion::CL30:
-            std::cout << "CLVersion version() 3.x"  << std::endl;
-            break;
-        default:
-            break;
-        }
-        
         return _options.version;
     }
 
