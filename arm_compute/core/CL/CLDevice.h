@@ -138,6 +138,11 @@ public:
 
     bool supported(const std::string &extension) const override
     {
+        std:: cout << "Target extension " << extension << std::endl;
+        for(auto i:_options.extensions)
+        {
+            std:: cout << i << std::endl;
+        }
         return _options.extensions.count(extension) != 0;
     }
 
