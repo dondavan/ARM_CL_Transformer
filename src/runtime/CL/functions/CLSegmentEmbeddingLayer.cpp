@@ -31,6 +31,12 @@ CLSegmentEmbeddingLayer::CLSegmentEmbeddingLayer()
 
 CLSegmentEmbeddingLayer::~CLSegmentEmbeddingLayer() = default;
 
+
+void CLSegmentEmbeddingLayer::configure(ICLTensor *input, ICLTensor *segment, ICLTensor *output)
+{
+    configure(CLKernelLibrary::get().get_compile_context(), input, segment, output);
+}
+
 void CLSegmentEmbeddingLayer::configure(const CLCompileContext &compile_context,ICLTensor *input, ICLTensor *segment, ICLTensor *output)
 {
 #ifdef MEASURE_TIME

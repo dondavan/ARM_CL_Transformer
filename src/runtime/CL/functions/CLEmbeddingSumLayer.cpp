@@ -32,6 +32,15 @@ CLEmbeddingSumLayer::CLEmbeddingSumLayer()
 
 CLEmbeddingSumLayer::~CLEmbeddingSumLayer() = default;
 
+void CLEmbeddingSumLayer::configure(ICLTensor                *token,
+                                    ICLTensor                *segment,
+                                    ICLTensor                *position,
+                                    ICLTensor                *output,
+                                    const EmbeddingLayerInfo &emb_info)
+{
+    configure(CLKernelLibrary::get().get_compile_context(),token,segment,position,output,emb_info);
+}
+
 void CLEmbeddingSumLayer::configure(const CLCompileContext   &compile_context,
                                     ICLTensor                *token,
                                     ICLTensor                *segment,

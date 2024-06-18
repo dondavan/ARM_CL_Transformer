@@ -32,6 +32,13 @@ CLTokenEmbeddingLayer::CLTokenEmbeddingLayer()
 
 CLTokenEmbeddingLayer::~CLTokenEmbeddingLayer() = default;
 
+void CLTokenEmbeddingLayer::configure(ICLTensor *input, 
+                                      ICLTensor *vocab, 
+                                      ICLTensor *output, const EmbeddingLayerInfo &emb_info)
+{
+    configure(CLKernelLibrary::get().get_compile_context(), input, vocab, output, emb_info);
+}
+
 void CLTokenEmbeddingLayer::configure(const CLCompileContext &compile_context,
                                       ICLTensor *input, 
                                       ICLTensor *vocab, 

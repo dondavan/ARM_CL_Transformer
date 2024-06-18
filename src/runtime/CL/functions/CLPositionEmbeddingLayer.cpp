@@ -31,6 +31,13 @@ CLPositionEmbeddingLayer::CLPositionEmbeddingLayer()
 
 CLPositionEmbeddingLayer::~CLPositionEmbeddingLayer() = default;
 
+void CLPositionEmbeddingLayer::configure(ICLTensor              *input,
+                                         ICLTensor              *position,
+                                         ICLTensor              *output)
+{
+    configure(CLKernelLibrary::get().get_compile_context(),input,position,output);
+}
+
 void CLPositionEmbeddingLayer::configure(const CLCompileContext &compile_context,
                                          ICLTensor              *input,
                                          ICLTensor              *position,
