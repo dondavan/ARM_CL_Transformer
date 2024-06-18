@@ -28,7 +28,10 @@ CLPositionEmbeddingLayer::CLPositionEmbeddingLayer()
 
 CLPositionEmbeddingLayer::~CLPositionEmbeddingLayer() = default;
 
-void CLPositionEmbeddingLayer::configure(ITensor *input, ITensor *position, ITensor *output)
+void CLPositionEmbeddingLayer::configure(const CLCompileContext  &compile_context,
+                                         ITensor *input, 
+                                         ITensor *position, 
+                                         ITensor *output)
 {
 #ifdef MEASURE_TIME
     auto start_time = std::chrono::high_resolution_clock::now();
@@ -39,7 +42,7 @@ void CLPositionEmbeddingLayer::configure(ITensor *input, ITensor *position, ITen
     _impl->dst      = output;
 
     _impl->op = std::make_unique<opencl::ClPositionEmbed>();
-    _impl->op->configure(_impl->src->info(), _impl->position->info(), _impl->dst->info());
+    _impl->op->configure(compile_context, _impl->src->info(), _impl->position->info(), _impl->dst->info());
 
 #ifdef MEASURE_TIME
     auto   end_time  = std::chrono::high_resolution_clock::now();
