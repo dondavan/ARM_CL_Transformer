@@ -5,7 +5,6 @@
 #include "arm_compute/runtime/IFunction.h"
 #include "arm_compute/runtime/IRuntimeContext.h"
 
-
 #include <memory>
 
 namespace arm_compute

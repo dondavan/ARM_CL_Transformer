@@ -27,11 +27,12 @@ public:
 
     /** Set the input and output tensor.
      * 
+     * @param[in]     compile_context The compile context to be used.
      * @param[in]  input        Input tensor of char text, Data type supported: U8
      * @param[in]  segment      Const tenser of segment vector, Data type supported: F32
      * @param[out] output       Output tensor, shape (seq_len,d_model). Data type supported: F32
      */
-    void configure(ITensor *input, ITensor *segment, ITensor *output);
+    void configure(const CLCompileContext &compile_context,ITensor *input, ITensor *segment, ITensor *output);
     /** Static function to check if given info will lead to a valid configuration of @ref CLSegmentEmbeddingLayer
      *
      * @param[in] output Destination tensor info. Data type supported: same as @p input
