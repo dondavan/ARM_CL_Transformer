@@ -57,6 +57,7 @@ void CLEmbeddingSumLayer::configure(const CLCompileContext   &compile_context,
     _impl->position = position;
     _impl->dst      = output;
 
+    std::cout << "src/runtime/CL/functions/CLEmbeddingSumLayer.cpp configure start" << std::endl;
     _impl->op = std::make_unique<opencl::ClEmbedSum>();
     _impl->op->configure(compile_context,
                          token->info(),
@@ -65,8 +66,9 @@ void CLEmbeddingSumLayer::configure(const CLCompileContext   &compile_context,
                          output->info(),
                          emb_info);
 
-    
-    std::cout << "src/runtime/CL/functions/CLEmbeddingSumLayer.cpp configure " << std::endl;
+
+    std::cout << "src/runtime/CL/functions/CLEmbeddingSumLayer.cpp configure end" << std::endl;
+
 
 #ifdef MEASURE_TIME
     auto          end_time  = std::chrono::high_resolution_clock::now();
