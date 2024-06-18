@@ -400,7 +400,7 @@ bool get_cl_non_uniform_work_group_supported(const cl::Device &device)
     cl_bool supported = CL_FALSE;
 
     cl_int err =
-        clGetDeviceInfo(device(), CL_DEVICE_NON_UNIFORM_WORK_GROUP_SUPPORT, sizeof(cl_bool), &supported, nullptr);
+        clGetDeviceInfo(device(), 0x1065 /*CL_DEVICE_NON_UNIFORM_WORK_GROUP_SUPPORT*/, sizeof(cl_bool), &supported, nullptr);
     return (err == CL_SUCCESS && supported == CL_TRUE);
 }
 
