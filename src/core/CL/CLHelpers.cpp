@@ -401,6 +401,7 @@ bool get_cl_non_uniform_work_group_supported(const cl::Device &device)
 
     cl_int err =
         clGetDeviceInfo(device(), CL_DEVICE_NON_UNIFORM_WORK_GROUP_SUPPORT, sizeof(cl_bool), &supported, nullptr);
+    err == CL_SUCCESS ? std::cout << "CL_SUCCESS" : std::cout << "CL_ERR";
     supported == CL_TRUE ? std::cout << "CL_TRUE" : std::cout << "CL_FALSE";
     return (err == CL_SUCCESS && supported == CL_TRUE);
 }

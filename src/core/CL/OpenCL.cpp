@@ -907,7 +907,6 @@ cl_int clGetDeviceInfo(cl_device_id   device,
     auto func = arm_compute::CLSymbols::get().clGetDeviceInfo_ptr;
     if (func != nullptr)
     {
-        std::cout << "func != nullptr" << std::endl;
         return func(device, param_name, param_value_size, param_value, param_value_size_ret);
     }
     else
