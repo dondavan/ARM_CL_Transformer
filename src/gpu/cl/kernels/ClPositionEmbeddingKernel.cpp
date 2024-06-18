@@ -88,7 +88,7 @@ Status ClPositionEmbeddingKernel::validate(const ITensorInfo *src, const ITensor
 
 void ClPositionEmbeddingKernel::run_op(ITensorPack &tensors, const Window &window, cl::CommandQueue &queue)
 {
-
+    ARM_COMPUTE_UNUSED(queue);
     const ITensor *src   = tensors.get_const_tensor(TensorType::ACL_SRC_0);
     const ITensor *pos   = tensors.get_const_tensor(TensorType::ACL_SRC_1);
     auto dst = tensors.get_tensor(TensorType::ACL_DST);
