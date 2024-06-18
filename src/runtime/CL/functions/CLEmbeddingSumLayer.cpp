@@ -1,9 +1,8 @@
 #include "arm_compute/runtime/CL/functions/CLEmbeddingSumLayer.h"
 
 #include "arm_compute/core/CL/ICLTensor.h"
-#include "arm_compute/core/Validate.h"
-#include "arm_compute/core/CL/ICLTensor.h"
 #include "arm_compute/core/KernelDescriptors.h"
+#include "arm_compute/core/Validate.h"
 
 #include "src/core/CL/ICLKernel.h"
 #include "src/gpu/cl/operators/ClEmbedSum.h"
@@ -18,10 +17,10 @@ namespace arm_compute
 
 struct CLEmbeddingSumLayer::Impl
 {
-    const ICLTensor                      *token{ nullptr };
-    const ICLTensor                      *segment{ nullptr };
-    const ICLTensor                      *position{ nullptr };
-    ICLTensor                            *dst{ nullptr };
+    const ICLTensor                    *token{ nullptr };
+    const ICLTensor                    *segment{ nullptr };
+    const ICLTensor                    *position{ nullptr };
+    ICLTensor                          *dst{ nullptr };
     IRuntimeContext                    *ctx{ nullptr };
     std::unique_ptr<opencl::ClEmbedSum> op{ nullptr };
 };
@@ -33,11 +32,11 @@ CLEmbeddingSumLayer::CLEmbeddingSumLayer()
 
 CLEmbeddingSumLayer::~CLEmbeddingSumLayer() = default;
 
-void CLEmbeddingSumLayer::configure(const CLCompileContext &compile_context,
-                                    ICLTensor *token, 
-                                    ICLTensor *segment, 
-                                    ICLTensor *position, 
-                                    ICLTensor *output, 
+void CLEmbeddingSumLayer::configure(const CLCompileContext   &compile_context,
+                                    ICLTensor                *token,
+                                    ICLTensor                *segment,
+                                    ICLTensor                *position,
+                                    ICLTensor                *output,
                                     const EmbeddingLayerInfo &emb_info)
 {
 #ifdef MEASURE_TIME

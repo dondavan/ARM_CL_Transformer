@@ -21,14 +21,14 @@ void ClEmbedSum::configure(const ClCompileContext   &compile_context,
     _add_kernel_1 = std::make_unique<kernels::ClSaturatedArithmeticKernel>();
     _add_kernel_2 = std::make_unique<kernels::ClSaturatedArithmeticKernel>();
 
-    _add_kernel_1->configure(compile_context, ArithmeticOperation::ADD, token, segemnt, &_tmp_token_segment);
+    _add_kernel_1->configure(compile_context, ArithmeticOperation::ADD, token, segemnt, &_tmp_token_segment,emb_info.c_policy());
 
     _aux_mem[TokenSegmentOutput] =
         experimental::MemoryInfo(offset_int_vec(TokenSegmentOutput),
                                  experimental::MemoryLifetime::Persistent,
                                  _tmp_token_segment.total_size());
 
-    _add_kernel_2->configure(compile_context, ArithmeticOperation::ADD,&_tmp_token_segment, position, output);
+    _add_kernel_2->configure(compile_context, ArithmeticOperation::ADD,&_tmp_token_segment, position, output,emb_info.c_policy());
 }
 
 Status
