@@ -69,6 +69,7 @@ void ClVectorizeKernel::configure(const CLCompileContext &compile_context, const
 {
     ARM_COMPUTE_ERROR_ON_NULLPTR(src);
     ARM_COMPUTE_ERROR_ON_NULLPTR(vector);
+    ARM_COMPUTE_UNUSED(compile_context);
 
 
     // Configure output tensor info.
@@ -106,7 +107,7 @@ void ClVectorizeKernel::run_op(ITensorPack &tensors, const Window &window, cl::C
         utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC_0));
     const auto vector = utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC_1));
     auto dst = utils::cast::polymorphic_downcast<ICLTensor *>(tensors.get_tensor(TensorType::ACL_DST));
-    
+
     run_vectorize<float>(window, src, vector, dst);
 }
 
