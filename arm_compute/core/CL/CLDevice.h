@@ -151,7 +151,15 @@ public:
      */
     std::tuple<bool, std::string> is_non_uniform_workgroup_supported() const
     {
+        /*
         if (version() == CLVersion::CL30 && get_cl_non_uniform_work_group_supported(_device))
+        {
+            return {true, " -cl-std=CL3.0 "};
+        }
+        */
+
+        // Hang
+        if (version() == CLVersion::CL30)
         {
             return {true, " -cl-std=CL3.0 "};
         }

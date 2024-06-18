@@ -257,6 +257,10 @@ src/cpu/kernels/CpuGemmMatrixMultiplyKernel.cpp : ARM_COMPUTE_RETURN_ERROR_ON_MI
 
 
 # CL Support
+
+# Modified on original
+arm_compute/core/CL/CLDevice.h  is_non_uniform_workgroup_supported
+
 ## Layer
 NETokenEmbeddingLayer, NESegmentEmbeddingLayer, NEPositionEmbeddingLayer -> ?
 NEEmbeddingSumLayer -> CLEmbeddingSumLayer
