@@ -1,7 +1,10 @@
 #include "arm_compute/runtime/CL/functions/CLPositionEmbeddingLayer.h"
 
 #include "arm_compute/core/Validate.h"
+#include "arm_compute/core/CL/ICLTensor.h"
 
+#include "src/common/utils/Log.h"
+#include "src/core/CL/ICLKernel.h"
 #include "src/gpu/cl/operators/ClPositionEmbed.h"
 
 #ifdef MEASURE_TIME
@@ -14,10 +17,10 @@ namespace arm_compute
 
 struct CLPositionEmbeddingLayer::Impl
 {
-    const ITensor                         *src{ nullptr };
-    const ITensor                         *position{ nullptr };
-    ITensor                               *dst{ nullptr };
-    IRuntimeContext                       *ctx{ nullptr };
+    const ICLTensor                         *src{ nullptr };
+    const ICLTensor                         *position{ nullptr };
+    ICLTensor                               *dst{ nullptr };
+    IRuntimeContext                         *ctx{ nullptr };
     std::unique_ptr<opencl::ClPositionEmbed> op{ nullptr };
 };
 
@@ -28,10 +31,10 @@ CLPositionEmbeddingLayer::CLPositionEmbeddingLayer()
 
 CLPositionEmbeddingLayer::~CLPositionEmbeddingLayer() = default;
 
-void CLPositionEmbeddingLayer::configure(const CLCompileContext  &compile_context,
-                                         ITensor *input, 
-                                         ITensor *position, 
-                                         ITensor *output)
+void CLPositionEmbeddingLayer::configure(const CLCompileContext &compile_context,
+                                         ICLTensor              *input,
+                                         ICLTensor              *position,
+                                         ICLTensor              *output)
 {
 #ifdef MEASURE_TIME
     auto start_time = std::chrono::high_resolution_clock::now();
@@ -45,9 +48,9 @@ void CLPositionEmbeddingLayer::configure(const CLCompileContext  &compile_contex
     _impl->op->configure(compile_context, _impl->src->info(), _impl->position->info(), _impl->dst->info());
 
 #ifdef MEASURE_TIME
-    auto   end_time  = std::chrono::high_resolution_clock::now();
-    double cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
-    std::ofstream measure_out("measure_output.txt",std::ios::app);
+    auto          end_time  = std::chrono::high_resolution_clock::now();
+    double        cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
+    std::ofstream measure_out("measure_output.txt", std::ios::app);
     measure_out.precision(5);
     measure_out << std::scientific << "CLPositionEmbeddingLayer::configure cost: " << cost_time << std::endl;
     measure_out.close();
@@ -74,9 +77,9 @@ void CLPositionEmbeddingLayer::run()
     _impl->op->run(pack);
 
 #ifdef MEASURE_TIME
-    auto   end_time  = std::chrono::high_resolution_clock::now();
-    double cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
-    std::ofstream measure_out("measure_output.txt",std::ios::app);
+    auto          end_time  = std::chrono::high_resolution_clock::now();
+    double        cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
+    std::ofstream measure_out("measure_output.txt", std::ios::app);
     measure_out.precision(5);
     measure_out << std::scientific << "CLPositionEmbeddingLayer::run cost: " << cost_time << std::endl;
     measure_out.close();

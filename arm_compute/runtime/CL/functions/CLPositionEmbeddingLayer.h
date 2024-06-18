@@ -32,7 +32,7 @@ class CLPositionEmbeddingLayer : public IFunction
      * @param[in]  Position     Const tenser of Position vector, Data type supported: F32
      * @param[out] output       Output tensor, shape (seq_len,d_model). Data type supported: F32
      */
-    void configure(const CLCompileContext &compile_context, ITensor *input, ITensor *Position, ITensor *output);
+    void configure(const CLCompileContext &compile_context, ICLTensor *input, ICLTensor *Position, ICLTensor *output);
     /** Static function to check if given info will lead to a valid configuration of @ref CLPositionEmbeddingLayer
      *
      * @param[in] output Destination tensor info. Data type supported: same as @p input
