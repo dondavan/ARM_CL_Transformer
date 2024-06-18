@@ -27,6 +27,13 @@ public:
 
     /** Set the input and output tensor.
      * 
+     * @param[in]  input        Input tensor of char text, Data type supported: U8
+     * @param[in]  segment      Const tenser of segment vector, Data type supported: F32
+     * @param[out] output       Output tensor, shape (seq_len,d_model). Data type supported: F32
+     */
+    void configure(ICLTensor *input, ICLTensor *segment, ICLTensor *output);
+    /** Set the input and output tensor.
+     * 
      * @param[in]  compile_context The compile context to be used.
      * @param[in]  input        Input tensor of char text, Data type supported: U8
      * @param[in]  segment      Const tenser of segment vector, Data type supported: F32

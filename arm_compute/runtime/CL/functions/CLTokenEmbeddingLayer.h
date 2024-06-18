@@ -35,6 +35,18 @@ public:
      * @param[in]  emb_info     Token Embedding Layer Info.
      * @param[out] output       Output tensor, shape (seq_len,d_model). Data type supported: F32
      */
+    void configure(ICLTensor *input, 
+                  ICLTensor *vocab, 
+                  ICLTensor *output, 
+                  const EmbeddingLayerInfo& emb_info);
+    /** Set the input and output tensor.
+     * 
+     * @param[in]  compile_context The compile context to be used.
+     * @param[in]  input        Input tensor of char text, Data type supported: U8
+     * @param[in]  vocab        Const tenser of char 2 vec, Data type supported: F32
+     * @param[in]  emb_info     Token Embedding Layer Info.
+     * @param[out] output       Output tensor, shape (seq_len,d_model). Data type supported: F32
+     */
     void configure(const CLCompileContext &compile_context,
                   ICLTensor *input, 
                   ICLTensor *vocab, 

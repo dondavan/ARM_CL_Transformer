@@ -27,6 +27,13 @@ class CLPositionEmbeddingLayer : public IFunction
 
     /** Set the input and output tensor.
      * 
+     * @param[in]  input        Input tensor of char text, Data type supported: U8
+     * @param[in]  Position     Const tenser of Position vector, Data type supported: F32
+     * @param[out] output       Output tensor, shape (seq_len,d_model). Data type supported: F32
+     */
+    void configure(ICLTensor *input, ICLTensor *Position, ICLTensor *output);
+    /** Set the input and output tensor.
+     * 
      * @param[in]  compile_context The compile context to be used.
      * @param[in]  input        Input tensor of char text, Data type supported: U8
      * @param[in]  Position     Const tenser of Position vector, Data type supported: F32

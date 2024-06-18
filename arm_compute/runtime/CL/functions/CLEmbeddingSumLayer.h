@@ -28,8 +28,19 @@ class CLEmbeddingSumLayer : public IFunction
 
     /** Set the input and output tensor.
      * 
+     * @param[in]  token        Token embedding input, Data type supported: F32
+     * @param[in]  segemnt      Token embedding input, Data type supported: F32
+     * @param[in]  position     Token embedding input, Data type supported: F32
+     * @param[out] output       Output tensor, shape (seq_len,d_model). Data type supported: F32
+     */
+    void configure( ICLTensor *token,
+                    ICLTensor *segemnt, 
+                    ICLTensor *position, 
+                    ICLTensor *output, 
+                    const EmbeddingLayerInfo &emb_info);
+    /** Set the input and output tensor.
      * 
-     * @param[in]      compile_context The compile context to be used.
+     * @param[in]  compile_context The compile context to be used.
      * @param[in]  token        Token embedding input, Data type supported: F32
      * @param[in]  segemnt      Token embedding input, Data type supported: F32
      * @param[in]  position     Token embedding input, Data type supported: F32
