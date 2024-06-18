@@ -49,7 +49,7 @@ class CLEmbeddingSumLayer : public IFunction
      *
      * @return a status
      */
-    static Status validate(ITensor *token, ITensor *segemnt, ITensor *position, ITensor *output, const EmbeddingLayerInfo &emb_info);
+    static Status validate(ICLTensor *token, ICLTensor *segemnt, ICLTensor *position, ICLTensor *output, const EmbeddingLayerInfo &emb_info);
 
     void prepare() override;
     // Inherited methods overridden:

@@ -39,7 +39,7 @@ class CLPositionEmbeddingLayer : public IFunction
      *
      * @return a status
      */
-    static Status validate(ITensor *output);
+    static Status validate(ICLTensor *output);
 
     void prepare() override;
     // Inherited methods overridden:

@@ -2,7 +2,10 @@
 
 #include "arm_compute/core/CL/ICLTensor.h"
 #include "arm_compute/core/Validate.h"
+#include "arm_compute/core/CL/ICLTensor.h"
+#include "arm_compute/core/KernelDescriptors.h"
 
+#include "src/core/CL/ICLKernel.h"
 #include "src/gpu/cl/operators/ClEmbedSum.h"
 
 #ifdef MEASURE_TIME

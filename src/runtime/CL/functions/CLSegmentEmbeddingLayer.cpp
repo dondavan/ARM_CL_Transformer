@@ -1,7 +1,10 @@
 #include "arm_compute/runtime/CL/functions/CLSegmentEmbeddingLayer.h"
 
 #include "arm_compute/core/Validate.h"
+#include "arm_compute/core/CL/ICLTensor.h"
+#include "arm_compute/core/KernelDescriptors.h"
 
+#include "src/core/CL/ICLKernel.h"
 #include "src/gpu/cl/operators/ClSegmentEmbed.h"
 
 #ifdef MEASURE_TIME
@@ -14,9 +17,9 @@ namespace arm_compute
 
 struct CLSegmentEmbeddingLayer::Impl
 {
-    const ITensor                        *src{ nullptr };
-    const ITensor                        *segment{ nullptr };
-    ITensor                              *dst{ nullptr };
+    const ICLTensor                        *src{ nullptr };
+    const ICLTensor                        *segment{ nullptr };
+    ICLTensor                              *dst{ nullptr };
     IRuntimeContext                      *ctx{ nullptr };
     std::unique_ptr<opencl::ClSegmentEmbed> op{ nullptr };
 };
@@ -28,7 +31,7 @@ CLSegmentEmbeddingLayer::CLSegmentEmbeddingLayer()
 
 CLSegmentEmbeddingLayer::~CLSegmentEmbeddingLayer() = default;
 
-void CLSegmentEmbeddingLayer::configure(const CLCompileContext &compile_context,ITensor *input, ITensor *segment, ITensor *output)
+void CLSegmentEmbeddingLayer::configure(const CLCompileContext &compile_context,ICLTensor *input, ICLTensor *segment, ICLTensor *output)
 {
 #ifdef MEASURE_TIME
     auto start_time = std::chrono::high_resolution_clock::now();
