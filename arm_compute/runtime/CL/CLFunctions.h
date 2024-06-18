@@ -109,10 +109,14 @@
 #include "arm_compute/runtime/CL/functions/CLSplit.h"
 #include "arm_compute/runtime/CL/functions/CLStackLayer.h"
 #include "arm_compute/runtime/CL/functions/CLStridedSlice.h"
-#include "arm_compute/runtime/CL/functions/CLTokenEmbeddingLayer.h"
 #include "arm_compute/runtime/CL/functions/CLTile.h"
 #include "arm_compute/runtime/CL/functions/CLTranspose.h"
 #include "arm_compute/runtime/CL/functions/CLUnstack.h"
 #include "arm_compute/runtime/CL/functions/CLWinogradConvolutionLayer.h"
+
+#include "arm_compute/runtime/CL/functions/CLTokenEmbeddingLayer.h"
+#include "arm_compute/runtime/CL/functions/CLSegmentEmbeddingLayer.h"
+#include "arm_compute/runtime/CL/functions/CLPositionEmbeddingLayer.h"
+#include "arm_compute/runtime/CL/functions/CLEmbeddingSumLayer.h"
 
 #endif // ACL_ARM_COMPUTE_RUNTIME_CL_CLFUNCTIONS_H
