@@ -13,12 +13,15 @@ namespace arm_compute
 {
 namespace opencl
 {
-void ClPositionEmbed::configure(const ITensorInfo *input, const ITensorInfo *position,  ITensorInfo *output)
+void ClPositionEmbed::configure(const ClCompileContext  &compile_context,
+                                const ITensorInfo *input, 
+                                const ITensorInfo *position, 
+                                ITensorInfo *output)
 {
     ARM_COMPUTE_LOG_PARAMS(input, output);
 
     auto k = std::make_unique<kernels::ClPositionEmbeddingKernel>();
-    k->configure(input, position, output);
+    k->configure(compile_context, input, position, output);
     _kernel = std::move(k);
 
 }

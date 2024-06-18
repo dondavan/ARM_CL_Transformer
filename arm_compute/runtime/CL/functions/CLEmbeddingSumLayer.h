@@ -1,16 +1,16 @@
 #ifndef ARM_COMPUTE_CLEMBEDDINGSUMLAYER_H
 #define ARM_COMPUTE_CLEMBEDDINGSUMLAYER_H
 
-#include "arm_compute/core/Types.h"
+#include "arm_compute/core/Error.h"
 #include "arm_compute/runtime/IFunction.h"
-#include "arm_compute/runtime/IRuntimeContext.h"
 
 #include <memory>
 
 namespace arm_compute
 {
 // Forward declarations
-class ITensor;
+class CLCompileContext;
+class ICLTensor;
 class ITensorInfo;
 
 class CLEmbeddingSumLayer : public IFunction

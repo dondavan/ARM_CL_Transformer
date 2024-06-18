@@ -28,7 +28,7 @@ CLSegmentEmbeddingLayer::CLSegmentEmbeddingLayer()
 
 CLSegmentEmbeddingLayer::~CLSegmentEmbeddingLayer() = default;
 
-void CLSegmentEmbeddingLayer::configure(ITensor *input, ITensor *segment, ITensor *output)
+void CLSegmentEmbeddingLayer::configure(const CLCompileContext &compile_context,ITensor *input, ITensor *segment, ITensor *output)
 {
 #ifdef MEASURE_TIME
     auto start_time = std::chrono::high_resolution_clock::now();
@@ -38,7 +38,7 @@ void CLSegmentEmbeddingLayer::configure(ITensor *input, ITensor *segment, ITenso
     _impl->dst     = output;
 
     _impl->op = std::make_unique<opencl::ClSegmentEmbed>();
-    _impl->op->configure(_impl->src->info(), _impl->segment->info(), _impl->dst->info());
+    _impl->op->configure(compile_context, _impl->src->info(), _impl->segment->info(), _impl->dst->info());
 
 #ifdef MEASURE_TIME
     auto   end_time  = std::chrono::high_resolution_clock::now();

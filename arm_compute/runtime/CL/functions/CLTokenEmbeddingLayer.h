@@ -1,16 +1,17 @@
 #ifndef ARM_COMPUTE_CLTOKENEMBEDDINGLAYER_H
 #define ARM_COMPUTE_CLTOKENEMBEDDINGLAYER_H
 
-#include "arm_compute/core/Types.h"
+
+#include "arm_compute/core/Error.h"
 #include "arm_compute/runtime/IFunction.h"
-#include "arm_compute/runtime/IRuntimeContext.h"
 
 #include <memory>
 
 namespace arm_compute
 {
 // Forward declarations
-class ITensor;
+class CLCompileContext;
+class ICLTensor;
 class ITensorInfo;
 
 class CLTokenEmbeddingLayer : public IFunction
@@ -32,7 +33,11 @@ public:
      * @param[in]  emb_info     Token Embedding Layer Info.
      * @param[out] output       Output tensor, shape (seq_len,d_model). Data type supported: F32
      */
-    void configure(ITensor *input, ITensor *vocab, ITensor *output, const EmbeddingLayerInfo& emb_info);
+    void configure(const CLCompileContext &compile_context,
+                  ITensor *input, 
+                  ITensor *vocab, 
+                  ITensor *output, 
+                  const EmbeddingLayerInfo& emb_info);
     /** Static function to check if given info will lead to a valid configuration of @ref CLTokenEmbeddingLayer
      *
      * @param[in] output Destination tensor info. Data type supported: same as @p input

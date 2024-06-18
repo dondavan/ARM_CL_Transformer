@@ -29,7 +29,10 @@ CLTokenEmbeddingLayer::CLTokenEmbeddingLayer()
 
 CLTokenEmbeddingLayer::~CLTokenEmbeddingLayer() = default;
 
-void CLTokenEmbeddingLayer::configure(ITensor *input, ITensor *vocab, ITensor *output, const EmbeddingLayerInfo &emb_info)
+void CLTokenEmbeddingLayer::configure(const CLCompileContext &compile_context,
+                                      ITensor *input, 
+                                      ITensor *vocab, 
+                                      ITensor *output, const EmbeddingLayerInfo &emb_info)
 {
 #ifdef MEASURE_TIME
     auto start_time = std::chrono::high_resolution_clock::now();
@@ -39,7 +42,7 @@ void CLTokenEmbeddingLayer::configure(ITensor *input, ITensor *vocab, ITensor *o
     _impl->dst   = output;
 
     _impl->op = std::make_unique<opencl::ClTokenEmbed>();
-    _impl->op->configure(_impl->src->info(), _impl->vocab->info(), _impl->dst->info(), emb_info);
+    _impl->op->configure(compile_context, _impl->src->info(), _impl->vocab->info(), _impl->dst->info(), emb_info);
 
 #ifdef MEASURE_TIME
     auto   end_time  = std::chrono::high_resolution_clock::now();
