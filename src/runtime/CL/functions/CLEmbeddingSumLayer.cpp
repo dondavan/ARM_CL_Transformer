@@ -65,6 +65,9 @@ void CLEmbeddingSumLayer::configure(const CLCompileContext   &compile_context,
                          output->info(),
                          emb_info);
 
+    
+    std::cout << "src/runtime/CL/functions/CLEmbeddingSumLayer.cpp configure " << std::endl;
+
 #ifdef MEASURE_TIME
     auto          end_time  = std::chrono::high_resolution_clock::now();
     double        cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();

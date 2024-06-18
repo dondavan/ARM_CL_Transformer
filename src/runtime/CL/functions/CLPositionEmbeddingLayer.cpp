@@ -54,6 +54,9 @@ void CLPositionEmbeddingLayer::configure(const CLCompileContext &compile_context
     _impl->op = std::make_unique<opencl::ClPositionEmbed>();
     _impl->op->configure(compile_context, _impl->src->info(), _impl->position->info(), _impl->dst->info());
 
+
+    std::cout << "src/runtime/CL/functions/CLPositionEmbeddingLayer.cpp configure " << std::endl;
+
 #ifdef MEASURE_TIME
     auto          end_time  = std::chrono::high_resolution_clock::now();
     double        cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();

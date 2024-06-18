@@ -45,7 +45,7 @@ void CLSegmentEmbeddingLayer::configure(const CLCompileContext &compile_context,
     _impl->src     = input;
     _impl->segment = segment;
     _impl->dst     = output;
-
+    
     _impl->op = std::make_unique<opencl::ClSegmentEmbed>();
     _impl->op->configure(compile_context, _impl->src->info(), _impl->segment->info(), _impl->dst->info());
 

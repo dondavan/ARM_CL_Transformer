@@ -54,6 +54,9 @@ void CLTokenEmbeddingLayer::configure(const CLCompileContext &compile_context,
     _impl->op = std::make_unique<opencl::ClTokenEmbed>();
     _impl->op->configure(compile_context, _impl->src->info(), _impl->vocab->info(), _impl->dst->info(), emb_info);
 
+
+    std::cout << "src/runtime/CL/functions/CLTokenEmbeddingLayer.cpp configure " << std::endl;
+
 #ifdef MEASURE_TIME
     auto   end_time  = std::chrono::high_resolution_clock::now();
     double cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
