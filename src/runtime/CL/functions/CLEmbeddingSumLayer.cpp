@@ -2,7 +2,7 @@
 
 #include "arm_compute/core/Validate.h"
 
-#include "src/gpu/operators/CpuEmbedSum.h"
+#include "src/gpu/cl/operators/ClEmbedSum.h"
 
 #ifdef MEASURE_TIME
 #include <chrono>
@@ -19,7 +19,7 @@ struct CLEmbeddingSumLayer::Impl
     const ITensor                    *position{ nullptr };
     ITensor                          *dst{ nullptr };
     IRuntimeContext                  *ctx{ nullptr };
-    std::unique_ptr<cpu::CpuEmbedSum> op{ nullptr };
+    std::unique_ptr<opencl::ClEmbedSum> op{ nullptr };
 };
 
 CLEmbeddingSumLayer::CLEmbeddingSumLayer()
@@ -40,7 +40,7 @@ void CLEmbeddingSumLayer::configure(ITensor *token, ITensor *segment, ITensor *p
     _impl->position = position;
     _impl->dst      = output;
 
-    _impl->op = std::make_unique<cpu::CpuEmbedSum>();
+    _impl->op = std::make_unique<opencl::ClEmbedSum>();
     _impl->op->configure(_impl->token->info(),
                          _impl->segment->info(),
                          _impl->position->info(),
