@@ -77,8 +77,7 @@ void ClVectorizeKernel::run_op(ITensorPack &tensors, const Window &window, cl::C
 
     const auto src =
         utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC_0));
-    const auto vector =
-        utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC_1));
+    //const auto vector = utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC_1));
     auto dst = utils::cast::polymorphic_downcast<ICLTensor *>(tensors.get_tensor(TensorType::ACL_DST));
 
     Window slice = window.first_slice_window_3D();
