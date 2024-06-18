@@ -60,7 +60,10 @@ void run_position_embedding(const Window &window, const ITensor *src, const ITen
 
 }
 
-void ClPositionEmbeddingKernel::configure(const ITensorInfo *src, const ITensorInfo *pos, ITensorInfo *dst)
+void ClPositionEmbeddingKernel::configure(const CLCompileContext  &compile_context,
+                                          const ITensorInfo *src, 
+                                          const ITensorInfo *pos, 
+                                          ITensorInfo *dst)
 {
     ARM_COMPUTE_ERROR_ON_NULLPTR(src, dst);
     ARM_COMPUTE_UNUSED(pos);
@@ -69,7 +72,7 @@ void ClPositionEmbeddingKernel::configure(const ITensorInfo *src, const ITensorI
 
     // Configure kernel window
     Window win = calculate_max_window(*src, Steps());
-    ICpuKernel::configure(win);
+    ICLKernel::configure_internal(win);
 }
 
 
@@ -82,9 +85,8 @@ Status ClPositionEmbeddingKernel::validate(const ITensorInfo *src, const ITensor
     return Status{};
 }
 
-void ClPositionEmbeddingKernel::run_op(ITensorPack &tensors, const Window &window, const ThreadInfo &info)
+void ClPositionEmbeddingKernel::run_op(ITensorPack &tensors, const Window &window, cl::CommandQueue &queue)
 {
-    ARM_COMPUTE_UNUSED(info);
 
     const ITensor *src   = tensors.get_const_tensor(TensorType::ACL_SRC_0);
     const ITensor *pos   = tensors.get_const_tensor(TensorType::ACL_SRC_1);

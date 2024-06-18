@@ -2,6 +2,7 @@
 #define ARM_COMPUTE_CL_POSITION_EMBEDDING_KERNEL_H
 
 #include "src/core/common/Macros.h"
+#include "src/gpu/cl/ClCompileContext.h"
 #include "src/gpu/cl/IClKernel.h"
 
 namespace arm_compute
@@ -23,12 +24,16 @@ public:
      *
      * @note Arbitrary permutation vectors are supported with rank not greater than 4
      *
+     * @param[in] compile_context The compile context to be used.
      * @param[in]  src  Srouce tensor to permute. Data types supported: All
      * @param[in]  pos  Pretrained position embedding. Data types supported: All
      * @param[out] dst  Destination tensor. Data types supported: Same as @p src
      * @param[in]  perm Permutation vector
      */
-    void configure(const ITensorInfo *src, const ITensorInfo *pos, ITensorInfo *dst);
+    void configure(const CLCompileContext  &compile_context,
+                   const ITensorInfo *src, 
+                   const ITensorInfo *pos, 
+                   ITensorInfo *dst);
     /** Static function to check if given info will lead to a valid configuration
      *
      * Similar to @ref ClPositionEmbeddingKernel::configure()
@@ -38,7 +43,7 @@ public:
     static Status validate(const ITensorInfo *src, const ITensorInfo *pos, const ITensorInfo *dst);
 
     // Inherited methods overridden:
-    void        run_op(ITensorPack &tensors, const Window &window, const ThreadInfo &info) override;
+    void run_op(ITensorPack &tensors, const Window &window, cl::CommandQueue &queue) override;
 
 private:
     unsigned int _d_model{512U};
