@@ -67,6 +67,7 @@ void ClPositionEmbeddingKernel::configure(const CLCompileContext  &compile_conte
 {
     ARM_COMPUTE_ERROR_ON_NULLPTR(src, dst);
     ARM_COMPUTE_UNUSED(pos);
+    ARM_COMPUTE_UNUSED(compile_context);
     // Configure output tensor info.
     auto_init_if_empty(*dst, TensorInfo(*src->clone()));
 
