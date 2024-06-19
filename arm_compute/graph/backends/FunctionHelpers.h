@@ -1758,6 +1758,11 @@ std::unique_ptr<IFunction> create_position_embedding_layer(PositionEmbeddingLaye
     typename TargetInfo::TensorType *position  = get_backing_tensor<TargetInfo>(node.input(1));
     typename TargetInfo::TensorType *output   = get_backing_tensor<TargetInfo>(node.output(0));
 
+    std::cout << "arm_compute/graph/backends/FunctionHelpers.h create_position_embedding_layer " << std::endl;
+    std::cout << "Input " << input->info().tensor_shape().x() << std::endl;
+    std::cout << "Input " << input->info().tensor_shape().y() << std::endl;
+    std::cout << "Input " << input->info().tensor_shape().z() << std::endl;
+
     // Create function
     auto func = std::make_unique<PositionEmbeddingLayerFunction>();
     func->configure(input,position,output);
