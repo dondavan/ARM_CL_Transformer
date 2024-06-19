@@ -59,7 +59,6 @@ struct NETargetInfo
     static Target TargetType;
 };
 
-Target NETargetInfo::TargetType = Target::NEON;
 
 /** Collection of CL convolution functions */
 struct CLConvolutionLayerFunctions
