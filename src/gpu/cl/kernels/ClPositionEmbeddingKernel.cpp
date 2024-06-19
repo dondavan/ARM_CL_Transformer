@@ -101,7 +101,7 @@ void ClPositionEmbeddingKernel::run_op(ITensorPack &tensors, const Window &windo
 
 
     std::cout << src->cl_buffer().get() << std::endl;
-    std::cout << reinterpret_cast<uint8_t *>(src->buffer()) << std::endl;
+    std::cout << *reinterpret_cast<float *>(src->buffer()) << std::endl;
     std::cout << "Input " << src->info()->tensor_shape().x() << std::endl;
     std::cout << "Input " << src->info()->tensor_shape().y() << std::endl;
     std::cout << "Input " << src->info()->tensor_shape().z() << std::endl;
