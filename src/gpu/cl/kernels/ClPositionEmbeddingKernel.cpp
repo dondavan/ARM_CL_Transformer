@@ -1,5 +1,6 @@
 #include "src/gpu/cl/kernels/ClPositionEmbeddingKernel.h"
 
+#include "arm_compute/core/CL/ICLTensor.h"
 #include "arm_compute/core/Error.h"
 #include "arm_compute/core/Helpers.h"
 #include "arm_compute/core/ITensor.h"
@@ -10,6 +11,7 @@
 
 #include "src/core/helpers/AutoConfiguration.h"
 #include "src/core/helpers/WindowHelpers.h"
+#include "support/Cast.h"
 
 #include <cmath>
 
@@ -51,9 +53,7 @@ void run_position_embedding(const Window &window, const ITensor *src, const ITen
                                 offset_dst    = x * vector_depth;
                                 offset_vector = x * vector_depth;
                                 std::memcpy(dst_ptr + offset_dst, vector_ptr + offset_vector, (vector_depth) * sizeof(*vector_ptr));
-                            }
-                        },
-                        dst_iter, vector_iter);
+                            } }, dst_iter, vector_iter);
 }
 
 } // namespace
@@ -94,11 +94,11 @@ void ClPositionEmbeddingKernel::run_op(ITensorPack &tensors, const Window &windo
 
     std::cout << "src/gpu/cl/kernels/ClPositionEmbeddingKernel.cpp run start" << std::endl;
 
-    const ITensor *src = tensors.get_const_tensor(TensorType::ACL_SRC_0);
-    const ITensor *pos = tensors.get_const_tensor(TensorType::ACL_SRC_1);
-    auto           dst = tensors.get_tensor(TensorType::ACL_DST);
+    auto *src = utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC_0));
+    auto *pos = utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC_1));
+    auto  dst = utils::cast::polymorphic_downcast<ICLTensor *>(tensors.get_tensor(TensorType::ACL_DST));
 
-    std::cout << *reinterpret_cast<float *>(src->ptr_to_element(Coordinates(0,0,0))) << std::endl;
+    std::cout << *reinterpret_cast<float *>(src->ptr_to_element(Coordinates(0, 0, 0))) << std::endl;
     std::cout << "Input " << src->info()->tensor_shape().x() << std::endl;
     std::cout << "Input " << src->info()->tensor_shape().y() << std::endl;
     std::cout << "Input " << src->info()->tensor_shape().z() << std::endl;
