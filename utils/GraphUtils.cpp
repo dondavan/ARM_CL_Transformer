@@ -213,7 +213,7 @@ void atoiPreprocessor::preprocess(ITensor &tensor)
                         {
                             *tensor.ptr_to_element(id) = std::atoi(reinterpret_cast<char *>(tensor.ptr_to_element(id)));
 
-                            std::cout << "utils/GraphUtils.cpp " << *tensor.ptr_to_element(id) << std::endl;
+                            std::cout << "utils/GraphUtils.cpp " << std::atoi(reinterpret_cast<char *>(tensor.ptr_to_element(id))) << std::endl;
                         });
 }
 
