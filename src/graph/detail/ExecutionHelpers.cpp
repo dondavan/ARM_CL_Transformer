@@ -163,8 +163,7 @@ ExecutionWorkload configure_all_nodes(Graph &g, GraphContext &ctx, const std::ve
         if (node != nullptr && node->type() == NodeType::Input)
         {
             for(size_t idx=0; idx <node->num_outputs(); idx++)
-            {   
-                std::cout << "Input workload added " << std::endl;
+            {
                 workload.inputs.push_back(node->output(idx));
             }
         }
