@@ -65,7 +65,6 @@ CLTensorAllocator *CLTensor::allocator()
 
 void CLTensor::map(bool blocking)
 {
-    std::cout << "CL mapped" << std::endl;
     ICLTensor::map(_ctx == nullptr ? CLScheduler::get().queue() : _ctx->gpu_scheduler()->queue(), blocking);
 }
 
