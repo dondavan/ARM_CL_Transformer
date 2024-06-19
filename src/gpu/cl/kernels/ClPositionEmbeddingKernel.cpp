@@ -28,9 +28,8 @@ namespace
 template <typename T>
 void run_position_embedding(const Window &window, const ITensor *src, const ITensor *vector, ITensor *dst)
 {
-    std::cout << "run_position_embedding start" << std::endl; 
     ARM_COMPUTE_UNUSED(src);
-
+    std::cout << "run_position_embedding start" << std::endl;
     Window win = window;
     win.set(Window::DimX, Window::Dimension(0, 1, 1));
     win.set(Window::DimY, Window::Dimension(0, 1, 1));
@@ -55,7 +54,6 @@ void run_position_embedding(const Window &window, const ITensor *src, const ITen
                                 offset_vector = x * vector_depth;
                                 std::memcpy(dst_ptr + offset_dst, vector_ptr + offset_vector, (vector_depth) * sizeof(*vector_ptr));
                             } }, dst_iter, vector_iter);
-    
     std::cout << "run_position_embedding end" << std::endl;
 }
 
@@ -101,6 +99,7 @@ void ClPositionEmbeddingKernel::run_op(ITensorPack &tensors, const Window &windo
     auto *pos = utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC_1));
     auto  dst = utils::cast::polymorphic_downcast<ICLTensor *>(tensors.get_tensor(TensorType::ACL_DST));
 
+    std::cout << *reinterpret_cast<float *>(src->ptr_to_element(Coordinates(0, 0, 0))) << std::endl;
     std::cout << "Input " << src->info()->tensor_shape().x() << std::endl;
     std::cout << "Input " << src->info()->tensor_shape().y() << std::endl;
     std::cout << "Input " << src->info()->tensor_shape().z() << std::endl;
