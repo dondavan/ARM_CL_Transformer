@@ -47,6 +47,8 @@ void CLPositionEmbeddingLayer::configure(const CLCompileContext &compile_context
     auto start_time = std::chrono::high_resolution_clock::now();
 #endif
 
+    std::cout << "src/runtime/CL/functions/CLPositionEmbeddingLayer.cpp configure start" << std::endl;
+    
     _impl->src      = input;
     _impl->position = position;
     _impl->dst      = output;
@@ -55,7 +57,7 @@ void CLPositionEmbeddingLayer::configure(const CLCompileContext &compile_context
     _impl->op->configure(compile_context, _impl->src->info(), _impl->position->info(), _impl->dst->info());
 
 
-    std::cout << "src/runtime/CL/functions/CLPositionEmbeddingLayer.cpp configure " << std::endl;
+    std::cout << "src/runtime/CL/functions/CLPositionEmbeddingLayer.cpp configure end" << std::endl;
 
 #ifdef MEASURE_TIME
     auto          end_time  = std::chrono::high_resolution_clock::now();
