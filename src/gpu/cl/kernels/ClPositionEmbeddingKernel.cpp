@@ -100,8 +100,8 @@ void ClPositionEmbeddingKernel::run_op(ITensorPack &tensors, const Window &windo
     auto  dst = utils::cast::polymorphic_downcast<ICLTensor *>(tensors.get_tensor(TensorType::ACL_DST));
 
 
-    std::cout << src->info()->total_size() << std::endl;
-    std::cout << *reinterpret_cast<float *>(src->ptr_to_element(Coordinates(0, 0, 0))) << std::endl;
+    std::cout << src->cl_buffer().get() << std::endl;
+    std::cout << reinterpret_cast<uint8_t *>(src->buffer()) << std::endl;
     std::cout << "Input " << src->info()->tensor_shape().x() << std::endl;
     std::cout << "Input " << src->info()->tensor_shape().y() << std::endl;
     std::cout << "Input " << src->info()->tensor_shape().z() << std::endl;
