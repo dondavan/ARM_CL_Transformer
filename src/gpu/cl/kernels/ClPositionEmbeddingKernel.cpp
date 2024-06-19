@@ -95,9 +95,9 @@ void ClPositionEmbeddingKernel::run_op(ITensorPack &tensors, const Window &windo
 
     std::cout << "src/gpu/cl/kernels/ClPositionEmbeddingKernel.cpp run start" << std::endl;
 
-    auto *src = utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC_0));
-    auto *pos = utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC_1));
-    auto  dst = utils::cast::polymorphic_downcast<ICLTensor *>(tensors.get_tensor(TensorType::ACL_DST));
+    auto *src = tensors.get_const_tensor(TensorType::ACL_SRC_0);
+    auto *pos = tensors.get_const_tensor(TensorType::ACL_SRC_1);
+    auto  dst = tensors.get_tensor(TensorType::ACL_DST);
 
     std::cout << "Input " << src->info()->tensor_shape().x() << std::endl;
     std::cout << "Input " << src->info()->tensor_shape().y() << std::endl;

@@ -50,6 +50,17 @@ struct CLTargetInfo
 
 Target CLTargetInfo::TargetType = Target::CL;
 
+/** Target specific information structure used to pass information to the layer templates */
+struct NETargetInfo
+{
+    using TensorType         = arm_compute::ITensor;
+    using SrcTensorType      = const arm_compute::ITensor;
+    using TensorConcreteType = arm_compute::Tensor;
+    static Target TargetType;
+};
+
+Target NETargetInfo::TargetType = Target::NEON;
+
 /** Collection of CL convolution functions */
 struct CLConvolutionLayerFunctions
 {
@@ -352,7 +363,7 @@ std::unique_ptr<IFunction> CLFunctionFactory::create(INode *node, GraphContext &
             return detail::create_segment_embedding_layer<CLSegmentEmbeddingLayer, CLTargetInfo>(
                 *polymorphic_downcast<SegmentEmbeddingLayerNode *>(node));
         case NodeType::PositionEmbeddingLayer:
-            return detail::create_position_embedding_layer<CLPositionEmbeddingLayer, CLTargetInfo>(
+            return detail::create_position_embedding_layer<CLPositionEmbeddingLayer, NETargetInfo>(
                 *polymorphic_downcast<PositionEmbeddingLayerNode *>(node));
         case NodeType::EmbeddingSumLayer:
             return detail::create_embedding_sum_layer<CLEmbeddingSumLayer, CLTargetInfo>(
