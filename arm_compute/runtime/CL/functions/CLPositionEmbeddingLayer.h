@@ -11,6 +11,7 @@ namespace arm_compute
 // Forward declarations
 class CLCompileContext;
 class ICLTensor;
+class ITensor;
 class ITensorInfo;
 
 class CLPositionEmbeddingLayer : public IFunction

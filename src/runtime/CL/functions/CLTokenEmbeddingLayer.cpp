@@ -1,5 +1,6 @@
 #include "arm_compute/runtime/CL/functions/CLTokenEmbeddingLayer.h"
 
+#include "arm_compute/runtime/Tensor.h"
 #include "arm_compute/core/Validate.h"
 #include "arm_compute/core/CL/ICLTensor.h"
 #include "arm_compute/core/KernelDescriptors.h"
