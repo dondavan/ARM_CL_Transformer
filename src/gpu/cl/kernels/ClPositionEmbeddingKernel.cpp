@@ -28,35 +28,9 @@ namespace
 template <typename T>
 void run_position_embedding(const Window &window, const ITensor *src, const ITensor *vector, ITensor *dst)
 {
-    std::cout << "run_position_embedding " << std::endl; 
-    ARM_COMPUTE_UNUSED(src);
-
-    Window win = window;
-    win.set(Window::DimX, Window::Dimension(0, 1, 1));
-    win.set(Window::DimY, Window::Dimension(0, 1, 1));
-    const unsigned int window_start_x = static_cast<unsigned int>(window.x().start());
-    const unsigned int window_end_x   = static_cast<unsigned int>(window.x().end());
-
-    const unsigned int vector_depth = vector->info()->tensor_shape().x();
-
-    unsigned int offset_vector, offset_dst;
-
-    Iterator dst_iter(dst, win);
-    Iterator vector_iter(vector, win);
-
-    const auto dst_ptr    = reinterpret_cast<T *>(dst_iter.ptr());
-    const auto vector_ptr = reinterpret_cast<T *>(vector_iter.ptr());
-
-    execute_window_loop(win, [&](const Coordinates &)
-                        {
-                            for(unsigned int x = window_start_x; x < window_end_x; x++)
-                            {
-                                offset_dst    = x * vector_depth;
-                                offset_vector = x * vector_depth;
-                                std::memcpy(dst_ptr + offset_dst, vector_ptr + offset_vector, (vector_depth) * sizeof(*vector_ptr));
-                            } }, dst_iter, vector_iter);
+    std::cout << "run_position_embedding start" << std::endl; 
     
-    std::cout << "run_position_embedding " << std::endl;
+    std::cout << "run_position_embedding end" << std::endl;
 }
 
 } // namespace
