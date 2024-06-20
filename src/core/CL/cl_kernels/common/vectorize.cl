@@ -36,5 +36,4 @@ __kernel void vectorize(TENSOR3D_DECLARATION(src),
     int out_x = get_global_id(0);
     int out_y = get_global_id(1);
     int out_z = get_global_id(2);
-    *((__global DATA_TYPE *)output_ptr) = *((__global DATA_TYPE *)input_ptr);
 }
