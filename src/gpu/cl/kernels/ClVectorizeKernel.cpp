@@ -70,7 +70,8 @@ void ClVectorizeKernel::configure(const CLCompileContext &compile_context, const
     ARM_COMPUTE_UNUSED(compile_context);
 
     std::cout << "src/gpu/cl/kernels/ClVectorizeKernel.cpp configure start" << std::endl;
-
+    auto padding_info = get_padding_info({src, dst});
+    
     // Configure output tensor info.
     const TensorShape dst_shape(vector->tensor_shape().x(), src->tensor_shape().x());
     if(dst->tensor_shape().total_size() == 0)
@@ -82,9 +83,15 @@ void ClVectorizeKernel::configure(const CLCompileContext &compile_context, const
         dst->set_tensor_shape(dst_shape);
     }
 
+    // Create kernel
+    std::set<std::string> build_opts = {"-DDATA_TYPE=" + get_cl_unsigned_type_from_element_size(src->element_size())};
+    _kernel                          = create_kernel(compile_context, "vectorize", build_opts);
+
+
     // Configure kernel window
     Window win = calculate_max_window(*src, Steps());
     ICLKernel::configure_internal(win);
+    ARM_COMPUTE_ERROR_ON(has_padding_changed(padding_info));
 
     std::cout << "src/gpu/cl/kernels/ClVectorizeKernel.cpp configure end" << std::endl;
 }
