@@ -56,9 +56,7 @@ void run_vectorize(const Window &window, const ITensor *src, const ITensor *vect
                                 offset_dst    = x * vector_depth;
                                 offset_vector = *(src_ptr + x) * vector_depth;
                                 std::memcpy(dst_ptr + offset_dst, vector_ptr + offset_vector, (vector_depth) * sizeof(*vector_ptr));
-                            }
-                        },
-                        src_iter);
+                            } }, src_iter);
 }
 
 } // namespace
@@ -70,8 +68,9 @@ void ClVectorizeKernel::configure(const CLCompileContext &compile_context, const
     ARM_COMPUTE_UNUSED(compile_context);
 
     std::cout << "src/gpu/cl/kernels/ClVectorizeKernel.cpp configure start" << std::endl;
-    auto padding_info = get_padding_info({src, dst});
-    
+    auto               padding_info = get_padding_info({ src, dst });
+    const unsigned int vector_depth = vector->tensor_shape().x();
+
     // Configure output tensor info.
     const TensorShape dst_shape(vector->tensor_shape().x(), src->tensor_shape().x());
     if(dst->tensor_shape().total_size() == 0)
@@ -84,9 +83,10 @@ void ClVectorizeKernel::configure(const CLCompileContext &compile_context, const
     }
 
     // Create kernel
-    std::set<std::string> build_opts = {"-DDATA_TYPE=" + get_cl_unsigned_type_from_element_size(src->element_size())};
-    _kernel                          = create_kernel(compile_context, "vectorize", build_opts);
-
+    CLBuildOptions build_opts;
+    build_opts.add_option("-DDATA_TYPE=" + get_cl_unsigned_type_from_element_size(src->element_size()));
+    build_opts.add_option("-DVEC_SIZE=" + support::cpp11::to_string(vector_depth));
+    _kernel = create_kernel(compile_context, "vectorize", build_opts.options());
 
     // Configure kernel window
     Window win = calculate_max_window(*src, Steps());
@@ -110,15 +110,23 @@ void ClVectorizeKernel::run_op(ITensorPack &tensors, const Window &window, cl::C
 
     ARM_COMPUTE_ERROR_ON_UNCONFIGURED_KERNEL(this);
     ARM_COMPUTE_ERROR_ON_INVALID_SUBWINDOW(IKernel::window(), window);
-    ARM_COMPUTE_UNUSED(queue);
-
     ARM_COMPUTE_ERROR_ON(tensors.empty());
+    
+    Window slice            = window.first_slice_window_3D();
+
     const auto src =
         utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC_0));
     const auto vector = utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC_1));
     auto       dst    = utils::cast::polymorphic_downcast<ICLTensor *>(tensors.get_tensor(TensorType::ACL_DST));
 
-    run_vectorize<float>(window, src, vector, dst);
+    //run_vectorize<float>(window, src, vector, dst);
+
+    // Set srcs
+    unsigned int idx = 0;
+    add_3D_tensor_argument(idx, src, window);
+    add_3D_tensor_argument(idx, vector, window);
+    add_3D_tensor_argument(idx, dst, window);
+    enqueue(queue, *this, slice, lws_hint());
 
     std::cout << "src/gpu/cl/kernels/ClVectorizeKernel.cpp run end" << std::endl;
 }
