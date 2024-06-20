@@ -93,11 +93,32 @@ void ClPositionEmbeddingKernel::run_op(ITensorPack &tensors, const Window &windo
 {
     ARM_COMPUTE_UNUSED(queue,tensors,window);
     std::cout << "src/gpu/cl/kernels/ClPositionEmbeddingKernel.cpp run start" << std::endl;
-    /*
+    
+    Window slice            = window.first_slice_window_3D();
+    
     auto *src = utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC_0));
-    auto *pos = utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC_1));
+    auto *vector = utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC_1));
     auto  dst = utils::cast::polymorphic_downcast<ICLTensor *>(tensors.get_tensor(TensorType::ACL_DST));
 
+
+    std::cout << "src x" << src->info()->tensor_shape().x() << std::endl;
+    std::cout << "src y" << src->info()->tensor_shape().y() << std::endl;
+    std::cout << "src z" << src->info()->tensor_shape().z() << std::endl;
+
+    std::cout << "vector x" << vector->info()->tensor_shape().x() << std::endl;
+    std::cout << "vector y" << vector->info()->tensor_shape().y() << std::endl;
+    std::cout << "vector z" << vector->info()->tensor_shape().z() << std::endl;
+
+    std::cout << "dst x" << dst->info()->tensor_shape().x() << std::endl;
+    std::cout << "dst y" << dst->info()->tensor_shape().y() << std::endl;
+    std::cout << "dst z" << dst->info()->tensor_shape().z() << std::endl;
+
+
+    std::cout << "slice x" << slice.x().end() << std::endl;
+    std::cout << "slice y" << slice.y().end() << std::endl;
+    std::cout << "slice z" << slice.z().end() << std::endl;
+
+    /*
     std::cout << "Input " << src->info()->tensor_shape().x() << std::endl;
     std::cout << "Input " << src->info()->tensor_shape().y() << std::endl;
     std::cout << "Input " << src->info()->tensor_shape().z() << std::endl;
