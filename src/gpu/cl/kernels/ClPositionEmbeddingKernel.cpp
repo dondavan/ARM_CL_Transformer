@@ -74,7 +74,7 @@ void ClPositionEmbeddingKernel::configure(const CLCompileContext &compile_contex
     auto_init_if_empty(*dst, TensorInfo(*src->clone()));
 
     // Configure kernel window
-    Window win = calculate_max_window(*src, Steps());
+    Window win = calculate_max_window(*dst, Steps());
     ICLKernel::configure_internal(win);
 
     std::cout << "src/gpu/cl/kernels/ClPositionEmbeddingKernel.cpp configure end" << std::endl;
@@ -95,7 +95,7 @@ void ClPositionEmbeddingKernel::run_op(ITensorPack &tensors, const Window &windo
     std::cout << "src/gpu/cl/kernels/ClPositionEmbeddingKernel.cpp run start" << std::endl;
     
     Window slice            = window.first_slice_window_3D();
-    
+
     auto *src = utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC_0));
     auto *vector = utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC_1));
     auto  dst = utils::cast::polymorphic_downcast<ICLTensor *>(tensors.get_tensor(TensorType::ACL_DST));
