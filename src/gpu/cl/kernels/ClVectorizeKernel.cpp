@@ -125,6 +125,24 @@ void ClVectorizeKernel::run_op(ITensorPack &tensors, const Window &window, cl::C
     add_3D_tensor_argument(idx, src, window);
     add_3D_tensor_argument(idx, vector, window);
     add_3D_tensor_argument(idx, dst, window);
+    
+    std::cout << "src x" << src->info()->tensor_shape().x() << std::endl;
+    std::cout << "src y" << src->info()->tensor_shape().y() << std::endl;
+    std::cout << "src z" << src->info()->tensor_shape().z() << std::endl;
+
+    std::cout << "vector x" << vector->info()->tensor_shape().x() << std::endl;
+    std::cout << "vector y" << vector->info()->tensor_shape().y() << std::endl;
+    std::cout << "vector z" << vector->info()->tensor_shape().z() << std::endl;
+
+    std::cout << "dst x" << dst->info()->tensor_shape().x() << std::endl;
+    std::cout << "dst y" << dst->info()->tensor_shape().y() << std::endl;
+    std::cout << "dst z" << dst->info()->tensor_shape().z() << std::endl;
+
+
+    std::cout << "slice x" << slice.x().end() << std::endl;
+    std::cout << "slice y" << slice.y().end() << std::endl;
+    std::cout << "slice z" << slice.z().end() << std::endl;
+
     enqueue(queue, *this, slice, lws_hint());
 
     std::cout << "src/gpu/cl/kernels/ClVectorizeKernel.cpp run end" << std::endl;

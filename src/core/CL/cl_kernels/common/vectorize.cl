@@ -30,10 +30,9 @@
  * @param[in]  output_offset_first_element_in_bytes  The offset of the first element in the destination tensor
  */
 __kernel void vectorize(TENSOR3D_DECLARATION(src),
-                            TENSOR3D_DECLARATION(vector),
-                            TENSOR3D_DECLARATION(output))
+                        TENSOR3D_DECLARATION(vector),
+                        TENSOR3D_DECLARATION(output))
 {
     int out_x = get_global_id(0);
     int out_y = get_global_id(1);
-    int out_z = get_global_id(2);
 }
