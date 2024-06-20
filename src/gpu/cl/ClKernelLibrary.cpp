@@ -354,6 +354,7 @@ const std::map<std::string, std::string> ClKernelLibrary::_kernel_program_map = 
     {"transpose", "common/transpose.cl"},
 
     {"vectorize","common/vectorize.cl"},
+    {"positionalemb","common/positionalemb.cl"},
 #ifdef ENABLE_NCHW_KERNELS
     {"batch_to_space_nchw", "nchw/batch_to_space.cl"},
     {"batch_to_space_static_nchw", "nchw/batch_to_space.cl"},
