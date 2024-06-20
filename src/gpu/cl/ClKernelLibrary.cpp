@@ -772,6 +772,11 @@ const std::map<std::string, std::string> ClKernelLibrary::_program_source_map = 
         "common/mat_mul_quantized_mmul.cl",
 #include "./cl_kernels/common/mat_mul_quantized_mmul.clembed"
     },
+    
+    {
+        "common/vectorize.cl",
+#include "./cl_kernels/common/vectorize.clembed"
+    },
 #ifdef ENABLE_NCHW_KERNELS
     {
         "nchw/batch_to_space.cl",
@@ -854,10 +859,6 @@ const std::map<std::string, std::string> ClKernelLibrary::_program_source_map = 
 #include "./cl_kernels/nchw/winograd_output_transform.clembed"
     },
 
-    {
-        "common/vectorize.cl",
-#include "./cl_kernels/common/vectorize.clembed"
-    },
 #endif /* ENABLE_NCHW_KERNELS */
 
 #ifdef ENABLE_NHWC_KERNELS
