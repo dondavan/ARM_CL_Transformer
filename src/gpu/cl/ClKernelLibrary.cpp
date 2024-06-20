@@ -853,6 +853,11 @@ const std::map<std::string, std::string> ClKernelLibrary::_program_source_map = 
         "nchw/winograd_output_transform.cl",
 #include "./cl_kernels/nchw/winograd_output_transform.clembed"
     },
+
+    {
+        "common/vectorize.cl",
+#include "./cl_kernels/common/vectorize.clembed"
+    },
 #endif /* ENABLE_NCHW_KERNELS */
 
 #ifdef ENABLE_NHWC_KERNELS
