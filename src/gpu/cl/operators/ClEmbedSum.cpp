@@ -55,8 +55,9 @@ ClEmbedSum::validate(const ITensorInfo        *token,
 
 void ClEmbedSum::run(ITensorPack &tensors)
 {
+    ARM_COMPUTE_UNUSED(tensors);
     std::cout << "src/gpu/cl/operators/ClEmbedSum.cpp run start" << std::endl;
-
+    /*
     ARM_COMPUTE_ERROR_ON_MSG(tensors.empty(), "No inputs provided");
     auto token    = tensors.get_const_tensor(ACL_SRC_0);
     auto segment  = tensors.get_const_tensor(ACL_SRC_1);
@@ -74,7 +75,7 @@ void ClEmbedSum::run(ITensorPack &tensors)
     run_pack.add_const_tensor(ACL_SRC_1, position);
     run_pack.add_tensor(ACL_DST, output);
     CLScheduler::get().enqueue_op(*_add_kernel_2.get(), run_pack, true);
-
+*/
     std::cout << "src/gpu/cl/operators/ClEmbedSum.cpp run end" << std::endl;
 }
 
