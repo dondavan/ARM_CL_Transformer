@@ -88,7 +88,7 @@ void ClVectorizeKernel::configure(const CLCompileContext &compile_context, const
     _kernel = create_kernel(compile_context, "vectorize", build_opts.options());
 
     // Configure kernel window
-    Window win = calculate_max_window(*src, Steps());
+    Window win = calculate_max_window(*dst, Steps());
     ICLKernel::configure_internal(win);
     ARM_COMPUTE_ERROR_ON(has_padding_changed(padding_info));
 
