@@ -113,6 +113,11 @@ void CpuVectorizeKernel::run_op(ITensorPack &tensors, const Window &window, cons
     std::cout << "dst y" << dst->info()->tensor_shape().y() << std::endl;
     std::cout << "dst z" << dst->info()->tensor_shape().z() << std::endl;
 
+
+    std::cout << "window x" << window.x().end() << std::endl;
+    std::cout << "window y" << window.y().end() << std::endl;
+    std::cout << "window z" << window.z().end() << std::endl;
+
     _run_method(src, vector, dst, window);
 }
 
