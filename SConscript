@@ -458,7 +458,9 @@ if env['opencl'] and env['embed_kernels']:
                        'src/core/CL/cl_kernels/common/stack_layer.cl',
                        'src/core/CL/cl_kernels/common/tile.cl',
                        'src/core/CL/cl_kernels/common/transpose.cl',
-                       'src/core/CL/cl_kernels/common/unpooling_layer.cl'
+                       'src/core/CL/cl_kernels/common/unpooling_layer.cl',
+
+                       'src/core/CL/cl_kernels/common/vectorize.cl'
                     ]
 
     # NCHW kernels
