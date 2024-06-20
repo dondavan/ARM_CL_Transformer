@@ -90,6 +90,7 @@ void ClVectorizeKernel::configure(const CLCompileContext &compile_context, const
     // Configure kernel window
     Window win = calculate_max_window(*dst, Steps());
     ICLKernel::configure_internal(win);
+    
     ARM_COMPUTE_ERROR_ON(has_padding_changed(padding_info));
 
     std::cout << "src/gpu/cl/kernels/ClVectorizeKernel.cpp configure end" << std::endl;

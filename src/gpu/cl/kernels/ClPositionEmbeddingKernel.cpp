@@ -72,7 +72,15 @@ void ClPositionEmbeddingKernel::configure(const CLCompileContext &compile_contex
     const unsigned int vector_depth = pos->tensor_shape().x();
 
     // Configure output tensor info.
-    auto_init_if_empty(*dst, TensorInfo(*src->clone()));
+    const TensorShape dst_shape(pos->tensor_shape().x(), src->tensor_shape().x());
+    if(dst->tensor_shape().total_size() == 0)
+    {
+        auto_init_if_empty(*dst, TensorInfo(*pos->clone()).set_tensor_shape(dst_shape));
+    }
+    else
+    {
+        dst->set_tensor_shape(dst_shape);
+    }
 
     // Create kernel
     CLBuildOptions build_opts;
