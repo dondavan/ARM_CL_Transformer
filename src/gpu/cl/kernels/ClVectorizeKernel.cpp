@@ -8,7 +8,6 @@
 #include "src/core/common/Registrars.h"
 #include "src/core/helpers/AutoConfiguration.h"
 #include "src/core/helpers/WindowHelpers.h"
-#include "src/cpu/kernels/vectorize/list.h"
 
 #include "support/Cast.h"
 
