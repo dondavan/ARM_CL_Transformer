@@ -40,7 +40,7 @@ __kernel void positionalemb(TENSOR3D_DECLARATION(src),
     int out_linear_idx = out_y * VEC_SIZE + out_x;
 
     // Compute the vector linearized index
-    int vector_linear_idx = *((__global DATA_TYPE *)src_ptr + out_y) * VEC_SIZE + out_x;
+    int vector_linear_idx = out_y * VEC_SIZE + out_x;
 
     // Store result
     vector_ptr += vector_linear_idx;
