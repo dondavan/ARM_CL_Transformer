@@ -20,20 +20,7 @@ void ClEmbedSum::configure(const ClCompileContext   &compile_context,
 {
     std::cout << "src/gpu/cl/operators/ClEmbedSum.cpp configure start" << std::endl;
 
-    auto k_1 = std::make_unique<kernels::ClSaturatedArithmeticKernel>();
-    auto k_2 = std::make_unique<kernels::ClSaturatedArithmeticKernel>();
-
-    k_1->configure(compile_context, ArithmeticOperation::ADD, token, segemnt, &_tmp_token_segment, emb_info.c_policy());
-
-    _aux_mem[TokenSegmentOutput] =
-        experimental::MemoryInfo(offset_int_vec(TokenSegmentOutput),
-                                 experimental::MemoryLifetime::Persistent,
-                                 _tmp_token_segment.total_size());
-
-    k_2->configure(compile_context, ArithmeticOperation::ADD, &_tmp_token_segment, position, output, emb_info.c_policy());
-
-    _add_kernel_1 = std::move(k_1);
-    _add_kernel_2 = std::move(k_2);
+    ARM_COMPUTE_UNUSED(compile_context,token,segemnt,position,output,emb_info);
 
     std::cout << "src/gpu/cl/operators/ClEmbedSum.cpp configure end" << std::endl;
 }
@@ -57,7 +44,7 @@ void ClEmbedSum::run(ITensorPack &tensors)
 {
     ARM_COMPUTE_UNUSED(tensors);
     std::cout << "src/gpu/cl/operators/ClEmbedSum.cpp run start" << std::endl;
-    /*
+    
     ARM_COMPUTE_ERROR_ON_MSG(tensors.empty(), "No inputs provided");
     auto token    = tensors.get_const_tensor(ACL_SRC_0);
     auto segment  = tensors.get_const_tensor(ACL_SRC_1);
@@ -75,7 +62,7 @@ void ClEmbedSum::run(ITensorPack &tensors)
     run_pack.add_const_tensor(ACL_SRC_1, position);
     run_pack.add_tensor(ACL_DST, output);
     CLScheduler::get().enqueue_op(*_add_kernel_2.get(), run_pack, true);
-*/
+
     std::cout << "src/gpu/cl/operators/ClEmbedSum.cpp run end" << std::endl;
 }
 
