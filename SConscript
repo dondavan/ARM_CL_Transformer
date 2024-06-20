@@ -461,6 +461,7 @@ if env['opencl'] and env['embed_kernels']:
                        'src/core/CL/cl_kernels/common/unpooling_layer.cl',
 
                        'src/core/CL/cl_kernels/common/vectorize.cl'
+                       'src/core/CL/cl_kernels/common/positionalemb.cl'
                     ]
 
     # NCHW kernels

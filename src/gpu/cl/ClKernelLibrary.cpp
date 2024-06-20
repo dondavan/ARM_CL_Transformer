@@ -772,10 +772,14 @@ const std::map<std::string, std::string> ClKernelLibrary::_program_source_map = 
         "common/mat_mul_quantized_mmul.cl",
 #include "./cl_kernels/common/mat_mul_quantized_mmul.clembed"
     },
-    
+
     {
         "common/vectorize.cl",
 #include "./cl_kernels/common/vectorize.clembed"
+    },
+    {
+        "common/positionalemb.cl",
+#include "./cl_kernels/common/positionalemb.clembed"
     },
 #ifdef ENABLE_NCHW_KERNELS
     {
