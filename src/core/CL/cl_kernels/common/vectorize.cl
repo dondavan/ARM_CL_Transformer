@@ -23,7 +23,7 @@
  * @param[in]  input_shape                          Input spatial shape
  * @param[in]  output_shape                         Output spatial shape
  */
-__kernel void reshape_layer(TENSOR3D_DECLARATION(input),
+__kernel void get_global_id(TENSOR3D_DECLARATION(input),
                             TENSOR3D_DECLARATION(output),
                             int2 input_shape,
                             int2 output_shape)
