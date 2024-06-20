@@ -29,7 +29,7 @@
  * @param[in]  output_step_z                         output_stride_z * number of elements along Z processed per workitem(in bytes)
  * @param[in]  output_offset_first_element_in_bytes  The offset of the first element in the destination tensor
  */
-__kernel void get_global_id(TENSOR3D_DECLARATION(src),
+__kernel void vectorize(TENSOR3D_DECLARATION(src),
                             TENSOR3D_DECLARATION(vector),
                             TENSOR3D_DECLARATION(output))
 {
