@@ -373,6 +373,7 @@ void ClElementwiseKernel::run_op(ITensorPack &tensors, const Window &window, ::c
     const TensorShape &in_shape2_collapsed = has_collapsed ? in_shape2.collapsed_from(Window::DimZ) : in_shape2;
 
     Window slice      = collapsed.first_slice_window_3D();
+    slice.set_broadcasted(Window::DimZ);
     Window slice_src1 = slice.broadcast_if_dimension_le_one(in_shape1_collapsed);
     Window slice_src2 = slice.broadcast_if_dimension_le_one(in_shape2_collapsed);
 
