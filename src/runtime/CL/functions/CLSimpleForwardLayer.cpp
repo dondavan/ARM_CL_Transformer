@@ -7,7 +7,7 @@
 #include "src/core/CL/ICLKernel.h"
 #include "src/common/utils/Log.h"
 
-#include "src/gpu/cl/operators/CLSimpleForward.h"
+#include "src/gpu/cl/operators/ClSimpleForward.h"
 
 #ifdef MEASURE_TIME
 #include <chrono>
