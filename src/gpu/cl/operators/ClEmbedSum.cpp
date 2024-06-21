@@ -20,7 +20,13 @@ void ClEmbedSum::configure(const ClCompileContext   &compile_context,
                            const EmbeddingLayerInfo &emb_info)
 {
     std::cout << "src/gpu/cl/operators/ClEmbedSum.cpp configure start" << std::endl;
-
+    
+    ARM_COMPUTE_UNUSED(position);
+    auto k_1 = std::make_unique<kernels::ClSaturatedArithmeticKernel>();
+    k_1->configure(compile_context, ArithmeticOperation::ADD, token, segemnt, output, emb_info.c_policy());
+    _add_kernel_1 = std::move(k_1);
+    
+    /*
     auto k_1 = std::make_unique<kernels::ClSaturatedArithmeticKernel>();
     auto k_2 = std::make_unique<kernels::ClSaturatedArithmeticKernel>();
 
@@ -32,7 +38,7 @@ void ClEmbedSum::configure(const ClCompileContext   &compile_context,
 
     _aux_mem[TokenSegmentOutput] =
         experimental::MemoryInfo(offset_int_vec(TokenSegmentOutput), experimental::MemoryLifetime::Persistent, _tmp_token_segment.total_size());
-
+    */
     std::cout << "src/gpu/cl/operators/ClEmbedSum.cpp configure end" << std::endl;
 }
 
@@ -62,6 +68,7 @@ void ClEmbedSum::run(ITensorPack &tensors)
     auto position = tensors.get_const_tensor(ACL_SRC_2);
     auto output   = tensors.get_tensor(ACL_DST);
 
+    /*
     CLAuxTensorHandler aux_token_segemnt(offset_int_vec(TokenSegmentOutput), _tmp_token_segment, tensors, false);
 
     ITensorPack run_pack{ { ACL_SRC_0, token }, { ACL_SRC_1, segment }, { ACL_DST, aux_token_segemnt.get() } };
@@ -73,6 +80,9 @@ void ClEmbedSum::run(ITensorPack &tensors)
     run_pack.add_const_tensor(ACL_SRC_1, position);
     run_pack.add_tensor(ACL_DST, output);
     CLScheduler::get().enqueue_op(*_add_kernel_2.get(), run_pack, true);
+    */
+   ITensorPack run_pack{ { ACL_SRC_0, token }, { ACL_SRC_1, segment }, { ACL_DST, output } };
+   CLScheduler::get().enqueue_op(*_add_kernel_1.get(), run_pack, true);
 
     std::cout << "src/gpu/cl/operators/ClEmbedSum.cpp run end" << std::endl;
 }
