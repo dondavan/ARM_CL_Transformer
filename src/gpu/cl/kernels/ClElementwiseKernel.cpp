@@ -400,13 +400,17 @@ void ClElementwiseKernel::run_op(ITensorPack &tensors, const Window &window, ::c
     std::cout << "slice_src2 y" << slice_src2.y().end() << std::endl;
     std::cout << "slice_src2 z" << slice_src2.z().end() << std::endl;
 
+    std::cout << "lws x " << lws_hint().get()[0] << std::endl;
+    std::cout << "lws y " << lws_hint().get()[1] << std::endl;
+    std::cout << "lws z " << lws_hint().get()[2] << std::endl;
+
     // Check whether it is in_place calculation
     const bool in_place = (src_0 == dst) || (src_1 == dst);
     do
     {
         unsigned int idx = 0;
-        add_3D_tensor_argument(idx, src_0, slice);
-        add_3D_tensor_argument(idx, src_1, slice);
+        add_3D_tensor_argument(idx, src_0, slice_src1);
+        add_3D_tensor_argument(idx, src_1, slice_src2);
         if (!in_place)
         {
             add_3D_tensor_argument(idx, dst, slice);
