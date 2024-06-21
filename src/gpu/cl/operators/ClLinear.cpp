@@ -18,6 +18,7 @@ void ClLinear::configure(const ITensorInfo *a,
                          float beta, const LinearLayerInfo &linear_info)
 {
     ARM_COMPUTE_LOG_PARAMS(a, b, c, d, alpha, beta, linear_info);
+    ARM_COMPUTE_UNUSED(a,b,c,d,alpha);
     ARM_COMPUTE_UNUSED(linear_info);
     ARM_COMPUTE_UNUSED(beta);
 }
@@ -47,6 +48,7 @@ void ClLinear::run(ITensorPack &tensors)
     auto b = tensors.get_const_tensor(ACL_SRC_1);
     auto c = tensors.get_const_tensor(ACL_SRC_2);
     auto d = tensors.get_tensor(ACL_DST);
+    ARM_COMPUTE_UNUSED(a,b,c,d);
 }
 
 } // namespace opencl
