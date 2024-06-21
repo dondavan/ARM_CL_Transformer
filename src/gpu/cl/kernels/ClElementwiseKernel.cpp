@@ -304,6 +304,22 @@ void ClElementwiseKernel::configure_common(const ClCompileContext &compile_conte
         kernel_name += "_quantized";
     }
 
+    std::cout << "src1 x" << src1->tensor_shape().x() << std::endl;
+    std::cout << "src1 y" << src1->tensor_shape().y() << std::endl;
+    std::cout << "src1 z" << src1->tensor_shape().z() << std::endl;
+
+    std::cout << "src2 x" << src2->tensor_shape().x() << std::endl;
+    std::cout << "src2 y" << src2->tensor_shape().y() << std::endl;
+    std::cout << "src2 z" << src2->tensor_shape().z() << std::endl;
+
+    std::cout << "dst x" << dst->tensor_shape().x() << std::endl;
+    std::cout << "dst y" << dst->tensor_shape().y() << std::endl;
+    std::cout << "dst z" << dst->tensor_shape().z() << std::endl;
+
+    std::cout << "win x" << win_config.second.x().end() << std::endl;
+    std::cout << "win y" << win_config.second.y().end() << std::endl;
+    std::cout << "win z" << win_config.second.z().end() << std::endl;
+
     // Set kernel build options
     CLBuildOptions build_opts = generate_build_options(*src1, *src2, *dst);
     if (_act_info.enabled())
