@@ -48,6 +48,24 @@ public:
                    ICLTensor *dst1,
                    ICLTensor *dst2,
                    ICLTensor *dst3);
+    /** Initialise the kernel's inputs and output
+     *
+     * Valid data layouts:
+     * - All
+     *
+     * Valid data type configurations:
+     * - All
+     *
+     * @param[in]  compile_context The compile context to be used.
+     * @param[in]  tensors        Tensors. Data type supported: All.
+     */
+    void configure(const CLCompileContext &compile_context,
+                   const ICLTensor *src1,
+                   const ICLTensor *src2,
+                   const ICLTensor *src3,
+                   ICLTensor *dst1,
+                   ICLTensor *dst2,
+                   ICLTensor *dst3);
 
     // Inherited methods overridden
     void run() override;

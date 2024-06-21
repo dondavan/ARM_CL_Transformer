@@ -1,8 +1,8 @@
 #ifndef ARM_COMPUTE_CLLINEAR_LAYER_H
 #define ARM_COMPUTE_CLLINEAR_LAYER_H
 
-#include "arm_compute/core/Types.h"
 #include "arm_compute/core/Error.h"
+#include "arm_compute/core/Types.h"
 #include "arm_compute/runtime/IFunction.h"
 
 #include <memory>
@@ -17,7 +17,7 @@ class ICLTensorInfo;
 /** Perform basic linear function */
 class CLLinearLayer : public IFunction
 {
-public:
+    public:
     /** Constructor */
     CLLinearLayer();
     /** Prevent instances of this class from being copied (As this class contains pointers) */
@@ -44,7 +44,30 @@ public:
      * @param[in]  input1 First tensor input. Data type supported: F32.
      * @param[out] output Output tensor. Data type supported: F32.
      */
-    void configure(const ICLTensor *input1, const ICLTensor *weight, const ICLTensor *bias, ICLTensor *output, const LinearLayerInfo& linear_info);
+    void configure(const ICLTensor        *input1,
+                   const ICLTensor        *weight,
+                   const ICLTensor        *bias,
+                   ICLTensor              *output,
+                   const LinearLayerInfo  &linear_info);
+    /** Initialise the kernel's inputs and output
+     *
+     * Valid data layouts:
+     * - All
+     *
+     * Valid data type configurations:
+     * |src0           |dst          |
+     * |:--------------|:------------|
+     * |F32            |F32          |
+     *
+     * @param[in]  input1 First tensor input. Data type supported: F32.
+     * @param[out] output Output tensor. Data type supported: F32.
+     */
+    void configure(const CLCompileContext &compile_context,
+                   const ICLTensor        *input1,
+                   const ICLTensor        *weight,
+                   const ICLTensor        *bias,
+                   ICLTensor              *output,
+                   const LinearLayerInfo  &linear_info);
     /** Static function to check if given info will lead to a valid configuration of @ref CLLinearLayer
      *
      * @param[in] input1 First input tensor info. Data types supported: F32.
@@ -52,15 +75,14 @@ public:
      *
      * @return a status
      */
-    static Status validate(const ICLTensor *input, const ICLTensor *weight, const ICLTensor *bias, ICLTensor *output, const LinearLayerInfo& linear_info);
+    static Status validate(const ICLTensor *input, const ICLTensor *weight, const ICLTensor *bias, ICLTensor *output, const LinearLayerInfo &linear_info);
 
     // Inherited methods overridden
     void run() override;
 
-private:
+    private:
     struct Impl;
     std::unique_ptr<Impl> _impl;
-    
 };
 
 } // namespace arm_compute
