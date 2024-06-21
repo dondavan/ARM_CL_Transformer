@@ -29,7 +29,8 @@ public:
      * @param[in]  beta   Weight of matrix C
      * @param[in]  info   (Optional)Linear layer operation information
      */
-    void configure(const ITensorInfo *a,
+    void configure(const ClCompileContext &compile_context,
+                   const ITensorInfo *a,
                    const ITensorInfo *b,
                    const ITensorInfo *c,
                    ITensorInfo       *d,

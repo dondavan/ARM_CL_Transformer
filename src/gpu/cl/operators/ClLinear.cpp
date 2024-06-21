@@ -4,21 +4,23 @@
 #include "src/gpu/cl/ClCompileContext.h"
 
 #include "src/core/helpers/MemoryHelpers.h"
+#include "src/gpu/cl/kernels/ClVectorizeKernel.h"
 #include "src/gpu/cl/utils/ClAuxTensorHandler.h"
 
 namespace arm_compute
 {
 namespace opencl
 {
-void ClLinear::configure(const ITensorInfo *a,
-                         const ITensorInfo *b,
-                         const ITensorInfo *c,
-                         ITensorInfo       *d,
-                         float              alpha,
+void ClLinear::configure(const ClCompileContext &compile_context,
+                         const ITensorInfo      *a,
+                         const ITensorInfo      *b,
+                         const ITensorInfo      *c,
+                         ITensorInfo            *d,
+                         float                   alpha,
                          float beta, const LinearLayerInfo &linear_info)
 {
     ARM_COMPUTE_LOG_PARAMS(a, b, c, d, alpha, beta, linear_info);
-    ARM_COMPUTE_UNUSED(a,b,c,d,alpha);
+    ARM_COMPUTE_UNUSED(a, b, c, d, alpha);
     ARM_COMPUTE_UNUSED(linear_info);
     ARM_COMPUTE_UNUSED(beta);
 }
@@ -48,7 +50,7 @@ void ClLinear::run(ITensorPack &tensors)
     auto b = tensors.get_const_tensor(ACL_SRC_1);
     auto c = tensors.get_const_tensor(ACL_SRC_2);
     auto d = tensors.get_tensor(ACL_DST);
-    ARM_COMPUTE_UNUSED(a,b,c,d);
+    ARM_COMPUTE_UNUSED(a, b, c, d);
 }
 
 } // namespace opencl
