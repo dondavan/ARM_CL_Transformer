@@ -408,6 +408,7 @@ void ClElementwiseKernel::run_op(ITensorPack &tensors, const Window &window, ::c
     const bool in_place = (src_0 == dst) || (src_1 == dst);
     do
     {
+        std::cout << "enque " << std::endl;
         unsigned int idx = 0;
         add_3D_tensor_argument(idx, src_0, slice_src1);
         add_3D_tensor_argument(idx, src_1, slice_src2);
