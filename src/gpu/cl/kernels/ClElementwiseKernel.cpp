@@ -304,7 +304,7 @@ void ClElementwiseKernel::configure_common(const ClCompileContext &compile_conte
     {
         kernel_name += "_quantized";
     }
-
+    /*
     std::cout << "src1 x" << src1->tensor_shape().x() << std::endl;
     std::cout << "src1 y" << src1->tensor_shape().y() << std::endl;
     std::cout << "src1 z" << src1->tensor_shape().z() << std::endl;
@@ -320,6 +320,7 @@ void ClElementwiseKernel::configure_common(const ClCompileContext &compile_conte
     std::cout << "win x" << win_config.second.x().end() << std::endl;
     std::cout << "win y" << win_config.second.y().end() << std::endl;
     std::cout << "win z" << win_config.second.z().end() << std::endl;
+    */
 
     // Set kernel build options
     CLBuildOptions build_opts = generate_build_options(*src1, *src2, *dst);
@@ -378,6 +379,7 @@ void ClElementwiseKernel::run_op(ITensorPack &tensors, const Window &window, ::c
     Window slice_src1 = slice.broadcast_if_dimension_le_one(in_shape1_collapsed);
     Window slice_src2 = slice.broadcast_if_dimension_le_one(in_shape2_collapsed);
 
+    /*
     std::cout << "src1 x" << src_0->info()->tensor_shape().x() << std::endl;
     std::cout << "src1 y" << src_0->info()->tensor_shape().y() << std::endl;
     std::cout << "src1 z" << src_0->info()->tensor_shape().z() << std::endl;
@@ -405,12 +407,12 @@ void ClElementwiseKernel::run_op(ITensorPack &tensors, const Window &window, ::c
     std::cout << "lws x " << lws_hint().get()[0] << std::endl;
     std::cout << "lws y " << lws_hint().get()[1] << std::endl;
     std::cout << "lws z " << lws_hint().get()[2] << std::endl;
+    */
 
     // Check whether it is in_place calculation
     const bool in_place = (src_0 == dst) || (src_1 == dst);
     do
     {
-        std::cout << "enque " << std::endl;
         unsigned int idx = 0;
         add_3D_tensor_argument(idx, src_0, slice_src1);
         add_3D_tensor_argument(idx, src_1, slice_src2);
