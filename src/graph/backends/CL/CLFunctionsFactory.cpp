@@ -357,6 +357,12 @@ std::unique_ptr<IFunction> CLFunctionFactory::create(INode *node, GraphContext &
         case NodeType::EmbeddingSumLayer:
             return detail::create_embedding_sum_layer<CLEmbeddingSumLayer, CLTargetInfo>(
                 *polymorphic_downcast<EmbeddingSumLayerNode *>(node));
+        case NodeType::LinearLayer:
+            return detail::create_linear_layer<CLLinearLayer, CLTargetInfo>(
+                *polymorphic_downcast<LinearLayerNode *>(node));
+        case NodeType::SimpleForwardLayer:
+            return detail::create_simple_forward_layer<CLSimpleForwardLayer, CLTargetInfo>(
+                *polymorphic_downcast<SimpleForwardLayerNode *>(node));
         default:
             return nullptr;
     }

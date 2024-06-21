@@ -60,8 +60,6 @@ class ClEmbedSum : public IClOperator
     TensorInfo _tmp_token_segment{};
 
     experimental::MemoryRequirements _aux_mem{ Count };
-
-    size_t _split_dimension{ Window::DimY };
 };
 } // namespace opencl
 } // namespace arm_compute

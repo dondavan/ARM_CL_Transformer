@@ -998,6 +998,22 @@
             "src/runtime/CL/functions/CLEmbeddingSumLayer.cpp"
           ]
         }
+      },
+      "Linear": {
+        "files": {
+          "common": [
+            "src/gpu/cl/operators/ClLinear.cpp",
+            "src/runtime/CL/functions/CLLinearLayer.cpp"
+          ]
+        }
+      },
+      "SimpleForward": {
+        "files": {
+          "common": [
+            "src/gpu/cl/operators/ClSimpleForward.cpp",
+            "src/runtime/CL/functions/CLSimpleForwardLayer.cpp"
+          ]
+        }
       }
     }
   },
