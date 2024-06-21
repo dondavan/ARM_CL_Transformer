@@ -376,6 +376,30 @@ void ClElementwiseKernel::run_op(ITensorPack &tensors, const Window &window, ::c
     Window slice_src1 = slice.broadcast_if_dimension_le_one(in_shape1_collapsed);
     Window slice_src2 = slice.broadcast_if_dimension_le_one(in_shape2_collapsed);
 
+    std::cout << "src1 x" << src_0->info()->tensor_shape().x() << std::endl;
+    std::cout << "src1 y" << src_0->info()->tensor_shape().y() << std::endl;
+    std::cout << "src1 z" << src_0->info()->tensor_shape().z() << std::endl;
+
+    std::cout << "src2 x" << src_1->info()->tensor_shape().x() << std::endl;
+    std::cout << "src2 y" << src_1->info()->tensor_shape().y() << std::endl;
+    std::cout << "src2 z" << src_1->info()->tensor_shape().z() << std::endl;
+
+    std::cout << "dst x" << dst->info()->tensor_shape().x() << std::endl;
+    std::cout << "dst y" << dst->info()->tensor_shape().y() << std::endl;
+    std::cout << "dst z" << dst->info()->tensor_shape().z() << std::endl;
+
+    std::cout << "slice x" << slice.x().end() << std::endl;
+    std::cout << "slice y" << slice.y().end() << std::endl;
+    std::cout << "slice z" << slice.z().end() << std::endl;
+
+    std::cout << "slice_src1 x" << slice_src1.x().end() << std::endl;
+    std::cout << "slice_src1 y" << slice_src1.y().end() << std::endl;
+    std::cout << "slice_src1 z" << slice_src1.z().end() << std::endl;
+
+    std::cout << "slice_src2 x" << slice_src2.x().end() << std::endl;
+    std::cout << "slice_src2 y" << slice_src2.y().end() << std::endl;
+    std::cout << "slice_src2 z" << slice_src2.z().end() << std::endl;
+
     // Check whether it is in_place calculation
     const bool in_place = (src_0 == dst) || (src_1 == dst);
     do
