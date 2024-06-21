@@ -405,8 +405,8 @@ void ClElementwiseKernel::run_op(ITensorPack &tensors, const Window &window, ::c
     do
     {
         unsigned int idx = 0;
-        add_3D_tensor_argument(idx, src_0, slice_src1);
-        add_3D_tensor_argument(idx, src_1, slice_src2);
+        add_3D_tensor_argument(idx, src_0, slice);
+        add_3D_tensor_argument(idx, src_1, slice);
         if (!in_place)
         {
             add_3D_tensor_argument(idx, dst, slice);
