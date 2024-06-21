@@ -7,11 +7,6 @@
 #include "arm_compute/core/TensorInfo.h"
 #include "arm_compute/core/Types.h"
 
-#include "src/cpu/kernels/CpuGemmMatrixMultiplyKernel.h"
-#include "src/cpu/kernels/CpuGemmInterleave4x4Kernel.h"
-#include "src/cpu/kernels/CpuGemmTranspose1xWKernel.h"
-#include "src/cpu/operators/CpuTranspose.h"
-#include "src/cpu/kernels/CpuAddVecKernel.h"
 
 namespace arm_compute
 {

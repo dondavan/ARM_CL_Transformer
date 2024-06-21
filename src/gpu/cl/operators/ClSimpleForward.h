@@ -8,7 +8,7 @@ namespace arm_compute
 {
 namespace opencl
 {
-/** Basic function to run @ref kernels::CpuSimpleForwardKernel */
+/** Basic function to run @ref kernels::ClSimpleForwardKernel */
 class ClSimpleForward : public IClOperator
 {
 public:
