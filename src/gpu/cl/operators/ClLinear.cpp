@@ -4,8 +4,9 @@
 #include "src/gpu/cl/ClCompileContext.h"
 
 #include "src/core/helpers/MemoryHelpers.h"
-#include "src/gpu/cl/kernels/ClVectorizeKernel.h"
 #include "src/gpu/cl/utils/ClAuxTensorHandler.h"
+
+#include "src/gpu/cl/kernels/ClVectorizeKernel.h"
 
 namespace arm_compute
 {
@@ -23,6 +24,9 @@ void ClLinear::configure(const ClCompileContext &compile_context,
     ARM_COMPUTE_UNUSED(a, b, c, d, alpha);
     ARM_COMPUTE_UNUSED(linear_info);
     ARM_COMPUTE_UNUSED(beta);
+    auto k = std::make_unique<kernels::ClVectorizeKernel>();
+    k->configure(compile_context, a, b, d);
+    _kernel = std::move(k);
 }
 
 Status

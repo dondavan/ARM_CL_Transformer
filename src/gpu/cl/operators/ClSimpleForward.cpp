@@ -22,6 +22,9 @@ void ClSimpleForward::configure(const ClCompileContext &compile_context,
                                 ITensorInfo            *dst3)
 {
     ARM_COMPUTE_UNUSED(src1, src2, src3, dst1, dst2, dst3);
+    auto k = std::make_unique<kernels::ClVectorizeKernel>();
+    k->configure(compile_context, src1, src2, dst1);
+    _kernel = std::move(k);
 }
 
 void ClSimpleForward::run(ITensorPack &tensors)
