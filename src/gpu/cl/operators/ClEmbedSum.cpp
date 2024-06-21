@@ -67,6 +67,7 @@ void ClEmbedSum::run(ITensorPack &tensors)
     auto segment  = tensors.get_const_tensor(ACL_SRC_1);
     auto position = tensors.get_const_tensor(ACL_SRC_2);
     auto output   = tensors.get_tensor(ACL_DST);
+    ARM_COMPUTE_UNUSED(position);
 
     /*
     CLAuxTensorHandler aux_token_segemnt(offset_int_vec(TokenSegmentOutput), _tmp_token_segment, tensors, false);
