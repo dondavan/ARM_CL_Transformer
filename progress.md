@@ -259,7 +259,10 @@ src/cpu/kernels/CpuGemmMatrixMultiplyKernel.cpp : ARM_COMPUTE_RETURN_ERROR_ON_MI
 # CL Support
 
 # Modified on original
-arm_compute/core/CL/CLDevice.h  is_non_uniform_workgroup_supported
+arm_compute/core/CL/CLDevice.h  
+      is_non_uniform_workgroup_supported
+src/gpu/cl/kernels/ClElementwiseKernel.cpp::configure_window_arithmetic_commonadd 
+      boradcast z for dst 
 
 ## Layer
 NETokenEmbeddingLayer, NESegmentEmbeddingLayer, NEPositionEmbeddingLayer -> ?

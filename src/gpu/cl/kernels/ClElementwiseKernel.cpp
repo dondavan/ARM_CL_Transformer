@@ -243,6 +243,7 @@ std::pair<Status, Window> configure_window_arithmetic_common(ITensorInfo &dst)
     const unsigned int num_elems_processed_per_iteration =
         adjust_vec_size(vector_size_byte_opencl / dst.element_size(), dst.dimension(0));
     Window win = calculate_max_window(dst, Steps(num_elems_processed_per_iteration));
+    win.broadcast_if_dimension_le_one(dst.tensor_shape());
     return std::make_pair(Status{}, win);
 }
 
