@@ -5,7 +5,7 @@
 #include "arm_compute/core/Validate.h"
 
 #include "src/core/CL/ICLKernel.h"
-#include "src/gpu/cl/operators/CLLinear.h"
+#include "src/gpu/cl/operators/ClLinear.h"
 
 #ifdef MEASURE_TIME
 #include <chrono>
