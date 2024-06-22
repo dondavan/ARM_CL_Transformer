@@ -1019,7 +1019,8 @@
         "files": {
           "common": [
             "src/gpu/cl/operators/ClLayerNorm.cpp",
-            "src/runtime/CL/functions/CLLayerNormLayer.cpp"
+            "src/runtime/CL/functions/CLLayerNormLayer.cpp",
+            "src/gpu/cl/kernels/ClLayerNormKernel.cpp"
           ]
         }
       }
