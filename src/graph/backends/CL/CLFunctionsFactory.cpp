@@ -363,6 +363,9 @@ std::unique_ptr<IFunction> CLFunctionFactory::create(INode *node, GraphContext &
         case NodeType::SimpleForwardLayer:
             return detail::create_simple_forward_layer<CLSimpleForwardLayer, CLTargetInfo>(
                 *polymorphic_downcast<SimpleForwardLayerNode *>(node));
+        case NodeType::LayerNormLayer:
+            return detail::create_layer_norm_layer<CLLayerNormLayer, CLTargetInfo>(
+                *polymorphic_downcast<LayerNormNode *>(node));
         default:
             return nullptr;
     }

@@ -8,8 +8,6 @@
 #include "src/cpu/CpuContext.h"
 #include "src/cpu/kernels/CpuLayerNormKernel.h"
 
-#include "src/core/helpers/MemoryHelpers.h"
-#include "src/cpu/utils/CpuAuxTensorHandler.h"
 
 namespace arm_compute
 {
