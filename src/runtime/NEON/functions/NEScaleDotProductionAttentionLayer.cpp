@@ -27,10 +27,9 @@ struct NEScaleDotProductionAttentionLayer::Impl
     bool is_prepared{false};
 };
 
-NEScaleDotProductionAttentionLayer::NEScaleDotProductionAttentionLayer(std::shared_ptr<IMemoryManager> memory_manager)
+NEScaleDotProductionAttentionLayer::NEScaleDotProductionAttentionLayer()
     : _impl(std::make_unique<Impl>())
 {
-    _impl->memory_group = MemoryGroup(std::move(memory_manager));
 }
 
 NEScaleDotProductionAttentionLayer::~NEScaleDotProductionAttentionLayer() = default;
