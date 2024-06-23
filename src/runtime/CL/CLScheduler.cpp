@@ -185,9 +185,6 @@ void CLScheduler::enqueue_common(ICLKernel &kernel, ITensorPack &tensors, bool f
         !_is_initialised, "The CLScheduler is not initialised yet! Please call the CLScheduler::get().default_init(), \
                              or CLScheduler::get()::init() and CLKernelLibrary::get()::init() function before running functions!");
 
-    if(!_is_initialised)std::cout << "The CLScheduler is not initialised yet! Please call the CLScheduler::get().default_init(), \
-                             or CLScheduler::get()::init() and CLKernelLibrary::get()::init() function before running functions!" << std::endl;
-                             else std::cout << "enqueue_common " <<std::endl;
     const bool inject_memory = !tensors.empty();
 
     // Tune the kernel if the CLTuner has been provided
