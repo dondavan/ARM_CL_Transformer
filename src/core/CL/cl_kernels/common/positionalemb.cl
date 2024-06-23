@@ -33,10 +33,6 @@ __kernel void positionalemb(TENSOR3D_DECLARATION(src),
                             TENSOR3D_DECLARATION(vector),
                             TENSOR3D_DECLARATION(output))
 {
-    Tensor3D src    = CONVERT_TO_TENSOR3D_STRUCT(src);
-    Tensor3D vector = CONVERT_TO_TENSOR3D_STRUCT(vector);
-    Tensor3D output = CONVERT_TO_TENSOR3D_STRUCT(output);
-
     int out_x = get_global_id(0);
     int out_y = get_global_id(1);
 
@@ -45,9 +41,10 @@ __kernel void positionalemb(TENSOR3D_DECLARATION(src),
 
     // Compute the vector linearized index
     int vector_linear_idx = out_y * VEC_SIZE + out_x;
-
+    vstore2(1, 0, (__global float *)output_ptr);
+    
     // Store result
-    vector.ptr += vector_linear_idx;
-    output.ptr += out_linear_idx;
-    *((__global DATA_TYPE *)output.ptr) = *((__global DATA_TYPE *)vector.ptr);
+    vector_ptr += vector_linear_idx;
+    output_ptr += out_linear_idx;
+    *((__global DATA_TYPE *)output_ptr) = *((__global DATA_TYPE *)vector_ptr);
 }
