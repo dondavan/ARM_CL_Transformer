@@ -11,19 +11,19 @@ namespace opencl
 /** Basic function to run @ref kernels::ClSimpleForwardKernel */
 class ClSimpleForward : public IClOperator
 {
-public:
+    public:
     /** Configure kernel for a given list of arguments
      *
      * @param[in]  src Srouce tensor to copy. Data types supported: All
      * @param[out] dst Destination tensor. Data types supported: Same as @p src
      */
     void configure(const ClCompileContext &compile_context,
-                   const ITensorInfo *src1,
-                   const ITensorInfo *src2,
-                   const ITensorInfo *src3,
-                   ITensorInfo *dst1,
-                   ITensorInfo *dst2,
-                   ITensorInfo *dst3);
+                   const ITensorInfo      *src1,
+                   const ITensorInfo      *src2,
+                   const ITensorInfo      *src3,
+                   ITensorInfo            *dst1,
+                   ITensorInfo            *dst2,
+                   ITensorInfo            *dst3);
 
     // Inherited methods overridden:
     void run(ITensorPack &tensors) override;

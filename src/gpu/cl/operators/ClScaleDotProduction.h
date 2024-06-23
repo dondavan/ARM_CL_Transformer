@@ -8,19 +8,6 @@
 #include "src/gpu/cl/ClCompileContext.h"
 #include "src/gpu/cl/IClOperator.h"
 
-#include "src/cpu/kernels/CpuScaleKernel.h"
-#include "src/cpu/kernels/CpuSoftmaxKernel.h"
-#include "src/cpu/operators/CpuTranspose.h"
-#include "src/cpu/kernels/CpuGemmMatrixMultiplyKernel.h"
-#include "src/cpu/operators/CpuActivation.h"
-#include "src/cpu/kernels/CpuGemmInterleave4x4Kernel.h"
-#include "src/cpu/kernels/CpuGemmTranspose1xWKernel.h"
-
-#include "src/cpu/kernels/CpuReshapeKernel.h"
-#include "src/cpu/operators/CpuPermute.h"
-#include "src/cpu/operators/CpuSoftmax.h"
-#include "src/cpu/operators/CpuGemm.h"
-
 #include <memory>
 
 namespace arm_compute

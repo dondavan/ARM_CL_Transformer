@@ -9,6 +9,8 @@
 #include "src/core/helpers/MemoryHelpers.h"
 #include "src/cpu/utils/CpuAuxTensorHandler.h"
 
+#include "src/gpu/cl/kernels/ClVectorizeKernel.h"
+
 namespace arm_compute
 {
 namespace opencl
@@ -23,6 +25,10 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
 {
     ARM_COMPUTE_LOG_PARAMS(key, value, query, output);
     ARM_COMPUTE_UNUSED(compile_context,query,key,value,output,info);
+    
+    auto k = std::make_unique<kernels::ClVectorizeKernel>();
+    k->configure(compile_context, query, key, output);
+    _kernel = std::move(k);
     /*
     // Query multi-Head reshape
     TensorShape query_reshape = TensorShape(query->tensor_shape().x() / info.h(),
