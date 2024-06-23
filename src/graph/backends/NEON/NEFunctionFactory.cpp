@@ -247,7 +247,7 @@ std::unique_ptr<IFunction> NEFunctionFactory::create(INode *node, GraphContext &
                 *polymorphic_downcast<SimpleForwardLayerNode *>(node));
         case NodeType::ScaleDotProductionAttentionLayer:
             return detail::create_scale_dot_production_layer<NEScaleDotProductionAttentionLayer,NETargetInfo>(
-                *polymorphic_downcast<ScaleDotProductionAttentionNode *>(node), ctx);
+                *polymorphic_downcast<ScaleDotProductionAttentionNode *>(node));
         case NodeType::LayerNormLayer:
             return detail::create_layer_norm_layer<NELayerNormLayer, NETargetInfo>(
                 *polymorphic_downcast<LayerNormNode *>(node));
