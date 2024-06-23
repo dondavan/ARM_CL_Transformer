@@ -87,6 +87,7 @@ bool Tensor::call_accessor()
     {
         // Map tensor
         _handle->map(true);
+        std::cout << " map " << std::endl;
 
         // Return in case of null backend buffer
         if (_handle->tensor().buffer() == nullptr)
