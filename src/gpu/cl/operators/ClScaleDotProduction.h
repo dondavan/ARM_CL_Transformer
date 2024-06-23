@@ -61,7 +61,7 @@ public:
 
     void transpose(ITensorPack &tensors);
 
-    // Inherited methods overridden:
+    // Inherited method overridden
     void run(ITensorPack &tensors) override;
     experimental::MemoryRequirements workspace() const override;
 

@@ -23,7 +23,7 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
 {
     ARM_COMPUTE_LOG_PARAMS(key, value, query, output);
     ARM_COMPUTE_UNUSED(compile_context,query,key,value,output,info);
-    /*/
+    /*
     // Query multi-Head reshape
     TensorShape query_reshape = TensorShape(query->tensor_shape().x() / info.h(),
                                             info.h(),
