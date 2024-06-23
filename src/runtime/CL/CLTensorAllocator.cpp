@@ -228,7 +228,6 @@ uint8_t *CLTensorAllocator::map(cl::CommandQueue &q, bool blocking)
     ARM_COMPUTE_ERROR_ON(_memory.region()->buffer() != nullptr);
 
     _mapping = reinterpret_cast<uint8_t *>(_memory.cl_region()->map(q, blocking));
-    std::cout << "src/runtime/CL/CLTensorAllocator.cpp mapping  " << _mapping << std::endl;
     return _mapping;
 }
 
