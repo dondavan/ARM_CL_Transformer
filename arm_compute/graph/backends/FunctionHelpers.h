@@ -1895,8 +1895,7 @@ std::unique_ptr<IFunction> create_scale_dot_production_layer(ScaleDotProductionA
     typename TargetInfo::TensorType *output  = get_backing_tensor<TargetInfo>(node.output(0));
 
     // Create and configure function
-    auto mm   = get_memory_manager(ctx, TargetInfo::TargetType);
-    auto func = std::make_unique<ScaleDotProductionLayerFunction>(mm);
+    auto func = std::make_unique<ScaleDotProductionLayerFunction>();
     func->configure(query,key,value,output,node.sdpa_info());
 
     // Log info
