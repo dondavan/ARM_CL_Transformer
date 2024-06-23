@@ -104,6 +104,14 @@ bool Tensor::call_accessor()
         _handle->unmap();
     }
 
+    std::cout << "Tensor x" << _handle->tensor().info()->tensor_shape().x() << std::endl;
+    std::cout << "Tensor y" << _handle->tensor().info()->tensor_shape().y() << std::endl;
+    std::cout << "Tensor z" << _handle->tensor().info()->tensor_shape().z() << std::endl;
+
+    std::cout << "Tensor x" << _handle->tensor().ptr_to_element(Coordinates(0,0,0)) << std::endl;
+    std::cout << "Tensor y" << _handle->tensor().ptr_to_element(Coordinates(1,0,0)) << std::endl;
+    std::cout << "Tensor z" << _handle->tensor().ptr_to_element(Coordinates(2,0,0)) << std::endl;
+
     return retval;
 }
 
