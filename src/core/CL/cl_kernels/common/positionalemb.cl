@@ -45,5 +45,6 @@ __kernel void positionalemb(TENSOR3D_DECLARATION(src),
     // Store result
     vector_ptr += vector_linear_idx;
     output_ptr += out_linear_idx;
-    *((__global DATA_TYPE *)output_ptr) = *((__global DATA_TYPE *)vector_ptr);
+     *((__global DATA_TYPE *)output_ptr) = 1;
+    //*((__global DATA_TYPE *)output_ptr) = *((__global DATA_TYPE *)vector_ptr);
 }
