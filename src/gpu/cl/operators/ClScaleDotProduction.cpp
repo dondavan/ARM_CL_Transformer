@@ -22,7 +22,8 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
                                      const ScaleDotProductionAttentionLayerInfo &info)
 {
     ARM_COMPUTE_LOG_PARAMS(key, value, query, output);
-
+    ARM_COMPUTE_UNUSED(compile_context,query,key,value,output,info);
+    /*/
     // Query multi-Head reshape
     TensorShape query_reshape = TensorShape(query->tensor_shape().x() / info.h(),
                                             info.h(),
@@ -129,6 +130,7 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
 
     _concat_reshape_kernel = std::make_unique<kernels::CpuReshapeKernel>();
     _concat_reshape_kernel->configure(&_permuted_concat, output);
+    */
 }
 
 Status
@@ -145,6 +147,7 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
 {
     ARM_COMPUTE_UNUSED(tensors);
 
+    /*
     auto query  = tensors.get_const_tensor(ACL_SRC_0);
     auto key    = tensors.get_const_tensor(ACL_SRC_1);
     auto value  = tensors.get_const_tensor(ACL_SRC_2);
@@ -232,6 +235,7 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
     ITensorPack concat_reshape_pack{ { ACL_SRC_0, permuted_concat.get() }, { ACL_DST, output } };
     const auto  concat_split_dimension = _concat_reshape_kernel->get_split_dimension();
     NEScheduler::get().schedule_op(_concat_reshape_kernel.get(), concat_split_dimension, _concat_reshape_kernel->window(), concat_reshape_pack);
+    */
 }
 
 experimental::MemoryRequirements ClScaleDotProduction::workspace() const

@@ -87,6 +87,7 @@ private:
         Count
     };
 
+    /*
     std::unique_ptr<kernels::CpuGemmInterleave4x4Kernel>    _query_interleave_kernel{nullptr};
     std::unique_ptr<kernels::CpuGemmMatrixMultiplyKernel>   _product_mm_kernel{nullptr};
     std::unique_ptr<kernels::CpuGemmTranspose1xWKernel>     _key_transpose1xW_kernel{nullptr};
@@ -130,7 +131,8 @@ private:
     bool _run_scale{false};
     bool _run_vector_matrix_multiplication{false};
     bool _run_interleave_transpose{
-        true}; /**< If we run CpuGemmInterleave4x4Kernel on lhs and CpuGemmTranspose1xWKernel on rhs */
+        true}; // < If we run CpuGemmInterleave4x4Kernel on lhs and CpuGemmTranspose1xWKernel on rhs 
+        */
 
     experimental::MemoryRequirements _aux_mem{Count};
 
