@@ -201,6 +201,7 @@ void CLScheduler::enqueue_common(ICLKernel &kernel, ITensorPack &tensors, bool f
     }
 
     flush_queue(flush);
+    std::cout << "src/runtime/CL/CLScheduler.cpp flushed my tolite " << std::endl;
 }
 
 void CLScheduler::flush_queue(bool flush)
