@@ -102,6 +102,10 @@ bool Tensor::call_accessor()
     {
         // Unmap tensor
         _handle->unmap();
+        std::cout << " unmap " << std::endl;
+    }else
+    {
+        std::cout << " not unmap " << std::endl;
     }
 
     /*
