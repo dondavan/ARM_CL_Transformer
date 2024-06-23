@@ -1023,6 +1023,14 @@
             "src/gpu/cl/kernels/ClLayerNormKernel.cpp"
           ]
         }
+      },
+      "ScaleDotProduction": {
+        "files": {
+          "common": [
+            "src/gpu/cl/operators/ClScaleDotProduction.cpp",
+            "src/runtime/CL/functions/CLScaleDotProductionAttentionLayer.cpp",
+          ]
+        }
       }
 
     }

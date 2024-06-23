@@ -121,5 +121,6 @@
 #include "arm_compute/runtime/CL/functions/CLLinearLayer.h"
 #include "arm_compute/runtime/CL/functions/CLSimpleForwardLayer.h"
 #include "arm_compute/runtime/CL/functions/CLLayerNormLayer.h"
+#include "arm_compute/runtime/CL/functions/CLScaleDotProductionAttentionLayer.h"
 
 #endif // ACL_ARM_COMPUTE_RUNTIME_CL_CLFUNCTIONS_H
