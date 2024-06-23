@@ -849,6 +849,9 @@ RawResultAccessor::RawResultAccessor(std::ostream      &output_stream)
 template <typename T>
 void RawResultAccessor::access_typed_tensor(ITensor &tensor)
 {
+    const auto   output_net  = reinterpret_cast<T *>(tensor.buffer() + tensor.info()->offset_first_element_in_bytes());
+    std::cout << *output_net << std::endl;
+
     _output_stream << std::scientific;
     _output_stream << "---------- Result ----------" << std::endl;
     for(size_t y = 0; y < tensor.info()->tensor_shape().y(); y++)
