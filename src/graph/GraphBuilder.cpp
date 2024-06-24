@@ -1035,18 +1035,18 @@ NodeID GraphBuilder::add_embedding_node(Graph &g,
     g.add_connection(p_c_nid, 0, p_nid, 1);
 
     // Sum token embedding vector and segment embedding vector
-    NodeID add_nid = g.add_node<EmbeddingSumLayerNode>(emb_info);
+    // NodeID add_nid = g.add_node<EmbeddingSumLayerNode>(emb_info);
 
-    g.add_connection(t_nid, 0, add_nid, 0);
-    g.add_connection(s_nid, 0, add_nid, 1);
-    g.add_connection(p_nid, 0, add_nid, 2);
+    //g.add_connection(t_nid, 0, add_nid, 0);
+    //g.add_connection(s_nid, 0, add_nid, 1);
+    //g.add_connection(p_nid, 0, add_nid, 2);
 
     set_node_params(g, t_nid, params);
     set_node_params(g, s_nid, params);
     set_node_params(g, p_nid, params);
-    set_node_params(g, add_nid, params);
+    //set_node_params(g, add_nid, params);
 
-    return add_nid;
+    return t_nid;
 }
 
 NodeID GraphBuilder::add_yolo_node(Graph &g, NodeParams params, NodeIdxPair input, ActivationLayerInfo act_info)
