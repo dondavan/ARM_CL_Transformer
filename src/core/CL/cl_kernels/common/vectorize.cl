@@ -44,7 +44,7 @@ __kernel void vectorize(TENSOR3D_DECLARATION(src),
     int vector_linear_idx = *((__global DATA_TYPE *)src_ptr + out_y) * VEC_SIZE + out_x;
     
     // Store result
-    vector_ptr += input_offset_first_element_in_bytes + vector_linear_idx;
+    vector_ptr += vector_offset_first_element_in_bytes + vector_linear_idx;
     output_ptr += output_offset_first_element_in_bytes + out_linear_idx;
     //*((__global DATA_TYPE *)tensor3D_offset(output_ptr, out_x, out_y, out_z)) = 1;
     *((__global DATA_TYPE *)output_ptr) = *((__global DATA_TYPE *)vector_ptr);
