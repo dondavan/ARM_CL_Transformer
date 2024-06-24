@@ -69,7 +69,7 @@ void ClVectorizeKernel::configure(const CLCompileContext &compile_context, const
     std::cout << "src/gpu/cl/kernels/ClVectorizeKernel.cpp configure start" << std::endl;
     auto               padding_info = get_padding_info({ src, dst });
     const unsigned int vector_depth = vector->tensor_shape().x();
-    std::cout <<"vector_depth " <<vector_depth-1 << std::endl;
+    std::cout <<"vector_depth " <<vector_depth << std::endl;
 
     // Configure output tensor info.
     const TensorShape dst_shape(vector->tensor_shape().x(), src->tensor_shape().x());
@@ -87,7 +87,7 @@ void ClVectorizeKernel::configure(const CLCompileContext &compile_context, const
     build_opts.add_option("-DDATA_TYPE_SRC=" + get_cl_type_from_data_type(src->data_type()));
     build_opts.add_option("-DDATA_TYPE_DST=" + get_cl_type_from_data_type(dst->data_type()));
     //build_opts.add_option("-DDATA_TYPE=" + get_cl_unsigned_type_from_element_size(src->element_size()));
-    build_opts.add_option("-DVEC_SIZE=" + support::cpp11::to_string(vector_depth));
+    build_opts.add_option("-DVEC_SIZE=" + support::cpp11::to_string(vector_depth-1));
     _kernel = create_kernel(compile_context, "vectorize", build_opts.options());
 
     // Configure kernel window
