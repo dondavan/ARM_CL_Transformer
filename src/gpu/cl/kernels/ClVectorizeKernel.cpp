@@ -120,7 +120,7 @@ void ClVectorizeKernel::run_op(ITensorPack &tensors, const Window &window, cl::C
     auto       dst    = utils::cast::polymorphic_downcast<ICLTensor *>(tensors.get_tensor(TensorType::ACL_DST));
 
     //run_vectorize<float>(window, src, vector, dst);
-    slice.set_broadcasted(Window::DimZ);
+    //slice.set_broadcasted(Window::DimZ);
     std::cout << "slice x " <<slice.x().end() << std::endl;
     std::cout << "slice y " <<slice.y().end() << std::endl;
     std::cout << "slice z " <<slice.z().end() << std::endl;

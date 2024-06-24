@@ -35,6 +35,7 @@ __kernel void vectorize(TENSOR3D_DECLARATION(src),
 {
     int out_x = get_global_id(0);
     int out_y = get_global_id(1);
+    int out_z = get_global_id(2);
 
     // Compute the output linearized index
     int out_linear_idx = out_y * VEC_SIZE + out_x;
@@ -44,7 +45,8 @@ __kernel void vectorize(TENSOR3D_DECLARATION(src),
     
     // Store result
     vector_ptr += vector_linear_idx;
-    output_ptr += out_linear_idx;
-    *((__global DATA_TYPE *)output_ptr) = 1;
+    //output_ptr += out_linear_idx;
+    *((__global DATA_TYPE *)tensor3D_offset(output_ptr, out_x, out_y, out_z)) = 1;
+    //*((__global DATA_TYPE *)output_ptr) = *((__global DATA_TYPE *)vector_ptr);
 
 }
