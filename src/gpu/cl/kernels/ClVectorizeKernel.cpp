@@ -69,6 +69,7 @@ void ClVectorizeKernel::configure(const CLCompileContext &compile_context, const
     std::cout << "src/gpu/cl/kernels/ClVectorizeKernel.cpp configure start" << std::endl;
     auto               padding_info = get_padding_info({ src, dst });
     const unsigned int vector_depth = vector->tensor_shape().x();
+    std::cout <<"vector_depth " <<vector_depth << std::endl;
 
     // Configure output tensor info.
     const TensorShape dst_shape(vector->tensor_shape().x(), src->tensor_shape().x());
