@@ -127,6 +127,18 @@ void ClVectorizeKernel::run_op(ITensorPack &tensors, const Window &window, cl::C
     std::cout << "slice y " <<slice.y().end() << std::endl;
     std::cout << "slice z " <<slice.z().end() << std::endl;
 
+    std::cout << "src->info()->strides_in_bytes().x() " <<src->info()->strides_in_bytes().x() << std::endl;
+    std::cout << "src->info()->strides_in_bytes().y() " <<src->info()->strides_in_bytes().y() << std::endl;
+    std::cout << "src->info()->strides_in_bytes().z() " <<src->info()->strides_in_bytes().z() << std::endl;
+
+    std::cout << "vector->info()->strides_in_bytes().x() " <<vector->info()->strides_in_bytes().x() << std::endl;
+    std::cout << "vector->info()->strides_in_bytes().y() " <<vector->info()->strides_in_bytes().y() << std::endl;
+    std::cout << "vector->info()->strides_in_bytes().z() " <<vector->info()->strides_in_bytes().z() << std::endl;
+
+    std::cout << "dst->info()->strides_in_bytes().x() " <<dst->info()->strides_in_bytes().x() << std::endl;
+    std::cout << "dst->info()->strides_in_bytes().y() " <<dst->info()->strides_in_bytes().y() << std::endl;
+    std::cout << "dst->info()->strides_in_bytes().z() " <<dst->info()->strides_in_bytes().z() << std::endl;
+
     // Set srcs
     unsigned int idx = 0;
     add_3D_tensor_argument(idx, src, window);
