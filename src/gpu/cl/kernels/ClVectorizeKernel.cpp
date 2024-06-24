@@ -84,8 +84,8 @@ void ClVectorizeKernel::configure(const CLCompileContext &compile_context, const
 
     // Create kernel
     CLBuildOptions build_opts;
-    std::cout << "src->element_size() " << src->element_size() << std::endl;
-    build_opts.add_option("-DDATA_TYPE=" + get_cl_unsigned_type_from_element_size(src->element_size()));
+    build_opts.add_option("-DDATA_TYPE=" + get_cl_type_from_data_type(src->data_type()));
+    //build_opts.add_option("-DDATA_TYPE=" + get_cl_unsigned_type_from_element_size(src->element_size()));
     build_opts.add_option("-DVEC_SIZE=" + support::cpp11::to_string(vector_depth));
     _kernel = create_kernel(compile_context, "vectorize", build_opts.options());
 
