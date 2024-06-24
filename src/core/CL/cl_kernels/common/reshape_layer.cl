@@ -56,7 +56,7 @@ __kernel void reshape_layer(TENSOR3D_DECLARATION(input),
     int out_z = get_global_id(2);
 
     // Compute the output linearized index
-    int out_linear_idx = out_x + out_y * output_shape.x + out_z * output_shape.x * output_shape.y;
+    int out_linear_idx = out_x + out_y * output_stride_x + out_z * output_stride_x * output_stride_y;
 
     // Translate to intput
     int in_x = out_linear_idx % input_shape.x;
