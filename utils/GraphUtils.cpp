@@ -884,7 +884,7 @@ bool RawResultAccessor::access_tensor(ITensor &tensor)
             access_typed_tensor<uint8_t>(tensor);
             break;
         case DataType::F32:
-            access_typed_tensor<uint8_t>(tensor);
+            access_typed_tensor<int>(tensor);
             break;
         default:
             ARM_COMPUTE_ERROR("OUTPUT DATA TYPE NOT SUPPORTED!");
