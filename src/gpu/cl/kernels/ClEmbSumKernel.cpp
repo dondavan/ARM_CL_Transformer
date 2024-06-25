@@ -34,10 +34,7 @@ void ClEmbSumKernel::configure(const CLCompileContext &compile_context,
 
     // Create kernel
     CLBuildOptions build_opts;
-    build_opts.add_option("-DDATA_TYPE_TOK=" + get_cl_type_from_data_type(token->data_type()));
-    build_opts.add_option("-DDATA_TYPE_SEG=" + get_cl_type_from_data_type(segemnt->data_type()));
-    build_opts.add_option("-DDATA_TYPE_POS=" + get_cl_type_from_data_type(position->data_type()));
-    build_opts.add_option("-DDATA_TYPE_DST=" + get_cl_type_from_data_type(dst->data_type()));
+    build_opts.add_option("-DDATA_TYPE=" + get_cl_type_from_data_type(dst->data_type()));
 
     _kernel = create_kernel(compile_context, "embsum", build_opts.options());
 

@@ -50,10 +50,10 @@ __kernel void embsum(TENSOR3D_DECLARATION(token),
     int linear_idx = id_y * output_stride_y + id_x * output_stride_x;
 
     // Store result
-    token_ptr += token_offset_first_element_in_bytes + linear_idx;
-    segemnt_ptr += segemnt_offset_first_element_in_bytes + linear_idx;
-    position_ptr += position_offset_first_element_in_bytes + linear_idx;
-    output_ptr += output_offset_first_element_in_bytes + linear_idx;
+    token_ptr       += token_offset_first_element_in_bytes + linear_idx;
+    segemnt_ptr     += segemnt_offset_first_element_in_bytes + linear_idx;
+    position_ptr    += position_offset_first_element_in_bytes + linear_idx;
+    output_ptr      += output_offset_first_element_in_bytes + linear_idx;
 
-    *((__global DATA_TYPE_DST *)output_ptr) = *((__global DATA_TYPE_TOK *)token_ptr);
+    *((__global DATA_TYPE *)output_ptr) = *((__global DATA_TYPE *)token_ptr);
 }
