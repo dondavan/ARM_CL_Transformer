@@ -47,18 +47,11 @@ __kernel void embsum(TENSOR3D_DECLARATION(token),
     int id_z = get_global_id(2);
 
     // Compute the output linearized index
-    int out_linear_idx = id_y * output_stride_y + id_x * output_stride_x;
-
-    // Compute the token linearized index
-    int token_linear_idx = id_y * token_stride_x;
-
-    token_ptr += token_offset_first_element_in_bytes + token_linear_idx;
-    // Compute the segemnt linearized index
-    uint segemnt_offset     = *((__global unsigned int *)token_ptr);
-    int  segemnt_linear_idx = segemnt_offset * segemnt_stride_y + id_x * segemnt_stride_x;
+    int linear_idx = id_y * output_stride_y + id_x * output_stride_x;
 
     // Store result
-    output_ptr += output_offset_first_element_in_bytes + out_linear_idx;
-    segemnt_ptr += segemnt_offset_first_element_in_bytes + segemnt_linear_idx;
-    *((__global DATA_TYPE_DST *)output_ptr) = *((__global DATA_TYPE_SEG *)segemnt_ptr);
+    token_ptr += token_offset_first_element_in_bytes + linear_idx;
+    segemnt_ptr += segemnt_offset_first_element_in_bytes + linear_idx;
+    position_ptr += position_offset_first_element_in_bytes + linear_idx;
+    *((__global DATA_TYPE_DST *)output_ptr) = *((__global DATA_TYPE_TOK *)token_ptr) + *((__global DATA_TYPE_SEG *)segemnt_ptr) + *((__global DATA_TYPE_POS *)position_ptr);
 }
