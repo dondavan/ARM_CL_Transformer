@@ -18,8 +18,6 @@ namespace opencl
 namespace kernels
 {
 
-namespace
-{
 
 void ClEmbSumKernel::configure(const CLCompileContext &compile_context,
                                const ITensorInfo      *token,
