@@ -33,14 +33,15 @@ __kernel void positionalemb(TENSOR3D_DECLARATION(src),
                             TENSOR3D_DECLARATION(vector),
                             TENSOR3D_DECLARATION(output))
 {
-    int out_x = get_global_id(0);
-    int out_y = get_global_id(1);
+    int id_x = get_global_id(0);
+    int id_y = get_global_id(1);
+    int id_z = get_global_id(2);
 
     // Compute the output linearized index
-    int out_linear_idx = out_y * VEC_SIZE + out_x;
+    int out_linear_idx = id_y * output_stride_y + id_x * output_stride_x;
 
     // Compute the vector linearized index
-    int vector_linear_idx = out_y * VEC_SIZE + out_x;
+    int vector_linear_idx = id_y * vector_stride_y + id_x * vector_stride_x;
     
     // Store result
     vector_ptr += vector_linear_idx;
