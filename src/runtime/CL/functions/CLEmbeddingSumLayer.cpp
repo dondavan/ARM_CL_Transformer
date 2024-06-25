@@ -59,13 +59,14 @@ void CLEmbeddingSumLayer::configure(const CLCompileContext   &compile_context,
     _impl->dst      = output;
 
     std::cout << "src/runtime/CL/functions/CLEmbeddingSumLayer.cpp configure start" << std::endl;
-    
+    ActivationLayerInfo act_info = ActivationLayerInfo();
     _impl->op = std::make_unique<opencl::ClAdd>();
     _impl->op->configure(compile_context,
                          token->info(),
                          segment->info(),
                          output->info(),
-                         emb_info.c_policy());
+                         emb_info.c_policy(),
+                         act_info);
 
     std::cout << "src/runtime/CL/functions/CLEmbeddingSumLayer.cpp configure end" << std::endl;
 
