@@ -19,6 +19,7 @@ void ClEmbedSum::configure(const ClCompileContext   &compile_context,
                            ITensorInfo              *output,
                            const EmbeddingLayerInfo &emb_info)
 {
+    ARM_COMPUTE_UNUSED(position);
     std::cout << "src/gpu/cl/operators/ClEmbedSum.cpp configure start" << std::endl;
     
     auto k_1 = std::make_unique<kernels::ClSaturatedArithmeticKernel>();
