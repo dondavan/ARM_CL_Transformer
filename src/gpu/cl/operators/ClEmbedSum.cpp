@@ -24,7 +24,7 @@ void ClEmbedSum::configure(const ClCompileContext   &compile_context,
     auto k_1 = std::make_unique<kernels::ClSaturatedArithmeticKernel>();
     auto k_2 = std::make_unique<kernels::ClSaturatedArithmeticKernel>();
 
-    k_1->configure(compile_context, ArithmeticOperation::ADD, token, segemnt, output, emb_info.c_policy());
+    k_1->configure(compile_context, ArithmeticOperation::ADD, token, segemnt, &_tmp_token_segment, emb_info.c_policy());
     k_2->configure(compile_context, ArithmeticOperation::ADD, &_tmp_token_segment, position, output, emb_info.c_policy());
 
     _add_kernel_1 = std::move(k_1);
