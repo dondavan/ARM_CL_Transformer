@@ -44,8 +44,6 @@ class ClEmbedSum : public IClOperator
                            ITensorInfo              *output,
                            const EmbeddingLayerInfo &emb_info);
 
-    // Inherited methods overridden:
-    void run(ITensorPack &tensors) override;
 
     private:
     enum AuxTensorIdx
