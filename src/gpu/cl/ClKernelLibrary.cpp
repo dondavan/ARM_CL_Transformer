@@ -355,6 +355,7 @@ const std::map<std::string, std::string> ClKernelLibrary::_kernel_program_map = 
 
     {"vectorize","common/vectorize.cl"},
     {"positionalemb","common/positionalemb.cl"},
+    {"embsum","common/embsum.cl"},
 #ifdef ENABLE_NCHW_KERNELS
     {"batch_to_space_nchw", "nchw/batch_to_space.cl"},
     {"batch_to_space_static_nchw", "nchw/batch_to_space.cl"},
@@ -781,6 +782,10 @@ const std::map<std::string, std::string> ClKernelLibrary::_program_source_map = 
     {
         "common/positionalemb.cl",
 #include "./cl_kernels/common/positionalemb.clembed"
+    },
+    {
+        "common/embsum.cl",
+#include "./cl_kernels/common/embsum.clembed"
     },
 #ifdef ENABLE_NCHW_KERNELS
     {
