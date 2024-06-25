@@ -1059,7 +1059,7 @@ NodeID GraphBuilder::add_embedding_node(Graph &g,
     set_node_params(g, t_s_nid, params);
     set_node_params(g, ts_p_nid, params);
 
-    return ts_p_nid;
+    return t_s_nid;
 }
 
 NodeID GraphBuilder::add_yolo_node(Graph &g, NodeParams params, NodeIdxPair input, ActivationLayerInfo act_info)
