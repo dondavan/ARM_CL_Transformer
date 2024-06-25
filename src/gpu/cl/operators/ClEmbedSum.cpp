@@ -19,17 +19,16 @@ void ClEmbedSum::configure(const ClCompileContext   &compile_context,
                            ITensorInfo              *output,
                            const EmbeddingLayerInfo &emb_info)
 {
-    ARM_COMPUTE_UNUSED(position);
     std::cout << "src/gpu/cl/operators/ClEmbedSum.cpp configure start" << std::endl;
     
     auto k_1 = std::make_unique<kernels::ClSaturatedArithmeticKernel>();
-    //auto k_2 = std::make_unique<kernels::ClSaturatedArithmeticKernel>();
+    auto k_2 = std::make_unique<kernels::ClSaturatedArithmeticKernel>();
 
     k_1->configure(compile_context, ArithmeticOperation::ADD, token, segemnt, output, emb_info.c_policy());
-    //k_2->configure(compile_context, ArithmeticOperation::ADD, &_tmp_token_segment, position, output, emb_info.c_policy());
+    k_2->configure(compile_context, ArithmeticOperation::ADD, &_tmp_token_segment, position, output, emb_info.c_policy());
 
     _add_kernel_1 = std::move(k_1);
-    //_add_kernel_2 = std::move(k_2);
+    _add_kernel_2 = std::move(k_2);
 
     _aux_mem[TokenSegmentOutput] =
         experimental::MemoryInfo(offset_int_vec(TokenSegmentOutput), experimental::MemoryLifetime::Persistent, _tmp_token_segment.total_size());
@@ -60,21 +59,21 @@ void ClEmbedSum::run(ITensorPack &tensors)
     ARM_COMPUTE_ERROR_ON_MSG(tensors.empty(), "No inputs provided");
     auto token    = tensors.get_const_tensor(ACL_SRC_0);
     auto segment  = tensors.get_const_tensor(ACL_SRC_1);
-    //auto position = tensors.get_const_tensor(ACL_SRC_2);
+    auto position = tensors.get_const_tensor(ACL_SRC_2);
     auto output   = tensors.get_tensor(ACL_DST);
 
     
     CLAuxTensorHandler aux_token_segemnt(offset_int_vec(TokenSegmentOutput), _tmp_token_segment, tensors, false);
 
-    ITensorPack run_pack{ { ACL_SRC_0, token }, { ACL_SRC_1, segment }, { ACL_DST, output } };
+    ITensorPack run_pack{ { ACL_SRC_0, token }, { ACL_SRC_1, segment }, { ACL_DST, aux_token_segemnt.get() } };
 
     CLScheduler::get().enqueue_op(*_add_kernel_1.get(), run_pack, true);
 
     // Add position
-    //run_pack.add_const_tensor(ACL_SRC_0, aux_token_segemnt.get());
-    //run_pack.add_const_tensor(ACL_SRC_1, position);
-    //run_pack.add_tensor(ACL_DST, output);
-    //CLScheduler::get().enqueue_op(*_add_kernel_2.get(), run_pack, true);
+    run_pack.add_const_tensor(ACL_SRC_0, aux_token_segemnt.get());
+    run_pack.add_const_tensor(ACL_SRC_1, position);
+    run_pack.add_tensor(ACL_DST, output);
+    CLScheduler::get().enqueue_op(*_add_kernel_2.get(), run_pack, true);
     
 
     std::cout << "src/gpu/cl/operators/ClEmbedSum.cpp run end" << std::endl;

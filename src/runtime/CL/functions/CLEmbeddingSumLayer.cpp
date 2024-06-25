@@ -6,7 +6,6 @@
 
 #include "src/core/CL/ICLKernel.h"
 #include "src/gpu/cl/operators/ClEmbedSum.h"
-#include "src/gpu/cl/operators/ClAdd.h"
 
 #ifdef MEASURE_TIME
 #include <chrono>
@@ -23,7 +22,7 @@ struct CLEmbeddingSumLayer::Impl
     const ICLTensor                    *position{ nullptr };
     ICLTensor                          *dst{ nullptr };
     IRuntimeContext                    *ctx{ nullptr };
-    std::unique_ptr<opencl::ClAdd> op{ nullptr };
+    std::unique_ptr<opencl::ClEmbedSum> op{ nullptr };
 };
 
 CLEmbeddingSumLayer::CLEmbeddingSumLayer()
@@ -52,7 +51,7 @@ void CLEmbeddingSumLayer::configure(const CLCompileContext   &compile_context,
 #ifdef MEASURE_TIME
     auto start_time = std::chrono::high_resolution_clock::now();
 #endif
-    ARM_COMPUTE_UNUSED(position);
+
     _impl->token    = token;
     _impl->segment  = segment;
     _impl->position = position;
@@ -60,14 +59,15 @@ void CLEmbeddingSumLayer::configure(const CLCompileContext   &compile_context,
 
     std::cout << "src/runtime/CL/functions/CLEmbeddingSumLayer.cpp configure start" << std::endl;
     
-    _impl->op = std::make_unique<opencl::ClAdd>();
+    _impl->op = std::make_unique<opencl::ClEmbedSum>();
     _impl->op->configure(compile_context,
                          token->info(),
                          segment->info(),
+                         position->info(),
                          output->info(),
-                         emb_info.c_policy());
+                         emb_info);
 
-    std::cout << "src/runtime/CL/functions/CLEmbeddingSumLayer.cpp configure end" << std::endl;
+    std::cout << "src/runtime/CL/functions/CLEmbeddingSumLayer.cpp end" << std::endl;
 
 #ifdef MEASURE_TIME
     auto          end_time  = std::chrono::high_resolution_clock::now();
