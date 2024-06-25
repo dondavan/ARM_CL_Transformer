@@ -55,5 +55,5 @@ __kernel void embsum(TENSOR3D_DECLARATION(token),
     position_ptr    += position_offset_first_element_in_bytes + linear_idx;
     output_ptr      += output_offset_first_element_in_bytes + linear_idx;
 
-    *((__global DATA_TYPE *)output_ptr) = *((__global DATA_TYPE *)token_ptr);
+    *((__global DATA_TYPE *)output_ptr) = *((__global DATA_TYPE *)output_ptr);
 }
