@@ -22,15 +22,11 @@ void ClEmbedSum::configure(const ClCompileContext   &compile_context,
     std::cout << "src/gpu/cl/operators/ClEmbedSum.cpp configure start" << std::endl;
     ARM_COMPUTE_UNUSED(position);
     
-    auto k_1 = std::make_unique<kernels::ClSaturatedArithmeticKernel>();
+    auto k = std::make_unique<kernels::ClSaturatedArithmeticKernel>();
 
-    k_1->configure(compile_context, ArithmeticOperation::ADD, token, segemnt, output, emb_info.c_policy());
-    //k_2->configure(compile_context, ArithmeticOperation::ADD, &_tmp_token_segment, position, output, emb_info.c_policy());
+    k->configure(compile_context, ArithmeticOperation::ADD, token, segemnt, output, emb_info.c_policy());
+    _kernel = std::move(k);
 
-    _kernel = std::move(k_1);
-
-    //_aux_mem[TokenSegmentOutput] = experimental::MemoryInfo(offset_int_vec(TokenSegmentOutput), experimental::MemoryLifetime::Persistent, _tmp_token_segment.total_size());
-    
     std::cout << "src/gpu/cl/operators/ClEmbedSum.cpp configure end" << std::endl;
 }
 

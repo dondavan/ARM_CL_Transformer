@@ -994,6 +994,7 @@
       "EmbeddingSum": {
         "files": {
           "common": [
+            "src/gpu/cl/kernels/ClEmbSumKernel.cpp",
             "src/gpu/cl/operators/ClEmbedSum.cpp",
             "src/runtime/CL/functions/CLEmbeddingSumLayer.cpp"
           ]
