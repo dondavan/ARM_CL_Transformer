@@ -3,7 +3,7 @@
 #include "src/common/utils/Log.h"
 #include "src/gpu/cl/ClCompileContext.h"
 
-#include "src/gpu/cl/kernels/ClElementwiseKernel.h"
+#include "src/gpu/cl/kernels/ClEmbSumKernel.h"
 
 #include "src/core/helpers/MemoryHelpers.h"
 #include "src/gpu/cl/utils/ClAuxTensorHandler.h"
@@ -20,11 +20,10 @@ void ClEmbedSum::configure(const ClCompileContext   &compile_context,
                            const EmbeddingLayerInfo &emb_info)
 {
     std::cout << "src/gpu/cl/operators/ClEmbedSum.cpp configure start" << std::endl;
-    ARM_COMPUTE_UNUSED(position);
+    ARM_COMPUTE_UNUSED(emb_info);
     
-    auto k = std::make_unique<kernels::ClSaturatedArithmeticKernel>();
-
-    k->configure(compile_context, ArithmeticOperation::ADD, token, segemnt, output, emb_info.c_policy());
+    auto k = std::make_unique<kernels::ClEmbSumKernel>();
+    k->configure(compile_context,  token, segemnt,position, output);
     _kernel = std::move(k);
 
     std::cout << "src/gpu/cl/operators/ClEmbedSum.cpp configure end" << std::endl;
