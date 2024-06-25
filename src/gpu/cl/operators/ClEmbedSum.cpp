@@ -20,9 +20,9 @@ void ClEmbedSum::configure(const ClCompileContext   &compile_context,
                            const EmbeddingLayerInfo &emb_info)
 {
     std::cout << "src/gpu/cl/operators/ClEmbedSum.cpp configure start" << std::endl;
+    ARM_COMPUTE_UNUSED(position);
     
     auto k_1 = std::make_unique<kernels::ClSaturatedArithmeticKernel>();
-    auto k_2 = std::make_unique<kernels::ClSaturatedArithmeticKernel>();
 
     k_1->configure(compile_context, ArithmeticOperation::ADD, token, segemnt, output, emb_info.c_policy());
     //k_2->configure(compile_context, ArithmeticOperation::ADD, &_tmp_token_segment, position, output, emb_info.c_policy());
