@@ -36,7 +36,7 @@ __kernel void vectorize(TENSOR3D_DECLARATION(src),
     int id_x = get_global_id(0);
     int id_y = get_global_id(1);
     int id_z = get_global_id(2);
-    int vector_offset = 1;
+    int vector_offset = 101;
 
     // Compute the output linearized index
     int out_linear_idx = id_y * output_stride_y + id_x * output_stride_x;
