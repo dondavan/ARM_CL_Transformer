@@ -44,8 +44,9 @@ __kernel void vectorize(TENSOR3D_DECLARATION(src),
     // Compute the src linearized index
     int src_linear_idx = id_y * src_stride_x;
 
+    src_ptr += src_linear_idx;
     // Compute the vector linearized index
-    int vector_linear_idx = src_linear_idx * vector_stride_y + id_x * vector_stride_x;
+    int vector_linear_idx = *((__global DATA_TYPE_VEC *)src_ptr) * vector_stride_y + id_x * vector_stride_x;
 
     // Store result
     //vector_ptr += input_offset_first_element_in_bytes + vector_linear_idx;x
