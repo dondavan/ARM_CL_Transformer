@@ -1039,6 +1039,7 @@ NodeID GraphBuilder::add_embedding_node(Graph &g,
 
     g.add_connection(t_nid, 0, t_s_nid, 0);
     g.add_connection(p_nid, 0, t_s_nid, 1);
+    ARM_COMPUTE_UNUSED(s_nid);
 
     
 
@@ -1050,7 +1051,6 @@ NodeID GraphBuilder::add_embedding_node(Graph &g,
     //set_node_params(g, add_nid, params);
     
     set_node_params(g, t_nid, params);
-    set_node_params(g, s_nid, params);
     set_node_params(g, p_nid, params);
     
     set_node_params(g, t_s_nid, params);
