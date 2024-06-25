@@ -35,24 +35,27 @@ CLEmbeddingSumLayer::~CLEmbeddingSumLayer() = default;
 
 void CLEmbeddingSumLayer::configure(ICLTensor                *token,
                                     ICLTensor                *segment,
+                                    ICLTensor                *position,
                                     ICLTensor                *output,
                                     const EmbeddingLayerInfo &emb_info)
 {
-    configure(CLKernelLibrary::get().get_compile_context(), token, segment, output, emb_info);
+    configure(CLKernelLibrary::get().get_compile_context(), token, segment, position, output, emb_info);
 }
 
 void CLEmbeddingSumLayer::configure(const CLCompileContext   &compile_context,
                                     ICLTensor                *token,
                                     ICLTensor                *segment,
+                                    ICLTensor                *position,
                                     ICLTensor                *output,
                                     const EmbeddingLayerInfo &emb_info)
 {
 #ifdef MEASURE_TIME
     auto start_time = std::chrono::high_resolution_clock::now();
 #endif
-
+    ARM_COMPUTE_UNUSED(position);
     _impl->token    = token;
     _impl->segment  = segment;
+    _impl->position = position;
     _impl->dst      = output;
 
     std::cout << "src/runtime/CL/functions/CLEmbeddingSumLayer.cpp configure start" << std::endl;
@@ -94,6 +97,7 @@ void CLEmbeddingSumLayer::run()
     ITensorPack pack;
     pack.add_tensor(TensorType::ACL_SRC_0, _impl->token);
     pack.add_tensor(TensorType::ACL_SRC_1, _impl->segment);
+    pack.add_tensor(TensorType::ACL_SRC_2, _impl->position);
     pack.add_tensor(TensorType::ACL_DST, _impl->dst);
 
     _impl->op->run(pack);
