@@ -53,5 +53,5 @@ __kernel void vectorize(TENSOR3D_DECLARATION(src),
     //vector_ptr += input_offset_first_element_in_bytes + vector_linear_idx;x
     output_ptr += out_linear_idx;
     vector_ptr += vector_linear_idx;
-    *((__global DATA_TYPE_DST *)output_ptr) = *((__global DATA_TYPE_VEC *)vector_ptr);
+    *((__global DATA_TYPE_DST *)output_ptr) = vector_offset;
 }
