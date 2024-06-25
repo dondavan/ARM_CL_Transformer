@@ -997,7 +997,7 @@ NodeID GraphBuilder::add_embedding_node(Graph &g,
                                     ITensorAccessorUPtr     position_accessor)
 {
     check_nodeidx_pair(input, g);
-    ARM_COMPUTE_UNUSED(position_accessor);
+
     // Get input tensor descriptor
     const TensorDescriptor input_tensor_desc = get_tensor_descriptor(g, g.node(input.node_id)->outputs()[0]);
     
@@ -1011,9 +1011,14 @@ NodeID GraphBuilder::add_embedding_node(Graph &g,
     // Reshape tensor to store weight with size of vocabulary and depth of d_model.
     s_desc.shape = TensorShape(emb_info.d_model(),emb_info.d_segment());
 
+    // Position const node output tensor descriptor
+    TensorDescriptor p_desc = input_tensor_desc;
+    // Reshape tensor to store weight with size of vocabulary and depth of d_model.
+    p_desc.shape = TensorShape(emb_info.d_model(),emb_info.d_position());
 
     NodeID v_c_nid  = add_const_node_with_name(g, params, "vocabs", v_desc,    std::move(vocabs_accessor));
     NodeID s_c_nid  = add_const_node_with_name(g, params, "segements", s_desc, std::move(segemnts_accessor));
+    NodeID p_c_nid  = add_const_node_with_name(g, params, "position", p_desc, std::move(position_accessor));
 
     // Create token embedding node and connect
     NodeID t_nid = g.add_node<TokenEmbeddingLayerNode>(emb_info);
@@ -1025,27 +1030,23 @@ NodeID GraphBuilder::add_embedding_node(Graph &g,
     g.add_connection(input.node_id, 1 /* segment input*/, s_nid, 0);
     g.add_connection(s_c_nid, 0, s_nid, 1);
     
+    NodeID p_nid = g.add_node<PositionEmbeddingLayerNode>();
+    g.add_connection(input.node_id, 0 /* text input*/, p_nid, 0);
+    g.add_connection(p_c_nid, 0, p_nid, 1);
 
     // Sum token embedding vector and segment embedding vector
-    NodeID t_s_nid = g.add_node<EltwiseLayerNode>(descriptors::EltwiseLayerDescriptor(EltwiseOperation::Add));
+    NodeID add_nid = g.add_node<EmbeddingSumLayerNode>(emb_info);
 
-    g.add_connection(t_nid, 0, t_s_nid, 0);
-    g.add_connection(s_nid, 0, t_s_nid, 1);
+    g.add_connection(t_nid, 0, add_nid, 0);
+    g.add_connection(s_nid, 0, add_nid, 1);
+    g.add_connection(p_nid, 0, add_nid, 2);
 
-
-    //NodeID add_nid = g.add_node<EmbeddingSumLayerNode>(emb_info);
-
-    //g.add_connection(t_nid, 0, add_nid, 0);
-    //g.add_connection(s_nid, 0, add_nid, 1);
-    //g.add_connection(p_nid, 0, add_nid, 2);
-    //set_node_params(g, add_nid, params);
-    
     set_node_params(g, t_nid, params);
     set_node_params(g, s_nid, params);
-    
-    set_node_params(g, t_s_nid, params);
+    set_node_params(g, p_nid, params);
+    set_node_params(g, add_nid, params);
 
-    return t_s_nid;
+    return add_nid;
 }
 
 NodeID GraphBuilder::add_yolo_node(Graph &g, NodeParams params, NodeIdxPair input, ActivationLayerInfo act_info)
