@@ -997,7 +997,7 @@ NodeID GraphBuilder::add_embedding_node(Graph &g,
                                     ITensorAccessorUPtr     position_accessor)
 {
     check_nodeidx_pair(input, g);
-
+        ARM_COMPUTE_UNUSED(position_accessor);
     // Get input tensor descriptor
     const TensorDescriptor input_tensor_desc = get_tensor_descriptor(g, g.node(input.node_id)->outputs()[0]);
     
@@ -1011,14 +1011,9 @@ NodeID GraphBuilder::add_embedding_node(Graph &g,
     // Reshape tensor to store weight with size of vocabulary and depth of d_model.
     s_desc.shape = TensorShape(emb_info.d_model(),emb_info.d_segment());
 
-    // Position const node output tensor descriptor
-    TensorDescriptor p_desc = input_tensor_desc;
-    // Reshape tensor to store weight with size of vocabulary and depth of d_model.
-    p_desc.shape = TensorShape(emb_info.d_model(),emb_info.d_position());
 
     NodeID v_c_nid  = add_const_node_with_name(g, params, "vocabs", v_desc,    std::move(vocabs_accessor));
     NodeID s_c_nid  = add_const_node_with_name(g, params, "segements", s_desc, std::move(segemnts_accessor));
-    NodeID p_c_nid  = add_const_node_with_name(g, params, "position", p_desc, std::move(position_accessor));
 
     // Create token embedding node and connect
     NodeID t_nid = g.add_node<TokenEmbeddingLayerNode>(emb_info);
