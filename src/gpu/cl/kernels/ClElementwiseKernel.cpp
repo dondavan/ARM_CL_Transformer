@@ -304,7 +304,7 @@ void ClElementwiseKernel::configure_common(const ClCompileContext &compile_conte
     {
         kernel_name += "_quantized";
     }
-    /*
+    
     std::cout << "src1 x" << src1->tensor_shape().x() << std::endl;
     std::cout << "src1 y" << src1->tensor_shape().y() << std::endl;
     std::cout << "src1 z" << src1->tensor_shape().z() << std::endl;
@@ -320,7 +320,7 @@ void ClElementwiseKernel::configure_common(const ClCompileContext &compile_conte
     std::cout << "win x" << win_config.second.x().end() << std::endl;
     std::cout << "win y" << win_config.second.y().end() << std::endl;
     std::cout << "win z" << win_config.second.z().end() << std::endl;
-    */
+    
 
     // Set kernel build options
     CLBuildOptions build_opts = generate_build_options(*src1, *src2, *dst);
