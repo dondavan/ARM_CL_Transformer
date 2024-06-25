@@ -6,6 +6,7 @@
 
 #include "src/core/CL/ICLKernel.h"
 #include "src/gpu/cl/operators/ClEmbedSum.h"
+#include "src/gpu/cl/operators/ClAdd.cpp"
 
 #ifdef MEASURE_TIME
 #include <chrono>
@@ -22,7 +23,7 @@ struct CLEmbeddingSumLayer::Impl
     const ICLTensor                    *position{ nullptr };
     ICLTensor                          *dst{ nullptr };
     IRuntimeContext                    *ctx{ nullptr };
-    std::unique_ptr<opencl::ClEmbedSum> op{ nullptr };
+    std::unique_ptr<opencl::ClAdd> op{ nullptr };
 };
 
 CLEmbeddingSumLayer::CLEmbeddingSumLayer()
@@ -59,13 +60,12 @@ void CLEmbeddingSumLayer::configure(const CLCompileContext   &compile_context,
 
     std::cout << "src/runtime/CL/functions/CLEmbeddingSumLayer.cpp configure start" << std::endl;
     
-    _impl->op = std::make_unique<opencl::ClEmbedSum>();
+    _impl->op = std::make_unique<opencl::ClAdd>();
     _impl->op->configure(compile_context,
                          token->info(),
                          segment->info(),
-                         position->info(),
                          output->info(),
-                         emb_info);
+                         emb_info.c_policy());
 
     std::cout << "src/runtime/CL/functions/CLEmbeddingSumLayer.cpp configure end" << std::endl;
 
@@ -92,17 +92,16 @@ void CLEmbeddingSumLayer::run()
     auto start_time = std::chrono::high_resolution_clock::now();
 #endif
 
-    std::cout << "src/runtime/CL/functions/CLEmbeddingSumLayer.cpp configure run start" << std::endl;
+    std::cout << "src/runtime/CL/functions/CLEmbeddingSumLayer.cpp run start" << std::endl;
 
     ITensorPack pack;
     pack.add_tensor(TensorType::ACL_SRC_0, _impl->token);
     pack.add_tensor(TensorType::ACL_SRC_1, _impl->segment);
-    pack.add_tensor(TensorType::ACL_SRC_2, _impl->position);
     pack.add_tensor(TensorType::ACL_DST, _impl->dst);
 
     _impl->op->run(pack);
 
-    std::cout << "src/runtime/CL/functions/CLEmbeddingSumLayer.cpp configure run end" << std::endl;
+    std::cout << "src/runtime/CL/functions/CLEmbeddingSumLayer.cpp run end" << std::endl;
 #ifdef MEASURE_TIME
     auto          end_time  = std::chrono::high_resolution_clock::now();
     double        cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
