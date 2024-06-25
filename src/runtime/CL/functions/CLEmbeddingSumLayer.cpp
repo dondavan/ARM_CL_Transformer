@@ -6,7 +6,7 @@
 
 #include "src/core/CL/ICLKernel.h"
 #include "src/gpu/cl/operators/ClEmbedSum.h"
-#include "src/gpu/cl/operators/ClAdd.cpp"
+#include "src/gpu/cl/operators/ClAdd.h"
 
 #ifdef MEASURE_TIME
 #include <chrono>
@@ -35,17 +35,15 @@ CLEmbeddingSumLayer::~CLEmbeddingSumLayer() = default;
 
 void CLEmbeddingSumLayer::configure(ICLTensor                *token,
                                     ICLTensor                *segment,
-                                    ICLTensor                *position,
                                     ICLTensor                *output,
                                     const EmbeddingLayerInfo &emb_info)
 {
-    configure(CLKernelLibrary::get().get_compile_context(), token, segment, position, output, emb_info);
+    configure(CLKernelLibrary::get().get_compile_context(), token, segment, output, emb_info);
 }
 
 void CLEmbeddingSumLayer::configure(const CLCompileContext   &compile_context,
                                     ICLTensor                *token,
                                     ICLTensor                *segment,
-                                    ICLTensor                *position,
                                     ICLTensor                *output,
                                     const EmbeddingLayerInfo &emb_info)
 {
@@ -55,18 +53,16 @@ void CLEmbeddingSumLayer::configure(const CLCompileContext   &compile_context,
 
     _impl->token    = token;
     _impl->segment  = segment;
-    _impl->position = position;
     _impl->dst      = output;
 
     std::cout << "src/runtime/CL/functions/CLEmbeddingSumLayer.cpp configure start" << std::endl;
-    ActivationLayerInfo act_info = ActivationLayerInfo();
+    
     _impl->op = std::make_unique<opencl::ClAdd>();
     _impl->op->configure(compile_context,
                          token->info(),
                          segment->info(),
                          output->info(),
-                         emb_info.c_policy(),
-                         act_info);
+                         emb_info.c_policy());
 
     std::cout << "src/runtime/CL/functions/CLEmbeddingSumLayer.cpp configure end" << std::endl;
 

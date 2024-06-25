@@ -35,7 +35,6 @@ class CLEmbeddingSumLayer : public IFunction
      */
     void configure( ICLTensor *token,
                     ICLTensor *segemnt, 
-                    ICLTensor *position, 
                     ICLTensor *output, 
                     const EmbeddingLayerInfo &emb_info);
     /** Set the input and output tensor.
@@ -49,7 +48,6 @@ class CLEmbeddingSumLayer : public IFunction
     void configure( const CLCompileContext &compile_context,
                     ICLTensor *token,
                     ICLTensor *segemnt, 
-                    ICLTensor *position, 
                     ICLTensor *output, 
                     const EmbeddingLayerInfo &emb_info);
     /** Static function to check if given info will lead to a valid configuration of @ref CLEmbeddingSumLayer
