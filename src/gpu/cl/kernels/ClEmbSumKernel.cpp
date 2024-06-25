@@ -72,23 +72,27 @@ void ClEmbSumKernel::run_op(ITensorPack &tensors, const Window &window, cl::Comm
 
     //run_vectorize<float>(window, src, vector, dst);
     //slice.set_broadcasted(Window::DimZ);
-    /*
+    
     std::cout << "slice x " << slice.x().end() << std::endl;
     std::cout << "slice y " << slice.y().end() << std::endl;
     std::cout << "slice z " << slice.z().end() << std::endl;
 
-    std::cout << "src->info()->strides_in_bytes().x() " << src->info()->strides_in_bytes().x() << std::endl;
-    std::cout << "src->info()->strides_in_bytes().y() " << src->info()->strides_in_bytes().y() << std::endl;
-    std::cout << "src->info()->strides_in_bytes().z() " << src->info()->strides_in_bytes().z() << std::endl;
+    std::cout << "token->info()->strides_in_bytes().x() " << token->info()->strides_in_bytes().x() << std::endl;
+    std::cout << "token->info()->strides_in_bytes().y() " << token->info()->strides_in_bytes().y() << std::endl;
+    std::cout << "token->info()->strides_in_bytes().z() " << token->info()->strides_in_bytes().z() << std::endl;
 
-    std::cout << "vector->info()->strides_in_bytes().x() " << vector->info()->strides_in_bytes().x() << std::endl;
-    std::cout << "vector->info()->strides_in_bytes().y() " << vector->info()->strides_in_bytes().y() << std::endl;
-    std::cout << "vector->info()->strides_in_bytes().z() " << vector->info()->strides_in_bytes().z() << std::endl;
+    std::cout << "segemnt->info()->strides_in_bytes().x() " << segemnt->info()->strides_in_bytes().x() << std::endl;
+    std::cout << "segemnt->info()->strides_in_bytes().y() " << segemnt->info()->strides_in_bytes().y() << std::endl;
+    std::cout << "segemnt->info()->strides_in_bytes().z() " << segemnt->info()->strides_in_bytes().z() << std::endl;
+
+    std::cout << "position->info()->strides_in_bytes().x() " << position->info()->strides_in_bytes().x() << std::endl;
+    std::cout << "position->info()->strides_in_bytes().y() " << position->info()->strides_in_bytes().y() << std::endl;
+    std::cout << "position->info()->strides_in_bytes().z() " << position->info()->strides_in_bytes().z() << std::endl;
 
     std::cout << "dst->info()->strides_in_bytes().x() " << dst->info()->strides_in_bytes().x() << std::endl;
     std::cout << "dst->info()->strides_in_bytes().y() " << dst->info()->strides_in_bytes().y() << std::endl;
     std::cout << "dst->info()->strides_in_bytes().z() " << dst->info()->strides_in_bytes().z() << std::endl;
-*/
+
     // Set srcs
     unsigned int idx = 0;
     add_3D_tensor_argument(idx, token, window);
