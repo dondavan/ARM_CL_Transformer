@@ -7,7 +7,7 @@
 #include "arm_compute/core/TensorInfo.h"
 #include "arm_compute/core/Types.h"
 
-#include "src/gpu/cl/kernels/ClElementwiseKernel.h"
+#include "src/gpu/cl/kernels/ClEmbSumKernel.h"
 
 namespace arm_compute
 {
@@ -51,9 +51,6 @@ class ClEmbedSum : public IClOperator
         TokenSegmentOutput = 0,
         Count
     };
-
-    std::unique_ptr<kernels::ClSaturatedArithmeticKernel> _add_kernel_1{ nullptr };
-    std::unique_ptr<kernels::ClSaturatedArithmeticKernel> _add_kernel_2{ nullptr };
 
     TensorInfo _tmp_token_segment{};
 

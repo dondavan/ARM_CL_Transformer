@@ -3,8 +3,6 @@
 #include "src/common/utils/Log.h"
 #include "src/gpu/cl/ClCompileContext.h"
 
-#include "src/gpu/cl/kernels/ClEmbSumKernel.h"
-
 #include "src/core/helpers/MemoryHelpers.h"
 #include "src/gpu/cl/utils/ClAuxTensorHandler.h"
 
