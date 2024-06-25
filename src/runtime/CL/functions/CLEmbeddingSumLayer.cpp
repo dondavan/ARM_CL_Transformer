@@ -6,7 +6,6 @@
 
 #include "src/core/CL/ICLKernel.h"
 #include "src/gpu/cl/operators/ClEmbedSum.h"
-#include "src/gpu/cl/operators/ClAdd.h"
 
 #ifdef MEASURE_TIME
 #include <chrono>
@@ -23,8 +22,7 @@ struct CLEmbeddingSumLayer::Impl
     const ICLTensor                    *position{ nullptr };
     ICLTensor                          *dst{ nullptr };
     IRuntimeContext                    *ctx{ nullptr };
-    std::unique_ptr<opencl::ClAdd> op_1{ nullptr };
-    std::unique_ptr<opencl::ClAdd> op_2{ nullptr };
+    std::unique_ptr<opencl::ClEmbedSum> op{ nullptr };
 };
 
 CLEmbeddingSumLayer::CLEmbeddingSumLayer()
@@ -61,19 +59,15 @@ void CLEmbeddingSumLayer::configure(const CLCompileContext   &compile_context,
 
     std::cout << "src/runtime/CL/functions/CLEmbeddingSumLayer.cpp configure start" << std::endl;
     
-    _impl->op_1 = std::make_unique<opencl::ClAdd>();
-    _impl->op_1->configure(compile_context,
+    _impl->op = std::make_unique<opencl::ClEmbedSum>();
+    _impl->op->configure(compile_context,
                          token->info(),
                          segment->info(),
-                         output->info(),
-                         emb_info.c_policy());
-    _impl->op_2 = std::make_unique<opencl::ClAdd>();
-    _impl->op_2->configure(compile_context,
-                         output->info(),
                          position->info(),
                          output->info(),
-                         emb_info.c_policy());  
-    std::cout << "src/runtime/CL/functions/CLEmbeddingSumLayer.cpp end" << std::endl;
+                         emb_info);
+
+    std::cout << "src/runtime/CL/functions/CLEmbeddingSumLayer.cpp configure end" << std::endl;
 
 #ifdef MEASURE_TIME
     auto          end_time  = std::chrono::high_resolution_clock::now();
@@ -98,20 +92,15 @@ void CLEmbeddingSumLayer::run()
     auto start_time = std::chrono::high_resolution_clock::now();
 #endif
 
-    std::cout << "src/runtime/CL/functions/CLEmbeddingSumLayer.cpp run start" << std::endl;
+    std::cout << "src/runtime/CL/functions/CLEmbeddingSumLayer.cpp  run start" << std::endl;
 
     ITensorPack pack;
     pack.add_tensor(TensorType::ACL_SRC_0, _impl->token);
     pack.add_tensor(TensorType::ACL_SRC_1, _impl->segment);
+    pack.add_tensor(TensorType::ACL_SRC_2, _impl->position);
     pack.add_tensor(TensorType::ACL_DST, _impl->dst);
 
-    _impl->op_1->run(pack);
-
-    pack.add_tensor(TensorType::ACL_SRC_0, _impl->dst);
-    pack.add_tensor(TensorType::ACL_SRC_1, _impl->position);
-    pack.add_tensor(TensorType::ACL_DST, _impl->dst);
-
-    _impl->op_2->run(pack);
+    _impl->op->run(pack);
 
     std::cout << "src/runtime/CL/functions/CLEmbeddingSumLayer.cpp run end" << std::endl;
 #ifdef MEASURE_TIME
