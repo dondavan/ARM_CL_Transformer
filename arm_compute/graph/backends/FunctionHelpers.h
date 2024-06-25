@@ -1782,13 +1782,12 @@ std::unique_ptr<IFunction> create_embedding_sum_layer(EmbeddingSumLayerNode &nod
     // Extract IO and info
     typename TargetInfo::TensorType *token      = get_backing_tensor<TargetInfo>(node.input(0));
     typename TargetInfo::TensorType *segment    = get_backing_tensor<TargetInfo>(node.input(1));
-    typename TargetInfo::TensorType *position   = get_backing_tensor<TargetInfo>(node.input(2));
     typename TargetInfo::TensorType *output     = get_backing_tensor<TargetInfo>(node.output(0));
     const EmbeddingLayerInfo info = node.embedding_sum_info();
 
     // Create function
     auto func = std::make_unique<EmbeddingSumLayerFunction>();
-    func->configure(token,segment,position,output,info);
+    func->configure(token,segment,output,info);
 
     return func;
 }
