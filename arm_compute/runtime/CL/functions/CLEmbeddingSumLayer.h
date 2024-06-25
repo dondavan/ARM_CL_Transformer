@@ -52,17 +52,7 @@ class CLEmbeddingSumLayer : public IFunction
                     ICLTensor *position, 
                     ICLTensor *output, 
                     const EmbeddingLayerInfo &emb_info);
-    /** Static function to check if given info will lead to a valid configuration of @ref CLEmbeddingSumLayer
-     * 
-     * @param[in]  token        Token embedding input, Data type supported: F32
-     * @param[in]  segemnt      Token embedding input, Data type supported: F32
-     * @param[in]  position     Token embedding input, Data type supported: F32
-     * @param[out] output       Output tensor, shape (seq_len,d_model). Data type supported: F32
-     *
-     * @return a status
-     */
-    static Status validate(ICLTensor *token, ICLTensor *segemnt, ICLTensor *position, ICLTensor *output, const EmbeddingLayerInfo &emb_info);
-
+                    
     void prepare() override;
     // Inherited methods overridden:
     void run() override;
