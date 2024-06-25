@@ -60,7 +60,7 @@ void ClEmbedSum::run(ITensorPack &tensors)
     ARM_COMPUTE_ERROR_ON_MSG(tensors.empty(), "No inputs provided");
     auto token    = tensors.get_const_tensor(ACL_SRC_0);
     auto segment  = tensors.get_const_tensor(ACL_SRC_1);
-    auto position = tensors.get_const_tensor(ACL_SRC_2);
+    //auto position = tensors.get_const_tensor(ACL_SRC_2);
     auto output   = tensors.get_tensor(ACL_DST);
 
     
