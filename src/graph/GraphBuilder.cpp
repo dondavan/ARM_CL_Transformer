@@ -1038,10 +1038,12 @@ NodeID GraphBuilder::add_embedding_node(Graph &g,
     NodeID t_s_nid = g.add_node<EltwiseLayerNode>(descriptors::EltwiseLayerDescriptor(EltwiseOperation::Add));
 
     g.add_connection(t_nid, 0, t_s_nid, 0);
-    g.add_connection(p_nid, 0, t_s_nid, 1);
-    ARM_COMPUTE_UNUSED(s_nid);
+    g.add_connection(s_nid, 0, t_s_nid, 1);
 
-    
+    NodeID ts_p_nid = g.add_node<EltwiseLayerNode>(descriptors::EltwiseLayerDescriptor(EltwiseOperation::Add));
+
+    g.add_connection(t_s_nid, 0, ts_p_nid, 0);
+    g.add_connection(p_nid, 0, ts_p_nid, 1);
 
     //NodeID add_nid = g.add_node<EmbeddingSumLayerNode>(emb_info);
 
@@ -1051,9 +1053,11 @@ NodeID GraphBuilder::add_embedding_node(Graph &g,
     //set_node_params(g, add_nid, params);
     
     set_node_params(g, t_nid, params);
+    set_node_params(g, s_nid, params);
     set_node_params(g, p_nid, params);
     
     set_node_params(g, t_s_nid, params);
+    set_node_params(g, ts_p_nid, params);
 
     return t_s_nid;
 }
