@@ -25,6 +25,7 @@ void ClEmbSumKernel::configure(const CLCompileContext &compile_context,
                                const ITensorInfo      *position,
                                ITensorInfo            *dst)
 {
+    ARM_COMPUTE_UNUSED(segemnt,position);
     ARM_COMPUTE_UNUSED(compile_context);
 
     std::cout << "src/gpu/cl/kernels/ClEmbSumKernel.cpp configure start" << std::endl;
