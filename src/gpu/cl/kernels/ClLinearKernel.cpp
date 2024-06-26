@@ -70,6 +70,7 @@ void ClLinearKernel::configure(const CLCompileContext &compile_context,
     std::cout << "n0 " << n0 << std::endl;
     std::cout << "partial_store_m0 " << partial_store_m0 << std::endl;
     std::cout << "partial_store_n0 " << partial_store_n0 << std::endl;
+    std::cout << "_export_rhs_to_cl_image " << _export_rhs_to_cl_image << std::endl;
 
     
     CLBuildOptions build_opts;
