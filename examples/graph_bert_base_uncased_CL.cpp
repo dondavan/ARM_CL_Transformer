@@ -69,9 +69,9 @@ class GraphVanillaTransformerExample : public Example
         constexpr unsigned int d_vocab    = 30522U; // Vocaboary size
         constexpr unsigned int d_segemnt  = 2U;     // Sentence segmentation size
         constexpr unsigned int d_position = 512U;   // Pretrained positional encoding length
-        //constexpr unsigned int h          = 12U;    // Parallel attention (Heads)
-        //constexpr float        eps        = 1e-12;  // Layer normalization eplision
-        //constexpr unsigned int d_ff       = 3072U;  // Dim feedforward
+        constexpr unsigned int h          = 12U;    // Parallel attention (Heads)
+        constexpr float        eps        = 1e-12;  // Layer normalization eplision
+        constexpr unsigned int d_ff       = 3072U;  // Dim feedforward
         /*constexpr unsigned int d_q         = 64U;      // Dim query, 512U/8U
         constexpr unsigned int d_k           = 64U;      // Dim key, 512U/8U
         constexpr unsigned int d_v           = 64U;      // Dim value, 512U/8U
@@ -116,7 +116,7 @@ class GraphVanillaTransformerExample : public Example
                                 get_weights_accessor(data_path, "positional_embedding.npy", operation_layout))
                      .set_name("tkemb1");
 
-        //add_encoder_block(data_path, "layer_0/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+        add_encoder_block(data_path, "layer_0/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
 
         // Pooler
         graph 
