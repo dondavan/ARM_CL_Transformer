@@ -1,6 +1,3 @@
-#include "repeat.h"
-#include "gemm_helpers.h"
-
 #if defined(M0) && defined(N0) && defined(K0) && defined(DATA_TYPE)
 
 #define VFMA(a, b, c)     \
@@ -171,7 +168,7 @@ __kernel void linear(TENSOR3D_DECLARATION(lhs),
     LOAD_BLOCK(K0, N0, DATA_TYPE, b, rhs_ptr, rhs_offset, rhs_stride_y, zero);
 
     RHS_VFMA_M0xN0(0, a, b0, c);
-    
+
     __global uchar *dst_addr = dst_ptr + dst_offset_first_element_in_bytes + (x * (uint)N0 * sizeof(DATA_TYPE)) + (COMPUTE_M0_START_ROW(y, M0, PARTIAL_STORE_M0) * dst_stride_y);
 
     REPEAT_VAR_INIT_TO_CONST(M0, uint, zout, 0);
