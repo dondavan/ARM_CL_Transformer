@@ -111,30 +111,30 @@ __kernel void linear(TENSOR3D_DECLARATION(lhs),
         // Load values from RHS matrix
         LOAD_BLOCK(K0, N0, DATA_TYPE, b, rhs_ptr, rhs_offset, rhs_stride_y, zero);
 
-        RHS_VFMA_M0xN0(0, b, b0, c);
-        RHS_VFMA_M0xN0(1, b, b1, c);
+        RHS_VFMA_M0xN0(0, a, b0, c);
+        RHS_VFMA_M0xN0(1, a, b1, c);
 
 #if K0 > 2
-        RHS_VFMA_M0xN0(2, b, b2, c);
+        RHS_VFMA_M0xN0(2, a, b2, c);
 #endif // K0 > 2
 #if K0 > 3
-        RHS_VFMA_M0xN0(3, b, b3, c);
+        RHS_VFMA_M0xN0(3, a, b3, c);
 #endif // K0 > 3
 #if K0 > 4
-        RHS_VFMA_M0xN0(4, b, b4, c);
-        RHS_VFMA_M0xN0(5, b, b5, c);
-        RHS_VFMA_M0xN0(6, b, b6, c);
-        RHS_VFMA_M0xN0(7, b, b7, c);
+        RHS_VFMA_M0xN0(4, a, b4, c);
+        RHS_VFMA_M0xN0(5, a, b5, c);
+        RHS_VFMA_M0xN0(6, a, b6, c);
+        RHS_VFMA_M0xN0(7, a, b7, c);
 #endif // K0 > 4
 #if K0 > 8
-        RHS_VFMA_M0xN0(8, b, b8, c);
-        RHS_VFMA_M0xN0(9, b, b9, c);
-        RHS_VFMA_M0xN0(A, b, bA, c);
-        RHS_VFMA_M0xN0(B, b, bB, c);
-        RHS_VFMA_M0xN0(C, b, bC, c);
-        RHS_VFMA_M0xN0(D, b, bD, c);
-        RHS_VFMA_M0xN0(E, b, bE, c);
-        RHS_VFMA_M0xN0(F, b, bF, c);
+        RHS_VFMA_M0xN0(8, a, b8, c);
+        RHS_VFMA_M0xN0(9, a, b9, c);
+        RHS_VFMA_M0xN0(A, a, bA, c);
+        RHS_VFMA_M0xN0(B, a, bB, c);
+        RHS_VFMA_M0xN0(C, a, bC, c);
+        RHS_VFMA_M0xN0(D, a, bD, c);
+        RHS_VFMA_M0xN0(E, a, bE, c);
+        RHS_VFMA_M0xN0(F, a, bF, c);
 #endif // K0 > 8
 
         lhs_offset += K0 * sizeof(DATA_TYPE);
