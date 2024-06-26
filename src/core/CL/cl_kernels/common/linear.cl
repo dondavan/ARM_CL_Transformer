@@ -1,5 +1,5 @@
-#include "gemm_helpers.h"
 #include "repeat.h"
+#include "gemm_helpers.h"
 
 #if defined(M0) && defined(N0) && defined(K0) && defined(DATA_TYPE)
 /** This OpenCL kernel computes the matrix multiplication between 2 matrices.
@@ -80,13 +80,10 @@ __kernel void linear(TENSOR3D_DECLARATION(lhs),
 
     // Compute RHS matrix address
     uint rhs_offset = rhs_offset_first_element_in_bytes + x * N0 * sizeof(DATA_TYPE);
-    rhs_offset += z * rhs_stride_z;
     
     REPEAT_VAR_INIT_TO_CONST(M0, uint, zlhs, 0);
     REPEAT_VAR_INIT_TO_CONST(16, uint, zero, 0);
 
-    // Add offset for batched GEMM
-    lhs_offset += z * lhs_stride_z;
 
     // Initialize the accumulators
     REPEAT_VAR_INIT_TO_CONST(M0, VEC_DATA_TYPE(DATA_TYPE, N0), c, 0); //VEC_DATA_TYPE(DATA_TYPE, N0)    c0=0,c1=0,c2=0,... c(M0-1)=0;
@@ -105,6 +102,7 @@ __kernel void linear(TENSOR3D_DECLARATION(lhs),
         // 6,2 - 6,3 - 6,4 - 6,8 - 6,16
         // 7,2 - 7,3 - 7,4 - 7,8 - 7,16
         // 8,2 - 8,3 - 8,4 - 8,8 - 8,16
+
         // Load values from LHS matrix
         LOAD_BLOCK(M0, K0, DATA_TYPE, a, lhs_ptr, lhs_offset, lhs_stride_y, zlhs);
 
