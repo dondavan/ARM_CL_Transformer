@@ -2,9 +2,6 @@
 #include "gemm_helpers.h"
 #include "repeat.h"
 
-#if defined(M0) && defined(N0) && defined(K0) && defined(DATA_TYPE)
-
-
 /** This OpenCL kernel computes the matrix multiplication between 2 matrices.
  *  The LHS matrix is NOT reshaped
  *  The RHS matrix is NOT reshaped
@@ -195,4 +192,3 @@ __kernel void linear(TENSOR3D_DECLARATION(lhs),
     STORE_BLOCK_BOUNDARY_AWARE(M0, N0, DATA_TYPE, c, dst_addr, dst_stride_y, zout, PARTIAL_STORE_M0, PARTIAL_STORE_N0, cond_y, cond_x);
     */
 }
-#endif // defined(M0) && defined(N0) && defined(K0) && defined(DATA_TYPE)
