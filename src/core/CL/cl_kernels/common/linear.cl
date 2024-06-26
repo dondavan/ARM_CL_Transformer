@@ -60,29 +60,29 @@
  * @param[in]  dst_cross_plane_pad                (Optional) Bottom paddings for the output matrix in unit of elements (only if defined REINTERPRET_OUTPUT_AS_3D)
  */
 __kernel void linear(IMAGE_DECLARATION(lhs),
-                     IMAGE_DECLARATION(rhs),
+                             IMAGE_DECLARATION(rhs),
 #if defined(BETA)
-                     IMAGE_DECLARATION(bias),
+                             IMAGE_DECLARATION(bias),
 #endif // defined(BETA)
-                     IMAGE_DECLARATION(dst),
-                     uint lhs_stride_z,
-                     uint rhs_stride_z,
+                             IMAGE_DECLARATION(dst),
+                             uint lhs_stride_z,
+                             uint rhs_stride_z,
 #if defined(BETA)
-                     uint bias_stride_z,
+                             uint bias_stride_z,
 #endif //defined(BETA)
-                     uint      dst_stride_z,
-                     const int M,
-                     const int N,
-                     const int K
+                             uint      dst_stride_z,
+                             const int M,
+                             const int N,
+                             const int K
 #if defined(REINTERPRET_INPUT_AS_3D)
-                     ,
-                     uint lhs_cross_plane_pad
+                             ,
+                             uint lhs_cross_plane_pad
 #endif // REINTERPRET_INPUT_AS_3D
 #if defined(REINTERPRET_OUTPUT_AS_3D)
-                     ,
-                     uint dst_cross_plane_pad
+                             ,
+                             uint dst_cross_plane_pad
 #endif // REINTERPRET_OUTPUT_AS_3D
-)
+                            )
 {
     // Block size
 #define RHS_BLOCK_SIZE ((K0) * (N0))
@@ -107,13 +107,30 @@ __kernel void linear(IMAGE_DECLARATION(lhs),
     // Compute RHS matrix address
     uint rhs_offset = rhs_offset_first_element_in_bytes + x * N0 * sizeof(DATA_TYPE);
 
+#if defined(MATRIX_B_DEPTH)
+    // Do not slide matrix B if the matrix B has 3 dimensions and matrix A more than 3
+    rhs_offset += (z % MATRIX_B_DEPTH) * rhs_stride_z;
+#else  // defined(MATRIX_B_DEPTH)
     rhs_offset += z * rhs_stride_z;
+#endif // defined(MATRIX_B_DEPTH)
 
     REPEAT_VAR_INIT_TO_CONST(M0, uint, zlhs, 0);
     REPEAT_VAR_INIT_TO_CONST(16, uint, zero, 0);
 
+#if defined(REINTERPRET_INPUT_AS_3D)
+    // The plane (zlhs) is calculated dividing M (y * M0) by HEIGHT_GEMM3D
+    CALCULATE_Z_OFFSET(M0, uint, zlhs, COMPUTE_M0_START_ROW(y, M0, PARTIAL_STORE_M0), HEIGHT_GEMM3D, DEPTH_GEMM3D, lhs_cross_plane_pad, lhs_stride_y);
+
+    // Add offset for batched GEMM. The batches will be in the fourth dimension and for this reason we
+    // multiply lhs_stride_z by DEPTH_GEMM3D
+    lhs_offset += z * lhs_stride_z * DEPTH_GEMM3D;
+
+#else // defined(REINTERPRET_INPUT_AS_3D)
+
     // Add offset for batched GEMM
     lhs_offset += z * lhs_stride_z;
+
+#endif // defined(REINTERPRET_INPUT_AS_3D)
 
     // Initialize the accumulators
     REPEAT_VAR_INIT_TO_CONST(M0, VEC_DATA_TYPE(DATA_TYPE, N0), c, 0); //VEC_DATA_TYPE(DATA_TYPE, N0)    c0=0,c1=0,c2=0,... c(M0-1)=0;
@@ -213,8 +230,20 @@ __kernel void linear(IMAGE_DECLARATION(lhs),
 
     REPEAT_VAR_INIT_TO_CONST(M0, uint, zout, 0);
 
+#if defined(REINTERPRET_OUTPUT_AS_3D)
+    // The plane (zout) is calculated dividing M (y * M0) by HEIGHT_GEMM3D
+    CALCULATE_Z_OFFSET(M0, uint, zout, COMPUTE_M0_START_ROW(y, M0, PARTIAL_STORE_M0), HEIGHT_GEMM3D, DEPTH_GEMM3D, dst_cross_plane_pad, dst_stride_y);
+
+    // Add offset for batched GEMM. The batches will be in the fourth dimension and for this reason we
+    // multiply dst_stride_z by DEPTH_GEMM3D
+    dst_addr += z * dst_stride_z * DEPTH_GEMM3D;
+
+#else // defined(REINTERPRET_OUTPUT_AS_3D)
+
     // Add offset for batched GEMM
     dst_addr += z * dst_stride_z;
+
+#endif // defined(REINTERPRET_OUTPUT_AS_3D)
 
     // Multiply by the weight of matrix-matrix product and store the result
 #if defined(ALPHA)
@@ -249,6 +278,10 @@ __kernel void linear(IMAGE_DECLARATION(lhs),
 
 #endif // defined(BROADCAST_BIAS)
 #endif // defined(BETA)
+
+#if defined(ACTIVATION_TYPE)
+    ACTIVATION_BLOCK(M0, ACTIVATION_TYPE, DATA_TYPE, N0, c, A_VAL, B_VAL);
+#endif // defined(ACTIVATION_TYPE)
 
     const bool cond_y = y == 0;
     const bool cond_x = ((x + 1) * N0 >= N);
