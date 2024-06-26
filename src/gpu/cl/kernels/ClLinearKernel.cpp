@@ -75,9 +75,7 @@ void ClLinearKernel::configure(const CLCompileContext &compile_context,
 
     // Define values for activation function
 
-    std::string kernel_name("mat_mul_native");
-    kernel_name += matmul_kernel_info.adj_lhs ? "_t" : "_nt";
-    kernel_name += matmul_kernel_info.adj_rhs ? "_t" : "_nt";
+    std::string kernel_name("linear");
 
     // A macro guard to compile ONLY the kernel of interest
     build_opts.add_option("-D" + upper_string(kernel_name));

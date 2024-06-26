@@ -279,6 +279,9 @@ __kernel void linear(IMAGE_DECLARATION(lhs),
 #endif // defined(BROADCAST_BIAS)
 #endif // defined(BETA)
 
+#if defined(ACTIVATION_TYPE)
+    ACTIVATION_BLOCK(M0, ACTIVATION_TYPE, DATA_TYPE, N0, c, A_VAL, B_VAL);
+#endif // defined(ACTIVATION_TYPE)
 
     const bool cond_y = y == 0;
     const bool cond_x = ((x + 1) * N0 >= N);
