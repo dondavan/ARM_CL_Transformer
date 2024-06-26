@@ -90,13 +90,7 @@ __kernel void linear(TENSOR3D_DECLARATION(lhs),
     // Initialize the accumulators
     REPEAT_VAR_INIT_TO_CONST(M0, VEC_DATA_TYPE(DATA_TYPE, N0), c, 0); //VEC_DATA_TYPE(DATA_TYPE, N0)    c0=0,c1=0,c2=0,... c(M0-1)=0;
 
-        // Load values from LHS matrix
-        LOAD_BLOCK(M0, K0, DATA_TYPE, a, lhs_ptr, lhs_offset, lhs_stride_y, zlhs);
 
-        // Load values from RHS matrix
-        LOAD_BLOCK(K0, N0, DATA_TYPE, b, rhs_ptr, rhs_offset, rhs_stride_y, zero);
-
-/*
     int i = 0;
 #if K0 > 1
     for(; i <= (K - K0); i += K0)
@@ -110,80 +104,23 @@ __kernel void linear(TENSOR3D_DECLARATION(lhs),
         // 6,2 - 6,3 - 6,4 - 6,8 - 6,16
         // 7,2 - 7,3 - 7,4 - 7,8 - 7,16
         // 8,2 - 8,3 - 8,4 - 8,8 - 8,16
+        // Load values from LHS matrix
+        LOAD_BLOCK(M0, K0, DATA_TYPE, a, lhs_ptr, lhs_offset, lhs_stride_y, zlhs);
+
+        // Load values from RHS matrix
+        LOAD_BLOCK(K0, N0, DATA_TYPE, b, rhs_ptr, rhs_offset, rhs_stride_y, zero);
 
         RHS_VFMA_M0xN0(0, a, b0, c);
         RHS_VFMA_M0xN0(1, a, b1, c);
 
-#if K0 > 2
-        RHS_VFMA_M0xN0(2, a, b2, c);
-#endif // K0 > 2
-#if K0 > 3
-        RHS_VFMA_M0xN0(3, a, b3, c);
-#endif // K0 > 3
-#if K0 > 4
-        RHS_VFMA_M0xN0(4, a, b4, c);
-        RHS_VFMA_M0xN0(5, a, b5, c);
-        RHS_VFMA_M0xN0(6, a, b6, c);
-        RHS_VFMA_M0xN0(7, a, b7, c);
-#endif // K0 > 4
-#if K0 > 8
-        RHS_VFMA_M0xN0(8, a, b8, c);
-        RHS_VFMA_M0xN0(9, a, b9, c);
-        RHS_VFMA_M0xN0(A, a, bA, c);
-        RHS_VFMA_M0xN0(B, a, bB, c);
-        RHS_VFMA_M0xN0(C, a, bC, c);
-        RHS_VFMA_M0xN0(D, a, bD, c);
-        RHS_VFMA_M0xN0(E, a, bE, c);
-        RHS_VFMA_M0xN0(F, a, bF, c);
-#endif // K0 > 8
 
         lhs_offset += K0 * sizeof(DATA_TYPE);
         rhs_offset += K0 * rhs_stride_y;
     }
 #endif // K0 > 1
     // Left-over accumulations
-    for(; i < K; ++i)
-    {
-        // Load values from LHS matrix
-        VEC_DATA_TYPE(DATA_TYPE, 2)
-        a0 = *((__global DATA_TYPE *)(lhs_ptr + lhs_offset + 0 * lhs_stride_y + zlhs0));
-#if M0 > 1
-        VEC_DATA_TYPE(DATA_TYPE, 2)
-        a1 = *((__global DATA_TYPE *)(lhs_ptr + lhs_offset + 1 * lhs_stride_y + zlhs1));
-#endif // M0 > 1
-#if M0 > 2
-        VEC_DATA_TYPE(DATA_TYPE, 2)
-        a2 = *((__global DATA_TYPE *)(lhs_ptr + lhs_offset + 2 * lhs_stride_y + zlhs2));
-#endif // M0 > 2
-#if M0 > 3
-        VEC_DATA_TYPE(DATA_TYPE, 2)
-        a3 = *((__global DATA_TYPE *)(lhs_ptr + lhs_offset + 3 * lhs_stride_y + zlhs3));
-#endif // M0 > 3
-#if M0 > 4
-        VEC_DATA_TYPE(DATA_TYPE, 2)
-        a4 = *((__global DATA_TYPE *)(lhs_ptr + lhs_offset + 4 * lhs_stride_y + zlhs4));
-#endif // M0 > 4
-#if M0 > 5
-        VEC_DATA_TYPE(DATA_TYPE, 2)
-        a5 = *((__global DATA_TYPE *)(lhs_ptr + lhs_offset + 5 * lhs_stride_y + zlhs5));
-#endif // M0 > 5
-#if M0 > 6
-        VEC_DATA_TYPE(DATA_TYPE, 2)
-        a6 = *((__global DATA_TYPE *)(lhs_ptr + lhs_offset + 6 * lhs_stride_y + zlhs6));
-#endif // M0 > 6
-#if M0 > 7
-        VEC_DATA_TYPE(DATA_TYPE, 2)
-        a7 = *((__global DATA_TYPE *)(lhs_ptr + lhs_offset + 7 * lhs_stride_y + zlhs7));
-#endif // M0 > 7
-
-        VEC_DATA_TYPE(DATA_TYPE, N0)
-        b = VLOAD(N0)(0, (__global DATA_TYPE *)(rhs_ptr + rhs_offset + 0 * rhs_stride_y));
-        RHS_VFMA_M0xN0(0, a, b, c);
-
-        lhs_offset += sizeof(DATA_TYPE);
-        rhs_offset += rhs_stride_y;
-    }
- */
+    
+ 
     __global uchar *dst_addr = dst_ptr + dst_offset_first_element_in_bytes + (x * (uint)N0 * sizeof(DATA_TYPE)) + (COMPUTE_M0_START_ROW(y, M0, PARTIAL_STORE_M0) * dst_stride_y);
 
     REPEAT_VAR_INIT_TO_CONST(M0, uint, zout, 0);
