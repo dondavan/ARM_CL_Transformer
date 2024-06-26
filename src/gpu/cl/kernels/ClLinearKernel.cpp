@@ -35,6 +35,7 @@ void ClLinearKernel::configure(const CLCompileContext &compile_context,
                                const MatMulKernelInfo &matmul_kernel_info)
 {
     ARM_COMPUTE_UNUSED(compile_context);
+    ARM_COMPUTE_UNUSED(alpha,beta);
 
     std::cout << "src/gpu/cl/kernels/ClLinearKernel.cpp configure start" << std::endl;
 
