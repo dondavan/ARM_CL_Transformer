@@ -69,7 +69,7 @@ __kernel void linear(TENSOR3D_DECLARATION(lhs),
     uint x = get_global_id(0);
     uint y = get_global_id(1);
     uint z = get_global_id(2);
-/*
+
     // Compute LHS matrix address
     uint lhs_offset = lhs_offset_first_element_in_bytes + COMPUTE_M0_START_ROW(y, M0, PARTIAL_STORE_M0) * (uint)lhs_stride_y;
 
@@ -85,7 +85,7 @@ __kernel void linear(TENSOR3D_DECLARATION(lhs),
 
     // Initialize the accumulators
     REPEAT_VAR_INIT_TO_CONST(M0, VEC_DATA_TYPE(DATA_TYPE, N0), c, 0); //VEC_DATA_TYPE(DATA_TYPE, N0)    c0=0,c1=0,c2=0,... c(M0-1)=0;
-
+/*
     int i = 0;
 #if K0 > 1
     for(; i <= (K - K0); i += K0)
