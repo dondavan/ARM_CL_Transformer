@@ -68,6 +68,7 @@ void ClLinearKernel::configure(const CLCompileContext &compile_context,
     std::cout << "adj_lhs " << adj_lhs << std::endl;
     std::cout << "m0 " << m0 << std::endl;
     std::cout << "n0 " << n0 << std::endl;
+    std::cout << "k0 " << matmul_kernel_info.k0 << std::endl;
     std::cout << "partial_store_m0 " << partial_store_m0 << std::endl;
     std::cout << "partial_store_n0 " << partial_store_n0 << std::endl;
     std::cout << "_export_rhs_to_cl_image " << _export_rhs_to_cl_image << std::endl;
