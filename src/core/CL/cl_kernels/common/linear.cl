@@ -1,4 +1,5 @@
 #include "helpers.h"
+#include "repeat.h"
 
 #if defined(M0) && defined(N0) && defined(K0) && defined(DATA_TYPE)
 
