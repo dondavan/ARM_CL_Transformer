@@ -62,6 +62,16 @@ void ClLinearKernel::configure(const CLCompileContext &compile_context,
     const unsigned int partial_store_m0 = m % m0;
     const unsigned int partial_store_n0 = n % n0;
 
+    std::cout << "m " << m << std::endl;
+    std::cout << "n " << n << std::endl;
+    std::cout << "k " << k << std::endl;
+    std::cout << "adj_lhs " << adj_lhs << std::endl;
+    std::cout << "m0 " << m0 << std::endl;
+    std::cout << "n0 " << n0 << std::endl;
+    std::cout << "partial_store_m0 " << partial_store_m0 << std::endl;
+    std::cout << "partial_store_n0 " << partial_store_n0 << std::endl;
+
+    
     CLBuildOptions build_opts;
     build_opts.add_option("-DDATA_TYPE=" + get_cl_type_from_data_type(lhs->data_type()));
     build_opts.add_option("-DM0=" + support::cpp11::to_string(m0));
@@ -80,34 +90,9 @@ void ClLinearKernel::configure(const CLCompileContext &compile_context,
     // A macro guard to compile ONLY the kernel of interest
     build_opts.add_option("-D" + upper_string(kernel_name));
 
-    if (_export_rhs_to_cl_image)
-    {
-        gemm::update_padding_for_cl_image(rhs);
-    }
-
     // Create kernel
     _kernel = create_kernel(compile_context, kernel_name, build_opts.options());
 
-    // Set config_id for enabling LWS tuning
-    _config_id = kernel_name;
-    _config_id += "_";
-    _config_id += lower_string(string_from_data_type(lhs->data_type()));
-    _config_id += "_";
-    _config_id += support::cpp11::to_string(m);
-    _config_id += "_";
-    _config_id += support::cpp11::to_string(n);
-    _config_id += "_";
-    _config_id += support::cpp11::to_string(k);
-    _config_id += "_";
-    _config_id += support::cpp11::to_string(dst->dimension(2));
-    _config_id += "_";
-    _config_id += support::cpp11::to_string(_export_rhs_to_cl_image);
-    _config_id += "_";
-    _config_id += support::cpp11::to_string(m0);
-    _config_id += "_";
-    _config_id += support::cpp11::to_string(n0);
-    _config_id += "_";
-    _config_id += support::cpp11::to_string(matmul_kernel_info.k0);
     std::cout << "src/gpu/cl/kernels/ClLinearKernel.cpp configure end" << std::endl;
 }
 
