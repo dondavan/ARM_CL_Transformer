@@ -65,6 +65,11 @@ __kernel void linear(TENSOR3D_DECLARATION(lhs),
                      TENSOR3D_DECLARATION(rhs),
                      TENSOR3D_DECLARATION(dst))
 {
+    // Block size
+#define RHS_BLOCK_SIZE ((K0) * (N0))
+
+    // RHS offset and step X
+#define RHS_OFFSET_X (RHS_BLOCK_SIZE)
 
     uint x = get_global_id(0);
     uint y = get_global_id(1);
@@ -85,7 +90,7 @@ __kernel void linear(TENSOR3D_DECLARATION(lhs),
 
     // Initialize the accumulators
     REPEAT_VAR_INIT_TO_CONST(M0, VEC_DATA_TYPE(DATA_TYPE, N0), c, 0); //VEC_DATA_TYPE(DATA_TYPE, N0)    c0=0,c1=0,c2=0,... c(M0-1)=0;
-
+/*
     int i = 0;
 #if K0 > 1
     for(; i <= (K - K0); i += K0)
@@ -176,7 +181,7 @@ __kernel void linear(TENSOR3D_DECLARATION(lhs),
         lhs_offset += sizeof(DATA_TYPE);
         rhs_offset += rhs_stride_y;
     }
-/*
+
     __global uchar *dst_addr = dst_ptr + dst_offset_first_element_in_bytes + (x * (uint)N0 * sizeof(DATA_TYPE)) + (COMPUTE_M0_START_ROW(y, M0, PARTIAL_STORE_M0) * dst_stride_y);
 
     REPEAT_VAR_INIT_TO_CONST(M0, uint, zout, 0);
