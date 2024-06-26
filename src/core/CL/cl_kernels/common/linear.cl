@@ -63,27 +63,13 @@
  */
 __kernel void linear(IMAGE_DECLARATION(lhs),
                              IMAGE_DECLARATION(rhs),
-#if defined(BETA)
-                             IMAGE_DECLARATION(bias),
-#endif // defined(BETA)
                              IMAGE_DECLARATION(dst),
                              uint lhs_stride_z,
                              uint rhs_stride_z,
-#if defined(BETA)
-                             uint bias_stride_z,
-#endif //defined(BETA)
                              uint      dst_stride_z,
                              const int M,
                              const int N,
                              const int K
-#if defined(REINTERPRET_INPUT_AS_3D)
-                             ,
-                             uint lhs_cross_plane_pad
-#endif // REINTERPRET_INPUT_AS_3D
-#if defined(REINTERPRET_OUTPUT_AS_3D)
-                             ,
-                             uint dst_cross_plane_pad
-#endif // REINTERPRET_OUTPUT_AS_3D
                             )
 {
     // Block size
