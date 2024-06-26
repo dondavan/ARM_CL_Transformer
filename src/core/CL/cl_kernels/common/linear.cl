@@ -60,29 +60,29 @@
  * @param[in]  dst_cross_plane_pad                (Optional) Bottom paddings for the output matrix in unit of elements (only if defined REINTERPRET_OUTPUT_AS_3D)
  */
 __kernel void linear(IMAGE_DECLARATION(lhs),
-                             IMAGE_DECLARATION(rhs),
+                     IMAGE_DECLARATION(rhs),
 #if defined(BETA)
-                             IMAGE_DECLARATION(bias),
+                     IMAGE_DECLARATION(bias),
 #endif // defined(BETA)
-                             IMAGE_DECLARATION(dst),
-                             uint lhs_stride_z,
-                             uint rhs_stride_z,
+                     IMAGE_DECLARATION(dst),
+                     uint lhs_stride_z,
+                     uint rhs_stride_z,
 #if defined(BETA)
-                             uint bias_stride_z,
+                     uint bias_stride_z,
 #endif //defined(BETA)
-                             uint      dst_stride_z,
-                             const int M,
-                             const int N,
-                             const int K
+                     uint      dst_stride_z,
+                     const int M,
+                     const int N,
+                     const int K
 #if defined(REINTERPRET_INPUT_AS_3D)
-                             ,
-                             uint lhs_cross_plane_pad
+                     ,
+                     uint lhs_cross_plane_pad
 #endif // REINTERPRET_INPUT_AS_3D
 #if defined(REINTERPRET_OUTPUT_AS_3D)
-                             ,
-                             uint dst_cross_plane_pad
+                     ,
+                     uint dst_cross_plane_pad
 #endif // REINTERPRET_OUTPUT_AS_3D
-                            )
+)
 {
     // Block size
 #define RHS_BLOCK_SIZE ((K0) * (N0))
@@ -279,9 +279,6 @@ __kernel void linear(IMAGE_DECLARATION(lhs),
 #endif // defined(BROADCAST_BIAS)
 #endif // defined(BETA)
 
-#if defined(ACTIVATION_TYPE)
-    ACTIVATION_BLOCK(M0, ACTIVATION_TYPE, DATA_TYPE, N0, c, A_VAL, B_VAL);
-#endif // defined(ACTIVATION_TYPE)
 
     const bool cond_y = y == 0;
     const bool cond_x = ((x + 1) * N0 >= N);
