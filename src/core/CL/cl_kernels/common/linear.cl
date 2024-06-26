@@ -67,6 +67,7 @@
 #elif M0 == 8 // M0 == 8
 #define RHS_VFMA_M0xN0(i, a, b, c)                                    \
     ({                                                                \
+        VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##0).s##i), b, (c##0)); \
         VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##1).s##i), b, (c##1)); \
         VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##2).s##i), b, (c##2)); \
         VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##3).s##i), b, (c##3)); \
@@ -142,7 +143,7 @@ __kernel void linear(TENSOR3D_DECLARATION(lhs),
                      TENSOR3D_DECLARATION(rhs),
                      TENSOR3D_DECLARATION(dst))
 {
-    // Block size
+        // Block size
 #define RHS_BLOCK_SIZE ((K0) * (N0))
 
     // RHS offset and step X
@@ -160,8 +161,8 @@ __kernel void linear(TENSOR3D_DECLARATION(lhs),
     
     REPEAT_VAR_INIT_TO_CONST(M0, uint, zlhs, 0);
     REPEAT_VAR_INIT_TO_CONST(16, uint, zero, 0);
+    // Initialize the accumulators
     REPEAT_VAR_INIT_TO_CONST(M0, VEC_DATA_TYPE(DATA_TYPE, N0), c, 0); //VEC_DATA_TYPE(DATA_TYPE, N0)    c0=0,c1=0,c2=0,... c(M0-1)=0;
-
 
     int i = 0;
 #if K0 > 1
@@ -176,7 +177,6 @@ __kernel void linear(TENSOR3D_DECLARATION(lhs),
         // 6,2 - 6,3 - 6,4 - 6,8 - 6,16
         // 7,2 - 7,3 - 7,4 - 7,8 - 7,16
         // 8,2 - 8,3 - 8,4 - 8,8 - 8,16
-
         // Load values from LHS matrix
         LOAD_BLOCK(M0, K0, DATA_TYPE, a, lhs_ptr, lhs_offset, lhs_stride_y, zlhs);
 
@@ -185,7 +185,31 @@ __kernel void linear(TENSOR3D_DECLARATION(lhs),
 
         RHS_VFMA_M0xN0(0, a, b0, c);
         RHS_VFMA_M0xN0(1, a, b1, c);
+#if K0 > 2
+        RHS_VFMA_M0xN0(2, a, b2, c);
+#endif // K0 > 2
+#if K0 > 3
+        RHS_VFMA_M0xN0(3, a, b3, c);
+#endif // K0 > 3
+#if K0 > 4
+        RHS_VFMA_M0xN0(4, a, b4, c);
+        RHS_VFMA_M0xN0(5, a, b5, c);
+        RHS_VFMA_M0xN0(6, a, b6, c);
+        RHS_VFMA_M0xN0(7, a, b7, c);
+#endif // K0 > 4
+#if K0 > 8
+        RHS_VFMA_M0xN0(8, a, b8, c);
+        RHS_VFMA_M0xN0(9, a, b9, c);
+        RHS_VFMA_M0xN0(A, a, bA, c);
+        RHS_VFMA_M0xN0(B, a, bB, c);
+        RHS_VFMA_M0xN0(C, a, bC, c);
+        RHS_VFMA_M0xN0(D, a, bD, c);
+        RHS_VFMA_M0xN0(E, a, bE, c);
+        RHS_VFMA_M0xN0(F, a, bF, c);
+#endif // K0 > 8
 
+        lhs_offset += K0 * sizeof(DATA_TYPE);
+        rhs_offset += K0 * rhs_stride_y;
     }
 #endif // K0 > 1
     
