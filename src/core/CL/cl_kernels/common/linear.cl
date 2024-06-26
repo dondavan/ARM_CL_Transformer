@@ -112,7 +112,7 @@ __kernel void linear(TENSOR3D_DECLARATION(lhs),
 
         RHS_VFMA_M0xN0(0, a, b0, c);
         RHS_VFMA_M0xN0(1, a, b1, c);
-/*
+
 #if K0 > 2
         RHS_VFMA_M0xN0(2, a, b2, c);
 #endif // K0 > 2
@@ -182,7 +182,7 @@ __kernel void linear(TENSOR3D_DECLARATION(lhs),
         lhs_offset += sizeof(DATA_TYPE);
         rhs_offset += rhs_stride_y;
     }
- */
+ 
     __global uchar *dst_addr = dst_ptr + dst_offset_first_element_in_bytes + (x * (uint)N0 * sizeof(DATA_TYPE)) + (COMPUTE_M0_START_ROW(y, M0, PARTIAL_STORE_M0) * dst_stride_y);
 
     REPEAT_VAR_INIT_TO_CONST(M0, uint, zout, 0);
