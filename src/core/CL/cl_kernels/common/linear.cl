@@ -1,5 +1,7 @@
 #include "helpers.h"
 
+#if defined(M0) && defined(N0) && defined(K0) && defined(DATA_TYPE)
+
 #define VFMA(a, b, c)     \
     ({                    \
         c = fma(a, b, c); \
@@ -137,29 +139,29 @@
  * @param[in]  dst_cross_plane_pad                (Optional) Bottom paddings for the output matrix in unit of elements (only if defined REINTERPRET_OUTPUT_AS_3D)
  */
 __kernel void linear(IMAGE_DECLARATION(lhs),
-                     IMAGE_DECLARATION(rhs),
+                             IMAGE_DECLARATION(rhs),
 #if defined(BETA)
-                     IMAGE_DECLARATION(bias),
+                             IMAGE_DECLARATION(bias),
 #endif // defined(BETA)
-                     IMAGE_DECLARATION(dst),
-                     uint lhs_stride_z,
-                     uint rhs_stride_z,
+                             IMAGE_DECLARATION(dst),
+                             uint lhs_stride_z,
+                             uint rhs_stride_z,
 #if defined(BETA)
-                     uint bias_stride_z,
+                             uint bias_stride_z,
 #endif //defined(BETA)
-                     uint      dst_stride_z,
-                     const int M,
-                     const int N,
-                     const int K
+                             uint      dst_stride_z,
+                             const int M,
+                             const int N,
+                             const int K
 #if defined(REINTERPRET_INPUT_AS_3D)
-                     ,
-                     uint lhs_cross_plane_pad
+                             ,
+                             uint lhs_cross_plane_pad
 #endif // REINTERPRET_INPUT_AS_3D
 #if defined(REINTERPRET_OUTPUT_AS_3D)
-                     ,
-                     uint dst_cross_plane_pad
+                             ,
+                             uint dst_cross_plane_pad
 #endif // REINTERPRET_OUTPUT_AS_3D
-)
+                            )
 {
     // Block size
 #define RHS_BLOCK_SIZE ((K0) * (N0))
@@ -366,3 +368,4 @@ __kernel void linear(IMAGE_DECLARATION(lhs),
     // Store output block
     STORE_BLOCK_BOUNDARY_AWARE(M0, N0, DATA_TYPE, c, dst_addr, dst_stride_y, zout, PARTIAL_STORE_M0, PARTIAL_STORE_N0, cond_y, cond_x);
 }
+#endif // defined(M0) && defined(N0) && defined(K0) && defined(DATA_TYPE)
