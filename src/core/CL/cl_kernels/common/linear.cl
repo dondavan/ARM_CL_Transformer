@@ -1,15 +1,12 @@
+#include "repeat.h"
+#include "gemm_helpers.h"
+
 #if defined(M0) && defined(N0) && defined(K0) && defined(DATA_TYPE)
 
-#define VFMA(a, b, c)     \
-    ({                    \
-        c = fma(a, b, c); \
-    })
+#define VFMA(a, b, c) ({ c = fma(a, b, c);})
 
 #if M0 == 1
-#define RHS_VFMA_M0xN0(i, a, b, c)                                    \
-    ({                                                                \
-        VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##0).s##i), b, (c##0)); \
-    })
+#define RHS_VFMA_M0xN0(i, a, b, c) ({ VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##0).s##i), b, (c##0));})
 #elif M0 == 2 // M0 == 2
 #define RHS_VFMA_M0xN0(i, a, b, c)                                    \
     ({                                                                \
