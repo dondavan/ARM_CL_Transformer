@@ -30,9 +30,9 @@ public:
      * @param[in]  info   (Optional)Linear layer operation information
      */
     void configure(const ClCompileContext &compile_context,
-                   const ITensorInfo *a,
-                   const ITensorInfo *b,
-                   const ITensorInfo *c,
+                   ITensorInfo *a,
+                   ITensorInfo *b,
+                   ITensorInfo *c,
                    ITensorInfo       *d,
                    float              alpha,
                    float              beta, 

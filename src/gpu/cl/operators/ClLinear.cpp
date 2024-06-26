@@ -15,9 +15,9 @@ namespace arm_compute
 namespace opencl
 {
 void ClLinear::configure(const ClCompileContext &compile_context,
-                         const ITensorInfo      *a,
-                         const ITensorInfo      *b,
-                         const ITensorInfo      *c,
+                         ITensorInfo      *a,
+                         ITensorInfo      *b,
+                         ITensorInfo      *c,
                          ITensorInfo            *d,
                          float                   alpha,
                          float beta, const LinearLayerInfo &linear_info)
