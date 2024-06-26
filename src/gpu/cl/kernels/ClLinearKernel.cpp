@@ -132,10 +132,8 @@ void ClLinearKernel::run_op(ITensorPack &tensors, const Window &window, cl::Comm
     ICLTensor       *dst   = utils::cast::polymorphic_downcast<ICLTensor *>(tensors.get_tensor(TensorType::ACL_DST));
 
     // Set srcs
-    unsigned int idx              = 0;
     Window       window_collapsed = window.collapse(ICLKernel::window(), Window::DimZ);
 
-    unsigned int idx = 0;
     std::cout << "window_collapsed x " << window_collapsed.x().end() << std::endl;
     std::cout << "window_collapsed y " << window_collapsed.y().end() << std::endl;
     std::cout << "window_collapsed z " << window_collapsed.z().end() << std::endl;
@@ -152,6 +150,7 @@ void ClLinearKernel::run_op(ITensorPack &tensors, const Window &window, cl::Comm
     std::cout << "dst->info()->strides_in_bytes().y() " << dst->info()->strides_in_bytes().y() << std::endl;
     std::cout << "dst->info()->strides_in_bytes().z() " << dst->info()->strides_in_bytes().z() << std::endl;
 
+    unsigned int idx = 0;
     add_3d_tensor_nhw_argument(idx, lhs);
     add_3d_tensor_nhw_argument(idx, rhs);
     if(bias != nullptr)
