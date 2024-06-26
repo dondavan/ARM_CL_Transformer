@@ -1,6 +1,8 @@
 #include "repeat.h"
 #include "gemm_helpers.h"
 
+#if defined(M0) && defined(N0) && defined(K0) && defined(DATA_TYPE)
+
 #define VFMA(a, b, c)     \
     ({                    \
         c = fma(a, b, c); \
@@ -201,3 +203,6 @@ __kernel void linear(TENSOR3D_DECLARATION(lhs),
     STORE_BLOCK_BOUNDARY_AWARE(M0, N0, DATA_TYPE, c, dst_addr, dst_stride_y, zout, PARTIAL_STORE_M0, PARTIAL_STORE_N0, cond_y, cond_x);
    
 }
+
+
+#endif // defined(M0) && defined(N0) && defined(K0) && defined(DATA_TYPE)
