@@ -89,9 +89,6 @@ void ClLinearKernel::configure(const CLCompileContext &compile_context,
 
     std::string kernel_name("linear");
 
-    // A macro guard to compile ONLY the kernel of interest
-    build_opts.add_option("-D" + upper_string(kernel_name));
-
     // Create kernel
     _kernel = create_kernel(compile_context, kernel_name, build_opts.options());
 
