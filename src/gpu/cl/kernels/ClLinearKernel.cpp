@@ -82,8 +82,6 @@ void ClLinearKernel::configure(const CLCompileContext &compile_context,
     build_opts.add_option("-DPARTIAL_STORE_M0=" + support::cpp11::to_string(partial_store_m0));
     build_opts.add_option("-DPARTIAL_STORE_N0=" + support::cpp11::to_string(partial_store_n0));
     build_opts.add_option("-DK=" + support::cpp11::to_string(k));
-    build_opts.add_option_if(bias != nullptr, "-DBIAS");
-    build_opts.add_option_if_else(_export_rhs_to_cl_image, "-DRHS_TENSOR_TYPE=IMAGE", "-DRHS_TENSOR_TYPE=BUFFER");
 
     // Define values for activation function
 
