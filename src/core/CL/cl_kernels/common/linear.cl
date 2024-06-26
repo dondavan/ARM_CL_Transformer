@@ -84,7 +84,6 @@ __kernel void linear(TENSOR3D_DECLARATION(lhs),
     REPEAT_VAR_INIT_TO_CONST(M0, uint, zlhs, 0);
     REPEAT_VAR_INIT_TO_CONST(16, uint, zero, 0);
 
-
     // Initialize the accumulators
     REPEAT_VAR_INIT_TO_CONST(M0, VEC_DATA_TYPE(DATA_TYPE, N0), c, 0); //VEC_DATA_TYPE(DATA_TYPE, N0)    c0=0,c1=0,c2=0,... c(M0-1)=0;
 
