@@ -106,32 +106,6 @@ __kernel void linear(TENSOR3D_DECLARATION(lhs),
         // Load values from RHS matrix
         LOAD_BLOCK(K0, N0, DATA_TYPE, b, rhs_ptr, rhs_offset, rhs_stride_y, zero);
 
-        RHS_VFMA_M0xN0(0, a, b0, c);
-        RHS_VFMA_M0xN0(1, a, b1, c);
-
-#if K0 > 2
-        RHS_VFMA_M0xN0(2, a, b2, c);
-#endif // K0 > 2
-#if K0 > 3
-        RHS_VFMA_M0xN0(3, a, b3, c);
-#endif // K0 > 3
-#if K0 > 4
-        RHS_VFMA_M0xN0(4, a, b4, c);
-        RHS_VFMA_M0xN0(5, a, b5, c);
-        RHS_VFMA_M0xN0(6, a, b6, c);
-        RHS_VFMA_M0xN0(7, a, b7, c);
-#endif // K0 > 4
-#if K0 > 8
-        RHS_VFMA_M0xN0(8, a, b8, c);
-        RHS_VFMA_M0xN0(9, a, b9, c);
-        RHS_VFMA_M0xN0(A, a, bA, c);
-        RHS_VFMA_M0xN0(B, a, bB, c);
-        RHS_VFMA_M0xN0(C, a, bC, c);
-        RHS_VFMA_M0xN0(D, a, bD, c);
-        RHS_VFMA_M0xN0(E, a, bE, c);
-        RHS_VFMA_M0xN0(F, a, bF, c);
-#endif // K0 > 8
-
         lhs_offset += K0 * sizeof(DATA_TYPE);
         rhs_offset += K0 * rhs_stride_y;
     }
@@ -173,7 +147,6 @@ __kernel void linear(TENSOR3D_DECLARATION(lhs),
 
         VEC_DATA_TYPE(DATA_TYPE, N0)
         b = VLOAD(N0)(0, (__global DATA_TYPE *)(rhs_ptr + rhs_offset + 0 * rhs_stride_y));
-        RHS_VFMA_M0xN0(0, a, b, c);
 
         lhs_offset += sizeof(DATA_TYPE);
         rhs_offset += rhs_stride_y;
