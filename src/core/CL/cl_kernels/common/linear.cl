@@ -193,22 +193,6 @@ __kernel void linear(TENSOR3D_DECLARATION(lhs),
 #if K0 > 3
         RHS_VFMA_M0xN0(3, a, b3, c);
 #endif // K0 > 3
-#if K0 > 4
-        RHS_VFMA_M0xN0(4, a, b4, c);
-        RHS_VFMA_M0xN0(5, a, b5, c);
-        RHS_VFMA_M0xN0(6, a, b6, c);
-        RHS_VFMA_M0xN0(7, a, b7, c);
-#endif // K0 > 4
-#if K0 > 8
-        RHS_VFMA_M0xN0(8, a, b8, c);
-        RHS_VFMA_M0xN0(9, a, b9, c);
-        RHS_VFMA_M0xN0(A, a, bA, c);
-        RHS_VFMA_M0xN0(B, a, bB, c);
-        RHS_VFMA_M0xN0(C, a, bC, c);
-        RHS_VFMA_M0xN0(D, a, bD, c);
-        RHS_VFMA_M0xN0(E, a, bE, c);
-        RHS_VFMA_M0xN0(F, a, bF, c);
-#endif // K0 > 8
 
         lhs_offset += K0 * sizeof(DATA_TYPE);
         rhs_offset += K0 * rhs_stride_y;
