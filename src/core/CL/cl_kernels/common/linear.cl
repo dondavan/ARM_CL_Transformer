@@ -141,12 +141,9 @@
  * @param[in]  lhs_cross_plane_pad                (Optional) Bottom paddings for LHS matrix in unit of elements (only if defined REINTERPRET_INPUT_AS_3D)
  * @param[in]  dst_cross_plane_pad                (Optional) Bottom paddings for the output matrix in unit of elements (only if defined REINTERPRET_OUTPUT_AS_3D)
  */
-__kernel void linear(IMAGE_DECLARATION(lhs),
-                             IMAGE_DECLARATION(rhs),
-#if defined(BETA)
-                             IMAGE_DECLARATION(bias),
-#endif // defined(BETA)
-                             IMAGE_DECLARATION(dst),
+__kernel void linear(TENSOR3D_DECLARATIONN(lhs),
+                             TENSOR3D_DECLARATION(rhs),
+                             TENSOR3D_DECLARATION(dst),
                              uint lhs_stride_z,
                              uint rhs_stride_z,
 #if defined(BETA)
