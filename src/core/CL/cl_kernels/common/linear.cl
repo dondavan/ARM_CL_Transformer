@@ -170,7 +170,7 @@ __kernel void linear(TENSOR3D_DECLARATION(lhs),
     // Load values from RHS matrix
     LOAD_BLOCK(K0, N0, DATA_TYPE, b, rhs_ptr, rhs_offset, rhs_stride_y, zero);
     
-    fma((VEC_DATA_TYPE(DATA_TYPE, N0))(a0.s0), b, c0);
+    fma((VEC_DATA_TYPE(DATA_TYPE, N0))(a0.s0), b0, c0);
 
     __global uchar *dst_addr = dst_ptr + dst_offset_first_element_in_bytes + (x * (uint)N0 * sizeof(DATA_TYPE)) + (COMPUTE_M0_START_ROW(y, M0, PARTIAL_STORE_M0) * dst_stride_y);
 
