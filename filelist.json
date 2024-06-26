@@ -1003,6 +1003,7 @@
       "Linear": {
         "files": {
           "common": [
+            "src/gpu/cl/kernels/ClLinearKernel.cpp",
             "src/gpu/cl/operators/ClLinear.cpp",
             "src/runtime/CL/functions/CLLinearLayer.cpp"
           ]

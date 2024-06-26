@@ -314,3 +314,32 @@ src/runtime/CL/CLScheduler.cpp
 src/core/CL/CLHelpers.cpp
 
 src/core/CL/CLCompileContext.cpp
+
+
+Linear
+
+a->tensor_shape().x() 768
+a->tensor_shape().y() 7
+a->tensor_shape().z() 1
+b->tensor_shape().x() 768
+b->tensor_shape().y() 768
+b->tensor_shape().z() 1
+c->tensor_shape().x() 768
+c->tensor_shape().y() 1
+c->tensor_shape().z() 1
+d->tensor_shape().x() 768
+d->tensor_shape().y() 7
+d->tensor_shape().z() 1
+
+a->tensor_shape().x() 768
+a->tensor_shape().y() 7
+a->tensor_shape().z() 1
+b->tensor_shape().x() 768
+b->tensor_shape().y() 3072
+b->tensor_shape().z() 1
+c->tensor_shape().x() 3072
+c->tensor_shape().y() 1
+c->tensor_shape().z() 1
+d->tensor_shape().x() 768
+d->tensor_shape().y() 7
+d->tensor_shape().z() 1

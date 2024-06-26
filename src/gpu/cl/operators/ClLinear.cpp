@@ -6,7 +6,9 @@
 #include "src/core/helpers/MemoryHelpers.h"
 #include "src/gpu/cl/utils/ClAuxTensorHandler.h"
 
-#include "src/gpu/cl/kernels/ClVectorizeKernel.h"
+#include "src/gpu/cl/kernels/ClLinearKernel.h"
+#include "src/runtime/heuristics/matmul_native/ClMatMulNativeKernelConfig.h"
+#include "src/runtime/heuristics/matmul_native/IClMatMulNativeKernelConfig.h"
 
 namespace arm_compute
 {
@@ -24,8 +26,18 @@ void ClLinear::configure(const ClCompileContext &compile_context,
     ARM_COMPUTE_UNUSED(a, b, c, d, alpha);
     ARM_COMPUTE_UNUSED(linear_info);
     ARM_COMPUTE_UNUSED(beta);
-    auto k = std::make_unique<kernels::ClVectorizeKernel>();
-    k->configure(compile_context, a, b, d);
+
+    // Specify whether transpose weights is necessary in matmul info
+    const MatMulInfo mat_info = MatMulInfo().adj_rhs(false);
+
+    const GPUTarget                                         gpu_target = CLScheduler::get().target();
+    std::unique_ptr<cl_matmul::IClMatMulNativeKernelConfig> kernel_config =
+        cl_matmul::ClMatMulNativeKernelConfigurationFactory::create(gpu_target);
+    MatMulKernelInfo kernel_info = kernel_config->configure(a, b, mat_info);
+
+    auto k = std::make_unique<kernels::ClLinearKernel>();
+    k->set_target(gpu_target);
+    k->configure(compile_context, a, b, c, d, alpha, beta, kernel_info);
     _kernel = std::move(k);
 }
 
