@@ -40,8 +40,6 @@ void ClLinearKernel::configure(const CLCompileContext &compile_context,
     std::cout << "src/gpu/cl/kernels/ClLinearKernel.cpp configure start" << std::endl;
 
     // dst tensor auto initialization if not yet initialized
-    auto_init_if_empty(*dst, lhs->clone()->set_tensor_shape(misc::shape_calculator::compute_matmul_shape(
-                                 lhs->tensor_shape(), rhs->tensor_shape(), matmul_kernel_info)));
 
     const int  m       = dst->dimension(1);
     const int  n       = dst->dimension(0);
