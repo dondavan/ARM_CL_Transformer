@@ -2,6 +2,85 @@
 #include "gemm_helpers.h"
 
 #if defined(M0) && defined(N0) && defined(K0) && defined(DATA_TYPE)
+
+
+#define VFMA(a, b, c)     \
+    ({                    \
+        c = fma(a, b, c); \
+    })
+
+#if M0 == 1
+#define RHS_VFMA_M0xN0(i, a, b, c)                                    \
+    ({                                                                \
+        VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##0).s##i), b, (c##0)); \
+    })
+#elif M0 == 2 // M0 == 2
+#define RHS_VFMA_M0xN0(i, a, b, c)                                    \
+    ({                                                                \
+        VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##0).s##i), b, (c##0)); \
+        VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##1).s##i), b, (c##1)); \
+    })
+#elif M0 == 3 // M0 == 3
+#define RHS_VFMA_M0xN0(i, a, b, c)                                    \
+    ({                                                                \
+        VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##0).s##i), b, (c##0)); \
+        VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##1).s##i), b, (c##1)); \
+        VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##2).s##i), b, (c##2)); \
+    })
+#elif M0 == 4 // M0 == 4
+#define RHS_VFMA_M0xN0(i, a, b, c)                                    \
+    ({                                                                \
+        VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##0).s##i), b, (c##0)); \
+        VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##1).s##i), b, (c##1)); \
+        VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##2).s##i), b, (c##2)); \
+        VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##3).s##i), b, (c##3)); \
+    })
+#elif M0 == 5 // M0 == 5
+#define RHS_VFMA_M0xN0(i, a, b, c)                                    \
+    ({                                                                \
+        VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##0).s##i), b, (c##0)); \
+        VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##1).s##i), b, (c##1)); \
+        VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##2).s##i), b, (c##2)); \
+        VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##3).s##i), b, (c##3)); \
+        VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##4).s##i), b, (c##4)); \
+    })
+#elif M0 == 6 // M0 == 6
+#define RHS_VFMA_M0xN0(i, a, b, c)                                    \
+    ({                                                                \
+        VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##0).s##i), b, (c##0)); \
+        VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##1).s##i), b, (c##1)); \
+        VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##2).s##i), b, (c##2)); \
+        VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##3).s##i), b, (c##3)); \
+        VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##4).s##i), b, (c##4)); \
+        VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##5).s##i), b, (c##5)); \
+    })
+#elif M0 == 7 // M0 == 7
+#define RHS_VFMA_M0xN0(i, a, b, c)                                    \
+    ({                                                                \
+        VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##0).s##i), b, (c##0)); \
+        VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##1).s##i), b, (c##1)); \
+        VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##2).s##i), b, (c##2)); \
+        VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##3).s##i), b, (c##3)); \
+        VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##4).s##i), b, (c##4)); \
+        VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##5).s##i), b, (c##5)); \
+        VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##6).s##i), b, (c##6)); \
+    })
+#elif M0 == 8 // M0 == 8
+#define RHS_VFMA_M0xN0(i, a, b, c)                                    \
+    ({                                                                \
+        VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##0).s##i), b, (c##0)); \
+        VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##1).s##i), b, (c##1)); \
+        VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##2).s##i), b, (c##2)); \
+        VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##3).s##i), b, (c##3)); \
+        VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##4).s##i), b, (c##4)); \
+        VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##5).s##i), b, (c##5)); \
+        VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##6).s##i), b, (c##6)); \
+        VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##7).s##i), b, (c##7)); \
+    })
+#else // M0 not supported
+#error "M0 not supported"
+#endif // M0 not supported
+
 /** This OpenCL kernel computes the matrix multiplication between 2 matrices.
  *  The LHS matrix is NOT reshaped
  *  The RHS matrix is NOT reshaped
@@ -106,6 +185,32 @@ __kernel void linear(TENSOR3D_DECLARATION(lhs),
         // Load values from RHS matrix
         LOAD_BLOCK(K0, N0, DATA_TYPE, b, rhs_ptr, rhs_offset, rhs_stride_y, zero);
 
+        RHS_VFMA_M0xN0(0, a, b0, c);
+        RHS_VFMA_M0xN0(1, a, b1, c);
+
+#if K0 > 2
+        RHS_VFMA_M0xN0(2, a, b2, c);
+#endif // K0 > 2
+#if K0 > 3
+        RHS_VFMA_M0xN0(3, a, b3, c);
+#endif // K0 > 3
+#if K0 > 4
+        RHS_VFMA_M0xN0(4, a, b4, c);
+        RHS_VFMA_M0xN0(5, a, b5, c);
+        RHS_VFMA_M0xN0(6, a, b6, c);
+        RHS_VFMA_M0xN0(7, a, b7, c);
+#endif // K0 > 4
+#if K0 > 8
+        RHS_VFMA_M0xN0(8, a, b8, c);
+        RHS_VFMA_M0xN0(9, a, b9, c);
+        RHS_VFMA_M0xN0(A, a, bA, c);
+        RHS_VFMA_M0xN0(B, a, bB, c);
+        RHS_VFMA_M0xN0(C, a, bC, c);
+        RHS_VFMA_M0xN0(D, a, bD, c);
+        RHS_VFMA_M0xN0(E, a, bE, c);
+        RHS_VFMA_M0xN0(F, a, bF, c);
+#endif // K0 > 8
+
         lhs_offset += K0 * sizeof(DATA_TYPE);
         rhs_offset += K0 * rhs_stride_y;
     }
@@ -147,6 +252,7 @@ __kernel void linear(TENSOR3D_DECLARATION(lhs),
 
         VEC_DATA_TYPE(DATA_TYPE, N0)
         b = VLOAD(N0)(0, (__global DATA_TYPE *)(rhs_ptr + rhs_offset + 0 * rhs_stride_y));
+        RHS_VFMA_M0xN0(0, a, b, c);
 
         lhs_offset += sizeof(DATA_TYPE);
         rhs_offset += rhs_stride_y;
