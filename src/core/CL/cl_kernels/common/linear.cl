@@ -1,6 +1,5 @@
 #include "helpers.h"
 
-#if defined(GEMM_MM_NATIVE)
 /** This OpenCL kernel computes the matrix multiplication between 2 matrices.
  *  The LHS matrix is NOT reshaped
  *  The RHS matrix is NOT reshaped
@@ -251,12 +250,9 @@ __kernel void linear(IMAGE_DECLARATION(lhs),
 #endif // defined(BROADCAST_BIAS)
 #endif // defined(BETA)
 
-
     const bool cond_y = y == 0;
     const bool cond_x = ((x + 1) * N0 >= N);
 
     // Store output block
     STORE_BLOCK_BOUNDARY_AWARE(M0, N0, DATA_TYPE, c, dst_addr, dst_stride_y, zout, PARTIAL_STORE_M0, PARTIAL_STORE_N0, cond_y, cond_x);
 }
-#endif // defined(GEMM_MM_NATIVE)
-#endif // defined(M0) && defined(N0) && defined(K0) && defined(DATA_TYPE)
