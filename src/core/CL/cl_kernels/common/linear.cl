@@ -174,14 +174,14 @@ __kernel void linear(IMAGE_DECLARATION(lhs),
     uint x = get_global_id(0);
     uint y = get_global_id(1);
     uint z = get_global_id(2);
-
+/*
     // Compute LHS matrix address
     uint lhs_offset = lhs_offset_first_element_in_bytes + COMPUTE_M0_START_ROW(y, M0, PARTIAL_STORE_M0) * (uint)lhs_stride_y;
 
     // Compute RHS matrix address
     uint rhs_offset = rhs_offset_first_element_in_bytes + x * N0 * sizeof(DATA_TYPE);
     rhs_offset += z * rhs_stride_z;
-    /*
+    
     REPEAT_VAR_INIT_TO_CONST(M0, uint, zlhs, 0);
     REPEAT_VAR_INIT_TO_CONST(16, uint, zero, 0);
 
