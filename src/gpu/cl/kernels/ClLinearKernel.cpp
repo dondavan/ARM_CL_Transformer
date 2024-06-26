@@ -72,8 +72,6 @@ void ClLinearKernel::configure(const CLCompileContext &compile_context,
     build_opts.add_option_if_else(_export_rhs_to_cl_image, "-DRHS_TENSOR_TYPE=IMAGE", "-DRHS_TENSOR_TYPE=BUFFER");
 
     std::string kernel_name("linear");
-    kernel_name += matmul_kernel_info.adj_lhs ? "_t" : "_nt";
-    kernel_name += matmul_kernel_info.adj_rhs ? "_t" : "_nt";
 
     // A macro guard to compile ONLY the kernel of interest
     build_opts.add_option("-D" + upper_string(kernel_name));
