@@ -66,10 +66,7 @@
  */
 __kernel void linear(TENSOR3D_DECLARATION(lhs),
                      TENSOR3D_DECLARATION(rhs),
-                     TENSOR3D_DECLARATION(dst),
-                     const int M,
-                     const int N,
-                     const int K)
+                     TENSOR3D_DECLARATION(dst))
 {
 
     uint x = get_global_id(0);
