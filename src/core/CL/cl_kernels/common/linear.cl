@@ -1,8 +1,6 @@
 #include "repeat.h"
 #include "gemm_helpers.h"
 
-#if defined(M0) && defined(N0) && defined(K0) && defined(DATA_TYPE)
-
 #define VFMA(a, b, c)     \
     ({                    \
         c = fma(a, b, c); \
