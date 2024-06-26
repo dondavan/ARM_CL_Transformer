@@ -143,25 +143,7 @@
  */
 __kernel void linear(TENSOR3D_DECLARATIONN(lhs),
                              TENSOR3D_DECLARATION(rhs),
-                             TENSOR3D_DECLARATION(dst),
-                             uint lhs_stride_z,
-                             uint rhs_stride_z,
-#if defined(BETA)
-                             uint bias_stride_z,
-#endif //defined(BETA)
-                             uint      dst_stride_z,
-                             const int M,
-                             const int N,
-                             const int K
-#if defined(REINTERPRET_INPUT_AS_3D)
-                             ,
-                             uint lhs_cross_plane_pad
-#endif // REINTERPRET_INPUT_AS_3D
-#if defined(REINTERPRET_OUTPUT_AS_3D)
-                             ,
-                             uint dst_cross_plane_pad
-#endif // REINTERPRET_OUTPUT_AS_3D
-                            )
+                             TENSOR3D_DECLARATION(dst))
 {
     // Block size
 #define RHS_BLOCK_SIZE ((K0) * (N0))
