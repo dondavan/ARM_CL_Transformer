@@ -187,15 +187,6 @@ __kernel void linear(TENSOR3D_DECLARATION(lhs),
         RHS_VFMA_M0xN0(0, a, b0, c);
         RHS_VFMA_M0xN0(1, a, b1, c);
 
-#if K0 > 2
-        RHS_VFMA_M0xN0(2, a, b2, c);
-#endif // K0 > 2
-#if K0 > 3
-        RHS_VFMA_M0xN0(3, a, b3, c);
-#endif // K0 > 3
-
-        lhs_offset += K0 * sizeof(DATA_TYPE);
-        rhs_offset += K0 * rhs_stride_y;
     }
 #endif // K0 > 1
     
