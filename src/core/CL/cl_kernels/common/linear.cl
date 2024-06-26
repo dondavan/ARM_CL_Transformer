@@ -164,6 +164,7 @@ __kernel void linear(IMAGE_DECLARATION(lhs),
                             )
 {
     // Block size
+#define RHS_BLOCK_SIZE ((K0) * (N0))
 
     // RHS offset and step X
 #define RHS_OFFSET_X (RHS_BLOCK_SIZE)
