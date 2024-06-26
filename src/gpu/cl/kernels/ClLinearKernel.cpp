@@ -40,6 +40,8 @@ void ClLinearKernel::configure(const CLCompileContext &compile_context,
     std::cout << "src/gpu/cl/kernels/ClLinearKernel.cpp configure start" << std::endl;
 
     // dst tensor auto initialization if not yet initialized
+    auto_init_if_empty(*dst, lhs->clone()->set_tensor_shape(misc::shape_calculator::compute_matmul_shape(
+                                 lhs->tensor_shape(), rhs->tensor_shape(), matmul_kernel_info)));
 
     const int  m       = dst->dimension(1);
     const int  n       = dst->dimension(0);
@@ -69,7 +71,7 @@ void ClLinearKernel::configure(const CLCompileContext &compile_context,
     build_opts.add_option_if(bias != nullptr, "-DBIAS");
     build_opts.add_option_if_else(_export_rhs_to_cl_image, "-DRHS_TENSOR_TYPE=IMAGE", "-DRHS_TENSOR_TYPE=BUFFER");
 
-    std::string kernel_name("mat_mul_native");
+    std::string kernel_name("linear");
     kernel_name += matmul_kernel_info.adj_lhs ? "_t" : "_nt";
     kernel_name += matmul_kernel_info.adj_rhs ? "_t" : "_nt";
 
