@@ -269,5 +269,3 @@ __kernel void linear(TENSOR3D_DECLARATION(lhs),
    
 }
 
-
-#endif // defined(M0) && defined(N0) && defined(K0) && defined(DATA_TYPE)
