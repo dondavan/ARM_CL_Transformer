@@ -83,8 +83,6 @@ __kernel void linear(TENSOR3D_DECLARATION(lhs),
     
     REPEAT_VAR_INIT_TO_CONST(M0, uint, zlhs, 0);
     REPEAT_VAR_INIT_TO_CONST(16, uint, zero, 0);
-
-    // Initialize the accumulators
     REPEAT_VAR_INIT_TO_CONST(M0, VEC_DATA_TYPE(DATA_TYPE, N0), c, 0); //VEC_DATA_TYPE(DATA_TYPE, N0)    c0=0,c1=0,c2=0,... c(M0-1)=0;
 
 
@@ -184,9 +182,6 @@ __kernel void linear(TENSOR3D_DECLARATION(lhs),
     __global uchar *dst_addr = dst_ptr + dst_offset_first_element_in_bytes + (x * (uint)N0 * sizeof(DATA_TYPE)) + (COMPUTE_M0_START_ROW(y, M0, PARTIAL_STORE_M0) * dst_stride_y);
 
     REPEAT_VAR_INIT_TO_CONST(M0, uint, zout, 0);
-
-    // Add offset for batched GEMM
-    dst_addr += z * dst_stride_z;
 
 
     const bool cond_y = y == 0;
