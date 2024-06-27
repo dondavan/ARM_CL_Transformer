@@ -65,7 +65,7 @@ __kernel void linear(
 
     // Initialize the accumulators
     TILE(DATA_TYPE, M0, N0, acc);
-
+    int i =0;
     LOOP_UNROLLING(int, i, 0, 1, M0,
     {
         acc[i].v = 0.f;
