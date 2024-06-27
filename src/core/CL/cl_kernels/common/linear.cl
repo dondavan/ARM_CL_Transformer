@@ -69,7 +69,7 @@ __kernel void linear(
     // Initialize the accumulators
     TILE(DATA_TYPE, M0, N0, acc);
 
-#define ACCESS acc[idx].v = 0.f;
+#define ACCESS ({acc[idx].v = 0.f});
 
     LOOP_UNROLLING(int, idx, 0, 1, M0, ACCESS);
 
