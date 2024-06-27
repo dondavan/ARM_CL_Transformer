@@ -131,7 +131,6 @@ __kernel void linear(
     perform_bias_addition(bias_ptr, bias_offset_first_element_in_bytes, acc, x);
 #endif // defined(BIAS)
 
-    T_ACTIVATION(DATA_TYPE, M0, N0, ACTIVATION_TYPE, A_VAL, B_VAL, acc, acc);
 
     T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, acc, indirect_buffer);
 }
