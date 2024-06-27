@@ -66,7 +66,7 @@ inline void perform_bias_addition(uchar *bias_ptr, uint bias_offset_first_elemen
  */
 __kernel void linear(
     TENSOR3D_T(lhs, BUFFER),
-    TENSOR3D_T(rhs, RHS_TENSOR_TYPE),
+    TENSOR3D_T(rhs, BUFFER),
 #ifdef BIAS
     TENSOR3D_T(bias, BUFFER),
 #endif // defined(BIAS)

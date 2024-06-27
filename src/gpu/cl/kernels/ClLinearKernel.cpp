@@ -77,12 +77,12 @@ void ClLinearKernel::configure(const CLCompileContext &compile_context,
     build_opts.add_option("-DDATA_TYPE=" + get_cl_type_from_data_type(lhs->data_type()));
     build_opts.add_option("-DM=" + support::cpp11::to_string(m));
     build_opts.add_option("-DN=" + support::cpp11::to_string(n));
+    build_opts.add_option("-DK=" + support::cpp11::to_string(k));
     build_opts.add_option("-DM0=" + support::cpp11::to_string(m0));
     build_opts.add_option("-DN0=" + support::cpp11::to_string(n0));
     build_opts.add_option("-DK0=" + support::cpp11::to_string(matmul_kernel_info.k0));
     build_opts.add_option("-DPARTIAL_STORE_M0=" + support::cpp11::to_string(partial_store_m0));
     build_opts.add_option("-DPARTIAL_STORE_N0=" + support::cpp11::to_string(partial_store_n0));
-    build_opts.add_option("-DK=" + support::cpp11::to_string(k));
 
     // Define values for activation function
 
