@@ -672,7 +672,7 @@ NodeID GraphBuilder::add_multi_head_linear_layer(Graph &g, NodeParams params, No
 {
     check_nodeidx_pair(input, g);
 
-    ARM_COMPUTE_UNUSED(query_weights,query_bias,key_weights,key_bias,value_weights,value_bias);
+    ARM_COMPUTE_UNUSED(query_weights,query_bias,key_weights,key_bias,value_weights,value_bias,linear_info);
 
     // Get input tensor descriptor
     const TensorDescriptor input_tensor_desc = get_tensor_descriptor(g, g.node(input.node_id)->outputs()[0]);
