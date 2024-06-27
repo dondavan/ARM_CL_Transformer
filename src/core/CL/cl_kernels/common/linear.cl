@@ -72,7 +72,7 @@ __kernel void linear(
     {
         float s[2];
         float8 v;
-    } acc[2];
+    } acc[8];
 
     int j;
 
