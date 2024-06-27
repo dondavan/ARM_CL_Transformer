@@ -71,8 +71,8 @@ __kernel void linear(
     union
     {
         float s[2];
-        float8 v;
-    } acc[2];
+        float2 v;
+    } acc[6];
 
     int j;
 
