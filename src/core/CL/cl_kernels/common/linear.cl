@@ -71,7 +71,7 @@ __kernel void linear(
 
     LOOP_UNROLLING(int, idx, 0, 1, M0,
     {
-        acc[i].v = 0.f;
+        acc[idx].v = 0.f;
     })
 
 
