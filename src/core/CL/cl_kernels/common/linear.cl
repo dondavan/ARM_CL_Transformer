@@ -70,8 +70,9 @@ __kernel void linear(
     TILE(DATA_TYPE, M0, N0, acc);
 
     LOOP_UNROLLING(int, idx, 0, 1, M0,
-        (acc[idx].v = 0.f;)
-    )
+    {
+        acc[i].v = 0.f;
+    })
 
 
     T_ACTIVATION(DATA_TYPE, M0, N0, ACTIVATION_TYPE, A_VAL, B_VAL, acc, acc);
