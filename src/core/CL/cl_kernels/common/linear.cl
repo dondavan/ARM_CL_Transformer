@@ -3,6 +3,14 @@
 #include "tile_helpers.h"
 
 #if defined(LINEAR)
+
+#define TILE(DATA_TYPE, H, W, BASENAME) TILE_STR(DATA_TYPE, H, W, BASENAME)
+#define TILE_STR(DATA_TYPE, H, W, BASENAME) \
+    union {                                 \
+        DATA_TYPE                      s[TILE_VECTOR_SIZE##W];                  \
+        TILE_VECTOR_TYPE##W(DATA_TYPE) v;                     \
+    } BASENAME[H]
+
 /** This OpenCL kernel performs the batch matrix multiplication (BatchMatMul): LHS non-transposed, RHS non-transposed - buffer only
  *
  * @note the "batch" here expresses the number of matrix multiplications to run in parallel. However, it
@@ -71,7 +79,7 @@ __kernel void linear(
     int j;
     for(int  i= 0; i < M0; ++i)
     {
-        j = 0.f;
+        acc[i].v = 0.f;
     }
 
 
