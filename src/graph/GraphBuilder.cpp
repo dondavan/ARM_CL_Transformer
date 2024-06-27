@@ -738,8 +738,6 @@ NodeID GraphBuilder::add_multi_head_linear_layer(Graph &g, NodeParams params, No
 
 
     g.add_connection(input.node_id, input.index, f_nid,0);
-    g.add_connection(input.node_id, input.index, f_nid,1);
-    g.add_connection(input.node_id, input.index, f_nid,2);
 
 
     //set_node_params(g, q_nid, params);
