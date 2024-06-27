@@ -6,6 +6,7 @@
 
 #include "arm_compute/core/TensorInfo.h"
 #include "arm_compute/core/Types.h"
+#include "src/gpu/cl/kernels/ClGemmMatrixMultiplyNativeKernel.h"
 
 
 namespace arm_compute
