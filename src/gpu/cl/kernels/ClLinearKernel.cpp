@@ -72,6 +72,7 @@ void ClLinearKernel::configure(const CLCompileContext &compile_context,
     std::cout << "partial_store_m0 " << partial_store_m0 << std::endl;
     std::cout << "partial_store_n0 " << partial_store_n0 << std::endl;
     std::cout << "_export_rhs_to_cl_image " << _export_rhs_to_cl_image << std::endl;
+    std::cout << "get_cl_type_from_data_type(lhs->data_type()) " << get_cl_type_from_data_type(lhs->data_type()) << std::endl;
     
     CLBuildOptions build_opts;
     build_opts.add_option("-DDATA_TYPE=" + get_cl_type_from_data_type(lhs->data_type()));
