@@ -69,12 +69,6 @@ __kernel void linear(
     // Initialize the accumulators
     TILE(DATA_TYPE, M0, N0, acc);
 
-#define MY_OPERATION(i) \
-    {                     \
-        i = i +1; \
-    }
 
-    // Unroll the loop 5 times
-    LOOP_UNROLLING(int, i, 0, 1, 5, MY_OPERATION(i));
 }
 #endif // defined(LINEAR)
