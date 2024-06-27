@@ -75,18 +75,24 @@ void ClLinearKernel::configure(const CLCompileContext &compile_context,
     
     CLBuildOptions build_opts;
     build_opts.add_option("-DDATA_TYPE=" + get_cl_type_from_data_type(lhs->data_type()));
-    build_opts.add_option("-DM=" + support::cpp11::to_string(m));
-    build_opts.add_option("-DN=" + support::cpp11::to_string(n));
-    build_opts.add_option("-DK=" + support::cpp11::to_string(k));
     build_opts.add_option("-DM0=" + support::cpp11::to_string(m0));
     build_opts.add_option("-DN0=" + support::cpp11::to_string(n0));
     build_opts.add_option("-DK0=" + support::cpp11::to_string(matmul_kernel_info.k0));
     build_opts.add_option("-DPARTIAL_STORE_M0=" + support::cpp11::to_string(partial_store_m0));
     build_opts.add_option("-DPARTIAL_STORE_N0=" + support::cpp11::to_string(partial_store_n0));
+    build_opts.add_option("-DK=" + support::cpp11::to_string(k));
+    build_opts.add_option("-DRHS_TENSOR_TYPE=BUFFER");
+    //build_opts.add_option_if(bias != nullptr, "-DBIAS");
 
     // Define values for activation function
+    //build_opts.add_option(("-DA_VAL=" + float_to_string_with_full_precision(act_info.a())));
+    //build_opts.add_option(("-DB_VAL=" + float_to_string_with_full_precision(act_info.b())));
+    //build_opts.add_option("-DACTIVATION_TYPE=" + lower_string(string_from_activation_func(act_info.activation())));
 
     std::string kernel_name("linear");
+
+    // A macro guard to compile ONLY the kernel of interest
+    build_opts.add_option("-D" + upper_string(kernel_name));
 
     // Create kernel
     _kernel = create_kernel(compile_context, kernel_name, build_opts.options());
