@@ -4,47 +4,6 @@
 
 #if defined(LINEAR)
 
-#define TILE_VECTOR_SIZE1 1
-#define TILE_VECTOR_SIZE2 2
-#define TILE_VECTOR_SIZE3 3
-#define TILE_VECTOR_SIZE4 4
-#define TILE_VECTOR_SIZE5 8
-#define TILE_VECTOR_SIZE6 8
-#define TILE_VECTOR_SIZE7 8
-#define TILE_VECTOR_SIZE8 8
-#define TILE_VECTOR_SIZE9 16
-#define TILE_VECTOR_SIZE10 16
-#define TILE_VECTOR_SIZE11 16
-#define TILE_VECTOR_SIZE12 16
-#define TILE_VECTOR_SIZE13 16
-#define TILE_VECTOR_SIZE14 16
-#define TILE_VECTOR_SIZE15 16
-#define TILE_VECTOR_SIZE16 16
-
-#define TILE_VECTOR_TYPE1(DATA_TYPE) DATA_TYPE##1
-#define TILE_VECTOR_TYPE2(DATA_TYPE) DATA_TYPE##2
-#define TILE_VECTOR_TYPE3(DATA_TYPE) DATA_TYPE##3
-#define TILE_VECTOR_TYPE4(DATA_TYPE) DATA_TYPE##4
-#define TILE_VECTOR_TYPE5(DATA_TYPE) DATA_TYPE##8
-#define TILE_VECTOR_TYPE6(DATA_TYPE) DATA_TYPE##8
-#define TILE_VECTOR_TYPE7(DATA_TYPE) DATA_TYPE##8
-#define TILE_VECTOR_TYPE8(DATA_TYPE) DATA_TYPE##8
-#define TILE_VECTOR_TYPE9(DATA_TYPE) DATA_TYPE##16
-#define TILE_VECTOR_TYPE10(DATA_TYPE) DATA_TYPE##16
-#define TILE_VECTOR_TYPE11(DATA_TYPE) DATA_TYPE##16
-#define TILE_VECTOR_TYPE12(DATA_TYPE) DATA_TYPE##16
-#define TILE_VECTOR_TYPE13(DATA_TYPE) DATA_TYPE##16
-#define TILE_VECTOR_TYPE14(DATA_TYPE) DATA_TYPE##16
-#define TILE_VECTOR_TYPE15(DATA_TYPE) DATA_TYPE##16
-#define TILE_VECTOR_TYPE16(DATA_TYPE) DATA_TYPE##16
-
-#define TILE(DATA_TYPE, H, W, BASENAME) TILE_STR(DATA_TYPE, H, W, BASENAME)
-#define TILE_STR(DATA_TYPE, H, W, BASENAME) \
-    union {                                 \
-        DATA_TYPE                      s[TILE_VECTOR_SIZE##W];                  \
-        TILE_VECTOR_TYPE##W(DATA_TYPE) v;                     \
-    } BASENAME[H]
-
 /** This OpenCL kernel performs the batch matrix multiplication (BatchMatMul): LHS non-transposed, RHS non-transposed - buffer only
  *
  * @note the "batch" here expresses the number of matrix multiplications to run in parallel. However, it
@@ -109,7 +68,7 @@ __kernel void linear(
     dst_offset_first_element_in_bytes += x * sizeof(DATA_TYPE) + y * dst_stride_y + z * dst_stride_z;
 
     // Initialize the accumulators
-    TILE(DATA_TYPE, 1, 2, acc);
+    TILE(DATA_TYPE, 2, 2, acc);
     int j;
     for(int  i= 0; i < M0; ++i)
     {
