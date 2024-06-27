@@ -89,6 +89,10 @@ void ClVectorizeKernel::configure(const CLCompileContext &compile_context, const
     build_opts.add_option("-DDATA_TYPE_DST=" + get_cl_type_from_data_type(dst->data_type()));
     //build_opts.add_option("-DDATA_TYPE=" + get_cl_unsigned_type_from_element_size(src->element_size()));
     build_opts.add_option("-DVEC_SIZE=" + support::cpp11::to_string(vector_depth-1));
+
+    std::string kernel_name("mat_mul_native");
+    // A macro guard to compile ONLY the kernel of interest
+    build_opts.add_option("-D" + upper_string(kernel_name));
     _kernel = create_kernel(compile_context, "vectorize", build_opts.options());
 
     // Configure kernel window
