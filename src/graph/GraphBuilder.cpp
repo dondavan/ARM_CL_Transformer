@@ -674,7 +674,7 @@ NodeID GraphBuilder::add_multi_head_linear_layer(Graph &g, NodeParams params, No
 
     // Get input tensor descriptor
     const TensorDescriptor input_tensor_desc = get_tensor_descriptor(g, g.node(input.node_id)->outputs()[0]);
-
+    /*
     // Create weight and bias tensor shape
     TensorDescriptor q_w_desc         = input_tensor_desc;
     q_w_desc.shape                    = TensorShape(linear_info.d_linear_hidden(), linear_info.d_linear_hidden());
@@ -724,20 +724,25 @@ NodeID GraphBuilder::add_multi_head_linear_layer(Graph &g, NodeParams params, No
     g.add_connection(k_b_nid, 0, k_nid, 2);
     g.add_connection(v_w_nid, 0, v_nid, 1);
     g.add_connection(v_b_nid, 0, v_nid, 2);
-
+    */
 
     // A node to hold all the output
     NodeID f_nid    = g.add_node<SimpleForwardLayerNode>(3);
 
     // Connect all linear node to single node
-    g.add_connection(q_nid, 0, f_nid,0);
-    g.add_connection(k_nid, 0, f_nid,1);
-    g.add_connection(v_nid, 0, f_nid,2);
+    //g.add_connection(q_nid, 0, f_nid,0);
+    //g.add_connection(k_nid, 0, f_nid,1);
+    //g.add_connection(v_nid, 0, f_nid,2);
 
 
-    set_node_params(g, q_nid, params);
-    set_node_params(g, k_nid, params);
-    set_node_params(g, v_nid, params);
+    g.add_connection(input.node_id, input.index, f_nid,0);
+    g.add_connection(input.node_id, input.index, f_nid,1);
+    g.add_connection(input.node_id, input.index, f_nid,2);
+
+
+    //set_node_params(g, q_nid, params);
+    //set_node_params(g, k_nid, params);
+    //set_node_params(g, v_nid, params);
 
     set_node_params(g, f_nid, params);
 

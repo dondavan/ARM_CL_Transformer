@@ -29,7 +29,9 @@ void ClSimpleForward::configure(const ClCompileContext &compile_context,
 
 void ClSimpleForward::run(ITensorPack &tensors)
 {
+    std::cout << "ClSimpleForward::run start" << std::endl;
     ARM_COMPUTE_UNUSED(tensors);
+    std::cout << "ClSimpleForward::run end" << std::endl;
 }
 
 } // namespace opencl
