@@ -44,8 +44,6 @@ void ClSimpleForwardKernel::configure(const CLCompileContext &compile_context, c
     CLBuildOptions build_opts;
     build_opts.add_option("-DDATA_TYPE=" + get_cl_type_from_data_type(src1->data_type()));
 
-    std::string kernel_name("simple_forward");
-    _kernel = create_kernel(compile_context, kernel_name, build_opts.options());
 
 
     std::cout << "src/gpu/cl/kernels/ClSimpleForwardKernel.cpp configure end" << std::endl;
