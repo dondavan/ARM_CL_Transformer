@@ -58,9 +58,9 @@ __kernel void linear(
 #endif // defined(BIAS)
     TENSOR3D_T(dst, BUFFER))
 {
-    const uint x = GET_SPATIAL_IDX(0, N0, PARTIAL_STORE_N0);
-    const uint y = GET_SPATIAL_IDX(1, M0, PARTIAL_STORE_M0);
-    const uint z = GET_SPATIAL_IDX(2, 1, 0);
+    const uint x = 0;
+    const uint y = 1;
+    const uint z = 2;
 
     // Compute LHS/RHS/DST matrix address
     lhs_offset_first_element_in_bytes += y * lhs_stride_y + z * lhs_stride_z;
@@ -68,6 +68,11 @@ __kernel void linear(
 
     // Initialize the accumulators
     TILE(DATA_TYPE, M0, N0, acc);
+
+    LOOP_UNROLLING(int, i, 0, 1, M0,
+    {
+        acc[i].v = 0.f;
+    })
 
 
 }
