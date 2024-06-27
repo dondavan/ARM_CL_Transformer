@@ -68,17 +68,11 @@ __kernel void linear(
     dst_offset_first_element_in_bytes += x * sizeof(DATA_TYPE) + y * dst_stride_y + z * dst_stride_z;
 
     // Initialize the accumulators
-    union
-    {
-        float s[4];
-        float4 v;
-    } acc[8];
+    TILE(DATA_TYPE, M0, N0, acc);
 
-    int j;
-
-    for(int i = 0; i < M0; ++i)
+    LOOP_UNROLLING(int, i, 0, 1, M0,
     {
         acc[i].v = 0.f;
-    }
+    })
 }
 #endif // defined(LINEAR)
