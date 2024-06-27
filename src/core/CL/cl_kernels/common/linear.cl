@@ -3,7 +3,7 @@
 #include "tile_helpers.h"
 
 
-#if defined(N0 && M0 && PARTIAL_STORE_N0 && PARTIAL_STORE_M0) 
+#if defined(M0) && defined(N0) && defined(PARTIAL_STORE_N0) && defined(PARTIAL_STORE_M0)
 /** This OpenCL kernel performs the batch matrix multiplication (BatchMatMul): LHS non-transposed, RHS non-transposed - buffer only
  *
  * @note the "batch" here expresses the number of matrix multiplications to run in parallel. However, it
