@@ -67,19 +67,17 @@ __kernel void linear(
     dst_offset_first_element_in_bytes += x * sizeof(DATA_TYPE) + y * dst_stride_y + z * dst_stride_z;
 
     // Initialize the accumulators
-    TILE(DATA_TYPE, M0, K0, a);
-        TILE(DATA_TYPE, K0, N0, b);
+    TILE(DATA_TYPE, M0, N0, acc);
 
-        LOOP_UNROLLING(int, i, 0, 1, M0,
-        {
-            a[i].v = 0.f;
-        })
+    LOOP_UNROLLING(int, idx, 0, 1, M0,
+    {
+        acc[idx].v = 0.f;
+    })
 
-        LOOP_UNROLLING(int, i, 0, 1, K0,
-        {
-            b[i].v = 0.f;
-        })
 
+    T_ACTIVATION(DATA_TYPE, M0, N0, ACTIVATION_TYPE, A_VAL, B_VAL, acc, acc);
+
+    T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, acc, indirect_buffer);
 
 }
 #endif // defined(LINEAR)
