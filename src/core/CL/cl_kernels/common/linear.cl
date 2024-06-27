@@ -64,7 +64,7 @@ inline void perform_bias_addition(uchar *bias_ptr, uint bias_offset_first_elemen
  * @param[in]  dst_n                              Number of the matrices (buffers) in the batch
  * @param[in]  dst_offset_first_element_in_bytes  The offset of the first element in the dst matrix
  */
-__kernel void mat_mul_native_nt_nt(
+__kernel void linear(
     TENSOR3D_T(lhs, BUFFER),
     TENSOR3D_T(rhs, RHS_TENSOR_TYPE),
 #ifdef BIAS
