@@ -19,11 +19,11 @@ namespace kernels
 {
 
 void ClSimpleForwardKernel::configure(const CLCompileContext &compile_context, const ITensorInfo *src1,
-                                  const ITensorInfo *src2,
-                                  const ITensorInfo *src3,
-                                  ITensorInfo       *dst1,
-                                  ITensorInfo       *dst2,
-                                  ITensorInfo       *dst3)
+                                      const ITensorInfo *src2,
+                                      const ITensorInfo *src3,
+                                      ITensorInfo       *dst1,
+                                      ITensorInfo       *dst2,
+                                      ITensorInfo       *dst3)
 {
     ARM_COMPUTE_ERROR_ON_NULLPTR(src);
     ARM_COMPUTE_ERROR_ON_NULLPTR(vector);
@@ -40,7 +40,12 @@ void ClSimpleForwardKernel::configure(const CLCompileContext &compile_context, c
     // Configure kernel window
     ICLKernel::configure_internal(win);
 
+    // Create kernel
+    CLBuildOptions build_opts;
+    build_opts.add_option("-DDATA_TYPE=" + get_cl_type_from_data_type(src1->data_type()));
 
+    std::string kernel_name("simple_forward");
+    _kernel = create_kernel(compile_context, kernel_name, build_opts.options());
 
     std::cout << "src/gpu/cl/kernels/ClSimpleForwardKernel.cpp configure end" << std::endl;
 }
@@ -60,17 +65,38 @@ void ClSimpleForwardKernel::run_op(ITensorPack &tensors, const Window &window, c
     ARM_COMPUTE_ERROR_ON_UNCONFIGURED_KERNEL(this);
     ARM_COMPUTE_ERROR_ON_INVALID_SUBWINDOW(IKernel::window(), window);
     ARM_COMPUTE_ERROR_ON(tensors.empty());
-    ARM_COMPUTE_UNUSED(window,queue);
-    const auto src1 = tensors.get_const_tensor(TensorType::ACL_SRC_0);
-    auto       dst1 = tensors.get_tensor(TensorType::ACL_DST_0);
-    const auto src2 = tensors.get_const_tensor(TensorType::ACL_SRC_1);
-    auto       dst2 = tensors.get_tensor(TensorType::ACL_DST_1);
-    const auto src3 = tensors.get_const_tensor(TensorType::ACL_SRC_2);
-    auto       dst3 = tensors.get_tensor(TensorType::ACL_DST_2);
 
-    dst1->copy_from(*src1);
-    dst2->copy_from(*src2);
-    dst3->copy_from(*src3);
+    Window     slice = window.first_slice_window_3D();
+    const auto src1 = utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC_0));
+    const auto src2 = utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC_1));
+    const auto src3 = utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC_2));
+    auto       dst1 = utils::cast::polymorphic_downcast<ICLTensor *>(tensors.get_tensor(TensorType::ACL_DST_0));
+    auto       dst2 = utils::cast::polymorphic_downcast<ICLTensor *>(tensors.get_tensor(TensorType::ACL_DST_1));
+    auto       dst3 = utils::cast::polymorphic_downcast<ICLTensor *>(tensors.get_tensor(TensorType::ACL_DST_2));
+
+    std::cout << "slice x " << slice.x().end() << std::endl;
+    std::cout << "slice y " << slice.y().end() << std::endl;
+    std::cout << "slice z " << slice.z().end() << std::endl;
+
+    std::cout << "src->info()->strides_in_bytes().x() " << src1->info()->strides_in_bytes().x() << std::endl;
+    std::cout << "src->info()->strides_in_bytes().y() " << src1->info()->strides_in_bytes().y() << std::endl;
+    std::cout << "src->info()->strides_in_bytes().z() " << src1->info()->strides_in_bytes().z() << std::endl;
+
+
+    std::cout << "dst->info()->strides_in_bytes().x() " << dst1->info()->strides_in_bytes().x() << std::endl;
+    std::cout << "dst->info()->strides_in_bytes().y() " << dst1->info()->strides_in_bytes().y() << std::endl;
+    std::cout << "dst->info()->strides_in_bytes().z() " << dst1->info()->strides_in_bytes().z() << std::endl;
+
+    // Set srcs
+    unsigned int idx = 0;
+    add_3D_tensor_argument(idx, src1, window);
+    add_3D_tensor_argument(idx, src2, window);
+    add_3D_tensor_argument(idx, src3, window);
+    add_3D_tensor_argument(idx, dst1, window);
+    add_3D_tensor_argument(idx, dst2, window);
+    add_3D_tensor_argument(idx, dst3, window);
+
+    enqueue(queue, *this, slice, lws_hint());
 
     std::cout << "src/gpu/cl/kernels/ClSimpleForwardKernel.cpp run end" << std::endl;
 }
