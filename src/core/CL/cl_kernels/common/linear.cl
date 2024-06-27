@@ -68,10 +68,10 @@ __kernel void linear(
 
     // Initialize the accumulators
     TILE(DATA_TYPE, M0, N0, acc);
-
+    int j;
     for(int  i= 0; i < M0; ++i)
     {
-        acc[i].v = 0.f;
+        j = 0.f;
     }
 
 
