@@ -2,19 +2,6 @@
 #include "helpers.h"
 #include "tile_helpers.h"
 
-// This function performs in-place bias addition for float/half datatype when bias is enabled.
-// Note The tile's dimensions used for the LHS and RHS matrices (M0, N0 and K0) must be passed at compile time using -DN0, -DM0 (e.g. -DN0=8, -DM0=4).
-inline void perform_bias_addition(uchar *bias_ptr, uint bias_offset_first_element_in_bytes, TILE(DATA_TYPE, M0, N0, acc), uint x)
-{
-    TILE(DATA_TYPE, 1, N0, bias_tile);
-
-    // below expands to use bias_ptr and bias_offset_first_element_in_bytes
-    T_LOAD(DATA_TYPE, 1, N0, BUFFER, bias, x, 0, 1, 0, bias_tile);
-
-    // c = c + bias[broadcasted]
-    T_ELTWISE_BROADCAST_ADD_X(DATA_TYPE, M0, N0, acc, bias_tile, acc);
-}
-
 /** This OpenCL kernel performs the batch matrix multiplication (BatchMatMul): LHS non-transposed, RHS non-transposed - buffer only
  *
  * @note the "batch" here expresses the number of matrix multiplications to run in parallel. However, it
