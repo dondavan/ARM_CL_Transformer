@@ -65,12 +65,12 @@ inline void perform_bias_addition(uchar *bias_ptr, uint bias_offset_first_elemen
  * @param[in]  dst_offset_first_element_in_bytes  The offset of the first element in the dst matrix
  */
 __kernel void linear(
-    TENSOR3D_T(lhs, BUFFER),
-    TENSOR3D_T(rhs, RHS_TENSOR_TYPE),
+    TENSOR3D_DECLARATION(lhs),
+    TENSOR3D_DECLARATION(rhs),
 #ifdef BIAS
-    TENSOR3D_T(bias, BUFFER),
+    TENSOR3D_DECLARATION(bias),
 #endif // defined(BIAS)
-    TENSOR3D_T(dst, BUFFER))
+    TENSOR3D_DECLARATION(dst))
 {
     const uint x = GET_SPATIAL_IDX(0, N0, PARTIAL_STORE_N0);
     const uint y = GET_SPATIAL_IDX(1, M0, PARTIAL_STORE_M0);
