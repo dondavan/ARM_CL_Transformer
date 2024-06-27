@@ -7,7 +7,7 @@
 #include "src/core/helpers/AutoConfiguration.h"
 #include "src/gpu/cl/ClCompileContext.h"
 
-#include "src/gpu/cl/kernels/ClVectorizeKernel.h"
+#include "src/gpu/cl/kernels/ClSimpleForwardKernel.h"
 
 namespace arm_compute
 {
@@ -23,9 +23,8 @@ void ClSimpleForward::configure(const ClCompileContext &compile_context,
 {
 
     std::cout << "ClSimpleForward::configure start" << std::endl;
-    ARM_COMPUTE_UNUSED(src1, src2, src3, dst1, dst2, dst3);
-    auto k = std::make_unique<kernels::ClVectorizeKernel>();
-    k->configure(compile_context, src1, src2, dst1);
+    auto k = std::make_unique<kernels::ClSimpleForwardKernel>();
+    k->configure(compile_context, src1, src2, src3, dst1, dst2, dst3);
     _kernel = std::move(k);
 
     std::cout << "ClSimpleForward::configure end" << std::endl;

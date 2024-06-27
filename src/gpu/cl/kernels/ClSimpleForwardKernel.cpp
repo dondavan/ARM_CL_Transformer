@@ -40,10 +40,6 @@ void ClSimpleForwardKernel::configure(const CLCompileContext &compile_context, c
     // Configure kernel window
     ICLKernel::configure_internal(win);
 
-    // Create kernel
-    CLBuildOptions build_opts;
-    build_opts.add_option("-DDATA_TYPE=" + get_cl_type_from_data_type(src1->data_type()));
-
 
 
     std::cout << "src/gpu/cl/kernels/ClSimpleForwardKernel.cpp configure end" << std::endl;
@@ -64,6 +60,7 @@ void ClSimpleForwardKernel::run_op(ITensorPack &tensors, const Window &window, c
     ARM_COMPUTE_ERROR_ON_UNCONFIGURED_KERNEL(this);
     ARM_COMPUTE_ERROR_ON_INVALID_SUBWINDOW(IKernel::window(), window);
     ARM_COMPUTE_ERROR_ON(tensors.empty());
+
     const auto src1 = tensors.get_const_tensor(TensorType::ACL_SRC_0);
     auto       dst1 = tensors.get_tensor(TensorType::ACL_DST_0);
     const auto src2 = tensors.get_const_tensor(TensorType::ACL_SRC_1);

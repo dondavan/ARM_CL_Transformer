@@ -1012,6 +1012,7 @@
       "SimpleForward": {
         "files": {
           "common": [
+            "src/gpu/cl/kernels/ClSimpleForwardKernel.cpp",
             "src/gpu/cl/operators/ClSimpleForward.cpp",
             "src/runtime/CL/functions/CLSimpleForwardLayer.cpp"
           ]
