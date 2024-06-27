@@ -21,15 +21,21 @@ void ClSimpleForward::configure(const ClCompileContext &compile_context,
                                 ITensorInfo            *dst2,
                                 ITensorInfo            *dst3)
 {
+
+    std::cout << "ClSimpleForward::configure start" << std::endl;
     ARM_COMPUTE_UNUSED(src1, src2, src3, dst1, dst2, dst3);
     auto k = std::make_unique<kernels::ClVectorizeKernel>();
     k->configure(compile_context, src1, src2, dst1);
     _kernel = std::move(k);
+
+    std::cout << "ClSimpleForward::configure end" << std::endl;
 }
 
 void ClSimpleForward::run(ITensorPack &tensors)
 {
     std::cout << "ClSimpleForward::run start" << std::endl;
+
+    CLScheduler::get().enqueue_op(*_kernel.get(), tensors);
     ARM_COMPUTE_UNUSED(tensors);
     std::cout << "ClSimpleForward::run end" << std::endl;
 }
