@@ -75,6 +75,6 @@ __kernel void linear(
     }
 
     // Unroll the loop 5 times
-    LOOP_UNROLLING(int, i, 0, 1, 5, MY_OPERATION)
+    LOOP_UNROLLING(int, i, 0, 1, 5, MY_OPERATION(i))
 }
 #endif // defined(LINEAR)
