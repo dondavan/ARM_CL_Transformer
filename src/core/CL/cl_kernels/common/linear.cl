@@ -109,7 +109,7 @@ __kernel void linear(
     dst_offset_first_element_in_bytes += x * sizeof(DATA_TYPE) + y * dst_stride_y + z * dst_stride_z;
 
     // Initialize the accumulators
-    TILE(DATA_TYPE, M0, N0, acc);
+    TILE(DATA_TYPE, 1, 1, acc);
     int j;
     for(int  i= 0; i < M0; ++i)
     {
