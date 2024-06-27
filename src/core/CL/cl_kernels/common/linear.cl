@@ -2,6 +2,8 @@
 #include "helpers.h"
 #include "tile_helpers.h"
 
+
+#if defined(N0 && M0 && PARTIAL_STORE_N0 && PARTIAL_STORE_M0) 
 /** This OpenCL kernel performs the batch matrix multiplication (BatchMatMul): LHS non-transposed, RHS non-transposed - buffer only
  *
  * @note the "batch" here expresses the number of matrix multiplications to run in parallel. However, it
@@ -52,7 +54,6 @@
 __kernel void linear(
     TENSOR3D_T(lhs, BUFFER),
     TENSOR3D_T(rhs, BUFFER),
-    TENSOR3D_T(bias, BUFFER),
     TENSOR3D_T(dst, BUFFER))
 {
     const uint x = GET_SPATIAL_IDX(0, N0, PARTIAL_STORE_N0);
@@ -65,10 +66,12 @@ __kernel void linear(
 
     // Initialize the accumulators
     TILE(DATA_TYPE, M0, N0, acc);
-    int i =0;
+
     LOOP_UNROLLING(int, i, 0, 1, M0,
     {
         acc[i].v = 0.f;
     })
     
 }
+
+#endif // defined(MAT_MUL_NATIVE_NT_NT)
