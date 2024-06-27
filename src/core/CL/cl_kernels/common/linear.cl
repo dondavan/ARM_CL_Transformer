@@ -92,16 +92,7 @@ __kernel void linear(
         TILE(DATA_TYPE, M0, K0, a);
         TILE(DATA_TYPE, K0, N0, b);
 
-        LOOP_UNROLLING(int, i, 0, 1, M0,
-        {
-            a[i].v = 0.f;
-        })
-
-        LOOP_UNROLLING(int, i, 0, 1, K0,
-        {
-            b[i].v = 0.f;
-        })
-
+        
         // Load tile from the lhs/rhs tensors
         T_LOAD(DATA_TYPE, M0, K0, BUFFER, lhs, 0, 0, 1, lhs_stride_y, a);
         T_LOAD(DATA_TYPE, K0, N0, RHS_TENSOR_TYPE, rhs, x, k + rhs_z, 1, rhs_stride_y, b);
@@ -118,15 +109,7 @@ __kernel void linear(
         TILE(DATA_TYPE, M0, 1, a);
         TILE(DATA_TYPE, 1, N0, b);
 
-        LOOP_UNROLLING(int, i, 0, 1, M0,
-        {
-            a[i].v = 0.f;
-        })
-
-        LOOP_UNROLLING(int, i, 0, 1, 1,
-        {
-            b[i].v = 0.f;
-        })
+        
 
         // Load tile from the lhs/rhs tensors
         T_LOAD(DATA_TYPE, M0, 1, BUFFER, lhs, 0, 0, 1, lhs_stride_y, a);
@@ -142,10 +125,7 @@ __kernel void linear(
     const bool y_cond = PARTIAL_STORE_M0 != 0 && get_global_id(1) == 0;
 
     TILE(int, M0, 1, indirect_buffer);
-    LOOP_UNROLLING(int, _i, 0, 1, M0,
-    {
-        indirect_buffer[_i].v = min(_i, select(M0 - 1, PARTIAL_STORE_M0 - 1, y_cond));
-    });
+    
 
 #ifdef BIAS
     perform_bias_addition(bias_ptr, bias_offset_first_element_in_bytes, acc, x);
