@@ -71,7 +71,7 @@ __kernel void linear(
 
 #define MY_MACRO { acc[i].v = 0.f; }
 
-    LOOP_UNROLLING(int, i, 0, 1, M0, MY_MACRO)
+    LOOP_UNROLLING(int, i, 0, 1, 5, MY_MACRO)
 
 }
 #endif // defined(LINEAR)
