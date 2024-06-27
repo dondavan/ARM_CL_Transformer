@@ -60,7 +60,7 @@ void ClSimpleForwardKernel::run_op(ITensorPack &tensors, const Window &window, c
     ARM_COMPUTE_ERROR_ON_UNCONFIGURED_KERNEL(this);
     ARM_COMPUTE_ERROR_ON_INVALID_SUBWINDOW(IKernel::window(), window);
     ARM_COMPUTE_ERROR_ON(tensors.empty());
-
+    ARM_COMPUTE_UNUSED(window,queue);
     const auto src1 = tensors.get_const_tensor(TensorType::ACL_SRC_0);
     auto       dst1 = tensors.get_tensor(TensorType::ACL_DST_0);
     const auto src2 = tensors.get_const_tensor(TensorType::ACL_SRC_1);
