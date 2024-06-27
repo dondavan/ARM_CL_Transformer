@@ -69,11 +69,12 @@ __kernel void linear(
     // Initialize the accumulators
     TILE(DATA_TYPE, M0, N0, acc);
 
-    
-#define MY_MACRO acc[i].v = 0.f
+#define MY_OPERATION(i) \
+    {                     \
+        acc[i].v = 0.f; \
+    }
 
-    int i = 0;
-    LOOP_UNROLLING(int, i, 0, 1, 5, MY_MACRO)
-
+    // Unroll the loop 5 times
+    LOOP_UNROLLING(int, i, 0, 1, 5, MY_OPERATION)
 }
 #endif // defined(LINEAR)
