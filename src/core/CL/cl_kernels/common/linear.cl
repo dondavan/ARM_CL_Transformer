@@ -70,7 +70,7 @@ __kernel void linear(
     // Initialize the accumulators
     union
     {
-        float2 s[8];
+        float s[8];
         float2 v;
     } acc[2];
 
