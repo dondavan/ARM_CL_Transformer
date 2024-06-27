@@ -90,7 +90,7 @@ void CLSimpleForwardLayer::run()
 #ifdef MEASURE_TIME
     auto start_time = std::chrono::high_resolution_clock::now();
 #endif
-
+    std::cout << "CLSimpleForwardLayer::run start" <<std::endl; 
     ITensorPack pack;
     pack.add_tensor(TensorType::ACL_SRC_0, _impl->src1);
     pack.add_tensor(TensorType::ACL_DST_0, _impl->dst1);
@@ -100,6 +100,7 @@ void CLSimpleForwardLayer::run()
     pack.add_tensor(TensorType::ACL_DST_2, _impl->dst3);
 
     _impl->kernel->run(pack);
+    std::cout << "CLSimpleForwardLayer::run end" <<std::endl;
 
 #ifdef MEASURE_TIME
     auto          end_time  = std::chrono::high_resolution_clock::now();
