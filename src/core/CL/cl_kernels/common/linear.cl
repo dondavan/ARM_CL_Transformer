@@ -71,7 +71,7 @@ __kernel void linear(
 
 #define ACCESS ({(acc)[idx].v = 0.f});
 
-    LOOP_UNROLLING(int, idx, 0, 1, M0, idx = idx; );
+    LOOP_UNROLLING(int, idx, 0, 1, M0, idx = idx );
 
 
     T_ACTIVATION(DATA_TYPE, M0, N0, ACTIVATION_TYPE, A_VAL, B_VAL, acc, acc);
