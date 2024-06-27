@@ -69,8 +69,11 @@ __kernel void linear(
     // Initialize the accumulators
     TILE(DATA_TYPE, M0, N0, acc);
 
+    
 #define MY_MACRO(i) { acc[i].v = 0.f; }
 
+    int i = 0;
+    
     LOOP_UNROLLING(int, i, 0, 1, 5, MY_MACRO(i))
 
 }
