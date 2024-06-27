@@ -796,7 +796,7 @@ const std::map<std::string, std::string> ClKernelLibrary::_program_source_map = 
     {
         "common/simple_forward.cl",
 #include "./cl_kernels/common/simple_forward.clembed"
-    }
+    },
 #ifdef ENABLE_NCHW_KERNELS
     {
         "nchw/batch_to_space.cl",
