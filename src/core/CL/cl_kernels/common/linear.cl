@@ -3,7 +3,6 @@
 #include "tile_helpers.h"
 
 
-
 #if defined(LINEAR)
 /** This OpenCL kernel performs the batch matrix multiplication (BatchMatMul): LHS non-transposed, RHS non-transposed - buffer only
  *
@@ -74,7 +73,7 @@ __kernel void linear(
     LOOP_UNROLLING(int, i, 0, 1, M0,
     {
         acc[i].v = 0.f;
-    })
+    });
 
     const int rhs_z = z * rhs_h;
     int       k;
@@ -86,12 +85,12 @@ __kernel void linear(
         LOOP_UNROLLING(int, i, 0, 1, M0,
         {
             a[i].v = 0.f;
-        })
+        });
 
         LOOP_UNROLLING(int, i, 0, 1, K0,
         {
             b[i].v = 0.f;
-        })
+        });
 
         // Load tile from the lhs/rhs tensors
         T_LOAD(DATA_TYPE, M0, K0, BUFFER, lhs, 0, 0, 1, lhs_stride_y, a);
@@ -112,12 +111,12 @@ __kernel void linear(
         LOOP_UNROLLING(int, i, 0, 1, M0,
         {
             a[i].v = 0.f;
-        })
+        });
 
         LOOP_UNROLLING(int, i, 0, 1, 1,
         {
             b[i].v = 0.f;
-        })
+        });
 
         // Load tile from the lhs/rhs tensors
         T_LOAD(DATA_TYPE, M0, 1, BUFFER, lhs, 0, 0, 1, lhs_stride_y, a);
