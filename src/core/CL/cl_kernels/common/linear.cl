@@ -71,7 +71,7 @@ __kernel void linear(
 
 #define MY_OPERATION(i) \
     {                     \
-        acc[i].v = 0.f; \
+        i = i +1; \
     }
 
     // Unroll the loop 5 times
