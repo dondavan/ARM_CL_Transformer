@@ -2,7 +2,6 @@
 #include "helpers.h"
 #include "tile_helpers.h"
 
-#ifdef BIAS
 // This function performs in-place bias addition for float/half datatype when bias is enabled.
 // Note The tile's dimensions used for the LHS and RHS matrices (M0, N0 and K0) must be passed at compile time using -DN0, -DM0 (e.g. -DN0=8, -DM0=4).
 inline void perform_bias_addition(uchar *bias_ptr, uint bias_offset_first_element_in_bytes, TILE(DATA_TYPE, M0, N0, acc), uint x)
@@ -15,7 +14,6 @@ inline void perform_bias_addition(uchar *bias_ptr, uint bias_offset_first_elemen
     // c = c + bias[broadcasted]
     T_ELTWISE_BROADCAST_ADD_X(DATA_TYPE, M0, N0, acc, bias_tile, acc);
 }
-#endif // defined(BIAS)
 
 /** This OpenCL kernel performs the batch matrix multiplication (BatchMatMul): LHS non-transposed, RHS non-transposed - buffer only
  *
@@ -67,9 +65,7 @@ inline void perform_bias_addition(uchar *bias_ptr, uint bias_offset_first_elemen
 __kernel void linear(
     TENSOR3D_T(lhs, BUFFER),
     TENSOR3D_T(rhs, BUFFER),
-#ifdef BIAS
     TENSOR3D_T(bias, BUFFER),
-#endif // defined(BIAS)
     TENSOR3D_T(dst, BUFFER))
 {
     
