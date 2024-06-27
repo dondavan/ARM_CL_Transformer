@@ -70,8 +70,7 @@ __kernel void linear(
     TILE(DATA_TYPE, M0, N0, acc);
 
     LOOP_UNROLLING(int, idx, 0, 1, M0,
-    
-        acc[idx].v = 0.f
+        acc[idx].v = 0.f;
     )
 
 
