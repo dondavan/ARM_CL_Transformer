@@ -181,19 +181,18 @@ __kernel void linear(
         indirect_buffer[_i].v = min(_i, select(M0 - 1, PARTIAL_STORE_M0 - 1, y_cond));
     }
 
-/*
     if(x_cond)
     {
 #pragma unroll
         for(int _i = 0; _i < M0; ++_i)
         {
-        //  store_partial_##N0##_##PARTIAL_STORE_N0
+        /*  store_partial_##N0##_##PARTIAL_STORE_N0 */
             VSTORE_PARTIAL(N0, PARTIAL_STORE_N0)
             (
                 //CONVERT(acc[M0 - 1 - _i].v, VEC_DATA_TYPE(DATA_TYPE, N0)),
                 acc[M0 - 1 - _i].v,
                 0,
-                (__global DATA_TYPE *)(dst_ptr)
+                (__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + 0 * sizeof(DATA_TYPE))
             );
         }
     }
@@ -202,23 +201,16 @@ __kernel void linear(
 #pragma unroll
         for(int _i = 0; _i < M0; ++_i)
         {
-        //  vstore##N0
+        /*  vstore##N0 */
             VSTORE(N0)
             (
                 //CONVERT(acc[M0 - 1 - _i].v,VEC_DATA_TYPE(DATA_TYPE, N0)),
                 acc[M0 - 1 - _i].v,
-                //                         float2       
+                /*                          float2       */
                 0,
-                (__global DATA_TYPE *)(dst_ptr)
+                (__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + 0 * sizeof(DATA_TYPE))
             );
         }
     }
-*/
-    for(int _i = 0; _i < M0; ++_i)
-    {
-    //  vstore##N0
-        vstore4(acc[M0 - 1 - _i].v,0,(__global DATA_TYPE *)(dst_ptr));
-    }
-    
 }
 #endif // defined(LINEAR)
