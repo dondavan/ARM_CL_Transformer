@@ -75,7 +75,7 @@ __kernel void linear(
     {
         acc[i].v = 0.f;
     }
-
+/*
     const int rhs_z = z * rhs_h;
     int       k;
     for(k = 0; k <= K - K0; k += K0)
@@ -101,13 +101,12 @@ __kernel void linear(
             a[i].v = V_LOAD(DATA_TYPE, K0, BUFFER, lhs, 0, (i * (int)(1)), lhs_stride_y);
         }
 
-        /*
+
         #pragma unroll
         for(int i = 0; i < K0; ++i)
         {
             b[i].v = V_LOAD(DATA_TYPE, N0,BUFFER, rhs, x, ((k + rhs_z) + i * (int)(1)), rhs_stride_y);
         }
-        */
 
 #pragma unroll
         for(int _m = 0; _m < M0; ++_m)
@@ -123,7 +122,7 @@ __kernel void linear(
     }
 
 #if K % K0 != 0
-    /* Leftover Loop */
+    // Leftover Loop 
     for(; k < K; ++k)
     {
         TILE(DATA_TYPE, M0, 1, a);
@@ -148,13 +147,12 @@ __kernel void linear(
             a[i].v = V_LOAD(DATA_TYPE, 1, BUFFER, lhs, 0, (i * (int)(1)), lhs_stride_y);
         }
 
-        /*
         #pragma unroll
         for(int i = 0; i < K0; ++i)
         {
             b[i].v = V_LOAD(DATA_TYPE, N0,BUFFER, rhs, x, ((k + rhs_z) + i * (int)(1)), rhs_stride_y);
         }
-        */
+        
 
 #pragma unroll
         for(int _m = 0; _m < M0; ++_m)
@@ -180,7 +178,7 @@ __kernel void linear(
     {
         indirect_buffer[_i].v = min(_i, select(M0 - 1, PARTIAL_STORE_M0 - 1, y_cond));
     }
-
+    */
 
 
 }
