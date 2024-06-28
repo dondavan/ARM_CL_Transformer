@@ -59,9 +59,9 @@ __kernel void linear(
 #endif // defined(BIAS)
     TENSOR3D_T(dst, BUFFER))
 {
-    const uint x = GET_SPATIAL_IDX(0, N0, PARTIAL_STORE_N0);
-    const uint y = GET_SPATIAL_IDX(1, M0, PARTIAL_STORE_M0);
-    const uint z = GET_SPATIAL_IDX(2, 1, 0);
+    const int x = GET_SPATIAL_IDX(0, N0, PARTIAL_STORE_N0);
+    const int y = GET_SPATIAL_IDX(1, M0, PARTIAL_STORE_M0);
+    const int z = GET_SPATIAL_IDX(2, 1, 0);
 
     // Compute LHS/RHS/DST matrix address
     lhs_offset_first_element_in_bytes += y * lhs_stride_y + z * lhs_stride_z;
