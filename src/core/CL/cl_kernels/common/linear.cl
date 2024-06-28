@@ -53,15 +53,15 @@
  */
 __kernel void linear(
     TENSOR3D_T(lhs, BUFFER),
-    TENSOR3D_T(rhs, BUFFER),
+    TENSOR3D_T(rhs, RHS_TENSOR_TYPE),
 #ifdef BIAS
     TENSOR3D_T(bias, BUFFER),
 #endif // defined(BIAS)
     TENSOR3D_T(dst, BUFFER))
 {
-    const int x = GET_SPATIAL_IDX(0, N0, PARTIAL_STORE_N0);
-    const int y = GET_SPATIAL_IDX(1, M0, PARTIAL_STORE_M0);
-    const int z = GET_SPATIAL_IDX(2, 1, 0);
+    const uint x = GET_SPATIAL_IDX(0, N0, PARTIAL_STORE_N0);
+    const uint y = GET_SPATIAL_IDX(1, M0, PARTIAL_STORE_M0);
+    const uint z = GET_SPATIAL_IDX(2, 1, 0);
 
     // Compute LHS/RHS/DST matrix address
     lhs_offset_first_element_in_bytes += y * lhs_stride_y + z * lhs_stride_z;
@@ -101,7 +101,11 @@ __kernel void linear(
             a[i].v = V_LOAD(DATA_TYPE, K0, BUFFER, lhs, 0, (i * (int)(1)), lhs_stride_y);
         }
 
-
+        
+        for(int i = 0; i < K0; ++i)
+        {
+            b[i].v = V_LOAD(DATA_TYPE, N0, RHS_TENSOR_TYPE, rhs, x, ((k + rhs_z) + i * (int)(1)), rhs_stride_y);
+        }
 
 #pragma unroll
         for(int _m = 0; _m < M0; ++_m)
