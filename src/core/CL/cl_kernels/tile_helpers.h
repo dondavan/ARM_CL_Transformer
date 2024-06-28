@@ -31,8 +31,8 @@
 //#define TILE_VECTOR_SIZE2 2
 //#define TILE_VECTOR_SIZE3 3
 #define TILE_VECTOR_SIZE1 1
-#define TILE_VECTOR_SIZE2 4
-#define TILE_VECTOR_SIZE3 4
+#define TILE_VECTOR_SIZE2 2
+#define TILE_VECTOR_SIZE3 3
 #define TILE_VECTOR_SIZE4 4
 #define TILE_VECTOR_SIZE5 8
 #define TILE_VECTOR_SIZE6 8
@@ -51,8 +51,8 @@
 //#define TILE_VECTOR_TYPE2(DATA_TYPE) DATA_TYPE##2
 //#define TILE_VECTOR_TYPE3(DATA_TYPE) DATA_TYPE##3
 #define TILE_VECTOR_TYPE1(DATA_TYPE) DATA_TYPE##1
-#define TILE_VECTOR_TYPE2(DATA_TYPE) DATA_TYPE##4
-#define TILE_VECTOR_TYPE3(DATA_TYPE) DATA_TYPE##4
+#define TILE_VECTOR_TYPE2(DATA_TYPE) DATA_TYPE##2
+#define TILE_VECTOR_TYPE3(DATA_TYPE) DATA_TYPE##3
 #define TILE_VECTOR_TYPE4(DATA_TYPE) DATA_TYPE##4
 #define TILE_VECTOR_TYPE5(DATA_TYPE) DATA_TYPE##8
 #define TILE_VECTOR_TYPE6(DATA_TYPE) DATA_TYPE##8
@@ -82,7 +82,7 @@
     union {                                 \
         DATA_TYPE                      s[TILE_VECTOR_SIZE##W];                  \
         TILE_VECTOR_TYPE##W(DATA_TYPE) v;                     \
-    } BASENAME[H]
+    } BASENAME[H] __attribute__((aligned))
 
 #define TENSOR4D_IMAGE(name)          \
     __read_only image2d_t name##_img, \
