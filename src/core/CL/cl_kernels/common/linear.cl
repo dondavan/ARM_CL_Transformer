@@ -72,11 +72,12 @@ __kernel void linear(
 
     
 
+    #pragma unroll
     for(int i = 0; i <= M0; ++i)
     {
         acc[i].v = 0.f;
     }
-
+/*
     const int rhs_z = z * rhs_h;
     int       k;
     for(k = 0; k <= K - K0; k += K0)
@@ -102,10 +103,11 @@ __kernel void linear(
         }
 
 
-        //T_MMUL(DATA_TYPE, DATA_TYPE, DATA_TYPE, M0, N0, K0, NT, NT, a, b, acc);
+        T_MMUL(DATA_TYPE, DATA_TYPE, DATA_TYPE, M0, N0, K0, NT, NT, a, b, acc);
 
         lhs_offset_first_element_in_bytes += K0 * sizeof(DATA_TYPE);
     }
+    */
 
 }
 #endif // defined(LINEAR)
