@@ -214,7 +214,6 @@ __kernel void linear(
         }
     }
 */
-#pragma unroll
     for(int _i = 0; _i < M0; ++_i)
     {
     //  vstore##N0
