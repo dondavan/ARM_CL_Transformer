@@ -181,7 +181,7 @@ __kernel void linear(
         indirect_buffer[_i].v = min(_i, select(M0 - 1, PARTIAL_STORE_M0 - 1, y_cond));
     }
 
-/*
+
     if(x_cond)
     {
 #pragma unroll
@@ -213,7 +213,7 @@ __kernel void linear(
             );
         }
     }
-    */
-    
+
+
 }
 #endif // defined(LINEAR)
