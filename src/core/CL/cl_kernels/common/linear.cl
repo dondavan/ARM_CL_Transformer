@@ -104,7 +104,7 @@ __kernel void linear(
 #pragma unroll
         for(int i = 0; i < K0; ++i)
         {
-            b[i].v = V_LOAD(DATA_TYPE, N0, BUFFER, rhs, x, ((k + rhs_z) + i * (int)(1)), rhs_stride_y);
+            b[i].v = V_LOAD(DATA_TYPE, N0, BUFFER, rhs, x, (i * (int)(1)), rhs_stride_y);
         }
 
 #pragma unroll
