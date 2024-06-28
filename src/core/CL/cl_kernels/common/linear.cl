@@ -73,7 +73,7 @@ __kernel void linear(
     
 
     #pragma unroll
-    for(int i = 0; i <= M0; ++i)
+    for(int i = 0; i < M0; ++i)
     {
         acc[i].v = 0.f;
     }
@@ -86,25 +86,33 @@ __kernel void linear(
         TILE(DATA_TYPE, K0, N0, b);
 
         #pragma unroll
-        for(int i = 0; i <= M0; ++i)
+        for(int i = 0; i < M0; ++i)
         {
             a[i].v = 0.f;
         }
 
         #pragma unroll
-        for(int i = 0; i <= K0; ++i)
+        for(int i = 0; i < K0; ++i)
         {
             b[i].v = 0.f;
         }
 
         #pragma unroll
-        for(int i = 0; i <= M0; ++i)
+        for(int i = 0; i < M0; ++i)
         {
             a[i].v = V_LOAD(DATA_TYPE,K0, BUFFER, lhs, 0, (0 + i * (int)(1)), lhs_stride_y);
         }
 
-
-        //T_MMUL(DATA_TYPE, DATA_TYPE, DATA_TYPE, M0, N0, K0, NT, NT, a, b, acc);
+        #pragma unroll
+        for(int _m = 0; _m < M0; ++_m)
+        {
+            #pragma unroll
+            for(int _k = 0; _k < k0; ++_m)
+            {
+                dst[_m].v = fma((DATA_TYPE)(a[_m].s[_k]), (b[_k].v), acc[_m].v);
+            }
+        }
+        
 
         lhs_offset_first_element_in_bytes += K0 * sizeof(DATA_TYPE);
     }
