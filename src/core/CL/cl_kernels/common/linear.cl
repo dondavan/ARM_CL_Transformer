@@ -217,7 +217,7 @@ __kernel void linear(
     for(int _i = 0; _i < M0; ++_i)
     {
     //  vstore##N0
-        vstore2(acc[M0 - 1 - _i].v,0,(__global DATA_TYPE *)(dst_ptr));
+        vstore4(acc[M0 - 1 - _i].v,0,(__global DATA_TYPE *)(dst_ptr));
     }
     
 }
