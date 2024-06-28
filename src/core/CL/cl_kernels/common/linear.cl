@@ -70,8 +70,7 @@ __kernel void linear(
     // Initialize the accumulators
     TILE(DATA_TYPE, M0, N0, acc);
 
-    
-    #pragma unroll
+#pragma unroll
     for(int i = 0; i < M0; ++i)
     {
         acc[i].v = 0.f;
@@ -84,45 +83,41 @@ __kernel void linear(
         TILE(DATA_TYPE, M0, K0, a);
         TILE(DATA_TYPE, K0, N0, b);
 
-        #pragma unroll
+#pragma unroll
         for(int i = 0; i < M0; ++i)
         {
             a[i].v = 0.f;
         }
 
-        #pragma unroll
+#pragma unroll
         for(int i = 0; i < K0; ++i)
         {
             b[i].v = 0.f;
         }
 
-        #pragma unroll
+#pragma unroll
         for(int i = 0; i < M0; ++i)
         {
-            a[i].v = V_LOAD(DATA_TYPE,K0, BUFFER, lhs, 0, (i * (int)(1)), lhs_stride_y);
+            a[i].v = V_LOAD(DATA_TYPE, K0, BUFFER, lhs, 0, (i * (int)(1)), lhs_stride_y);
         }
 
-        #pragma unroll
+#pragma unroll
         for(int i = 0; i < K0; ++i)
         {
-            b[i].v = V_LOAD(DATA_TYPE, N0, RHS_TENSOR_TYPE, rhs, x, ((k + rhs_z) + i * (int)(1)), rhs_stride_y);
+            b[i].v = V_LOAD(DATA_TYPE, N0, BUFFER, rhs, x, ((k + rhs_z) + i * (int)(1)), rhs_stride_y);
         }
 
-
-        #pragma unroll
+#pragma unroll
         for(int _m = 0; _m < M0; ++_m)
         {
-            #pragma unroll
+#pragma unroll
             for(int _k = 0; _k < K0; ++_k)
             {
                 acc[_m].v = fma((DATA_TYPE)(a[_m].s[_k]), (b[_k].v), acc[_m].v);
             }
         }
-        
+
         lhs_offset_first_element_in_bytes += K0 * sizeof(DATA_TYPE);
     }
-
-    
-
 }
 #endif // defined(LINEAR)
