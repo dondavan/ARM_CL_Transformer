@@ -734,6 +734,7 @@
 #define convert_half16_sat  convert_half16
 
 #define convert_float1  convert_float
+#define convert_float2  convert_float
 #define convert_half1   convert_half
 #define convert_char1   convert_char
 #define convert_uchar1  convert_uchar

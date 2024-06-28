@@ -42,7 +42,7 @@ void ClLinearKernel::configure(const CLCompileContext &compile_context,
     // dst tensor auto initialization if not yet initialized
     auto_init_if_empty(*dst, lhs->clone()->set_tensor_shape(misc::shape_calculator::compute_matmul_shape(
                                  lhs->tensor_shape(), rhs->tensor_shape(), matmul_kernel_info)));
-
+    
     const int  m       = dst->dimension(1);
     const int  n       = dst->dimension(0);
     const int  k       = matmul_kernel_info.adj_lhs ? lhs->tensor_shape().y() : lhs->tensor_shape().x();
