@@ -181,32 +181,6 @@ __kernel void linear(
         indirect_buffer[_i].v = min(_i, select(M0 - 1, PARTIAL_STORE_M0 - 1, y_cond));
     }
 
-    /*  
-#ifdef BIAS
-    perform_bias_addition(bias_ptr, bias_offset_first_element_in_bytes, acc, x);
-#endif // defined(BIAS)
-    
-    T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, acc, indirect_buffer);
-#define T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, HEIGHT, WIDTH0, WIDTH1, TENSOR_TYPE, TENSOR, X, STRIDE_Y, WIDTH1_CONDITION, src, indirect_y)                                                      \
-    ({                                                                                                                                                                                             \
-        if(WIDTH1_CONDITION)                                                                                                                                                                       \
-        {                                                                                                                                                                                          \
-            LOOP_UNROLLING(int, _i, 0, 1, HEIGHT,                                                                                                                                                  \
-            {                                                                                                                                                                                      \
-                VSTORE_PARTIAL(WIDTH0, WIDTH1)                                                                                                                                                     \
-                (CONVERT(src[HEIGHT - 1 - _i].v, VEC_DATA_TYPE(DATA_TYPE, WIDTH0)), 0, (__global DATA_TYPE *)(TENSOR##_ptr + TENSOR##_offset_first_element_in_bytes + (X) * sizeof(DATA_TYPE) + (indirect_y[HEIGHT - 1 - _i].v) * STRIDE_Y)); \
-            })                                                                                                                                                                                     \
-        }                                                                                                                                                                                          \
-        else                                                                                                                                                                                       \
-        {                                                                                                                                                                                          \
-            LOOP_UNROLLING(int, _i, 0, 1, HEIGHT,                                                                                                                                                  \
-            {                                                                                                                                                                                      \
-                VSTORE(WIDTH0)                                                                                                                                                                     \
-                (CONVERT(src[HEIGHT - 1 - _i].v, VEC_DATA_TYPE(DATA_TYPE, WIDTH0)), 0, (__global DATA_TYPE *)(TENSOR##_ptr + TENSOR##_offset_first_element_in_bytes + (X) * sizeof(DATA_TYPE) + (indirect_y[HEIGHT - 1 - _i].v) * STRIDE_Y)); \
-            })                                                                                                                                                                                     \
-        }                                                                                                                                                                                          \
-    }) */
-
     if(x_cond)
     {
 #pragma unroll
@@ -220,7 +194,8 @@ __kernel void linear(
 #pragma unroll
         for(int _i = 0; _i < M0; ++_i)
         {
-            CONVERT(acc[M0 - 1 - _i].v,VEC_DATA_TYPE(DATA_TYPE, N0));
+            
+                CONVERT(acc[M0 - 1 - _i].v,VEC_DATA_TYPE(DATA_TYPE, N0));
         }
     }
 }
