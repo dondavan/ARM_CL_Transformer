@@ -99,12 +99,13 @@ __kernel void linear(
         #pragma unroll
         for(int i = 0; i < M0; ++i)
         {
-            a[i].v = V_LOAD(DATA_TYPE,K0, BUFFER, lhs, 0, (0 + i * (int)(1)), lhs_stride_y);
+            a[i].v = V_LOAD(DATA_TYPE,K0, BUFFER, lhs, 0, (i * (int)(1)), lhs_stride_y);
         }
+
         #pragma unroll
         for(int i = 0; i < K0; ++i)
         {
-            b[i].v = V_LOAD(DATA_TYPE, N0, BUFFER, rhs, x, (k + rhs_z + i * (int)(1)), rhs_stride_y);
+            b[i].v = V_LOAD(DATA_TYPE, N0, RHS_TENSOR_TYPE, rhs, x, ((k + rhs_z) + i * (int)(1)), rhs_stride_y);
         }
 
 
@@ -121,16 +122,6 @@ __kernel void linear(
         lhs_offset_first_element_in_bytes += K0 * sizeof(DATA_TYPE);
     }
 
-#if K % K0 != 0
-    /* Leftover Loop */
-    for(; k < K; ++k)
-    {
-        TILE(DATA_TYPE, M0, 1, a);
-        TILE(DATA_TYPE, 1, N0, b);
-
-        
-    }
-#endif // K % K0 != 0
     
 
 }
