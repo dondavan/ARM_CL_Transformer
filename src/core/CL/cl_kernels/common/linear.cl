@@ -107,7 +107,7 @@ __kernel void linear(
         for(int _m = 0; _m < M0; ++_m)
         {
             #pragma unroll
-            for(int _k = 0; _k < K0; ++_m)
+            for(int _k = 0; _k < K0; ++_k)
             {
                 acc[_m].v = fma((DATA_TYPE)(a[_m].s[_k]), (b[_k].v), acc[_m].v);
             }
