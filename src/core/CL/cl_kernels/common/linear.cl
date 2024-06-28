@@ -70,11 +70,7 @@ __kernel void linear(
     // Initialize the accumulators
     TILE(DATA_TYPE, M0, N0, acc);
 
-#pragma unroll
-    for(int i = 0; i < M0; ++i)
-    {
-        acc[i].v = 0.f;
-    }
+    acc.v = 0.f;
 /*
     const int rhs_z = z * rhs_h;
     int       k;
