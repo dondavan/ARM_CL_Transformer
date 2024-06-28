@@ -192,7 +192,7 @@ __kernel void linear(
                 //CONVERT(acc[M0 - 1 - _i].v, VEC_DATA_TYPE(DATA_TYPE, N0)),
                 acc[M0 - 1 - _i].v,
                 0,
-                (__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + 0 * sizeof(DATA_TYPE))
+                (__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + 0 * sizeof(DATA_TYPE) + (indirect_buffer[M0 - 1 - _i].v) * dst_stride_y)
             );
         }
     }
@@ -208,7 +208,7 @@ __kernel void linear(
                 acc[M0 - 1 - _i].v,
                 /*                          float2       */
                 0,
-                (__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + 0 * sizeof(DATA_TYPE))
+                (__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + 0 * sizeof(DATA_TYPE) + (indirect_buffer[M0 - 1 - _i].v) * dst_stride_y)
             );
         }
     }
