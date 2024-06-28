@@ -336,8 +336,7 @@
 #else // !defined(UNROLL_WITH_PRAGMA)
 #define LOOP_UNROLLING_STR(type, idx, start, step, num, macro) \
     {                                                          \
-        //_Pragma("unroll")                                      \
-        #pragma unroll
+        _Pragma("unroll")                                      \
         for(type idx = start; idx < (num * step); idx += step) \
         {                                                      \
             (macro);                                           \
