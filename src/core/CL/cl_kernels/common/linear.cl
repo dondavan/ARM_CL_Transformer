@@ -70,8 +70,7 @@ __kernel void linear(
     // Initialize the accumulators
     TILE(DATA_TYPE, M0, N0, acc);
 
-    
-    #pragma unroll
+#pragma unroll
     for(int i = 0; i < M0; ++i)
     {
         acc[i].v = 0.f;
@@ -84,22 +83,22 @@ __kernel void linear(
         TILE(DATA_TYPE, M0, K0, a);
         TILE(DATA_TYPE, K0, N0, b);
 
-        #pragma unroll
+#pragma unroll
         for(int i = 0; i < M0; ++i)
         {
             a[i].v = 0.f;
         }
 
-        #pragma unroll
+#pragma unroll
         for(int i = 0; i < K0; ++i)
         {
             b[i].v = 0.f;
         }
 
-        #pragma unroll
+#pragma unroll
         for(int i = 0; i < M0; ++i)
         {
-            a[i].v = V_LOAD(DATA_TYPE,K0, BUFFER, lhs, 0, (i * (int)(1)), lhs_stride_y);
+            a[i].v = V_LOAD(DATA_TYPE, K0, BUFFER, lhs, 0, (i * (int)(1)), lhs_stride_y);
         }
 
         /*
@@ -110,16 +109,16 @@ __kernel void linear(
         }
         */
 
-        #pragma unroll
+#pragma unroll
         for(int _m = 0; _m < M0; ++_m)
         {
-            #pragma unroll
+#pragma unroll
             for(int _k = 0; _k < K0; ++_k)
             {
                 acc[_m].v = fma((DATA_TYPE)(a[_m].s[_k]), (b[_k].v), acc[_m].v);
             }
         }
-        
+
         lhs_offset_first_element_in_bytes += K0 * sizeof(DATA_TYPE);
     }
 
@@ -130,23 +129,23 @@ __kernel void linear(
         TILE(DATA_TYPE, M0, 1, a);
         TILE(DATA_TYPE, 1, N0, b);
 
-        #pragma unroll
+#pragma unroll
         for(int i = 0; i < M0; ++i)
         {
             a[i].v = 0.f;
         }
 
-        #pragma unroll
+#pragma unroll
         for(int i = 0; i < 1; ++i)
         {
             b[i].v = 0.f;
         }
 
-        // Load tile from the lhs/rhs tensors
-        #pragma unroll
+// Load tile from the lhs/rhs tensors
+#pragma unroll
         for(int i = 0; i < M0; ++i)
         {
-            a[i].v = V_LOAD(DATA_TYPE,1, BUFFER, lhs, 0, (i * (int)(1)), lhs_stride_y);
+            a[i].v = V_LOAD(DATA_TYPE, 1, BUFFER, lhs, 0, (i * (int)(1)), lhs_stride_y);
         }
 
         /*
@@ -157,10 +156,10 @@ __kernel void linear(
         }
         */
 
-        #pragma unroll
+#pragma unroll
         for(int _m = 0; _m < M0; ++_m)
         {
-            #pragma unroll
+#pragma unroll
             for(int _k = 0; _k < 1; ++_k)
             {
                 acc[_m].v = fma((DATA_TYPE)(a[_m].s[_k]), (b[_k].v), acc[_m].v);
@@ -170,20 +169,23 @@ __kernel void linear(
         lhs_offset_first_element_in_bytes += 1 * sizeof(DATA_TYPE);
     }
 #endif // K % K0 != 0
+
     const bool x_cond = PARTIAL_STORE_N0 != 0 && get_global_id(0) == 0;
     const bool y_cond = PARTIAL_STORE_M0 != 0 && get_global_id(1) == 0;
 
     TILE(int, M0, 1, indirect_buffer);
-    #pragma unroll
+
+#pragma unroll
     for(int _i = 0; _i < M0; ++_i)
     {
         indirect_buffer[_i].v = min(_i, select(M0 - 1, PARTIAL_STORE_M0 - 1, y_cond));
     }
 
+    /*  
 #ifdef BIAS
     perform_bias_addition(bias_ptr, bias_offset_first_element_in_bytes, acc, x);
 #endif // defined(BIAS)
-    /*      
+    
     T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, acc, indirect_buffer);
 #define T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, HEIGHT, WIDTH0, WIDTH1, TENSOR_TYPE, TENSOR, X, STRIDE_Y, WIDTH1_CONDITION, src, indirect_y)                                                      \
     ({                                                                                                                                                                                             \
@@ -205,22 +207,6 @@ __kernel void linear(
         }                                                                                                                                                                                          \
     }) */
 
-    if(x_cond)
-    {
-        #pragma unroll
-        for(int _i = 0; _i < M0; ++_i)
-        {
-            VSTORE_PARTIAL(N0, PARTIAL_STORE_N0)(CONVERT(acc[M0 - 1 - _i].v, VEC_DATA_TYPE(DATA_TYPE, N0)), 0, (__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + 0 * sizeof(DATA_TYPE) + (indirect_buffer[M0 - 1 - _i].v) * dst_stride_y));    
-        }
-    }
-    else
-    {
-        #pragma unroll
-        for(int _i = 0; _i < M0; ++_i)
-        {
-            VSTORE(N0)(CONVERT(acc[M0 - 1 - _i].v, VEC_DATA_TYPE(DATA_TYPE, N0)), 0, (__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + 0 * sizeof(DATA_TYPE) + (indirect_buffer[M0 - 1 - _i].v) * dst_stride_y)); 
-        }
-    }
-
+    
 }
 #endif // defined(LINEAR)
