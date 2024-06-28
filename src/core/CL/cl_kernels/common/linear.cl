@@ -143,7 +143,7 @@ __kernel void linear(
         }
 
         // Load tile from the lhs/rhs tensors
-         #pragma unroll
+        #pragma unroll
         for(int i = 0; i < M0; ++i)
         {
             a[i].v = V_LOAD(DATA_TYPE,1, BUFFER, lhs, 0, (i * (int)(1)), lhs_stride_y);
@@ -170,7 +170,22 @@ __kernel void linear(
         lhs_offset_first_element_in_bytes += 1 * sizeof(DATA_TYPE);
     }
 #endif // K % K0 != 0
-    
+    const bool x_cond = PARTIAL_STORE_N0 != 0 && get_global_id(0) == 0;
+    const bool y_cond = PARTIAL_STORE_M0 != 0 && get_global_id(1) == 0;
+
+    TILE(int, M0, 1, indirect_buffer);
+    #pragma unroll
+    for(int _i = 0; _i < M0; ++_i)
+    {
+        indirect_buffer[_i].v = min(_i, select(M0 - 1, PARTIAL_STORE_M0 - 1, y_cond));
+    }
+
+#ifdef BIAS
+    perform_bias_addition(bias_ptr, bias_offset_first_element_in_bytes, acc, x);
+#endif // defined(BIAS)
+
+    T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, acc, indirect_buffer);
+
 
 }
 #endif // defined(LINEAR)
