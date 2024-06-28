@@ -101,10 +101,9 @@ __kernel void linear(
             a[i].v = V_LOAD(DATA_TYPE, K0, BUFFER, lhs, 0, (i * (int)(1)), lhs_stride_y);
         }
 
-        
         for(int i = 0; i < K0; ++i)
         {
-            b[i].v = V_LOAD(DATA_TYPE, N0, RHS_TENSOR_TYPE, rhs, x, ((k + rhs_z) + i * (int)(1)), rhs_stride_y);
+            b[i].v = VLOAD(N0)(0,(__global DATA_TYPE *)(rhs_ptr + rhs_offset_first_element_in_bytes + x * sizeof(DATA_TYPE) + (((k + rhs_z) + i * (int)(1))) * (rhs_stride_y)));
         }
 
 #pragma unroll
