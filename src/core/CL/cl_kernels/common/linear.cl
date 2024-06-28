@@ -217,7 +217,7 @@ __kernel void linear(
     for(int _i = 0; _i < M0; ++_i)
     {
     //  vstore##N0
-        VSTORE(N0)
+        vstore2
         (
             //CONVERT(acc[M0 - 1 - _i].v,VEC_DATA_TYPE(DATA_TYPE, N0)),
             acc[M0 - 1 - _i].v,
