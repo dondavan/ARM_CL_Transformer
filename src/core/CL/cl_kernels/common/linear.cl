@@ -207,6 +207,21 @@ __kernel void linear(
         }                                                                                                                                                                                          \
     }) */
 
-    
+    if(x_cond)
+    {
+#pragma unroll
+        for(int _i = 0; _i < M0; ++_i)
+        {
+            CONVERT(acc[M0 - 1 - _i].v, VEC_DATA_TYPE(DATA_TYPE, N0));
+        }
+    }
+    else
+    {
+#pragma unroll
+        for(int _i = 0; _i < M0; ++_i)
+        {
+            CONVERT(acc[M0 - 1 - _i].v,VEC_DATA_TYPE(DATA_TYPE, N0));
+        }
+    }
 }
 #endif // defined(LINEAR)
