@@ -82,7 +82,7 @@
     union {                                 \
         DATA_TYPE                      s[TILE_VECTOR_SIZE##W];                  \
         TILE_VECTOR_TYPE##W(DATA_TYPE) v;                     \
-    } __attribute__((aligned))
+    } __attribute__((aligned))  BASENAME[H]
 
 // Added __attribute__((aligned)) Hugh
 
