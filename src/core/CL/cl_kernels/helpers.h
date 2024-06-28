@@ -735,6 +735,12 @@
 
 #define convert_float1  convert_float
 #define convert_float2  convert_float
+#define convert_float3  convert_float
+#define convert_float4  convert_float
+#define convert_float5  convert_float
+#define convert_float6  convert_float
+#define convert_float7  convert_float
+#define convert_float8  convert_float
 #define convert_half1   convert_half
 #define convert_char1   convert_char
 #define convert_uchar1  convert_uchar
