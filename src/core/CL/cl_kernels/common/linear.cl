@@ -204,7 +204,7 @@ __kernel void linear(
 */
 
 
-#define NO_FUCK(data, offs, ptr) ((void)0)
+#define NO_FUCK(data, offs, ptr) {}
 
     if(x_cond)
     {
