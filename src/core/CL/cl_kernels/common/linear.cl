@@ -70,12 +70,11 @@ __kernel void linear(
     // Initialize the accumulators
     TILE(DATA_TYPE, M0, N0, acc);
 
-#pragma unroll
-    for(int i = 0; i < M0; ++i)
+    LOOP_UNROLLING(int, i, 0, 1, M0,
     {
         acc[i].v = 0.f;
-    }
-
+    })
+    
     const int rhs_z = z * rhs_h;
     int       k;
     for(k = 0; k <= K - K0; k += K0)
@@ -180,6 +179,8 @@ __kernel void linear(
     {
         indirect_buffer[_i].v = min(_i, select(M0 - 1, PARTIAL_STORE_M0 - 1, y_cond));
     }
+
+    //T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, acc, indirect_buffer);
 
     /*
     if(x_cond)
