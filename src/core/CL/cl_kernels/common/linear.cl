@@ -101,13 +101,13 @@ __kernel void linear(
             a[i].v = V_LOAD(DATA_TYPE, K0, BUFFER, lhs, 0, (i * (int)(1)), lhs_stride_y);
         }
 
-        /*
+        
         #pragma unroll
         for(int i = 0; i < K0; ++i)
         {
             b[i].v = V_LOAD(DATA_TYPE, N0,BUFFER, rhs, x, ((k + rhs_z) + i * (int)(1)), rhs_stride_y);
         }
-        */
+        
 
 #pragma unroll
         for(int _m = 0; _m < M0; ++_m)
