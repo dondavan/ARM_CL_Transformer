@@ -202,10 +202,7 @@ __kernel void linear(
         }                                                                                                                                                                                          \
     })
 */
-#define NO_STORE(data, offs, ptr) \
-    {                             \
-    }
-    
+
     if(x_cond)
     {
 #pragma unroll

@@ -532,9 +532,7 @@
 #define VSTORE_PARTIAL_STR(size, store_size) vstore_partial_##size##_##store_size
 #define VSTORE_PARTIAL(size, store_size)     VSTORE_PARTIAL_STR(size, store_size)
 
-#define NO_STORE(data, offs, ptr) \
-    {                             \
-    }
+#define NO_STORE(data, offs, ptr) {}
 
 // Size == 1 (scalar)
 #define vstore_partial_1_0  NO_STORE
