@@ -205,7 +205,6 @@ __kernel void linear(
 
     if(x_cond)
     {
-#pragma unroll
         for(int _i = 0; _i < M0; ++_i)
         {
         //  store_partial_##N0##_##PARTIAL_STORE_N0 
