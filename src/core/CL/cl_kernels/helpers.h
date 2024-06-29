@@ -534,7 +534,6 @@
 
 #define NO_STORE(data, offs, ptr) \
     {                             \
-        offs = offs;              \
     }
 
 // Size == 1 (scalar)

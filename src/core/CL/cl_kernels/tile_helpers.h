@@ -27,9 +27,6 @@
 // *INDENT-OFF*
 // clang-format off
 
-//#define TILE_VECTOR_SIZE1 1
-//#define TILE_VECTOR_SIZE2 2
-//#define TILE_VECTOR_SIZE3 3
 #define TILE_VECTOR_SIZE1 1
 #define TILE_VECTOR_SIZE2 2
 #define TILE_VECTOR_SIZE3 3
@@ -47,9 +44,6 @@
 #define TILE_VECTOR_SIZE15 16
 #define TILE_VECTOR_SIZE16 16
 
-//#define TILE_VECTOR_TYPE1(DATA_TYPE) DATA_TYPE##1
-//#define TILE_VECTOR_TYPE2(DATA_TYPE) DATA_TYPE##2
-//#define TILE_VECTOR_TYPE3(DATA_TYPE) DATA_TYPE##3
 #define TILE_VECTOR_TYPE1(DATA_TYPE) DATA_TYPE##1
 #define TILE_VECTOR_TYPE2(DATA_TYPE) DATA_TYPE##2
 #define TILE_VECTOR_TYPE3(DATA_TYPE) DATA_TYPE##3
@@ -82,9 +76,9 @@
     union {                                 \
         DATA_TYPE                      s[TILE_VECTOR_SIZE##W];                  \
         TILE_VECTOR_TYPE##W(DATA_TYPE) v;                     \
-    }  __local BASENAME[H] 
+    } __local BASENAME[H]
 
-// Added __local Hugh
+//added __local Hugh
 
 #define TENSOR4D_IMAGE(name)          \
     __read_only image2d_t name##_img, \
