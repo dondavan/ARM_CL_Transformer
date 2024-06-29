@@ -203,15 +203,13 @@ __kernel void linear(
     })
 */
 
-
-#define NO_FUCK(data, offs, ptr) {}
-
     if(x_cond)
     {
+#pragma unroll
         for(int _i = 0; _i < M0; ++_i)
         {
         //  store_partial_##N0##_##PARTIAL_STORE_N0 
-            NO_FUCK(1,0,2);
+            VSTORE_PARTIAL(N0, PARTIAL_STORE_N0)(CONVERT(acc[M0 - 1 - _i].v, VEC_DATA_TYPE(DATA_TYPE, N0)),0,(__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + 0 * sizeof(DATA_TYPE) + (indirect_buffer[M0 - 1 - _i].v) * dst_stride_y));
         }
     }
     else
