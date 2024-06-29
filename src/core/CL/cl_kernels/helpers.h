@@ -555,7 +555,7 @@
 #define vstore_partial_1_15 NO_STORE
 #define vstore_partial_1_16 NO_STORE
 // Size == 2
-#define vstore_partial_2_0  NO_STORE
+#define vstore_partial_2_0(data, offs, ptr)  NO_STORE(data, offs, ptr)
 #define vstore_partial_2_1  vstore_partial_1
 #define vstore_partial_2_2  vstore_partial_2
 #define vstore_partial_2_3  NO_STORE
