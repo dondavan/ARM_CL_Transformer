@@ -211,12 +211,7 @@ __kernel void linear(
         for(int _i = 0; _i < M0; ++_i)
         {
         //  store_partial_##N0##_##PARTIAL_STORE_N0 
-            NO_FUCK
-            (
-                1,
-                0,
-                2
-            );
+            NO_FUCK(1,0,2);
         }
     }
     else
