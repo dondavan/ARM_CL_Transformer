@@ -82,9 +82,9 @@
     union {                                 \
         DATA_TYPE                      s[TILE_VECTOR_SIZE##W];                  \
         TILE_VECTOR_TYPE##W(DATA_TYPE) v;                     \
-    }  BASENAME[H] 
+    }  __local BASENAME[H] 
 
-// Added __attribute__((aligned)) Hugh
+// Added __local Hugh
 
 #define TENSOR4D_IMAGE(name)          \
     __read_only image2d_t name##_img, \
