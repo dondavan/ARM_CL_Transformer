@@ -203,6 +203,9 @@ __kernel void linear(
     })
 */
 
+
+#define NO_FUCK(data, offs, ptr) ((void)0)
+
     if(x_cond)
     {
         for(int _i = 0; _i < M0; ++_i)
