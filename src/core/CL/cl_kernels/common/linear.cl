@@ -213,9 +213,9 @@ __kernel void linear(
         //  store_partial_##N0##_##PARTIAL_STORE_N0 
             NO_FUCK
             (
-                CONVERT(acc[M0 - 1 - _i].v, VEC_DATA_TYPE(DATA_TYPE, N0)),
+                1,
                 0,
-                (__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + 0 * sizeof(DATA_TYPE) + (indirect_buffer[M0 - 1 - _i].v) * dst_stride_y)
+                2
             );
         }
     }
