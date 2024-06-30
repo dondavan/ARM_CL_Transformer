@@ -69,7 +69,7 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
     //const int   m      = _permuted_query.dimension(1);
     //const int   n      = _transposed_key.dimension(0);
     //const int   k      = _permuted_query.dimension(0);
-    const float scale  = 1.0f / sqrt(info.d_model() / info.h());
+    //const float scale  = 1.0f / sqrt(info.d_model() / info.h());
     product_mm_kernel->configure(compile_context, &_permuted_query, &_permuted_key,nullptr, output, mm_kernel_info);
     _product_mm_kernel = std::move(product_mm_kernel);
 
