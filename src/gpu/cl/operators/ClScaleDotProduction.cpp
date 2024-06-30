@@ -7,7 +7,7 @@
 #include "src/common/utils/Log.h"
 
 #include "src/core/helpers/MemoryHelpers.h"
-#include "src/cpu/utils/CpuAuxTensorHandler.h"
+#include "src/gpu/cl/utils/ClAuxTensorHandler.h"
 
 #include "src/gpu/cl/kernels/ClVectorizeKernel.h"
 
@@ -207,11 +207,22 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
 {
     ARM_COMPUTE_UNUSED(tensors);
 
-    /*
+    
     auto query  = tensors.get_const_tensor(ACL_SRC_0);
-    auto key    = tensors.get_const_tensor(ACL_SRC_1);
-    auto value  = tensors.get_const_tensor(ACL_SRC_2);
-    auto output = tensors.get_tensor(ACL_DST);
+    //auto key    = tensors.get_const_tensor(ACL_SRC_1);
+    //auto value  = tensors.get_const_tensor(ACL_SRC_2);
+    //auto output = tensors.get_tensor(ACL_DST);
+
+    CLAuxTensorHandler reshaped_query(offset_int_vec(QueryReshape),  _reshaped_query, tensors, false);
+
+    // Run Query multi-Head reshape
+    ITensorPack query_reshape_pack{ { ACL_SRC_0, query }, { ACL_DST, reshaped_query.get() } };
+    std::cout << "CLScheduler::get().enqueue_op(*_query_reshape_kernel, query_reshape_pack, true); start" << std::endl;
+    CLScheduler::get().enqueue_op(*_query_reshape_kernel, query_reshape_pack, true);
+    std::cout << "CLScheduler::get().enqueue_op(*_query_reshape_kernel, query_reshape_pack, true); end" << std::endl;
+
+
+    /*
 
     CpuAuxTensorHandler reshaped_query(offset_int_vec(QueryReshape), _reshaped_query, tensors);
     CpuAuxTensorHandler permuted_query(offset_int_vec(QueryPermute), _permuted_query, tensors);
