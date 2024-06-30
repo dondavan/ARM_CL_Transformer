@@ -118,7 +118,9 @@ class GraphVanillaTransformerExample : public Example
 
         add_encoder_block(data_path, "layer_0/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
 
-        
+        // Pooler
+        graph 
+              << OutputLayer(get_output_accessor(common_params)).set_name("out1");
 
         // Finalize graph
         GraphConfig config;
@@ -178,7 +180,9 @@ class GraphVanillaTransformerExample : public Example
                                     get_weights_accessor(data_path + layer_path, "key_weight.npy"),
                                     get_weights_accessor(data_path + layer_path, "key_bias.npy"),
                                     get_weights_accessor(data_path + layer_path, "value_weight.npy"),
-                                    get_weights_accessor(data_path + layer_path, "value_bias.npy"));
+                                    get_weights_accessor(data_path + layer_path, "value_bias.npy"))
+
+            << MultiHeadAttentionLayer(MultiHeadAttentionLayerInfo(d_model, h)).set_name("mha1");
     }
 };
 
