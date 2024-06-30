@@ -256,6 +256,8 @@ void configure_transition_manager(Graph &g, GraphContext &ctx, ExecutionWorkload
     }
     std::cout << "Count handles end" << std::endl;
 
+    std::cout << "target_handle_count " << target_handle_count.size() << std::endl;
+
 
     std::cout << "Setup memory managers start" << std::endl;
     // Setup memory managers
