@@ -118,9 +118,7 @@ class GraphVanillaTransformerExample : public Example
 
         add_encoder_block(data_path, "layer_0/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
 
-        // Pooler
-        graph 
-              << OutputLayer(get_output_accessor(common_params)).set_name("out1");
+        
 
         // Finalize graph
         GraphConfig config;
