@@ -191,8 +191,6 @@ void configure_handle_lifetime(std::vector<TaskHandles> &tasks_handles, const Ha
     // Identify max number of tensors in flight
     HandleCounter tensors_in_flight;
 
-
-    std::cout << "acquire start" << std::endl;
     // Acquires the given handles and sets them as in flight if they aren't already
     auto acquire = [&](std::vector<std::pair<ITensorHandle *, IMemoryGroup *>> &handles)
     {
@@ -212,15 +210,18 @@ void configure_handle_lifetime(std::vector<TaskHandles> &tasks_handles, const Ha
         }
     };
 
-    std::cout << "acquire end" << std::endl;
-
 
     std::cout << "tasks_handles start" << std::endl;
     for (auto &task_handle : tasks_handles)
     {
         // Marking all the input and output tensors of the task as in flight
+
+    std::cout << "acquire input_handles " << std::endl;
         acquire(task_handle.input_handles);
+    std::cout << "acquire input_handles " << std::endl;
+    std::cout << "acquire output_handles " << std::endl;
         acquire(task_handle.output_handles);
+    std::cout << "acquire output_handles " << std::endl;
 
         // Releasing the input tensors
         for (auto &input_handle : task_handle.input_handles)
