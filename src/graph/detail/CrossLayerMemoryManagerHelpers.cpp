@@ -260,7 +260,8 @@ void configure_transition_manager(Graph &g, GraphContext &ctx, ExecutionWorkload
     std::cout << "Setup memory managers start" << std::endl;
     // Setup memory managers
     for (auto &hc : target_handle_count)
-    {
+    {   
+        std::cout << "hc " << std::endl;
         MemoryManagerContext *mm_ctx = ctx.memory_management_ctx(hc.first);
         if (mm_ctx != nullptr)
         {
