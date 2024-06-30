@@ -26,10 +26,29 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
     ARM_COMPUTE_LOG_PARAMS(key, value, query, output);
     ARM_COMPUTE_UNUSED(compile_context,query,key,value,output,info);
     
-    auto k = std::make_unique<kernels::ClVectorizeKernel>();
-    k->configure(compile_context, query, key, output);
-    _kernel = std::move(k);
+    // Query multi-Head reshape
+    TensorShape query_reshape = TensorShape(query->tensor_shape().x() / info.h(),
+                                            info.h(),
+                                            query->tensor_shape().y(),
+                                            1);
+    _reshaped_query           = query->clone()->set_tensor_shape(query_reshape);
+    TensorShape query_permute = TensorShape(query->tensor_shape().x() / info.h(),
+                                            query->tensor_shape().y(),
+                                            info.h(),
+                                            1);
+    _permuted_query           = query->clone()->set_tensor_shape(query_permute);
+
+    auto query_k = std::make_unique<kernels::ClReshapeKernel>();
+    query_k->configure(compile_context, query,&_reshaped_query);
+    _query_reshape_kernel = std::move(query_k);
+    
     /*
+    _query_permute_func = std::make_unique<CpuPermute>();
+    _query_permute_func->configure(&_reshaped_query, &_permuted_query, PermutationVector(0U, 2U, 1U));
+
+    TensorDescriptor output_desc = src->desc();
+    output_desc.shape            = _shape;
+    
     // Query multi-Head reshape
     TensorShape query_reshape = TensorShape(query->tensor_shape().x() / info.h(),
                                             info.h(),

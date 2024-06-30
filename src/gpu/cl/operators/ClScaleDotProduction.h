@@ -8,6 +8,8 @@
 #include "src/gpu/cl/ClCompileContext.h"
 #include "src/gpu/cl/IClOperator.h"
 
+#include "src/gpu/cl/kernels/ClReshapeKernel.h"
+
 #include <memory>
 
 namespace arm_compute
@@ -73,6 +75,23 @@ private:
         ConcatPermute,
         Count
     };
+
+    TensorInfo _reshaped_query{};
+    TensorInfo _permuted_query{};
+    TensorInfo _reshaped_key{};
+    TensorInfo _permuted_key{};
+    TensorInfo _reshaped_value{};
+    TensorInfo _permuted_value{};
+    TensorInfo _permuted_concat{};
+
+    std::unique_ptr<kernels::ClReshapeKernel>              _query_reshape_kernel{nullptr};
+    //std::unique_ptr<CpuPermute>                             _query_permute_func{nullptr};
+    std::unique_ptr<kernels::ClReshapeKernel>              _key_reshape_kernel{nullptr};
+    //std::unique_ptr<CpuPermute>                             _key_permute_func{nullptr};
+    std::unique_ptr<kernels::ClReshapeKernel>              _value_reshape_kernel{nullptr};
+    //std::unique_ptr<CpuPermute>                             _value_permute_func{nullptr};
+    std::unique_ptr<kernels::ClReshapeKernel>              _concat_reshape_kernel{nullptr};
+    //std::unique_ptr<CpuPermute>                             _concat_permute_func{nullptr};
 
     /*
     std::unique_ptr<kernels::CpuGemmInterleave4x4Kernel>    _query_interleave_kernel{nullptr};
