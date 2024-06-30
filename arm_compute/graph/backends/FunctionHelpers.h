@@ -1805,7 +1805,7 @@ std::unique_ptr<IFunction> create_embedding_sum_layer(EmbeddingSumLayerNode &nod
 template <typename LinearLayerFunction, typename TargetInfo>
 std::unique_ptr<IFunction> create_linear_layer(LinearLayerNode &node)
 {
-    validate_node<TargetInfo>(node, 3 /* expected inputs */, 1 /* expected outputs */);
+    validate_node<TargetInfo>(node, 3 /* expected inputs */, 3 /* expected outputs */);
 
     // Extract IO and info
     
