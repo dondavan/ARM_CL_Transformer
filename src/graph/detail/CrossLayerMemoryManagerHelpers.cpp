@@ -194,7 +194,7 @@ void configure_handle_lifetime(std::vector<TaskHandles> &tasks_handles, const Ha
     // Acquires the given handles and sets them as in flight if they aren't already
     auto acquire = [&](std::vector<std::pair<ITensorHandle *, IMemoryGroup *>> &handles)
     {
-        
+        ARM_COMPUTE_UNUSED(handles,hc);
     };
 
 
@@ -206,7 +206,7 @@ void configure_handle_lifetime(std::vector<TaskHandles> &tasks_handles, const Ha
     std::cout << "acquire input_handles " << std::endl;
         acquire(task_handle.input_handles);
     std::cout << "acquire input_handles " << std::endl;
-
+    
     std::cout << "acquire output_handles " << std::endl;
 
         std::cout << "task_handle.output_handles " << task_handle.output_handles.size() << std::endl;
