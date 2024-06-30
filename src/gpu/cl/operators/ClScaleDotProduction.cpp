@@ -70,6 +70,11 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
     key_permute_kernel->configure(compile_context, &_reshaped_key, &_permuted_key, PermutationVector(0U, 2U, 1U));
     _key_permute_kernel = std::move(key_permute_kernel);
 
+    // Pretranspose Key
+    auto key_transpose_kernel = std::make_unique<kernels::ClTransposeKernel>();
+    key_transpose_kernel->configure(compile_context, &_permuted_key, &_transposed_key);
+    _key_transpose_kernel = std::move(key_transpose_kernel);
+
 
 
 
@@ -84,13 +89,13 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
     const GPUTarget                                         gpu_target = CLScheduler::get().target();
     std::unique_ptr<cl_matmul::IClMatMulNativeKernelConfig> kernel_config =
         cl_matmul::ClMatMulNativeKernelConfigurationFactory::create(gpu_target);
-    MatMulKernelInfo mm_kernel_info = kernel_config->configure(&_permuted_query, &_permuted_key, mat_info);
+    MatMulKernelInfo mm_kernel_info = kernel_config->configure(&_permuted_query, &_transposed_key, mat_info);
     
     // Matrix multiply compute multi-head attention between Query and Key
     auto product_mm_kernel = std::make_unique<kernels::ClLinearKernel>();
     const float scale  = 1.0f / sqrt(info.d_model() / info.h());
     product_mm_kernel->set_target(gpu_target);
-    product_mm_kernel->configure(compile_context, &_permuted_query, &_permuted_key, nullptr, output, scale, 1, mm_kernel_info);
+    product_mm_kernel->configure(compile_context, &_permuted_query, &_transposed_key, nullptr, output, scale, 1, mm_kernel_info);
     _product_mm_kernel = std::move(product_mm_kernel);
 
     //auto product_mm_kernel = std::make_unique<kernels::ClMatMulNativeKernel>();
@@ -239,6 +244,7 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
     CLAuxTensorHandler permuted_query(offset_int_vec(QueryPermute), _permuted_query, tensors);
     CLAuxTensorHandler reshaped_key(offset_int_vec(KeyReshape), _reshaped_key, tensors);
     CLAuxTensorHandler permuted_key(offset_int_vec(KeyPermute), _permuted_key, tensors);
+    CLAuxTensorHandler transposed_key(offset_int_vec(KeyTranspose), _transposed_key, tensors);
 
     // Run Query multi-Head reshape
     ITensorPack query_reshape_pack{ { ACL_SRC_0, query }, { ACL_DST, reshaped_query.get() } };
@@ -252,9 +258,15 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
     ITensorPack key_permute_pack{ { ACL_SRC, reshaped_key.get() }, { ACL_DST, permuted_key.get() } };
     CLScheduler::get().enqueue_op(*_key_permute_kernel, key_permute_pack, true);
 
+    // Run Key pre-transpose
+    ITensorPack key_transpose_pack{ { ACL_SRC, permuted_key.get() }, { ACL_DST, transposed_key.get() } };
+    CLScheduler::get().enqueue_op(*_key_transpose_kernel, key_transpose_pack, true);
+
     // Run matrix multiply compute multi-head attention between Query and Key
-    ITensorPack gemm_context_pack{ { ACL_SRC_0, permuted_query.get() }, { ACL_SRC_1, permuted_key.get() }, { ACL_DST, output } };
+    ITensorPack gemm_context_pack{ { ACL_SRC_0, permuted_query.get() }, { ACL_SRC_1, transposed_key.get() }, { ACL_DST, output } };
     CLScheduler::get().enqueue_op(*_product_mm_kernel, gemm_context_pack, true);
+    
+    
     /*
 
     CpuAuxTensorHandler reshaped_query(offset_int_vec(QueryReshape), _reshaped_query, tensors);

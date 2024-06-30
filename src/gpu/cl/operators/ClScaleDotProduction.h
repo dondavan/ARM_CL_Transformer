@@ -10,6 +10,7 @@
 #include "src/gpu/cl/kernels/ClLinearKernel.h"
 #include "src/gpu/cl/kernels/ClPermuteKernel.h"
 #include "src/gpu/cl/kernels/ClReshapeKernel.h"
+#include "src/gpu/cl/kernels/ClTransposeKernel.h"
 
 #include <memory>
 
@@ -85,14 +86,18 @@ class ClScaleDotProduction : public IClOperator
     TensorInfo _permuted_value{};
     TensorInfo _permuted_concat{};
 
+    TensorInfo _transposed_key{};
+
     std::unique_ptr<kernels::ClReshapeKernel> _query_reshape_kernel{ nullptr };
     std::unique_ptr<kernels::ClPermuteKernel> _query_permute_kernel{ nullptr };
     std::unique_ptr<kernels::ClReshapeKernel> _key_reshape_kernel{ nullptr };
-    std::unique_ptr<kernels::ClPermuteKernel> _key_permute_kernel{nullptr};
+    std::unique_ptr<kernels::ClPermuteKernel> _key_permute_kernel{ nullptr };
     std::unique_ptr<kernels::ClReshapeKernel> _value_reshape_kernel{ nullptr };
     //std::unique_ptr<CpuPermute>                             _value_permute_func{nullptr};
     std::unique_ptr<kernels::ClReshapeKernel> _concat_reshape_kernel{ nullptr };
     //std::unique_ptr<CpuPermute>                             _concat_permute_func{nullptr};
+
+    std::unique_ptr<kernels::ClTransposeKernel> _key_transpose_kernel{ nullptr };
 
     std::unique_ptr<kernels::ClLinearKernel> _product_mm_kernel{ nullptr };
 
