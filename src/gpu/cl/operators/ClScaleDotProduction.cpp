@@ -213,13 +213,14 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
     //auto value  = tensors.get_const_tensor(ACL_SRC_2);
     //auto output = tensors.get_tensor(ACL_DST);
 
-    CLAuxTensorHandler reshaped_query(offset_int_vec(QueryReshape),  _reshaped_query, tensors, false);
+    CLAuxTensorHandler reshaped_query(offset_int_vec(QueryReshape),  _reshaped_query, tensors);
+    CLAuxTensorHandler permuted_query(offset_int_vec(QueryPermute), _permuted_query, tensors);
 
     // Run Query multi-Head reshape
     ITensorPack query_reshape_pack{ { ACL_SRC_0, query }, { ACL_DST, reshaped_query.get() } };
-    std::cout << "CLScheduler::get().enqueue_op(*_query_reshape_kernel, query_reshape_pack, true); start" << std::endl;
     CLScheduler::get().enqueue_op(*_query_reshape_kernel, query_reshape_pack, true);
-    std::cout << "CLScheduler::get().enqueue_op(*_query_reshape_kernel, query_reshape_pack, true); end" << std::endl;
+    ITensorPack query_permute_pack{ { ACL_SRC, reshaped_query.get() }, { ACL_DST, permuted_query.get() } };
+    CLScheduler::get().enqueue_op(*_query_permute_kernel, query_permute_pack, true);
 
 
     /*
