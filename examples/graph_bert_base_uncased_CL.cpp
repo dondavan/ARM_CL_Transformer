@@ -116,7 +116,7 @@ class GraphVanillaTransformerExample : public Example
                                 get_weights_accessor(data_path, "positional_embedding.npy", operation_layout))
                      .set_name("tkemb1");
 
-        add_encoder_block(data_path, "layer_0/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+        //add_encoder_block(data_path, "layer_0/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
 
         // Pooler
         graph 
