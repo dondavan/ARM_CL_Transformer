@@ -88,7 +88,7 @@ class ClScaleDotProduction : public IClOperator
     std::unique_ptr<kernels::ClReshapeKernel> _query_reshape_kernel{ nullptr };
     std::unique_ptr<kernels::ClPermuteKernel> _query_permute_kernel{ nullptr };
     std::unique_ptr<kernels::ClReshapeKernel> _key_reshape_kernel{ nullptr };
-    //std::unique_ptr<CpuPermute>                             _key_permute_func{nullptr};
+    std::unique_ptr<kernels::ClPermuteKernel> _key_permute_kernel{nullptr};
     std::unique_ptr<kernels::ClReshapeKernel> _value_reshape_kernel{ nullptr };
     //std::unique_ptr<CpuPermute>                             _value_permute_func{nullptr};
     std::unique_ptr<kernels::ClReshapeKernel> _concat_reshape_kernel{ nullptr };
