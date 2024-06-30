@@ -69,9 +69,9 @@ class GraphVanillaTransformerExample : public Example
         constexpr unsigned int d_vocab    = 30522U; // Vocaboary size
         constexpr unsigned int d_segemnt  = 2U;     // Sentence segmentation size
         constexpr unsigned int d_position = 512U;   // Pretrained positional encoding length
-        //constexpr unsigned int h          = 12U;    // Parallel attention (Heads)
-        //constexpr float        eps        = 1e-12;  // Layer normalization eplision
-        //constexpr unsigned int d_ff       = 3072U;  // Dim feedforward
+        constexpr unsigned int h          = 12U;    // Parallel attention (Heads)
+        constexpr float        eps        = 1e-12;  // Layer normalization eplision
+        constexpr unsigned int d_ff       = 3072U;  // Dim feedforward
         /*constexpr unsigned int d_q         = 64U;      // Dim query, 512U/8U
         constexpr unsigned int d_k           = 64U;      // Dim key, 512U/8U
         constexpr unsigned int d_v           = 64U;      // Dim value, 512U/8U
@@ -116,11 +116,11 @@ class GraphVanillaTransformerExample : public Example
                                 get_weights_accessor(data_path, "positional_embedding.npy", operation_layout))
                      .set_name("tkemb1");
 
-        //add_encoder_block(data_path, "layer_0/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+        add_encoder_block(data_path, "layer_0/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
 
         // Pooler
-        graph
-            << OutputLayer(get_output_accessor(common_params)).set_name("out1");
+        graph 
+              << OutputLayer(get_output_accessor(common_params)).set_name("out1");
 
         // Finalize graph
         GraphConfig config;
@@ -173,14 +173,14 @@ class GraphVanillaTransformerExample : public Example
     void add_encoder_block(std::string data_path, std::string layer_path,
                            unsigned int d_model, unsigned int h, float eps, unsigned int d_ff)
     {
-        ARM_COMPUTE_UNUSED(h, eps, d_ff);
-        graph << MultiHeadLinearLayer(LinearLayerInfo(d_model),
-                                      get_weights_accessor(data_path + layer_path, "query_weight.npy"),
-                                      get_weights_accessor(data_path + layer_path, "query_bias.npy"),
-                                      get_weights_accessor(data_path + layer_path, "key_weight.npy"),
-                                      get_weights_accessor(data_path + layer_path, "key_bias.npy"),
-                                      get_weights_accessor(data_path + layer_path, "value_weight.npy"),
-                                      get_weights_accessor(data_path + layer_path, "value_bias.npy"));
+        ARM_COMPUTE_UNUSED(h,eps,d_ff);
+        graph <<  MultiHeadLinearLayer(LinearLayerInfo(d_model), 
+                                    get_weights_accessor(data_path + layer_path, "query_weight.npy"),
+                                    get_weights_accessor(data_path + layer_path, "query_bias.npy"),
+                                    get_weights_accessor(data_path + layer_path, "key_weight.npy"),
+                                    get_weights_accessor(data_path + layer_path, "key_bias.npy"),
+                                    get_weights_accessor(data_path + layer_path, "value_weight.npy"),
+                                    get_weights_accessor(data_path + layer_path, "value_bias.npy"));
     }
 };
 
