@@ -7,7 +7,7 @@
 #include "src/gpu/cl/ClCompileContext.h"
 #include "src/gpu/cl/IClOperator.h"
 
-#include "src/gpu/cl/kernels/ClMatMulNativeKernel.h"
+#include "src/gpu/cl/kernels/ClLinearKernel.h"
 #include "src/gpu/cl/kernels/ClPermuteKernel.h"
 #include "src/gpu/cl/kernels/ClReshapeKernel.h"
 
@@ -94,7 +94,7 @@ class ClScaleDotProduction : public IClOperator
     std::unique_ptr<kernels::ClReshapeKernel> _concat_reshape_kernel{ nullptr };
     //std::unique_ptr<CpuPermute>                             _concat_permute_func{nullptr};
 
-    std::unique_ptr<kernels::ClMatMulNativeKernel> _product_mm_kernel{ nullptr };
+    std::unique_ptr<kernels::ClLinearKernel> _product_mm_kernel{ nullptr };
 
     /*
     std::unique_ptr<kernels::CpuGemmInterleave4x4Kernel>    _query_interleave_kernel{nullptr};

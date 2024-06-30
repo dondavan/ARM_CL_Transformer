@@ -65,13 +65,19 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
     MatMulKernelInfo mm_kernel_info = kernel_config->configure(&_permuted_query, &_permuted_key, mat_info);
     
     // Matrix multiply compute multi-head attention between Query and Key
-    auto product_mm_kernel = std::make_unique<kernels::ClMatMulNativeKernel>();
+    auto product_mm_kernel = std::make_unique<kernels::ClLinearKernel>();
+    const float scale  = 1.0f / sqrt(info.d_model() / info.h());
+    product_mm_kernel->set_target(gpu_target);
+    product_mm_kernel->configure(compile_context, &_permuted_query, &_permuted_key,nullptr, output, scale, 1, mm_kernel_info);
+    _product_mm_kernel = std::move(product_mm_kernel);
+
+    //auto product_mm_kernel = std::make_unique<kernels::ClMatMulNativeKernel>();
     //const int   m      = _permuted_query.dimension(1);
     //const int   n      = _transposed_key.dimension(0);
     //const int   k      = _permuted_query.dimension(0);
     //const float scale  = 1.0f / sqrt(info.d_model() / info.h());
-    product_mm_kernel->configure(compile_context, &_permuted_query, &_permuted_key,nullptr, output, mm_kernel_info);
-    _product_mm_kernel = std::move(product_mm_kernel);
+    //product_mm_kernel->configure(compile_context, &_permuted_query, &_permuted_key,nullptr, output, mm_kernel_info);
+    //_product_mm_kernel = std::move(product_mm_kernel);
 
 
     /*
