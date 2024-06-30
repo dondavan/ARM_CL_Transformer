@@ -220,6 +220,7 @@ void configure_handle_lifetime(std::vector<TaskHandles> &tasks_handles, const Ha
         acquire(task_handle.input_handles);
     std::cout << "acquire input_handles " << std::endl;
     std::cout << "acquire output_handles " << std::endl;
+        std::cout << "task_handle.output_handles " << task_handle.output_handles.size() << std::endl;
         acquire(task_handle.output_handles);
     std::cout << "acquire output_handles " << std::endl;
 
