@@ -9,6 +9,7 @@
 #include "src/gpu/cl/IClOperator.h"
 
 #include "src/gpu/cl/kernels/ClReshapeKernel.h"
+#include "src/gpu/cl/kernels/ClPermuteKernel.h"
 
 #include <memory>
 
@@ -85,7 +86,7 @@ private:
     TensorInfo _permuted_concat{};
 
     std::unique_ptr<kernels::ClReshapeKernel>              _query_reshape_kernel{nullptr};
-    //std::unique_ptr<CpuPermute>                             _query_permute_func{nullptr};
+    std::unique_ptr<kernels::ClPermuteKernel>              _query_permute_kernel{nullptr};
     std::unique_ptr<kernels::ClReshapeKernel>              _key_reshape_kernel{nullptr};
     //std::unique_ptr<CpuPermute>                             _key_permute_func{nullptr};
     std::unique_ptr<kernels::ClReshapeKernel>              _value_reshape_kernel{nullptr};
