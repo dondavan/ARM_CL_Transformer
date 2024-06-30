@@ -1838,6 +1838,7 @@ std::unique_ptr<IFunction> create_linear_layer(LinearLayerNode &node)
 template <typename ForwardLayerFunction, typename TargetInfo>
 std::unique_ptr<IFunction> create_simple_forward_layer(SimpleForwardLayerNode &node)
 {
+    validate_node<TargetInfo>(node, 3 /* expected inputs */, 3 /* expected outputs */);
     std::cout << "create_simple_forward_layer" <<std::endl;
     typename TargetInfo::TensorType *src1   = get_backing_tensor<TargetInfo>(node.input(0));
     typename TargetInfo::TensorType *src2   = get_backing_tensor<TargetInfo>(node.input(1));
