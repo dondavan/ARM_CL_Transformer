@@ -43,7 +43,7 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
     _query_reshape_kernel = std::move(query_reshape_kernel);
 
     auto query_permute_kernel = std::make_unique<kernels::ClPermuteKernel>();
-    _query_permute_kernel->configure(compile_context, &_reshaped_query, &_permuted_query, PermutationVector(0U, 2U, 1U));
+    query_permute_kernel->configure(compile_context, &_reshaped_query, &_permuted_query, PermutationVector(0U, 2U, 1U));
     _query_permute_kernel = std::move(query_permute_kernel);
 
     /*
