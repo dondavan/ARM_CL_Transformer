@@ -727,21 +727,21 @@ NodeID GraphBuilder::add_multi_head_linear_layer(Graph &g, NodeParams params, No
 
 
     // A node to hold all the output
-    //NodeID f_nid    = g.add_node<SimpleForwardLayerNode>(3);
+    NodeID f_nid    = g.add_node<SimpleForwardLayerNode>(3);
 
     // Connect all linear node to single node
-    //g.add_connection(q_nid, 0, f_nid,0);
-    //g.add_connection(k_nid, 0, f_nid,1);
-    //g.add_connection(v_nid, 0, f_nid,2);
+    g.add_connection(q_nid, 0, f_nid,0);
+    g.add_connection(k_nid, 0, f_nid,1);
+    g.add_connection(v_nid, 0, f_nid,2);
 
 
     set_node_params(g, q_nid, params);
     set_node_params(g, k_nid, params);
     set_node_params(g, v_nid, params);
 
-    //set_node_params(g, f_nid, params);
+    set_node_params(g, f_nid, params);
 
-    return v_nid;
+    return f_nid;
 }
 
 NodeID GraphBuilder::add_linear_node(Graph &g, NodeParams params, NodeIdxPair input, 
