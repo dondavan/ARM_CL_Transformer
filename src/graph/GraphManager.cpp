@@ -160,11 +160,13 @@ void GraphManager::execute_graph(Graph &graph)
 #ifdef MEASURE_TIME
         auto input_start_time = std::chrono::high_resolution_clock::now();
 #endif
+    std::cout << "call_all_input_node_accessors start" << std::endl;
         // Call input accessors
         if(!detail::call_all_input_node_accessors(it->second))
         {
             return;
         }
+    std::cout << "call_all_input_node_accessors end" << std::endl;
 #ifdef MEASURE_TIME
         auto   input_end_time  = std::chrono::high_resolution_clock::now();
         double input_cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(input_end_time - input_start_time).count();
@@ -180,8 +182,10 @@ void GraphManager::execute_graph(Graph &graph)
 #ifdef MEASURE_TIME
         auto all_task_start_time = std::chrono::high_resolution_clock::now();
 #endif
+std::cout << "call_all_tasks start" << std::endl;
         // Run graph
         detail::call_all_tasks(it->second);
+        std::cout << "call_all_tasks end" << std::endl;
 #ifdef MEASURE_TIME
         auto   all_task_end_time  = std::chrono::high_resolution_clock::now();
         double all_task_cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(all_task_end_time - all_task_start_time).count();
@@ -196,11 +200,13 @@ void GraphManager::execute_graph(Graph &graph)
 #ifdef MEASURE_TIME
         auto output_start_time = std::chrono::high_resolution_clock::now();
 #endif
+std::cout << "call_all_output_node_accessors start" << std::endl;
         // Call output accessors
         if(!detail::call_all_output_node_accessors(it->second))
         {
             return;
         }
+std::cout << "call_all_output_node_accessors end" << std::endl;
 #ifdef MEASURE_TIME
         auto   output_end_time  = std::chrono::high_resolution_clock::now();
         double output_cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(output_end_time - output_start_time).count();
