@@ -192,6 +192,7 @@ void configure_handle_lifetime(std::vector<TaskHandles> &tasks_handles, const Ha
     HandleCounter tensors_in_flight;
 
 
+    std::cout << "acquire start" << std::endl;
     // Acquires the given handles and sets them as in flight if they aren't already
     auto acquire = [&](std::vector<std::pair<ITensorHandle *, IMemoryGroup *>> &handles)
     {
@@ -211,6 +212,10 @@ void configure_handle_lifetime(std::vector<TaskHandles> &tasks_handles, const Ha
         }
     };
 
+    std::cout << "acquire end" << std::endl;
+
+
+    std::cout << "tasks_handles start" << std::endl;
     for (auto &task_handle : tasks_handles)
     {
         // Marking all the input and output tensors of the task as in flight
@@ -233,6 +238,8 @@ void configure_handle_lifetime(std::vector<TaskHandles> &tasks_handles, const Ha
             }
         }
     }
+
+    std::cout << "tasks_handles end" << std::endl;
 
 }
 } // namespace
@@ -263,7 +270,6 @@ void configure_transition_manager(Graph &g, GraphContext &ctx, ExecutionWorkload
     // Setup memory managers
     for (auto &hc : target_handle_count)
     {   
-        std::cout << "hc " << std::endl;
         MemoryManagerContext *mm_ctx = ctx.memory_management_ctx(hc.first);
         if (mm_ctx != nullptr)
         {
