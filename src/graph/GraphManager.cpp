@@ -123,12 +123,22 @@ void GraphManager::finalize_graph(Graph &graph, GraphContext &ctx, PassManager &
     ARM_COMPUTE_ERROR_ON_MSG(workload.tasks.empty(), "Could not configure all nodes!");
 
     // Allocate const tensors and call accessors
+
+    std::cout << "allocate_const_tensors start" << std::endl;
     detail::allocate_const_tensors(graph);
+    std::cout << "allocate_const_tensors end" << std::endl;
+    std::cout << "call_all_const_node_accessors start" << std::endl;
     detail::call_all_const_node_accessors(graph);
 
+    std::cout << "call_all_const_node_accessors end" << std::endl;
+
+    std::cout << "prepare_all_tasks start" << std::endl;
     // Prepare graph
     detail::prepare_all_tasks(workload);
+    std::cout << "prepare_all_tasks end" << std::endl;
 
+
+    std::cout << "Setup tensor memory start" << std::endl;
     // Setup tensor memory (Allocate all tensors or setup transition manager)
     if(ctx.config().use_transition_memory_manager)
     {
@@ -138,6 +148,7 @@ void GraphManager::finalize_graph(Graph &graph, GraphContext &ctx, PassManager &
     {
         detail::allocate_all_tensors(graph);
     }
+    std::cout << "Setup tensor memory end" << std::endl;
 
     // Finalize Graph context
     ctx.finalize();
