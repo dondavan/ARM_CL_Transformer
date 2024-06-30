@@ -11,6 +11,9 @@
 
 #include "src/gpu/cl/kernels/ClVectorizeKernel.h"
 
+#include "src/runtime/heuristics/matmul_native/ClMatMulNativeKernelConfig.h"
+#include "src/runtime/heuristics/matmul_native/IClMatMulNativeKernelConfig.h"
+
 namespace arm_compute
 {
 namespace opencl
@@ -45,6 +48,31 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
     auto query_permute_kernel = std::make_unique<kernels::ClPermuteKernel>();
     query_permute_kernel->configure(compile_context, &_reshaped_query, &_permuted_query, PermutationVector(0U, 2U, 1U));
     _query_permute_kernel = std::move(query_permute_kernel);
+
+
+
+    // Specify whether transpose weights is necessary in matmul info
+    const MatMulInfo mat_info = MatMulInfo();
+
+    // Note: MatMul does not need offset negation unlike gemm
+    // 1. Change shape when calling matmul to fit batch expectations.
+    //_lhs_to_use = src->clone()->set_tensor_shape(get_reshaped_matmul_tensor(_lhs_to_use.tensor_shape()));
+
+    // 2. Use heuristics to get kernel info object
+    const GPUTarget                                         gpu_target = CLScheduler::get().target();
+    std::unique_ptr<cl_matmul::IClMatMulNativeKernelConfig> kernel_config =
+        cl_matmul::ClMatMulNativeKernelConfigurationFactory::create(gpu_target);
+    MatMulKernelInfo mm_kernel_info = kernel_config->configure(&_permuted_query, &_permuted_key, mat_info);
+    
+    // Matrix multiply compute multi-head attention between Query and Key
+    auto product_mm_kernel = std::make_unique<kernels::ClMatMulNativeKernel>();
+    //const int   m      = _permuted_query.dimension(1);
+    //const int   n      = _transposed_key.dimension(0);
+    //const int   k      = _permuted_query.dimension(0);
+    const float scale  = 1.0f / sqrt(info.d_model() / info.h());
+    product_mm_kernel->configure(compile_context, &_permuted_query, &_permuted_key,nullptr, output, mm_kernel_info);
+    _product_mm_kernel = std::move(product_mm_kernel);
+
 
     /*
     _query_permute_func = std::make_unique<CpuPermute>();
