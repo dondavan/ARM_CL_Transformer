@@ -194,20 +194,7 @@ void configure_handle_lifetime(std::vector<TaskHandles> &tasks_handles, const Ha
     // Acquires the given handles and sets them as in flight if they aren't already
     auto acquire = [&](std::vector<std::pair<ITensorHandle *, IMemoryGroup *>> &handles)
     {
-        for (auto &handle : handles)
-        {
-            ITensorHandle *parent_handle = handle.first;
-            ARM_COMPUTE_ERROR_ON(parent_handle == nullptr);
-            // If the tensor is not already in flight:
-            if (tensors_in_flight.find(parent_handle) == std::end(tensors_in_flight))
-            {
-                ARM_COMPUTE_ERROR_ON(hc.find(parent_handle) == std::end(hc));
-                // Then add it to the list of in flight tensors
-                tensors_in_flight.insert(std::make_pair(parent_handle, hc.at(parent_handle)));
-                // Start of allocation's lifetime
-                parent_handle->manage(handle.second);
-            }
-        }
+        
     };
 
 
@@ -219,8 +206,11 @@ void configure_handle_lifetime(std::vector<TaskHandles> &tasks_handles, const Ha
     std::cout << "acquire input_handles " << std::endl;
         acquire(task_handle.input_handles);
     std::cout << "acquire input_handles " << std::endl;
+
     std::cout << "acquire output_handles " << std::endl;
+
         std::cout << "task_handle.output_handles " << task_handle.output_handles.size() << std::endl;
+
         acquire(task_handle.output_handles);
     std::cout << "acquire output_handles " << std::endl;
 
