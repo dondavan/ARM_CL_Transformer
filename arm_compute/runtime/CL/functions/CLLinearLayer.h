@@ -3,7 +3,10 @@
 
 #include "arm_compute/core/Error.h"
 #include "arm_compute/core/Types.h"
+
 #include "arm_compute/runtime/IFunction.h"
+#include "arm_compute/runtime/IWeightsManager.h"
+#include "arm_compute/runtime/MemoryGroup.h"
 
 #include <memory>
 
@@ -19,7 +22,8 @@ class CLLinearLayer : public IFunction
 {
     public:
     /** Constructor */
-    CLLinearLayer();
+    CLLinearLayer(std::shared_ptr<IMemoryManager> memory_manager  = nullptr,
+                  IWeightsManager                *weights_manager = nullptr);
     /** Prevent instances of this class from being copied (As this class contains pointers) */
     CLLinearLayer(const CLLinearLayer &) = delete;
     /** Prevent instances of this class from being moved (As this class contains non movable objects) */
@@ -44,11 +48,11 @@ class CLLinearLayer : public IFunction
      * @param[in]  input1 First tensor input. Data type supported: F32.
      * @param[out] output Output tensor. Data type supported: F32.
      */
-    void configure(const ICLTensor        *input1,
-                   const ICLTensor        *weight,
-                   const ICLTensor        *bias,
-                   ICLTensor              *output,
-                   const LinearLayerInfo  &linear_info);
+    void configure(const ICLTensor       *input1,
+                   const ICLTensor       *weight,
+                   const ICLTensor       *bias,
+                   ICLTensor             *output,
+                   const LinearLayerInfo &linear_info);
     /** Initialise the kernel's inputs and output
      *
      * Valid data layouts:

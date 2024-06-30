@@ -5,6 +5,8 @@
 #include "arm_compute/core/Validate.h"
 
 #include "src/core/CL/ICLKernel.h"
+#include "src/core/helpers/MemoryHelpers.h"
+
 #include "src/gpu/cl/operators/ClLinear.h"
 
 #ifdef MEASURE_TIME
@@ -17,16 +19,24 @@ namespace arm_compute
 
 struct CLLinearLayer::Impl
 {
+    MemoryGroup      memory_group{};
+    IWeightsManager *weights_manager{ nullptr };
+
     const ICLTensor                  *src{ nullptr };
     const ICLTensor                  *weight{ nullptr };
     const ICLTensor                  *bias{ nullptr };
     ICLTensor                        *dst{ nullptr };
-    std::unique_ptr<opencl::ClLinear> kernel{ nullptr };
+    std::unique_ptr<opencl::ClLinear> op{ nullptr };
+
+    bool is_prepared{false};
 };
 
-CLLinearLayer::CLLinearLayer()
+CLLinearLayer::CLLinearLayer(std::shared_ptr<IMemoryManager> memory_manager,
+                             IWeightsManager                *weights_manager)
     : _impl(std::make_unique<Impl>())
 {
+    _impl->memory_group    = MemoryGroup(std::move(memory_manager));
+    _impl->weights_manager = weights_manager;
 }
 CLLinearLayer::~CLLinearLayer() = default;
 void CLLinearLayer::configure(const ICLTensor *input,
@@ -52,8 +62,8 @@ void CLLinearLayer::configure(const CLCompileContext &compile_context,
     _impl->bias   = bias;
     _impl->dst    = output;
 
-    _impl->kernel = std::make_unique<opencl::ClLinear>();
-    _impl->kernel->configure(compile_context, input->info(), weight->info(), bias->info(), output->info(), 1.0f, 1.0f);
+    _impl->op = std::make_unique<opencl::ClLinear>();
+    _impl->op->configure(compile_context, input->info(), weight->info(), bias->info(), output->info(), 1.0f, 1.0f);
 
 #ifdef MEASURE_TIME
     auto          end_time  = std::chrono::high_resolution_clock::now();
@@ -76,6 +86,7 @@ Status CLLinearLayer::validate(const ICLTensor *input,
     return opencl::ClLinear::validate(input->info(), weight->info(), bias->info(), output->info(), 1.0f, 1.0f);
 }
 
+
 void CLLinearLayer::run()
 {
 #ifdef MEASURE_TIME
@@ -89,7 +100,7 @@ void CLLinearLayer::run()
     pack.add_tensor(TensorType::ACL_SRC_2, _impl->bias);
     pack.add_tensor(TensorType::ACL_DST, _impl->dst);
 
-    _impl->kernel->run(pack);
+    _impl->op->run(pack);
 
 #ifdef MEASURE_TIME
     auto          end_time  = std::chrono::high_resolution_clock::now();
