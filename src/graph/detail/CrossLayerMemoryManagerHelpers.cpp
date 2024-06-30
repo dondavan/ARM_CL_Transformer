@@ -245,6 +245,7 @@ void configure_transition_manager(Graph &g, GraphContext &ctx, ExecutionWorkload
     std::vector<TaskHandles> tasks_handles;
     TargetHandleCounter      target_handle_count;
     // Count handles
+    std::cout << "Count handles start" << std::endl;
     for (auto &task : workload.tasks)
     {
         // Populates IO handles
@@ -253,7 +254,10 @@ void configure_transition_manager(Graph &g, GraphContext &ctx, ExecutionWorkload
         // Count handles
         count_input_handles_per_target(tasks_handles.back(), target_handle_count);
     }
+    std::cout << "Count handles end" << std::endl;
 
+
+    std::cout << "Setup memory managers start" << std::endl;
     // Setup memory managers
     for (auto &hc : target_handle_count)
     {
@@ -267,6 +271,7 @@ void configure_transition_manager(Graph &g, GraphContext &ctx, ExecutionWorkload
             }
         }
     }
+    std::cout << "Setup memory managers end" << std::endl;
 
 }
 } // namespace detail
