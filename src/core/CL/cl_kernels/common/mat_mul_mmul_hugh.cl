@@ -320,6 +320,9 @@ __kernel void mat_mul_mmul_hugh(
     rhs_offset_first_element_in_bytes += rhs_x * sizeof(DATA_TYPE) + rhs_y * rhs_stride_y + z * rhs_stride_z;
     dst_offset_first_element_in_bytes += dst_x * sizeof(DATA_TYPE) + dst_y * dst_stride_y + z * dst_stride_z;
 
+    // Initialize the accumulators
+    // MMUL extension accumulate the result in F32 for both F32 and F16
+    TILE(float, M0, N0, c_f32);
 
 #undef MMUL_BLOCK_SIZE
 }
