@@ -324,10 +324,7 @@ __kernel void mat_mul_mmul_hugh(
     // MMUL extension accumulate the result in F32 for both F32 and F16
     TILE(float, M0, N0, c_f32);
 
-    LOOP_UNROLLING(int, i, 0, 1, M0,
-    {
-        c_f32[i].v = 0;
-    })
+    LOOP_UNROLLING(int, i, 0, 1, M0,{c_f32[i].v = 0;});
 
     /*
     for(int k = 0; k < K; k += MMUL_K0)
