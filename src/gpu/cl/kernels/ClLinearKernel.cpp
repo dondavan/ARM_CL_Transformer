@@ -92,21 +92,6 @@ void ClLinearKernel::configure(const CLCompileContext &compile_context,
     // Create kernel
     _kernel = create_kernel(compile_context, kernel_name, build_opts.options());
 
-    // Set config_id for enabling LWS tuning
-    _config_id = kernel_name;
-    _config_id += "_";
-    _config_id += lower_string(string_from_data_type(lhs->data_type()));
-    _config_id += "_";
-    _config_id += support::cpp11::to_string(k);
-    _config_id += "_";
-    _config_id += support::cpp11::to_string(dst->dimension(2));
-    _config_id += "_";
-    _config_id += support::cpp11::to_string(m0);
-    _config_id += "_";
-    _config_id += support::cpp11::to_string(n0);
-    _config_id += "_";
-    _config_id += support::cpp11::to_string(matmul_kernel_info.k0);
-
     std::cout << "src/gpu/cl/kernels/ClLinearKernel.cpp configure end" << std::endl;
     /*
     ARM_COMPUTE_UNUSED(compile_context);
