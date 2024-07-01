@@ -40,19 +40,22 @@ inline void perform_bias_addition(uchar *bias_ptr, uint bias_offset_first_elemen
 #endif // defined(BIAS)
 
 #if defined(MAT_MUL_MMUL_HUGH)
-/** This OpenCL kernel performs the batch matrix multiplication (BatchMatMul) using MMUL: LHS non-transposed, RHS non-transposed - buffer only
+
+/** This OpenCL kernel performs the batch matrix multiplication (BatchMatMul): LHS non-transposed, RHS non-transposed - buffer only
  *
  * @note the "batch" here expresses the number of matrix multiplications to run in parallel. However, it
  *       should NOT be confused with the batch size of the model. For NHWC the "batch" is the "H" dimension
  * @note The data type must be passed at compile time using -DDATA_TYPE (e.g. -DDATA_TYPE=float)
- * @note The tile's dimensions used for the LHS and RHS matrices (M0, N0 and K0) must be passed at compile time using -DN0, -DM0 and -DK0 (e.g. -DN0=8, -DM0=4, -DK0=1).
- * @note The number of leftover outputs rows/columns must be passed using -DN0_LEFTOVER and -DM0_LEFTOVER (e.g. -DN0_LEFTOVER=2, -DM0_LEFTOVER=3)
- * @note The MMUL block dimension (MMUL_M0, MMUL_N0, MMUL_K0) must be passed at compile time using -DMMUL_M0, -DMMUL_N0 and -DMMUL_K0 (e.g. -DMMUL_M0=4, -DMMUL_N0=4, -DMMUL_K0=4).
- * @note The kernel name in uppercase must be passed at compile time (e.g. -DMAT_MUL_NATIVE_MMUL_NT_NT)
+ * @note The block's dimensions used for the LHS and RHS matrices (M0, N0 and K0) must be passed at compile time using -DN0, -DM0 and -DK0 (e.g. -DN0=8, -DM0=4, -DK0=4).
+ * @note The fused activation function used should be passed with -DACTIVATION_TYPE, -DA_VAL and -DB_VAL are used for min and max output bounded activation functions.
+ * @note The number of leftover outputs rows/columns must be passed using -DPARTIAL_STORE_N0 and -DPARTIAL_STORE_M0 (e.g. -DPARTIAL_STORE_N0=2, -DPARTIAL_STORE_M0=3)
+ * @note The dimension K must be passed at compile time using -DK (e.g. -DK=6)
+ * @note The tensor type ("BUFFER" or "IMAGE") of the rhs tensor must be passed at compile time using -DRHS_TENSOR_TYPE (e.g. -DRHS_TENSOR_TYPE=BUFFER)
+ * @note The kernel name in uppercase must be passed at compile time (e.g. -DMAT_MUL_NATIVE_NT_NT)
  * @note Only the following configurations of M0, N0 and K0 are currently supported:
  *  - M0 > 0
- *  - N0 = 1, 2, 3, 4, 8, 16
- *  - K0 = 1
+ *  - N0 = 1, 2, 3, 4, 8, 16 (only 4, 8, 16 if RHS_TENSOR_TYPE=IMAGE)
+ *  - K0 = 1, 2, 3, 4, 8, 16
  * @note Values > 8 for M0 are not expected to be efficient
  *
  * @param[in]  lhs_ptr                            Pointer to the lhs matrix. Supported data types: F32/F16
@@ -62,6 +65,7 @@ inline void perform_bias_addition(uchar *bias_ptr, uint bias_offset_first_elemen
  * @param[in]  lhs_h                              The height of the lhs tensor
  * @param[in]  lhs_n                              Number of the matrices (buffers) in the batch
  * @param[in]  lhs_offset_first_element_in_bytes  The offset of the first element in the lhs matrix
+ * @param[in]  rhs_img                            (Optional) Read only cl_image object for the rhs tensor. Included when RHS_TENSOR_TYPE=IMAGE
  * @param[in]  rhs_ptr                            Pointer to the rhs matrix. Supported data types: same as @p lhs_ptr
  * @param[in]  rhs_stride_y                       Stride of the rhs matrix in Y (2nd) dimension (in bytes)
  * @param[in]  rhs_stride_z                       Stride of the rhs tensor in Z (3rd) dimension (in bytes)
@@ -83,11 +87,7 @@ inline void perform_bias_addition(uchar *bias_ptr, uint bias_offset_first_elemen
  * @param[in]  dst_h                              The height of the dst tensor
  * @param[in]  dst_n                              Number of the matrices (buffers) in the batch
  * @param[in]  dst_offset_first_element_in_bytes  The offset of the first element in the dst matrix
- * @param[in]  M                                  Number of rows in LHS matrix
- * @param[in]  N                                  Number of columns in RHS matrix
- * @param[in]  K                                  Number of columns in LHS matrix and rows in RHS matrix, which is multiple of MMUL_K0.
  */
- //mat_mul_native_mmul_nt_nt
 __kernel void mat_mul_mmul_hugh(
     TENSOR3D_T(lhs, BUFFER),
     TENSOR3D_T(rhs, RHS_TENSOR_TYPE),
