@@ -333,8 +333,8 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
     CLScheduler::get().enqueue_op(*_key_transpose_kernel, key_transpose_pack, true);
 
     // Run matrix multiply compute multi-head attention between Query and Key
-    ITensorPack gemm_context_pack{ { ACL_SRC_0, permuted_query.get() }, { ACL_SRC_1, transposed_key.get() }, { ACL_DST, scaled_query_key.get() } };
-    CLScheduler::get().enqueue_op(*_product_mm_kernel, gemm_context_pack, true);
+    ITensorPack gemm_QK_pack{ { ACL_SRC_0, permuted_query.get() }, { ACL_SRC_1, transposed_key.get() }, { ACL_DST, scaled_query_key.get() } };
+    CLScheduler::get().enqueue_op(*_product_mm_kernel, gemm_QK_pack, true);
 
     // Softmax scaled product
     ITensorPack softmax_pack = { { ACL_SRC, scaled_query_key.get() }, { ACL_DST, softmaxed_product.get() } };
