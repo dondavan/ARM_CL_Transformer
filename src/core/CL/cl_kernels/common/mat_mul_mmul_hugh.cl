@@ -326,7 +326,7 @@ __kernel void mat_mul_mmul_hugh(
 
     LOOP_UNROLLING(int, i, 0, 1, M0,{c_f32[i].v = 0;});
 
-    /*
+
     for(int k = 0; k < K; k += MMUL_K0)
     {
         // A tile of M0xK0 but K0 must be set to 1
@@ -397,7 +397,7 @@ __kernel void mat_mul_mmul_hugh(
             }
         })
     }
-*/
+
 #undef MMUL_BLOCK_SIZE
 }
 #endif // defined(MAT_MUL_MMUL_HUGH)
