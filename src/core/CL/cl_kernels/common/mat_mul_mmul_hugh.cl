@@ -338,10 +338,10 @@ __kernel void mat_mul_mmul_hugh(
         T_LOAD(DATA_TYPE, M0, 1, BUFFER, lhs, 0, 0, 1, lhs_stride_y, a);
         T_LOAD(DATA_TYPE, 1, N0, BUFFER, rhs, 0, 0, 1, rhs_stride_y, b);
 
-        LOOP_UNROLLING(int, m0, 0, 1, M0,
-        {
-            LOOP_UNROLLING(int, n0, 0, 1, N0,{c_f32[m0].s[n0] = arm_matrix_multiply(a[m0].s[0], b[0].s[n0], c_f32[m0].s[n0]);})
-        })
+
+        T_MMUL(DATA_TYPE, DATA_TYPE, DATA_TYPE, M0, N0, 1, NT, NT, a, b, c_f32);
+
+
 
         lhs_offset_first_element_in_bytes += MMUL_K0 * sizeof(DATA_TYPE);
         rhs_offset_first_element_in_bytes += MMUL_K0 * rhs_stride_y;
