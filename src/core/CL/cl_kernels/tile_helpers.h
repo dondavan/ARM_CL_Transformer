@@ -194,8 +194,10 @@
 
 #if !defined(UNROLL_WITH_PRAGMA)
 #define UNROLL_INCR(idx, step, macro) idx += step; macro
+// Hugh ori #define UNROLL_INCR(idx, step, macro) idx += (step); (macro)
 
 #define LOOP_UNROLLING_1(idx, step, macro) macro
+// Hugh ori #define LOOP_UNROLLING_1(idx, step, macro) (macro)
 #define LOOP_UNROLLING_2(idx, step, macro) LOOP_UNROLLING_1(idx, step, macro); UNROLL_INCR(idx, step, macro)
 #define LOOP_UNROLLING_3(idx, step, macro) LOOP_UNROLLING_2(idx, step, macro); UNROLL_INCR(idx, step, macro)
 #define LOOP_UNROLLING_4(idx, step, macro) LOOP_UNROLLING_3(idx, step, macro); UNROLL_INCR(idx, step, macro)
@@ -898,11 +900,19 @@
     ({                                                                                                                                                                                             \
         if(WIDTH1_CONDITION)                                                                                                                                                                       \
         {                                                                                                                                                                                          \
-            LOOP_UNROLLING(int, _i, 0, 1, HEIGHT,{VSTORE_PARTIAL(WIDTH0, WIDTH1)(CONVERT(src[HEIGHT - 1 - _i].v, VEC_DATA_TYPE(DATA_TYPE, WIDTH0)), 0, (__global DATA_TYPE *)(TENSOR##_ptr + TENSOR##_offset_first_element_in_bytes + (X) * sizeof(DATA_TYPE) + (indirect_y[HEIGHT - 1 - _i].v) * STRIDE_Y));})                                                                                                                                                                                     \
+            LOOP_UNROLLING(int, _i, 0, 1, HEIGHT,                                                                                                                                                  \
+            {                                                                                                                                                                                      \
+                VSTORE_PARTIAL(WIDTH0, WIDTH1)                                                                                                                                                     \
+                (CONVERT(src[HEIGHT - 1 - _i].v, VEC_DATA_TYPE(DATA_TYPE, WIDTH0)), 0, (__global DATA_TYPE *)(TENSOR##_ptr + TENSOR##_offset_first_element_in_bytes + (X) * sizeof(DATA_TYPE) + (indirect_y[HEIGHT - 1 - _i].v) * STRIDE_Y)); \
+            })                                                                                                                                                                                     \
         }                                                                                                                                                                                          \
         else                                                                                                                                                                                       \
         {                                                                                                                                                                                          \
-            LOOP_UNROLLING(int, _i, 0, 1, HEIGHT,{VSTORE(WIDTH0)(CONVERT(src[HEIGHT - 1 - _i].v, VEC_DATA_TYPE(DATA_TYPE, WIDTH0)), 0, (__global DATA_TYPE *)(TENSOR##_ptr + TENSOR##_offset_first_element_in_bytes + (X) * sizeof(DATA_TYPE) + (indirect_y[HEIGHT - 1 - _i].v) * STRIDE_Y));})                                                                                                                                                                                     \
+            LOOP_UNROLLING(int, _i, 0, 1, HEIGHT,                                                                                                                                                  \
+            {                                                                                                                                                                                      \
+                VSTORE(WIDTH0)                                                                                                                                                                     \
+                (CONVERT(src[HEIGHT - 1 - _i].v, VEC_DATA_TYPE(DATA_TYPE, WIDTH0)), 0, (__global DATA_TYPE *)(TENSOR##_ptr + TENSOR##_offset_first_element_in_bytes + (X) * sizeof(DATA_TYPE) + (indirect_y[HEIGHT - 1 - _i].v) * STRIDE_Y)); \
+            })                                                                                                                                                                                     \
         }                                                                                                                                                                                          \
     })
 
