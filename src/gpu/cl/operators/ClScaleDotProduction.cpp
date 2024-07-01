@@ -136,7 +136,7 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
     //  Multiply between scaled product and value
     auto context_mm_kernel = std::make_unique<kernels::ClLinearKernel>();
     context_mm_kernel->set_target(gpu_target);
-    context_mm_kernel->configure(compile_context, &_softmaxed_product, &_permuted_value, nullptr, &_gemmed_context, 1.0f, 1, mm_kernel_info_qk);
+    context_mm_kernel->configure(compile_context, &_softmaxed_product, &_permuted_value, nullptr, &_gemmed_context, 1.0f, 1, mm_kernel_info_pv);
     _context_mm_kernel = std::move(context_mm_kernel);
 
 
