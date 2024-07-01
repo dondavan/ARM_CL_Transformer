@@ -12,7 +12,6 @@
 #include "src/gpu/cl/kernels/ClReshapeKernel.h"
 #include "src/gpu/cl/kernels/ClSoftmaxKernel.h"
 #include "src/gpu/cl/kernels/ClTransposeKernel.h"
-#include "src/gpu/cl/operators/ClGemm.h"
 
 #include <memory>
 
@@ -110,7 +109,6 @@ class ClScaleDotProduction : public IClOperator
     std::unique_ptr<kernels::ClLinearKernel> _product_mm_kernel{ nullptr };
     std::unique_ptr<kernels::ClLinearKernel> _context_mm_kernel{ nullptr };
 
-    std::unique_ptr<ClGemm> _mm_gemm_op{ nullptr };
 
     /*
     std::unique_ptr<kernels::CpuGemmInterleave4x4Kernel>    _query_interleave_kernel{nullptr};
