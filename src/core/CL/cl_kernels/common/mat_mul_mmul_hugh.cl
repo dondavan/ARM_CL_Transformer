@@ -39,7 +39,7 @@ inline void perform_bias_addition(uchar *bias_ptr, uint bias_offset_first_elemen
 }
 #endif // defined(BIAS)
 
-#if defined(MAT_MUL_NATIVE_MMUL_HUGH)
+#if defined(MAT_MUL_MMUL_HUGH)
 /** This OpenCL kernel performs the batch matrix multiplication (BatchMatMul) using MMUL: LHS non-transposed, RHS non-transposed - buffer only
  *
  * @note the "batch" here expresses the number of matrix multiplications to run in parallel. However, it
@@ -323,4 +323,4 @@ __kernel void mat_mul_mmul_hugh(
 
 #undef MMUL_BLOCK_SIZE
 }
-#endif // defined(MAT_MUL_NATIVE_MMUL_HUGH)
+#endif // defined(MAT_MUL_MMUL_HUGH)
