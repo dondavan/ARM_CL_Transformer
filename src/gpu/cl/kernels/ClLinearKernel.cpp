@@ -198,7 +198,9 @@ void ClLinearKernel::run_op(ITensorPack &tensors, const Window &window, cl::Comm
     ICLTensor *dst = utils::cast::polymorphic_downcast<ICLTensor *>(tensors.get_tensor(TensorType::ACL_DST));
     ARM_COMPUTE_ERROR_ON_NULLPTR(lhs, rhs, dst);
     ARM_COMPUTE_LOG_PARAMS(lhs, rhs, bias, dst);
-    unsigned int idx = 0;
+
+    unsigned int idx              = 0;
+    Window       window_collapsed = window.collapse(ICLKernel::window(), Window::DimZ);
 
     add_3d_tensor_nhw_argument(idx, lhs);
     add_3d_tensor_nhw_argument(idx, rhs);
@@ -208,16 +210,7 @@ void ClLinearKernel::run_op(ITensorPack &tensors, const Window &window, cl::Comm
     }
     add_3d_tensor_nhw_argument(idx, dst);
 
-    // Pass m and n at runtime as signed ints, to ensure results of any subtractions they could be operand in, would still be signed.
-    _kernel.setArg<cl_int>(idx++, _m);
-    _kernel.setArg<cl_int>(idx++, _n);
-    _kernel.setArg<cl_int>(idx++, _k);
-
-    // LWS_x should be multiple of 16 at least. (32, 2) has been chosen to have more work-items on a single core
-    // LWS also enforces the order of execution of the work items which improves cache utilization
-    enqueue(queue, *this, window, cl::NDRange(32, 2), false);
-    
-    std::cout << "src/gpu/cl/kernels/ClLinearKernel.cpp run end" << std::endl;
+    enqueue(queue, *this, window_collapsed, lws_hint());
 
     /*
     ARM_COMPUTE_ERROR_ON_UNCONFIGURED_KERNEL(this);
