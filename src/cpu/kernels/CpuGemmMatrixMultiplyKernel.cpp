@@ -137,6 +137,19 @@ void CpuGemmMatrixMultiplyKernel::configure(const ITensorInfo     *lhs,
     tensor_shape.set(1, is_interleaved ? reshape_info.m() : lhs->dimension(1));
     auto_init_if_empty(*dst, lhs->clone()->set_tensor_shape(tensor_shape));
 
+
+    std::cout << "lhs->info().x() " << lhs->tensor_shape().x() << std::endl;
+    std::cout << "lhs->info().y() " << lhs->tensor_shape().y() << std::endl;
+    std::cout << "lhs->info().z() " << lhs->tensor_shape().z() << std::endl;
+
+    std::cout << "rhs->tensor_shape().x() " << rhs->tensor_shape().x() << std::endl;
+    std::cout << "rhs->tensor_shape().y() " << rhs->tensor_shape().y() << std::endl;
+    std::cout << "rhs->tensor_shape().z() " << rhs->tensor_shape().z() << std::endl;
+
+    std::cout << "dst->tensor_shape().x() " << dst->tensor_shape().x() << std::endl;
+    std::cout << "dst->tensor_shape().y() " << dst->tensor_shape().y() << std::endl;
+    std::cout << "dst->tensor_shape().z() " << dst->tensor_shape().z() << std::endl;
+    
     // Explictly set dst tensor shape
     dst->set_tensor_shape(tensor_shape);
 
