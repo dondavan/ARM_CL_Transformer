@@ -25,6 +25,11 @@ namespace opencl
 namespace kernels
 {
 
+// Block size dimensions for the MMUL extension
+constexpr int mmul_m0 = 4;
+constexpr int mmul_n0 = 4;
+constexpr int mmul_k0 = 4;
+
 void ClLinearKernel::configure(const CLCompileContext &compile_context,
                                ITensorInfo            *lhs,
                                ITensorInfo            *rhs,
@@ -34,10 +39,78 @@ void ClLinearKernel::configure(const CLCompileContext &compile_context,
                                float                   beta,
                                const MatMulKernelInfo &matmul_kernel_info)
 {
+    std::cout << "src/gpu/cl/kernels/ClLinearKernel.cpp configure start" << std::endl;
+
+    ARM_COMPUTE_ERROR_ON_NULLPTR(lhs, rhs, dst);
+    ARM_COMPUTE_LOG_PARAMS(lhs, rhs, bias, dst, matmul_kernel_info);
+    ARM_COMPUTE_ERROR_THROW_ON(validate(lhs, rhs, bias, dst, matmul_kernel_info));
+
+    // dst tensor auto initialization if not yet initialized
+    auto_init_if_empty(*dst, lhs->clone()->set_tensor_shape(misc::shape_calculator::compute_matmul_shape(
+                                 lhs->tensor_shape(), rhs->tensor_shape(), matmul_kernel_info)));
+
+    const int m = dst->dimension(1);
+    const int n = dst->dimension(0);
+    const int k = matmul_kernel_info.adj_lhs ? lhs->tensor_shape().y() : lhs->tensor_shape().x();
+
+    _m = m;
+    _n = n;
+    _k = k;
+
+    const int m0 = std::min(matmul_kernel_info.m0, m);
+    const int n0 = adjust_vec_size(matmul_kernel_info.n0, n);
+
+    // Configure kernel window
+    const auto win_config =
+        validate_and_configure_window_for_mmul_kernels(lhs, rhs, dst, matmul_kernel_info, mmul_m0, mmul_n0);
+    ARM_COMPUTE_ERROR_THROW_ON(win_config.first);
+    IClKernel::configure_internal(win_config.second);
+
+    // Calculate partial (store instead of load) M0 and partial N0 for the partial blocks at the end of a row/column if any. This is to avoid padding.
+    const unsigned int m0_leftover = m % m0;
+    const unsigned int n0_leftover = n % n0;
+
+    CLBuildOptions build_opts;
+    build_opts.add_option("-DDATA_TYPE=" + get_cl_type_from_data_type(lhs->data_type()));
+    build_opts.add_option_if(lhs->data_type() == DataType::F16, "-DHALF_PRECISION");
+    build_opts.add_option("-DM0=" + support::cpp11::to_string(m0));
+    build_opts.add_option("-DN0=" + support::cpp11::to_string(n0));
+    build_opts.add_option("-DM0_LEFTOVER=" + support::cpp11::to_string(m0_leftover));
+    build_opts.add_option("-DN0_LEFTOVER=" + support::cpp11::to_string(n0_leftover));
+    build_opts.add_option("-DMMUL_M0=" + support::cpp11::to_string(mmul_m0));
+    build_opts.add_option("-DMMUL_N0=" + support::cpp11::to_string(mmul_n0));
+    build_opts.add_option("-DMMUL_K0=" + support::cpp11::to_string(mmul_k0));
+    build_opts.add_option_if(bias != nullptr, "-DBIAS");
+
+    std::string kernel_name("mat_mul_mmul_hugh");
+
+    // A macro guard to compile ONLY the kernel of interest
+    build_opts.add_option("-D" + upper_string(kernel_name));
+
+    // Create kernel
+    _kernel = create_kernel(compile_context, kernel_name, build_opts.options());
+
+    // Set config_id for enabling LWS tuning
+    _config_id = kernel_name;
+    _config_id += "_";
+    _config_id += lower_string(string_from_data_type(lhs->data_type()));
+    _config_id += "_";
+    _config_id += support::cpp11::to_string(k);
+    _config_id += "_";
+    _config_id += support::cpp11::to_string(dst->dimension(2));
+    _config_id += "_";
+    _config_id += support::cpp11::to_string(m0);
+    _config_id += "_";
+    _config_id += support::cpp11::to_string(n0);
+    _config_id += "_";
+    _config_id += support::cpp11::to_string(matmul_kernel_info.k0);
+
+    std::cout << "src/gpu/cl/kernels/ClLinearKernel.cpp configure end" << std::endl;
+    /*
     ARM_COMPUTE_UNUSED(compile_context);
     ARM_COMPUTE_UNUSED(alpha,beta,bias);
 
-    std::cout << "src/gpu/cl/kernels/ClLinearKernel.cpp configure start" << std::endl;
+    
 
     // dst tensor auto initialization if not yet initialized
     auto_init_if_empty(*dst, lhs->clone()->set_tensor_shape(misc::shape_calculator::compute_matmul_shape(
@@ -107,15 +180,14 @@ void ClLinearKernel::configure(const CLCompileContext &compile_context,
     //build_opts.add_option(("-DB_VAL=" + float_to_string_with_full_precision(act_info.b())));
     //build_opts.add_option("-DACTIVATION_TYPE=" + lower_string(string_from_activation_func(act_info.activation())));
 
-    std::string kernel_name("linear");
+    std::string kernel_name("mat_mul_mmul_hugh");
 
     // A macro guard to compile ONLY the kernel of interest
     build_opts.add_option("-D" + upper_string(kernel_name));
 
     // Create kernel
     _kernel = create_kernel(compile_context, kernel_name, build_opts.options());
-
-    std::cout << "src/gpu/cl/kernels/ClLinearKernel.cpp configure end" << std::endl;
+*/
 }
 
 Status ClLinearKernel::validate(const ITensorInfo *src, const ITensorInfo *vector, ITensorInfo *dst)
