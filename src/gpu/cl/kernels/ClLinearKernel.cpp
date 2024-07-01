@@ -82,7 +82,7 @@ void ClLinearKernel::configure(const CLCompileContext &compile_context,
     build_opts.add_option("-DMMUL_M0=" + support::cpp11::to_string(mmul_m0));
     build_opts.add_option("-DMMUL_N0=" + support::cpp11::to_string(mmul_n0));
     build_opts.add_option("-DMMUL_K0=" + support::cpp11::to_string(mmul_k0));
-    build_opts.add_option_if(bias != nullptr, "-DBIAS");
+   //build_opts.add_option_if(bias != nullptr, "-DBIAS");
 
     std::string kernel_name("mat_mul_mmul_hugh");
 
