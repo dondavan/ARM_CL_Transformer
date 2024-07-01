@@ -76,7 +76,7 @@
     union {                                 \
         DATA_TYPE                      s[TILE_VECTOR_SIZE##W];                  \
         TILE_VECTOR_TYPE##W(DATA_TYPE) v;                     \
-    } BASENAME[H]
+    } __global BASENAME[H]
 
 #define TENSOR4D_IMAGE(name)          \
     __read_only image2d_t name##_img, \
