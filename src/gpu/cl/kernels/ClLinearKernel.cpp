@@ -45,7 +45,7 @@ void ClLinearKernel::configure(const CLCompileContext &compile_context,
     ARM_COMPUTE_LOG_PARAMS(lhs, rhs, bias, dst, matmul_kernel_info);
     ARM_COMPUTE_ERROR_THROW_ON(validate(lhs, rhs, bias, dst, matmul_kernel_info));
 
-    ARM_COMPUTE_UNUSED(alpha,beta);
+    ARM_COMPUTE_UNUSED(alpha,beta,bias);
 
     // dst tensor auto initialization if not yet initialized
     auto_init_if_empty(*dst, lhs->clone()->set_tensor_shape(misc::shape_calculator::compute_matmul_shape(
