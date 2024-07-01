@@ -97,9 +97,9 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
      std::cout << "      _product_mm_kernel " <<std::endl;
                  // Configure matrix multiply kernel
     const GEMMInfo &gemm_info = GEMMInfo();        // activation_info
-    _mm_gemm_op = std::make_unique<ClGemm>();
-    _mm_gemm_op->configure(compile_context,  &_permuted_query, &_transposed_key, nullptr, output, 1.f, 1.f, gemm_info);
-
+    auto mm_gemm_op = std::make_unique<ClGemm>();
+    mm_gemm_op->configure(compile_context,  &_permuted_query, &_transposed_key, nullptr, output, 1.f, 1.f, gemm_info);
+    _mm_gemm_op = std::move(mm_gemm_op);
      /*
     // Specify whether transpose weights is necessary in matmul info
     const MatMulInfo mat_info_qk = MatMulInfo();
