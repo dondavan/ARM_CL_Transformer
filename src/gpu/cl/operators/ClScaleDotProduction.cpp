@@ -111,7 +111,7 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
     auto        product_mm_kernel = std::make_unique<kernels::ClLinearKernel>();
     const float scale             = 1.0f / sqrt(info.d_model() / info.h());
     product_mm_kernel->set_target(gpu_target);
-    product_mm_kernel->configure(compile_context, &_permuted_query, &_transposed_key, nullptr, &_scaled_query_key, scale, 1, mm_kernel_info_qk);
+    product_mm_kernel->configure(compile_context, &_permuted_query, &_transposed_key, nullptr, output, scale, 1, mm_kernel_info_qk);
     _product_mm_kernel = std::move(product_mm_kernel);
 
     //  Softmax of previous product
@@ -333,23 +333,24 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
     CLScheduler::get().enqueue_op(*_key_transpose_kernel, key_transpose_pack, true);
 
     // Run matrix multiply compute multi-head attention between Query and Key
-    ITensorPack gemm_QK_pack{ { ACL_SRC_0, permuted_query.get() }, { ACL_SRC_1, transposed_key.get() }, { ACL_DST, scaled_query_key.get() } };
+    ITensorPack gemm_QK_pack{ { ACL_SRC_0, permuted_query.get() }, { ACL_SRC_1, transposed_key.get() }, { ACL_DST, output } };
     CLScheduler::get().enqueue_op(*_product_mm_kernel, gemm_QK_pack, true);
 
     // Softmax scaled product
     ITensorPack softmax_pack = { { ACL_SRC, scaled_query_key.get() }, { ACL_DST, softmaxed_product.get() } };
-    CLScheduler::get().enqueue_op(*_softmax_kernel, softmax_pack, true);
+    //CLScheduler::get().enqueue_op(*_softmax_kernel, softmax_pack, true);
 
     // Run matrix multiply compute multi-head attention between Context and Value
     ITensorPack gemm_context_pack{ { ACL_SRC_0, softmaxed_product.get() }, { ACL_SRC_1, permuted_value.get() }, { ACL_DST, gemmed_context.get() } };
-    CLScheduler::get().enqueue_op(*_context_mm_kernel, gemm_context_pack, true);
+    //CLScheduler::get().enqueue_op(*_context_mm_kernel, gemm_context_pack, true);
 
     // Concat all attention head together
     ITensorPack concat_permute_pack{ { ACL_SRC, gemmed_context.get() }, { ACL_DST, permuted_concat.get() } };
-    CLScheduler::get().enqueue_op(*_concat_permute_kernel, concat_permute_pack, true);
+    //CLScheduler::get().enqueue_op(*_concat_permute_kernel, concat_permute_pack, true);
 
     ITensorPack concat_reshape_pack{ { ACL_SRC_0, permuted_concat.get() }, { ACL_DST, output } };
-    CLScheduler::get().enqueue_op(*_concat_reshape_kernel, concat_reshape_pack, true);
+    //CLScheduler::get().enqueue_op(*_concat_reshape_kernel, concat_reshape_pack, true);
+    ARM_COMPUTE_UNUSED(softmax_pack,gemm_context_pack,concat_permute_pack,concat_reshape_pack);
 
 
     /*
