@@ -44,6 +44,9 @@ void ClLinearKernel::configure(const CLCompileContext &compile_context,
     ARM_COMPUTE_ERROR_ON_NULLPTR(lhs, rhs, dst);
     ARM_COMPUTE_LOG_PARAMS(lhs, rhs, bias, dst, matmul_kernel_info);
     ARM_COMPUTE_ERROR_THROW_ON(validate(lhs, rhs, bias, dst, matmul_kernel_info));
+    ARM_COMPUTE_ERROR_ON_MSG(!arm_matrix_multiply_supported(CLKernelLibrary::get().get_device()),
+                                    "The extension cl_arm_matrix_multiply is not supported on the target platform");
+    
 
     ARM_COMPUTE_UNUSED(alpha,beta,bias);
 
