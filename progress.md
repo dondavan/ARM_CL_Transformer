@@ -343,3 +343,24 @@ c->tensor_shape().z() 1
 d->tensor_shape().x() 768
 d->tensor_shape().y() 7
 d->tensor_shape().z() 1
+
+
+Permute
+lhs->info().x() 256
+lhs->info().y() 2
+lhs->info().z() 12
+rhs->tensor_shape().x() 256
+rhs->tensor_shape().y() 2
+rhs->tensor_shape().z() 12
+dst->tensor_shape().x() 7
+dst->tensor_shape().y() 7
+dst->tensor_shape().z() 12
+lhs->info().x() 28
+lhs->info().y() 2
+lhs->info().z() 12
+rhs->tensor_shape().x() 64
+rhs->tensor_shape().y() 7
+rhs->tensor_shape().z() 12
+dst->tensor_shape().x() 64
+dst->tensor_shape().y() 7
+dst->tensor_shape().z() 12
