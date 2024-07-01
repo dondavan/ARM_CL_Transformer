@@ -94,6 +94,7 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
     key_transpose_kernel->configure(compile_context, &_permuted_key, &_transposed_key);
     _key_transpose_kernel = std::move(key_transpose_kernel);
 
+     std::cout << "      _product_mm_kernel " <<std::endl;
     // Specify whether transpose weights is necessary in matmul info
     const MatMulInfo mat_info_qk = MatMulInfo();
 
@@ -113,6 +114,8 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
     product_mm_kernel->set_target(gpu_target);
     product_mm_kernel->configure(compile_context, &_permuted_query, &_transposed_key, nullptr, output, scale, 1, mm_kernel_info_qk);
     _product_mm_kernel = std::move(product_mm_kernel);
+
+    std::cout << "      _product_mm_kernel " <<std::endl;
 
     /*
     //  Softmax of previous product
