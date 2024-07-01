@@ -28,7 +28,7 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
 {
     ARM_COMPUTE_LOG_PARAMS(key, value, query, output);
     ARM_COMPUTE_UNUSED(compile_context, query, key, value, output, info);
-
+    std::cout << "ClScaleDotProduction::configure start " << std::endl;
     // Query multi-Head reshape
     TensorShape query_reshape = TensorShape(query->tensor_shape().x() / info.h(),
                                             info.h(),
@@ -114,6 +114,7 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
     product_mm_kernel->configure(compile_context, &_permuted_query, &_transposed_key, nullptr, output, scale, 1, mm_kernel_info_qk);
     _product_mm_kernel = std::move(product_mm_kernel);
 
+    /*
     //  Softmax of previous product
     SoftmaxKernelInfo softmax_info{1.0f, false, query->data_type(), 0};
     auto softmax_kernel = std::make_unique<kernels::ClSoftmaxKernel>();
@@ -154,6 +155,8 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
     auto concat_reshape_kernel = std::make_unique<kernels::ClReshapeKernel>();
     concat_reshape_kernel->configure(compile_context, &_permuted_concat, output);
     _concat_reshape_kernel = std::move(concat_reshape_kernel);
+*/
+    std::cout << "ClScaleDotProduction::configure end " << std::endl;
 
     //auto product_mm_kernel = std::make_unique<kernels::ClMatMulNativeKernel>();
     //const int   m      = _permuted_query.dimension(1);
