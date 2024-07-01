@@ -465,6 +465,7 @@ if env['opencl'] and env['embed_kernels']:
                        'src/core/CL/cl_kernels/common/embsum.cl',
                        "src/core/CL/cl_kernels/common/linear.cl",
                        "src/core/CL/cl_kernels/common/simple_forward.cl",
+                       "src/core/CL/cl_kernels/common/layer_norm.cl",
                     ]
 
     # NCHW kernels

@@ -358,6 +358,7 @@ const std::map<std::string, std::string> ClKernelLibrary::_kernel_program_map = 
     {"embsum","common/embsum.cl"},
     {"linear","common/linear.cl"},
     {"simple_forward","common/simple_forward.cl"},
+    {"layer_norm","common/layer_norm.cl"},
 #ifdef ENABLE_NCHW_KERNELS
     {"batch_to_space_nchw", "nchw/batch_to_space.cl"},
     {"batch_to_space_static_nchw", "nchw/batch_to_space.cl"},
@@ -796,6 +797,10 @@ const std::map<std::string, std::string> ClKernelLibrary::_program_source_map = 
     {
         "common/simple_forward.cl",
 #include "./cl_kernels/common/simple_forward.clembed"
+    },
+    {
+        "common/layer_norm.cl",
+#include "./cl_kernels/common/layer_norm.clembed"
     },
 #ifdef ENABLE_NCHW_KERNELS
     {
