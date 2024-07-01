@@ -78,6 +78,8 @@
         TILE_VECTOR_TYPE##W(DATA_TYPE) v;                     \
     } local BASENAME[H]
 
+// Hugh added local
+
 #define TENSOR4D_IMAGE(name)          \
     __read_only image2d_t name##_img, \
     __global uchar *name##_ptr,       \
