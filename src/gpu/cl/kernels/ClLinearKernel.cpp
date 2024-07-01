@@ -74,6 +74,22 @@ void ClLinearKernel::configure(const CLCompileContext &compile_context,
     std::cout << "_export_rhs_to_cl_image " << _export_rhs_to_cl_image << std::endl;
     std::cout << "get_cl_type_from_data_type(lhs->data_type()) " << get_cl_type_from_data_type(lhs->data_type()) << std::endl;
     
+    std::cout << "win x " << win.x().end() << std::endl;
+    std::cout << "win y " << win.y().end() << std::endl;
+    std::cout << "win z " << win.z().end() << std::endl;
+
+    std::cout << "lhs->info().x() " << lhs->tensor_shape().x() << std::endl;
+    std::cout << "lhs->info().y() " << lhs->tensor_shape().y() << std::endl;
+    std::cout << "lhs->info().z() " << lhs->tensor_shape().z() << std::endl;
+
+    std::cout << "rhs->tensor_shape().x() " << rhs->tensor_shape().x() << std::endl;
+    std::cout << "rhs->tensor_shape().y() " << rhs->tensor_shape().y() << std::endl;
+    std::cout << "rhs->tensor_shape().z() " << rhs->tensor_shape().z() << std::endl;
+
+    std::cout << "dst->tensor_shape().x() " << dst->tensor_shape().x() << std::endl;
+    std::cout << "dst->tensor_shape().y() " << dst->tensor_shape().y() << std::endl;
+    std::cout << "dst->tensor_shape().z() " << dst->tensor_shape().z() << std::endl;
+
     CLBuildOptions build_opts;
     build_opts.add_option("-DDATA_TYPE=" + get_cl_type_from_data_type(lhs->data_type()));
     build_opts.add_option("-DM0=" + support::cpp11::to_string(m0));
