@@ -10,6 +10,7 @@
 #include "src/gpu/cl/kernels/ClLinearKernel.h"
 #include "src/gpu/cl/kernels/ClPermuteKernel.h"
 #include "src/gpu/cl/kernels/ClReshapeKernel.h"
+#include "src/gpu/cl/kernels/ClSoftmaxKernel.h"
 #include "src/gpu/cl/kernels/ClTransposeKernel.h"
 
 #include <memory>
@@ -88,18 +89,25 @@ class ClScaleDotProduction : public IClOperator
 
     TensorInfo _transposed_key{};
 
+    TensorInfo _scaled_query_key{};
+    TensorInfo _softmaxed_product{};
+    TensorInfo _gemmed_context{};
+
     std::unique_ptr<kernels::ClReshapeKernel> _query_reshape_kernel{ nullptr };
     std::unique_ptr<kernels::ClPermuteKernel> _query_permute_kernel{ nullptr };
     std::unique_ptr<kernels::ClReshapeKernel> _key_reshape_kernel{ nullptr };
     std::unique_ptr<kernels::ClPermuteKernel> _key_permute_kernel{ nullptr };
     std::unique_ptr<kernels::ClReshapeKernel> _value_reshape_kernel{ nullptr };
-    //std::unique_ptr<CpuPermute>                             _value_permute_func{nullptr};
+    std::unique_ptr<kernels::ClPermuteKernel> _value_permute_kernel{ nullptr };
     std::unique_ptr<kernels::ClReshapeKernel> _concat_reshape_kernel{ nullptr };
-    //std::unique_ptr<CpuPermute>                             _concat_permute_func{nullptr};
+    std::unique_ptr<kernels::ClPermuteKernel> _concat_permute_kernel{ nullptr };
 
     std::unique_ptr<kernels::ClTransposeKernel> _key_transpose_kernel{ nullptr };
 
+    std::unique_ptr<kernels::ClSoftmaxKernel> _softmax_kernel{ nullptr };
+
     std::unique_ptr<kernels::ClLinearKernel> _product_mm_kernel{ nullptr };
+    std::unique_ptr<kernels::ClLinearKernel> _context_mm_kernel{ nullptr };
 
     /*
     std::unique_ptr<kernels::CpuGemmInterleave4x4Kernel>    _query_interleave_kernel{nullptr};
