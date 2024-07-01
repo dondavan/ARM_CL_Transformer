@@ -129,7 +129,6 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
     //_lhs_to_use = src->clone()->set_tensor_shape(get_reshaped_matmul_tensor(_lhs_to_use.tensor_shape()));
 
     // 2. Use heuristics to get kernel info object
-    const GPUTarget                                         gpu_target = CLScheduler::get().target();
     std::unique_ptr<cl_matmul::IClMatMulNativeKernelConfig> kernel_config_pv =
         cl_matmul::ClMatMulNativeKernelConfigurationFactory::create(gpu_target);
     MatMulKernelInfo mm_kernel_info_pv = kernel_config_pv->configure(&_softmaxed_product, &_permuted_value, mat_info_pv);
