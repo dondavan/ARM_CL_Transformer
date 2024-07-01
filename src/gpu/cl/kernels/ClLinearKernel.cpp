@@ -46,7 +46,7 @@ void ClLinearKernel::configure(const CLCompileContext &compile_context,
     ARM_COMPUTE_ERROR_THROW_ON(validate(lhs, rhs, bias, dst, matmul_kernel_info));
 
     ARM_COMPUTE_UNUSED(alpha,beta);
-    
+
     // dst tensor auto initialization if not yet initialized
     auto_init_if_empty(*dst, lhs->clone()->set_tensor_shape(misc::shape_calculator::compute_matmul_shape(
                                  lhs->tensor_shape(), rhs->tensor_shape(), matmul_kernel_info)));
@@ -204,6 +204,37 @@ void ClLinearKernel::run_op(ITensorPack &tensors, const Window &window, cl::Comm
 {
     std::cout << "src/gpu/cl/kernels/ClLinearKernel.cpp run start" << std::endl;
 
+    const ICLTensor *lhs =
+        utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC_0));
+    const ICLTensor *rhs =
+        utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC_1));
+    const ICLTensor *bias = utils::cast::polymorphic_downcast<const ICLTensor *>(
+        tensors.get_const_tensor(TensorType::ACL_SRC_2)); // nullptr if bias is not present
+    ICLTensor *dst = utils::cast::polymorphic_downcast<ICLTensor *>(tensors.get_tensor(TensorType::ACL_DST));
+    ARM_COMPUTE_ERROR_ON_NULLPTR(lhs, rhs, dst);
+    ARM_COMPUTE_LOG_PARAMS(lhs, rhs, bias, dst);
+    unsigned int idx = 0;
+
+    add_3d_tensor_nhw_argument(idx, lhs);
+    add_3d_tensor_nhw_argument(idx, rhs);
+    if (bias != nullptr)
+    {
+        add_3d_tensor_nhw_argument(idx, bias);
+    }
+    add_3d_tensor_nhw_argument(idx, dst);
+
+    // Pass m and n at runtime as signed ints, to ensure results of any subtractions they could be operand in, would still be signed.
+    _kernel.setArg<cl_int>(idx++, _m);
+    _kernel.setArg<cl_int>(idx++, _n);
+    _kernel.setArg<cl_int>(idx++, _k);
+
+    // LWS_x should be multiple of 16 at least. (32, 2) has been chosen to have more work-items on a single core
+    // LWS also enforces the order of execution of the work items which improves cache utilization
+    enqueue(queue, *this, window, cl::NDRange(32, 2), false);
+    
+    std::cout << "src/gpu/cl/kernels/ClLinearKernel.cpp run end" << std::endl;
+
+    /*
     ARM_COMPUTE_ERROR_ON_UNCONFIGURED_KERNEL(this);
     ARM_COMPUTE_ERROR_ON_INVALID_SUBWINDOW(IKernel::window(), window);
     ARM_COMPUTE_ERROR_ON(tensors.empty());
@@ -246,8 +277,7 @@ void ClLinearKernel::run_op(ITensorPack &tensors, const Window &window, cl::Comm
     //add_3D_tensor_argument(idx, src, window);
     //add_3D_tensor_argument(idx, vector, window);
     //add_3D_tensor_argument(idx, dst, window);
-
-    std::cout << "src/gpu/cl/kernels/ClLinearKernel.cpp run end" << std::endl;
+*/
 }
 
 } // namespace kernels
