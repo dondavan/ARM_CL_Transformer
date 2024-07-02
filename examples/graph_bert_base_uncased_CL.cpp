@@ -182,7 +182,7 @@ class GraphVanillaTransformerExample : public Example
                                     get_weights_accessor(data_path + layer_path, "value_weight.npy"),
                                     get_weights_accessor(data_path + layer_path, "value_bias.npy"))
 
-            << MultiHeadAttentionLayer(MultiHeadAttentionLayerInfo(d_model, h)).set_name("mha1");
+            //<< MultiHeadAttentionLayer(MultiHeadAttentionLayerInfo(d_model, h)).set_name("mha1");
     }
 };
 
