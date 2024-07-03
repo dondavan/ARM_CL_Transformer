@@ -102,7 +102,7 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
     __global uchar *input_addr  = input_ptr + input_offset_first_element_in_bytes + y * input_stride_y;
     __global uchar *output_addr = output_ptr + output_offset_first_element_in_bytes + y * output_stride_y;
 
-    local DATA_TYPE res = (DATA_TYPE)0;
+    DATA_TYPE res = (DATA_TYPE)0;
     DATA_TYPE mean;
     DATA_TYPE var = (DATA_TYPE)0;
     DATA_TYPE sqrt_var_epsilon;
@@ -112,7 +112,7 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
     // Calculate mean
     for(; x <= (WIDTH - VEC_SIZE); x += VEC_SIZE)
     {
-        VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE) vals = vload4(0, (__global DATA_TYPE *)(input_addr + x * input_stride_x));
+         private VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE) vals = vload4(0, (__global DATA_TYPE *)(input_addr + x * input_stride_x));
         res  = sum(res, vals, VEC_SIZE);
     }
 
