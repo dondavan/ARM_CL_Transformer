@@ -47,6 +47,10 @@ void ClLayerNormKernel::configure(const ClCompileContext &compile_context,
     win = calculate_max_window(*input, Steps(vec_size_x));
     IClKernel::configure_internal(win);
 
+    std::cout << "win.x().end()" <<win.x().end() << std::endl;
+    std::cout << "win.y().end()" <<win.y().end() << std::endl;
+    std::cout << "win.z().end()" <<win.z().end() << std::endl;
+
     // Set build options
     CLBuildOptions build_opts;
     build_opts.add_option(("-DDATA_TYPE=" + get_cl_type_from_data_type(input->data_type())));
@@ -77,6 +81,10 @@ void ClLayerNormKernel::run_op(ITensorPack &tensors, const Window &window, cl::C
     ICLTensor *output  = utils::cast::polymorphic_downcast<ICLTensor *>(tensors.get_tensor(TensorType::ACL_DST));
     
     Window    slice               = window.first_slice_window_3D();
+
+    std::cout << "win.x().end()" <<slice.x().end() << std::endl;
+    std::cout << "win.y().end()" <<slice.y().end() << std::endl;
+    std::cout << "win.z().end()" <<slice.z().end() << std::endl;
 
     do
     {
