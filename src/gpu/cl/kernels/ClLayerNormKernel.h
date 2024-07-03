@@ -48,8 +48,8 @@ class ClLayerNormKernel : public IClKernel
     void run_op(ITensorPack &tensors, const Window &window, cl::CommandQueue &queue) override;
 
     private:
-    const ITensorInfo   *_input;
-    ITensorInfo         *_output;
+    const ITensorInfo   *_input{nullptr};
+    ITensorInfo         *_output{nullptr};
     LayerNormLayerInfo _info{};
     LayerNormKernelPtr _run_method{ nullptr };
     std::string        _name{};
