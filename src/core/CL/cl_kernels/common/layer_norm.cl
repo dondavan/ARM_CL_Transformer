@@ -116,7 +116,7 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
     }
 
 #if(WIDTH % VEC_SIZE)
-    _Pragma("unroll") for(; x < WIDTH; ++x)
+    for(; x < WIDTH; ++x)
     {
         DATA_TYPE val = *((__global DATA_TYPE *)(input_addr + x * sizeof(DATA_TYPE)));
         res           = sum(res, val, 1);
@@ -135,7 +135,7 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
     }
 
 #if(WIDTH % VEC_SIZE)
-    _Pragma("unroll") for(; x < WIDTH; ++x)
+    for(; x < WIDTH; ++x)
     {
         DATA_TYPE val = *((__global DATA_TYPE *)(input_addr + x * sizeof(DATA_TYPE)));
         val           = val - mean;
@@ -162,7 +162,7 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
     }
 
 #if(WIDTH % VEC_SIZE)
-    _Pragma("unroll") for(; x < WIDTH; ++x)
+    for(; x < WIDTH; ++x)
     {
         DATA_TYPE val = *((__global DATA_TYPE *)(input_addr + x * sizeof(DATA_TYPE)));
         val = val - mean;
@@ -173,4 +173,5 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
     
     }
 #endif // (WIDTH % VEC_SIZE)
+
 }
