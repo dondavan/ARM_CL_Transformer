@@ -84,7 +84,7 @@ void ClLayerNormKernel::run_op(ITensorPack &tensors, const Window &window, cl::C
 
     Window window_in{window};
     window_in.set(Window::DimX,
-                              Window::Dimension(0, _input->dimension(0), _input->dimension(0)));
+                              Window::Dimension(0, 1, 1));
 
     Window slice = window.first_slice_window_1D();
 
