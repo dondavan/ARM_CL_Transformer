@@ -95,11 +95,13 @@ void ClLayerNormKernel::run_op(ITensorPack &tensors, const Window &window, cl::C
     do
     {
         unsigned int idx = 0;
+        int count = 0;
         add_3D_tensor_argument(idx, input, slice);
         add_3D_tensor_argument(idx, output, slice);
         _kernel.setArg<cl_float>(idx++, _info.epsilon());
         _kernel.setArg<cl_float>(idx++, _info.gamma());
         _kernel.setArg<cl_float>(idx++, _info.beta());
+        std::cout << count ++ << std::endl;
         enqueue(queue, *this, slice);
     } while(window.slide_window_slice_1D(slice));
 }
