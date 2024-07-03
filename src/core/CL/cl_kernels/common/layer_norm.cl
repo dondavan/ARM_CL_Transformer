@@ -102,8 +102,8 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
     __global uchar *input_addr  = input_ptr + input_offset_first_element_in_bytes + y * input_stride_y + z * input_stride_z;
     __global uchar *output_addr = output_ptr + output_offset_first_element_in_bytes + y * output_stride_y + z * output_stride_z;
 
-    DATA_TYPE res = (DATA_TYPE)0;
-    DATA_TYPE mean;
+    float res = (DATA_TYPE)0;
+    float mean;
     DATA_TYPE var = (DATA_TYPE)0;
     DATA_TYPE sqrt_var_epsilon;
 
