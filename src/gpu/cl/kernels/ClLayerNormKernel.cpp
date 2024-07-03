@@ -24,7 +24,7 @@ namespace kernels
 {
 
 void ClLayerNormKernel::configure(const ClCompileContext &compile_context,
-                                  const ITensorInfo            *input,
+                                  const ITensorInfo      *input,
                                   ITensorInfo            *output,
                                   LayerNormLayerInfo      info)
 {
@@ -32,7 +32,9 @@ void ClLayerNormKernel::configure(const ClCompileContext &compile_context,
     ARM_COMPUTE_ERROR_THROW_ON(validate(input, output, info));
     ARM_COMPUTE_UNUSED(compile_context);
 
-    _info = info;
+    _info                 = info;
+    _input                = input;
+    _output               = output;
     const int layer_width = input->dimension(info.axis());
 
     // Output tensor auto initialization if not yet initialized
@@ -47,9 +49,9 @@ void ClLayerNormKernel::configure(const ClCompileContext &compile_context,
     win = calculate_max_window(*input, Steps(vec_size_x));
     IClKernel::configure_internal(win);
 
-    std::cout << "win.x().end()" <<win.x().end() << std::endl;
-    std::cout << "win.y().end()" <<win.y().end() << std::endl;
-    std::cout << "win.z().end()" <<win.z().end() << std::endl;
+    std::cout << "win.x().end()" << win.x().end() << std::endl;
+    std::cout << "win.y().end()" << win.y().end() << std::endl;
+    std::cout << "win.z().end()" << win.z().end() << std::endl;
 
     // Set build options
     CLBuildOptions build_opts;
@@ -78,13 +80,17 @@ void ClLayerNormKernel::run_op(ITensorPack &tensors, const Window &window, cl::C
 {
     const ICLTensor *input =
         utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC));
-    ICLTensor *output  = utils::cast::polymorphic_downcast<ICLTensor *>(tensors.get_tensor(TensorType::ACL_DST));
-    
-    Window    slice               = window.first_slice_window_1D();
+    ICLTensor *output = utils::cast::polymorphic_downcast<ICLTensor *>(tensors.get_tensor(TensorType::ACL_DST));
 
-    std::cout << "win.x().end()" <<slice.x().end() << std::endl;
-    std::cout << "win.y().end()" <<slice.y().end() << std::endl;
-    std::cout << "win.z().end()" <<slice.z().end() << std::endl;
+    Window window_in{window};
+    window_in.set(Window::DimX,
+                              Window::Dimension(0, _input->dimension(0), _input->dimension(0)));
+
+    Window slice = window.first_slice_window_1D();
+
+    std::cout << "win.x().end()" << slice.x().end() << std::endl;
+    std::cout << "win.y().end()" << slice.y().end() << std::endl;
+    std::cout << "win.z().end()" << slice.z().end() << std::endl;
 
     do
     {
@@ -95,8 +101,7 @@ void ClLayerNormKernel::run_op(ITensorPack &tensors, const Window &window, cl::C
         _kernel.setArg<cl_float>(idx++, _info.gamma());
         _kernel.setArg<cl_float>(idx++, _info.beta());
         enqueue(queue, *this, slice);
-    } while (window.slide_window_slice_1D(slice));
-    
+    } while(window.slide_window_slice_1D(slice));
 }
 
 } // namespace kernels
