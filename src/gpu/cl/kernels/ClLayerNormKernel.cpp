@@ -93,9 +93,10 @@ void ClLayerNormKernel::run_op(ITensorPack &tensors, const Window &window, cl::C
     do
     {
         unsigned int idx = 0;
+        float y = slice.y().end();
         add_3D_tensor_argument(idx, input, slice);
         add_3D_tensor_argument(idx, output, slice);
-        _kernel.setArg<cl_float>(idx++, slice.y().end());
+        _kernel.setArg<cl_float>(idx++, y);
         _kernel.setArg<cl_float>(idx++, _info.epsilon());
         _kernel.setArg<cl_float>(idx++, _info.gamma());
         _kernel.setArg<cl_float>(idx++, _info.beta());
