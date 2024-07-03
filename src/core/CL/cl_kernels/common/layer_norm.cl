@@ -113,7 +113,8 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
     for(; x <= (WIDTH - VEC_SIZE); x += VEC_SIZE)
     {
         VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE) vals = VLOAD(VEC_SIZE)(0, (__global DATA_TYPE *)(input_addr + x * output_stride_x));
-        res  = sum(res, vals, VEC_SIZE);
+        //res  = sum(res, vals, VEC_SIZE);
+        res = res + vals.s0 + vals.s1 + vals.s2 + vals.s3;
     }
 
 #if(WIDTH % VEC_SIZE)
