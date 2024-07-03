@@ -88,9 +88,6 @@ void ClLayerNormKernel::run_op(ITensorPack &tensors, const Window &window, cl::C
 
     Window slice = window_in.first_slice_window_1D();
 
-    std::cout << "win.x().end()" << slice.x().end() << std::endl;
-    std::cout << "win.y().end()" << slice.y().end() << std::endl;
-    std::cout << "win.z().end()" << slice.z().end() << std::endl;
 
     do
     {
@@ -101,6 +98,9 @@ void ClLayerNormKernel::run_op(ITensorPack &tensors, const Window &window, cl::C
         _kernel.setArg<cl_float>(idx++, _info.epsilon());
         _kernel.setArg<cl_float>(idx++, _info.gamma());
         _kernel.setArg<cl_float>(idx++, _info.beta());
+         std::cout << "win.x().end()" << slice.x().end() << std::endl;
+    std::cout << "win.y().end()" << slice.y().end() << std::endl;
+    std::cout << "win.z().end()" << slice.z().end() << std::endl;
         std::cout << count ++ << std::endl;
         enqueue(queue, *this, slice);
     } while(window.slide_window_slice_1D(slice));
