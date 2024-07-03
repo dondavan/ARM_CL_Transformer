@@ -107,7 +107,7 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
     DATA_TYPE var = (DATA_TYPE)0;
     DATA_TYPE sqrt_var_epsilon;
 
-/*
+
     int x = 0;
     // Calculate mean
     for(; x <= (WIDTH - VEC_SIZE); x += VEC_SIZE)
@@ -124,6 +124,7 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
     }
 
     mean = res / WIDTH;
+/*
     VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE) means = mean;
 
     // Calculate variance
