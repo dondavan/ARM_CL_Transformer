@@ -127,7 +127,7 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
 
     mean = res / WIDTH;
 
-    int x = 0;
+    x = 0;
     // Calculate mean
     for(; x <= (WIDTH - VEC_SIZE); x += VEC_SIZE)
     {
