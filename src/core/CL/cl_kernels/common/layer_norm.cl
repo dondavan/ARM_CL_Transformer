@@ -96,7 +96,7 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
                          DATA_TYPE gamma,
                          DATA_TYPE beta)
 {
-    int y = get_local_id(1)
+    int y = get_local_id(1);
     int z = get_global_id(2);
 
     __global uchar *input_addr  = input_ptr + input_offset_first_element_in_bytes + y * input_stride_y;
