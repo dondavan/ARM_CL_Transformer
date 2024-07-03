@@ -52,6 +52,7 @@ void ClLayerNormKernel::configure(const ClCompileContext &compile_context,
     std::cout << "win.x().end()" << win.x().end() << std::endl;
     std::cout << "win.y().end()" << win.y().end() << std::endl;
     std::cout << "win.z().end()" << win.z().end() << std::endl;
+    std::cout << "vec_size_x" << vec_size_x <<std::endl;
 
     // Set build options
     CLBuildOptions build_opts;
