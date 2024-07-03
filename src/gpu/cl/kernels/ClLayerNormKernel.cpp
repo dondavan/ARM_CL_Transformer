@@ -94,7 +94,7 @@ void ClLayerNormKernel::run_op(ITensorPack &tensors, const Window &window, cl::C
         _kernel.setArg<cl_float>(idx++, _info.epsilon());
         _kernel.setArg<cl_float>(idx++, _info.gamma());
         _kernel.setArg<cl_float>(idx++, _info.beta());
-        enqueue(queue, *this, slice, lws_hint());
+        enqueue(queue, *this, slice);
     } while (window.slide_window_slice_1D(slice));
     
 }
