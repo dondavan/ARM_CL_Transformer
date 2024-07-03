@@ -30,7 +30,7 @@ class ClLayerNormKernel : public IClKernel
      * @param[out] op     Logical operation to perform
      */
     void configure(const ClCompileContext &compile_context,
-                   ITensorInfo      *input,
+                   const ITensorInfo      *input,
                    ITensorInfo            *output,
                    LayerNormLayerInfo      info);
     /** Static function to check if given info will lead to a valid configuration of @ref ClLayerNormKernel

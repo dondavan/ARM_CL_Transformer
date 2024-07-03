@@ -32,6 +32,7 @@
  * @param[in]  output_offset_first_element_in_bytes The offset of the first element in the destination tensor
  * @param[in]  epsilon                              Epsilon value
  */
+ /*
 void layer_norm_fp32(const ITensor *src, ITensor *dst, const Window &window, float epsilon,
                      float gamma,
                      float beta,
@@ -58,7 +59,7 @@ void layer_norm_fp32(const ITensor *src, ITensor *dst, const Window &window, flo
             float      res;
 
             const int axis_len = window_end_axis - window_step_axis;
-            /* Calculate mean */
+            // Calculate mean 
             int axis = window_start_axis;
             for(; axis <= axis_len; axis += window_step_axis)
             {
@@ -66,7 +67,7 @@ void layer_norm_fp32(const ITensor *src, ITensor *dst, const Window &window, flo
             }
             mean = mean / (axis_len + 1);
 
-            /* Calculate variance */
+            // Calculate variance 
             axis = window_start_axis;
             for(; axis <= axis_len; axis += window_step_axis)
             {
@@ -74,7 +75,7 @@ void layer_norm_fp32(const ITensor *src, ITensor *dst, const Window &window, flo
             }
             var = var / (axis_len + 1);
 
-            /* Calculate layer normalization */
+            // Calculate layer normalization
             axis = window_start_axis;
             for(; axis <= axis_len; axis += window_step_axis)
             {
@@ -88,6 +89,7 @@ void layer_norm_fp32(const ITensor *src, ITensor *dst, const Window &window, flo
         },
         input, output);
 }
+*/
 __kernel void layer_norm(TENSOR3D_DECLARATION(input),
                          TENSOR3D_DECLARATION(output),
                          DATA_TYPE epsilon,
@@ -164,7 +166,7 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
     {
         DATA_TYPE val = *((__global DATA_TYPE *)(input_addr + x * sizeof(DATA_TYPE)));
         val = val - mean;
-        val = val / sqrt_var_epsilon;
+        val = val / sqrt_var_epsilon;`
         val = val * gamma;
         val = val + beta;
         VSTORE(1)(val, 0, (__global DATA_TYPE *)(output_ptr + output_offset_first_element_in_bytes + y * output_stride_y + x * output_stride_x));

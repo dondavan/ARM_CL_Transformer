@@ -85,7 +85,7 @@ void layer_norm_fp32(const ITensor *src, ITensor *dst, const Window &window, flo
 } // namespace
 
 void ClLayerNormKernel::configure(const ClCompileContext &compile_context,
-                                  ITensorInfo            *input,
+                                  const ITensorInfo            *input,
                                   ITensorInfo            *output,
                                   LayerNormLayerInfo      info)
 {
@@ -94,6 +94,7 @@ void ClLayerNormKernel::configure(const ClCompileContext &compile_context,
     ARM_COMPUTE_UNUSED(compile_context);
 
     _info = info;
+    const int layer_width = input->dimension(info.axis());
 
     // Output tensor auto initialization if not yet initialized
     auto_init_if_empty(*output, *input->clone());
@@ -101,19 +102,17 @@ void ClLayerNormKernel::configure(const ClCompileContext &compile_context,
     const unsigned int vec_size_x =
         adjust_vec_size(max_cl_vector_width / input->element_size(), input->dimension(0));
 
+    int vec_size_x_leftovers = input->dimension(0) % vec_size_x;
+
     Window win;
     win = calculate_max_window(*input, Steps(vec_size_x));
     IClKernel::configure_internal(win);
-
-    const DataLayout data_layout = input->data_layout();
-    unsigned int     vec_size_x =
-        adjust_vec_size(max_cl_vector_width / input->element_size(), input->dimension(0));
-    int vec_size_x_leftovers = input->dimension(0) % vec_size_x;
 
     // Set build options
     CLBuildOptions build_opts;
     build_opts.add_option(("-DDATA_TYPE=" + get_cl_type_from_data_type(input->data_type())));
     build_opts.add_option(("-DVEC_SIZE=" + support::cpp11::to_string(vec_size_x)));
+    build_opts.add_option(("-DWIDTH=" + support::cpp11::to_string(layer_width)));
     build_opts.add_option(("-DVEC_SIZE_LEFTOVER=" + support::cpp11::to_string(vec_size_x_leftovers)));
 
     std::string kernel_name("layer_norm");
