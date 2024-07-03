@@ -115,7 +115,7 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
         VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE) vals = VLOAD(VEC_SIZE)(0, (__global DATA_TYPE *)(input_addr + x * sizeof(DATA_TYPE)));
         res  = sum(res, vals, VEC_SIZE);
     }
-
+/*
 #if(WIDTH % VEC_SIZE)
     for(; x < WIDTH; ++x)
     {
@@ -124,7 +124,7 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
     }
 
     mean = res / WIDTH;
-/*
+
     VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE) means = mean;
 
     // Calculate variance
