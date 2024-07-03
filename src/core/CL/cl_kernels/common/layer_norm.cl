@@ -125,7 +125,7 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
 
 #endif // (WIDTH % VEC_SIZE)
 
-    mean = res / WIDTH;
+    mean = res / (float)WIDTH;
 
     x = 0;
     // Calculate mean
