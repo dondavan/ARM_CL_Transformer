@@ -80,7 +80,7 @@ void ClLayerNormKernel::run_op(ITensorPack &tensors, const Window &window, cl::C
         utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC));
     ICLTensor *output  = utils::cast::polymorphic_downcast<ICLTensor *>(tensors.get_tensor(TensorType::ACL_DST));
     
-    Window    slice               = window.first_slice_window_3D();
+    Window    slice               = window.first_slice_window_1D();
 
     std::cout << "win.x().end()" <<slice.x().end() << std::endl;
     std::cout << "win.y().end()" <<slice.y().end() << std::endl;
@@ -95,7 +95,7 @@ void ClLayerNormKernel::run_op(ITensorPack &tensors, const Window &window, cl::C
         _kernel.setArg<cl_float>(idx++, _info.gamma());
         _kernel.setArg<cl_float>(idx++, _info.beta());
         enqueue(queue, *this, slice, lws_hint());
-    } while (window.slide_window_slice_3D(slice));
+    } while (window.slide_window_slice_1D(slice));
     
 }
 
