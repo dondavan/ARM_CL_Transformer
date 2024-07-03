@@ -108,7 +108,7 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
     DATA_TYPE sqrt_var_epsilon;
 
 
-    __local int x = 0;
+    int x = 0;
     // Calculate mean
     for(; x <= (WIDTH - VEC_SIZE); x += VEC_SIZE)
     {
@@ -127,20 +127,20 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
 
     mean = res / WIDTH;
 
-    x = 0;
+    int x_1 = 0;
     // Calculate mean
-    for(; x <= (WIDTH - VEC_SIZE); x += VEC_SIZE)
+    for(; x_1 <= (WIDTH - VEC_SIZE); x_1 += VEC_SIZE)
     {
         VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE) vals = res;
-        VSTORE(VEC_SIZE)(vals, 0, (__global DATA_TYPE *)(output_ptr + output_offset_first_element_in_bytes + y * output_stride_y + x * output_stride_x));
+        VSTORE(VEC_SIZE)(vals, 0, (__global DATA_TYPE *)(output_ptr + output_offset_first_element_in_bytes + y * output_stride_y + x_1 * output_stride_x));
     
     }
 
 #if(WIDTH % VEC_SIZE)
-    for(; x < WIDTH; ++x)
+    for(; x_1 < WIDTH; ++x_1)
     {
         DATA_TYPE val = res;
-        VSTORE(1)(val, 0, (__global DATA_TYPE *)(output_ptr + output_offset_first_element_in_bytes + y * output_stride_y + x * output_stride_x));
+        VSTORE(1)(val, 0, (__global DATA_TYPE *)(output_ptr + output_offset_first_element_in_bytes + y * output_stride_y + x_1 * output_stride_x));
     }
 
 #endif // (WIDTH % VEC_SIZE)
