@@ -113,7 +113,7 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
     // Calculate mean
     for(; x <= (WIDTH - VEC_SIZE); x += VEC_SIZE)
     {
-        vals = (float)x1;
+        vals = VLOAD(VEC_SIZE)(0, (__global DATA_TYPE *)(input_addr + x * input_stride_x));
         res  = sum(res, vals, VEC_SIZE);
     }
 
@@ -128,23 +128,13 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
 
     mean = res / WIDTH;
 
-    x = 0;
-    // Calculate mean
-    for(; x <= (WIDTH - VEC_SIZE); x += VEC_SIZE)
-    {
-        VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE) vals = res;
-        VSTORE(VEC_SIZE)(vals, 0, (__global DATA_TYPE *)(output_addr + x * output_stride_x));
-    
-    }
 
-#if(WIDTH % VEC_SIZE)
     for(; x < WIDTH; ++x)
     {
-        DATA_TYPE val = res;
+        DATA_TYPE val = (float) x1;
         VSTORE(1)(val, 0, (__global DATA_TYPE *)(output_addr + x * output_stride_x));
     }
 
-#endif // (WIDTH % VEC_SIZE)
 /*
     VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE) means = mean;
 
