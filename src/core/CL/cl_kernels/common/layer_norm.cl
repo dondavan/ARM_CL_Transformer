@@ -94,14 +94,13 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
                          TENSOR3D_DECLARATION(output),
                          DATA_TYPE epsilon,
                          DATA_TYPE gamma,
-                         DATA_TYPE beta,
-                         int slice_y)
+                         DATA_TYPE beta)
 {
     int y = get_global_id(1);
     int z = get_global_id(2);
 
-    __global uchar *input_addr  = input_ptr + input_offset_first_element_in_bytes + slice_y * input_stride_y;
-    __global uchar *output_addr = output_ptr + output_offset_first_element_in_bytes + slice_y * output_stride_y;
+    __global uchar *input_addr  = input_ptr + input_offset_first_element_in_bytes + y * input_stride_y;
+    __global uchar *output_addr = output_ptr + output_offset_first_element_in_bytes + y * output_stride_y;
 
     DATA_TYPE res = (DATA_TYPE)0;
     DATA_TYPE mean;
@@ -132,7 +131,7 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
     for(; x <= (WIDTH - VEC_SIZE); x += VEC_SIZE)
     {
         VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE) vals = res;
-        VSTORE(VEC_SIZE)(vals, 0, (__global DATA_TYPE *)(output_ptr + output_offset_first_element_in_bytes + x * output_stride_x));
+        VSTORE(VEC_SIZE)(vals, 0, (__global DATA_TYPE *)(output_ptr + output_offset_first_element_in_bytes + y * output_stride_y + x * output_stride_x));
     
     }
 

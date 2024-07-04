@@ -93,14 +93,11 @@ void ClLayerNormKernel::run_op(ITensorPack &tensors, const Window &window, cl::C
     do
     {
         unsigned int idx = 0;
-        int y = slice.y().end() - 1;
         add_3D_tensor_argument(idx, input, slice);
         add_3D_tensor_argument(idx, output, slice);
         _kernel.setArg<cl_float>(idx++, _info.epsilon());
         _kernel.setArg<cl_float>(idx++, _info.gamma());
         _kernel.setArg<cl_float>(idx++, _info.beta());
-        _kernel.setArg<cl_int>(idx++, y);
-        std::cout << "y " << y << std::endl;
         std::cout << "input->info()->offset_first_element_in_bytes()  "<<input->info()->offset_first_element_in_bytes() << std::endl;
 
         std::cout << "win.x().start()" << slice.x().start() << std::endl;
