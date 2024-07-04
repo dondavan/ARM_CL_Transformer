@@ -98,12 +98,12 @@ void ClLayerNormKernel::run_op(ITensorPack &tensors, const Window &window, cl::C
     std::cout << "input->info()->strides_in_bytes().x()" << input->info()->strides_in_bytes().x() << std::endl;
     std::cout << "input->info()->strides_in_bytes().y()" << input->info()->strides_in_bytes().y() << std::endl;
     std::cout << "input->info()->strides_in_bytes().z()" << input->info()->strides_in_bytes().z() << std::endl;
-    std::cout << "input->info()->strides_in_bytes().z()" << input->info()->offset_first_element_in_bytes() << std::endl;
+    std::cout << "input->info()->offset_first_element_in_bytes()" << input->info()->offset_first_element_in_bytes() << std::endl;
 
     std::cout << "output->info()->strides_in_bytes().x()" << output->info()->strides_in_bytes().x() << std::endl;
     std::cout << "output->info()->strides_in_bytes().y()" << output->info()->strides_in_bytes().y() << std::endl;
     std::cout << "output->info()->strides_in_bytes().z()" << output->info()->strides_in_bytes().z() << std::endl;
-    std::cout << "output->info()->strides_in_bytes().z()" << output->info()->offset_first_element_in_bytes() << std::endl;
+    std::cout << "output->info()->offset_first_element_in_bytes()" << output->info()->offset_first_element_in_bytes() << std::endl;
 
 
     _kernel.setArg<cl_float>(idx++, _info.epsilon());
