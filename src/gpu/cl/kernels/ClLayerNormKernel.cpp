@@ -87,8 +87,8 @@ void ClLayerNormKernel::run_op(ITensorPack &tensors, const Window &window, cl::C
     ICLTensor *output = utils::cast::polymorphic_downcast<ICLTensor *>(tensors.get_tensor(TensorType::ACL_DST));
 
     Window window_in{window};
-    window_in.set(Window::DimX,
-                              Window::Dimension(0, _input->dimension(0), _input->dimension(0)));
+    
+    window_in.set_broadcasted(Window::DimX);
     window_in.set_broadcasted(Window::DimZ);
 
     Window slice = window_in.first_slice_window_3D();
