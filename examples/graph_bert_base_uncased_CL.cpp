@@ -69,9 +69,9 @@ class GraphVanillaTransformerExample : public Example
         constexpr unsigned int d_vocab    = 30522U; // Vocaboary size
         constexpr unsigned int d_segemnt  = 2U;     // Sentence segmentation size
         constexpr unsigned int d_position = 512U;   // Pretrained positional encoding length
-        //constexpr unsigned int h          = 12U;    // Parallel attention (Heads)
-        //constexpr float        eps        = 1e-12;  // Layer normalization eplision
-        //constexpr unsigned int d_ff       = 3072U;  // Dim feedforward
+        constexpr unsigned int h          = 12U;    // Parallel attention (Heads)
+        constexpr float        eps        = 1e-12;  // Layer normalization eplision
+        constexpr unsigned int d_ff       = 3072U;  // Dim feedforward
         /*constexpr unsigned int d_q         = 64U;      // Dim query, 512U/8U
         constexpr unsigned int d_k           = 64U;      // Dim key, 512U/8U
         constexpr unsigned int d_v           = 64U;      // Dim value, 512U/8U
@@ -174,6 +174,7 @@ class GraphVanillaTransformerExample : public Example
                            unsigned int d_model, unsigned int h, float eps, unsigned int d_ff)
     {
         ARM_COMPUTE_UNUSED(h,eps,d_ff);
+        /*
         SubStream without_attention(graph);
         SubStream with_attention(graph);
 
@@ -188,7 +189,7 @@ class GraphVanillaTransformerExample : public Example
             << MultiHeadAttentionLayer(MultiHeadAttentionLayerInfo(d_model, h)).set_name("mha1");
 
         graph << EltwiseLayer(std::move(with_attention), std::move(without_attention), EltwiseOperation::Add).set_name("add_4_norm_attention");
-
+        */
         /* Self output */
         graph << LayerNormLayer(LayerNormLayerInfo(0 /*Window::DimX*/, eps));
 

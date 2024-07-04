@@ -102,7 +102,7 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
 
     int idx = 0;
     float res = 0;
-    for(; idx < WIDTH; ++idx)
+    for(; idx < 1; ++idx)
     {
         DATA_TYPE val = *((__global DATA_TYPE *)(input_ptr + input_offset_first_element_in_bytes + y * input_stride_y + idx * sizeof(DATA_TYPE)));
         res           = sum(res, val, 1);
