@@ -88,6 +88,7 @@ void ClLayerNormKernel::run_op(ITensorPack &tensors, const Window &window, cl::C
 
     Window window_in{window};
     window_in.set(Window::DimX,Window::Dimension(0, _input->dimension(0), _input->dimension(0)));
+    window_in.set(Window::DimY,Window::Dimension(0, 1, 1));
 
     Window slice = window_in.first_slice_window_3D();
     unsigned int idx = 0;
@@ -109,7 +110,6 @@ void ClLayerNormKernel::run_op(ITensorPack &tensors, const Window &window, cl::C
     _kernel.setArg<cl_float>(idx++, _info.epsilon());
     _kernel.setArg<cl_float>(idx++, _info.gamma());
     _kernel.setArg<cl_float>(idx++, _info.beta());
-    std::cout << "input->info()->offset_first_element_in_bytes()  "<<input->info()->offset_first_element_in_bytes() << std::endl;
 
     std::cout << "slice.x().start()" << slice.x().start() << std::endl;
     std::cout << "slice.x().end()" << slice.x().end() << std::endl;
