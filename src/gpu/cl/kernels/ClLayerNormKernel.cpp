@@ -94,19 +94,20 @@ void ClLayerNormKernel::run_op(ITensorPack &tensors, const Window &window, cl::C
     Window slice = window_in.first_slice_window_3D();
 
 
-        unsigned int idx = 0;
-        add_3D_tensor_argument(idx, input, slice);
-        add_3D_tensor_argument(idx, output, slice);
-        _kernel.setArg<cl_float>(idx++, _info.epsilon());
-        _kernel.setArg<cl_float>(idx++, _info.gamma());
-        _kernel.setArg<cl_float>(idx++, _info.beta());
-        std::cout << "input->info()->offset_first_element_in_bytes()  "<<input->info()->offset_first_element_in_bytes() << std::endl;
+    unsigned int idx = 0;
+    add_3D_tensor_argument(idx, input, slice);
+    add_3D_tensor_argument(idx, output, slice);
+    _kernel.setArg<cl_float>(idx++, _info.epsilon());
+    _kernel.setArg<cl_float>(idx++, _info.gamma());
+    _kernel.setArg<cl_float>(idx++, _info.beta());
+    std::cout << "input->info()->offset_first_element_in_bytes()  "<<input->info()->offset_first_element_in_bytes() << std::endl;
 
-        std::cout << "win.x().start()" << slice.x().start() << std::endl;
-        std::cout << "win.x().end()" << slice.x().end() << std::endl;
-        std::cout << "win.y().start()" << slice.y().start() << std::endl;
-        std::cout << "win.y().end()" << slice.y().end() << std::endl;
-        enqueue(queue, *this, slice);
+    std::cout << "win.x().start()" << slice.x().start() << std::endl;
+    std::cout << "win.x().end()" << slice.x().end() << std::endl;
+    std::cout << "win.y().start()" << slice.y().start() << std::endl;
+    std::cout << "win.y().end()" << slice.y().end() << std::endl;
+    enqueue(queue, *this, slice);
+    
 }
 
 } // namespace kernels
