@@ -90,7 +90,7 @@ void ClLayerNormKernel::run_op(ITensorPack &tensors, const Window &window, cl::C
     window_in.set(Window::DimX,
                               Window::Dimension(0, _input->dimension(0), _input->dimension(0)));
 
-    Window slice = window_in.first_slice_window_3D();
+    Window slice = window_in.first_slice_window_1D();
     slice.set_broadcasted(Window::DimZ);
 
     unsigned int idx = 0;
