@@ -101,9 +101,16 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
     int z = get_global_id(2);
 
     int idx = 0;
+    float res = 0;
+    for(; idx < WIDTH; ++idx)
+    {
+        DATA_TYPE val = *((__global DATA_TYPE *)(input_ptr + input_offset_first_element_in_byte + y * input_stride_y + idx * sizeof(DATA_TYPE)));
+        res           = sum(res, val, 1);
+    }
+    idx = 0;
     for(; idx < 1; ++idx)
     {
-        DATA_TYPE val = x+1;
+        DATA_TYPE val = res;
         VSTORE(1)(val, 0, (__global DATA_TYPE *)(output_ptr + output_offset_first_element_in_bytes + y * output_stride_y + idx * sizeof(DATA_TYPE)));
     }
 
