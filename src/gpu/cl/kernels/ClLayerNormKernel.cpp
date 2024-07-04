@@ -110,6 +110,7 @@ void ClLayerNormKernel::run_op(ITensorPack &tensors, const Window &window, cl::C
     _kernel.setArg<cl_float>(idx++, _info.epsilon());
     _kernel.setArg<cl_float>(idx++, _info.gamma());
     _kernel.setArg<cl_float>(idx++, _info.beta());
+    _kernel.setArg<cl_float>(idx++, 768);
 
     std::cout << "slice.x().start()" << slice.x().start() << std::endl;
     std::cout << "slice.x().end()" << slice.x().end() << std::endl;

@@ -94,7 +94,8 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
                          TENSOR3D_DECLARATION(output),
                          DATA_TYPE epsilon,
                          DATA_TYPE gamma,
-                         DATA_TYPE beta)
+                         DATA_TYPE beta,
+                         int width_ahhh)
 {
     int y = get_global_id(1);
     int z = get_global_id(2);
@@ -118,7 +119,7 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
 #if(WIDTH % VEC_SIZE)
     for(; x < 1; ++x)
     {
-        DATA_TYPE val = WIDTH;
+        DATA_TYPE val = width_ahhh;
         VSTORE(1)(val, 0, (__global DATA_TYPE *)(output_ptr + output_offset_first_element_in_bytes + y * output_stride_y + x * sizeof(DATA_TYPE)));
     }
 
