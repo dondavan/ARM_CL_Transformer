@@ -94,8 +94,7 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
                          TENSOR3D_DECLARATION(output),
                          DATA_TYPE epsilon,
                          DATA_TYPE gamma,
-                         DATA_TYPE beta,
-                         int width_ahhh)
+                         DATA_TYPE beta)
 {
     int y = get_global_id(1);
     int z = get_global_id(2);
@@ -109,18 +108,25 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
     DATA_TYPE sqrt_var_epsilon;
 
     int x = 0;
+    // Calculate mean
+    for(; x <= (WIDTH - VEC_SIZE); x += VEC_SIZE)
+    {
+        VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE) vals = VLOAD(VEC_SIZE)(0, (__global DATA_TYPE *)(input_addr + x * sizeof(DATA_TYPE)));
+        res  = sum(res, vals, VEC_SIZE);
+    }
 
 
     mean = res / WIDTH;
 
     x = 0;
-
-
-for(; x < 1; ++x)
+    // Calculate mean
+    for(; x <= (WIDTH - VEC_SIZE); x += VEC_SIZE)
     {
-        DATA_TYPE val = width_ahhh;
-        VSTORE(1)(val, 0, (__global DATA_TYPE *)(output_ptr + output_offset_first_element_in_bytes + y * output_stride_y + x * sizeof(DATA_TYPE)));
+        VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE) vals = res;
+        VSTORE(VEC_SIZE)(vals, 0, (__global DATA_TYPE *)(output_ptr + output_offset_first_element_in_bytes + y * output_stride_y + x * sizeof(DATA_TYPE)));
+    
     }
+
 /*
     VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE) means = mean;
 
