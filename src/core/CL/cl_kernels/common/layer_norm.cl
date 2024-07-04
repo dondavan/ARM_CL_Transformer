@@ -131,7 +131,7 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
 
     for(; x < WIDTH; ++x)
     {
-        DATA_TYPE val = (float) y;
+        DATA_TYPE val = y;
         VSTORE(1)(val, 0, (__global DATA_TYPE *)(output_addr + x * output_stride_x));
     }
 
