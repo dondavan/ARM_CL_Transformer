@@ -97,6 +97,7 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
                          DATA_TYPE beta,
                          int slice_y)
 {
+    slice_y = slice_y-1;
     int y = get_global_id(1);
     int z = get_global_id(2);
 
