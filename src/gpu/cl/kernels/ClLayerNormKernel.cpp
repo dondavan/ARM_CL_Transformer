@@ -87,8 +87,7 @@ void ClLayerNormKernel::run_op(ITensorPack &tensors, const Window &window, cl::C
     ICLTensor *output = utils::cast::polymorphic_downcast<ICLTensor *>(tensors.get_tensor(TensorType::ACL_DST));
 
     Window window_in{window};
-    window_in.set(Window::DimX,
-                              Window::Dimension(0, _input->dimension(0), _input->dimension(0)));
+    window_in.set(Window::DimX,Window::Dimension(0, _input->dimension(0), _input->dimension(0)));
 
     Window slice = window_in.first_slice_window_3D();
     slice.set_broadcasted(Window::DimZ);
@@ -96,6 +95,11 @@ void ClLayerNormKernel::run_op(ITensorPack &tensors, const Window &window, cl::C
     unsigned int idx = 0;
     add_3D_tensor_argument(idx, input, slice);
     add_3D_tensor_argument(idx, output, slice);
+
+
+    std::cout << "slice.x().start()" << slice.x().start() << std::endl;
+    std::cout << "slice.x().end()" << slice.x().end() << std::endl;
+
     _kernel.setArg<cl_float>(idx++, _info.epsilon());
     _kernel.setArg<cl_float>(idx++, _info.gamma());
     _kernel.setArg<cl_float>(idx++, _info.beta());
