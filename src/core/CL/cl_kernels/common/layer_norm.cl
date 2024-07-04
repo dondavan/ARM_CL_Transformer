@@ -109,9 +109,9 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
 
     int x = 0;
     // Calculate mean
-    for(; x <= WIDTH-16; x += VEC_SIZE)
+    for(; x <= (WIDTH - VEC_SIZE); x += VEC_SIZE)
     {
-        VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE) vals = VLOAD(VEC_SIZE)(0, (__global DATA_TYPE *)(input_addr + x * sizeof(DATA_TYPE)));
+        VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE) vals = VLOAD(VEC_SIZE)(x, (__global DATA_TYPE *)(input_addr));
         res  = sum(res, vals, VEC_SIZE);
     }
 
