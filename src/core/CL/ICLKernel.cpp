@@ -77,6 +77,9 @@ void arm_compute::enqueue(cl::CommandQueue  &queue,
     {
         lws = valid_lws;
     }
+    std::cout << "lws 0 " << lws.get()[0] << std::endl;
+    std::cout << "lws 1 " << lws.get()[1] << std::endl;
+    std::cout << "lws 2 " << lws.get()[2] << std::endl;
 
     if (CLKernelLibrary::get().is_wbsm_supported())
     {
