@@ -96,11 +96,20 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
                          DATA_TYPE gamma,
                          DATA_TYPE beta)
 {
+    int x = get_global_id(0);
     int y = get_global_id(1);
     int z = get_global_id(2);
 
-    uchar *input_addr  = input_ptr + input_offset_first_element_in_bytes + y * input_stride_y;
-    uchar *output_addr = output_ptr + output_offset_first_element_in_bytes + y * output_stride_y;
+    int idx = 0;
+    for(; idx < 1; ++idx)
+    {
+        DATA_TYPE val = x;
+        VSTORE(1)(val, 0, (__global DATA_TYPE *)(output_ptr + output_offset_first_element_in_bytes + y * output_stride_y + idx * sizeof(DATA_TYPE)));
+    }
+
+/*
+    __global uchar *input_addr  = input_ptr + input_offset_first_element_in_bytes + y * input_stride_y;
+    __global uchar *output_addr = output_ptr + output_offset_first_element_in_bytes + y * output_stride_y;
 
     DATA_TYPE res = (DATA_TYPE)0;
     DATA_TYPE mean;
@@ -109,28 +118,20 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
 
     int x = 0;
     // Calculate mean
-    VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE) vals = VLOAD(VEC_SIZE)(0, (__global DATA_TYPE *)(input_addr + 0 * input_stride_x));
-    res  = sum(res, vals, VEC_SIZE);
-    vals = VLOAD(VEC_SIZE)(0, (__global DATA_TYPE *)(input_addr + 4 * input_stride_x));
-    res  = sum(res, vals, VEC_SIZE);
-    vals = VLOAD(VEC_SIZE)(0, (__global DATA_TYPE *)(input_addr + 8 * input_stride_x));
-    res  = sum(res, vals, VEC_SIZE);
-    vals = VLOAD(VEC_SIZE)(0, (__global DATA_TYPE *)(input_addr + 12 * input_stride_x));
-    res  = sum(res, vals, VEC_SIZE);
-    vals = VLOAD(VEC_SIZE)(0, (__global DATA_TYPE *)(input_addr + 16 * input_stride_x));
-    res  = sum(res, vals, VEC_SIZE);
-    vals = VLOAD(VEC_SIZE)(0, (__global DATA_TYPE *)(input_addr + 20 * input_stride_x));
-    res  = sum(res, vals, VEC_SIZE);
-    vals = VLOAD(VEC_SIZE)(0, (__global DATA_TYPE *)(input_addr + 24 * input_stride_x));
-    res  = sum(res, vals, VEC_SIZE);
-    vals = VLOAD(VEC_SIZE)(0, (__global DATA_TYPE *)(input_addr + 28 * input_stride_x));
-    res  = sum(res, vals, VEC_SIZE);
-    vals = VLOAD(VEC_SIZE)(0, (__global DATA_TYPE *)(input_addr + 32 * input_stride_x));
-    res  = sum(res, vals, VEC_SIZE);
-    vals = VLOAD(VEC_SIZE)(0, (__global DATA_TYPE *)(input_addr + 36 * input_stride_x));
-    res  = sum(res, vals, VEC_SIZE);
+    for(; x <= (WIDTH - VEC_SIZE); x += VEC_SIZE)
+    {
+        VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE) vals = VLOAD(VEC_SIZE)(0, (__global DATA_TYPE *)(input_addr + x * sizeof(DATA_TYPE)));
+        res  = sum(res, vals, VEC_SIZE);
+    }
 
+#if(WIDTH % VEC_SIZE)
+    for(; x < WIDTH; ++x)
+    {
+        DATA_TYPE val = *((__global DATA_TYPE *)(input_addr + x * sizeof(DATA_TYPE)));
+        res           = sum(res, val, 1);
+    }
 
+#endif // (WIDTH % VEC_SIZE)
 
     mean = res / WIDTH;
 
@@ -138,12 +139,19 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
     // Calculate mean
     for(; x <= (WIDTH - VEC_SIZE); x += VEC_SIZE)
     {
-        vals = y * input_stride_y;
-        VSTORE(VEC_SIZE)(vals, 0, (__global DATA_TYPE *)(output_addr + x * sizeof(DATA_TYPE)));
+        VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE) vals = res;
+        VSTORE(VEC_SIZE)(vals, 0, (__global DATA_TYPE *)(output_ptr + output_offset_first_element_in_bytes + y * output_stride_y + x * sizeof(DATA_TYPE)));
     
     }
 
+#if(WIDTH % VEC_SIZE)
+    for(; x < WIDTH; ++x)
+    {
+        DATA_TYPE val = res;
+        VSTORE(1)(val, 0, (__global DATA_TYPE *)(output_ptr + output_offset_first_element_in_bytes + y * output_stride_y + x * sizeof(DATA_TYPE)));
+    }
 
+#endif // (WIDTH % VEC_SIZE)
 /*
     VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE) means = mean;
 
