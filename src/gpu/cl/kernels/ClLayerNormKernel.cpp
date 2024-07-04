@@ -106,6 +106,8 @@ void ClLayerNormKernel::run_op(ITensorPack &tensors, const Window &window, cl::C
     std::cout << "slice.x().end()" << slice.x().end() << std::endl;
     std::cout << "slice.y().start()" << slice.y().start() << std::endl;
     std::cout << "slice.y().end()" << slice.y().end() << std::endl;
+    std::cout << "slice.z().start()" << slice.z().start() << std::endl;
+    std::cout << "slice.z().end()" << slice.z().end() << std::endl;
     enqueue(queue, *this, slice);
 
 }
