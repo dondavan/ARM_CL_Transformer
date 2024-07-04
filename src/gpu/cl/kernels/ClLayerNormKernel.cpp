@@ -90,7 +90,8 @@ void ClLayerNormKernel::run_op(ITensorPack &tensors, const Window &window, cl::C
     Window slice = window_in.first_slice_window_1D();
 
 
-
+    do
+    {
         unsigned int idx = 0;
         add_3D_tensor_argument(idx, input, slice);
         add_3D_tensor_argument(idx, output, slice);
@@ -104,6 +105,7 @@ void ClLayerNormKernel::run_op(ITensorPack &tensors, const Window &window, cl::C
         std::cout << "win.y().start()" << slice.y().start() << std::endl;
         std::cout << "win.y().end()" << slice.y().end() << std::endl;
         enqueue(queue, *this, slice);
+    } while(window.slide_window_slice_1D(slice));
 }
 
 } // namespace kernels
