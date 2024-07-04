@@ -95,8 +95,9 @@ void ClLayerNormKernel::run_op(ITensorPack &tensors, const Window &window, cl::C
     add_3D_tensor_argument(idx, output, slice);
 
 
-    std::cout << "slice.x().start()" << slice.x().start() << std::endl;
-    std::cout << "slice.x().end()" << slice.x().end() << std::endl;
+    std::cout << "input->info()->strides_in_bytes().x()" << input->info()->strides_in_bytes().x() << std::endl;
+    std::cout << "input->info()->strides_in_bytes().y()" << input->info()->strides_in_bytes().y() << std::endl;
+    std::cout << "input->info()->strides_in_bytes().z()" << input->info()->strides_in_bytes().z() << std::endl;
 
     _kernel.setArg<cl_float>(idx++, _info.epsilon());
     _kernel.setArg<cl_float>(idx++, _info.gamma());
