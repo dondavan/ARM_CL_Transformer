@@ -102,10 +102,10 @@ void ClLayerNormKernel::run_op(ITensorPack &tensors, const Window &window, cl::C
     _kernel.setArg<cl_float>(idx++, _info.beta());
     std::cout << "input->info()->offset_first_element_in_bytes()  "<<input->info()->offset_first_element_in_bytes() << std::endl;
 
-    std::cout << "win.x().start()" << slice.x().start() << std::endl;
-    std::cout << "win.x().end()" << slice.x().end() << std::endl;
-    std::cout << "win.y().start()" << slice.y().start() << std::endl;
-    std::cout << "win.y().end()" << slice.y().end() << std::endl;
+    std::cout << "slice.x().start()" << slice.x().start() << std::endl;
+    std::cout << "slice.x().end()" << slice.x().end() << std::endl;
+    std::cout << "slice.y().start()" << slice.y().start() << std::endl;
+    std::cout << "slice.y().end()" << slice.y().end() << std::endl;
     enqueue(queue, *this, slice);
 
 }
