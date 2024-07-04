@@ -90,6 +90,7 @@ void ClLayerNormKernel::run_op(ITensorPack &tensors, const Window &window, cl::C
     Window slice = window_in.first_slice_window_1D();
 
 
+
         unsigned int idx = 0;
         add_3D_tensor_argument(idx, input, slice);
         add_3D_tensor_argument(idx, output, slice);
