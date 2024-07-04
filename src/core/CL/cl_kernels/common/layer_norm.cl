@@ -108,7 +108,7 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
     DATA_TYPE sqrt_var_epsilon;
 
     int x = 0;
-    VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE) vals
+    VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE) vals;
     // Calculate mean
     for(; x <= (WIDTH - VEC_SIZE); x += VEC_SIZE)
     {
