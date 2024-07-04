@@ -116,7 +116,7 @@ class GraphVanillaTransformerExample : public Example
                                 get_weights_accessor(data_path, "positional_embedding.npy", operation_layout))
                      .set_name("tkemb1");
 
-        add_encoder_block(data_path, "layer_0/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+        //add_encoder_block(data_path, "layer_0/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
 
         // Pooler
         graph 
@@ -174,21 +174,6 @@ class GraphVanillaTransformerExample : public Example
                            unsigned int d_model, unsigned int h, float eps, unsigned int d_ff)
     {
         ARM_COMPUTE_UNUSED(h,eps,d_ff);
-        SubStream without_attention(graph);
-        SubStream with_attention(graph);
-
-        with_attention
-            /* Self Attention */
-            << MultiHeadLinearLayer(LinearLayerInfo(d_model), get_weights_accessor(data_path+layer_path, "query_weight.npy"),
-                                    get_weights_accessor(data_path+layer_path, "query_bias.npy"),
-                                    get_weights_accessor(data_path+layer_path, "key_weight.npy"),
-                                    get_weights_accessor(data_path+layer_path, "key_bias.npy"),
-                                    get_weights_accessor(data_path+layer_path, "value_weight.npy"),
-                                    get_weights_accessor(data_path+layer_path, "value_bias.npy"))
-            << MultiHeadAttentionLayer(MultiHeadAttentionLayerInfo(d_model, h)).set_name("mha1");
-
-        graph << EltwiseLayer(std::move(with_attention), std::move(without_attention), EltwiseOperation::Add).set_name("add_4_norm_attention");
-
         /* Self output */
         graph << LayerNormLayer(LayerNormLayerInfo(0 /*Window::DimX*/, eps));
 
