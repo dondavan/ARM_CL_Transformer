@@ -116,14 +116,11 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
     x = 0;
 
 
-#if(WIDTH % VEC_SIZE)
-    for(; x < 1; ++x)
+for(; x < 1; ++x)
     {
         DATA_TYPE val = width_ahhh;
         VSTORE(1)(val, 0, (__global DATA_TYPE *)(output_ptr + output_offset_first_element_in_bytes + y * output_stride_y + x * sizeof(DATA_TYPE)));
     }
-
-#endif // (WIDTH % VEC_SIZE)
 /*
     VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE) means = mean;
 
