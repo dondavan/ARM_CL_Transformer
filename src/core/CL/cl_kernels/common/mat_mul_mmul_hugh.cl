@@ -344,7 +344,7 @@ __kernel void mat_mul_mmul_hugh(
         
         LOOP_UNROLLING(int, m0, 0, 1, M0,
         {
-            LOOP_UNROLLING(int, n0, 0, 1, N0,{c_f32[m0].s[n0] = 1;})
+            LOOP_UNROLLING(int, n0, 0, 1, N0,{c_f32[m0].s[n0] = 1.f;})
         })
         
         lhs_offset_first_element_in_bytes += MMUL_K0 * sizeof(DATA_TYPE);
