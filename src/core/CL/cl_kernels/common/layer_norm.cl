@@ -136,7 +136,6 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
     }
 
 
-#endif // (WIDTH % VEC_SIZE)
 /*
     VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE) means = mean;
 
