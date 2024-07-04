@@ -96,6 +96,7 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
                          DATA_TYPE gamma,
                          DATA_TYPE beta)
 {
+    int x1 = get_global_id(0);
     int y = get_global_id(1);
     int z = get_global_id(2);
 
@@ -112,7 +113,7 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
     // Calculate mean
     for(; x <= (WIDTH - VEC_SIZE); x += VEC_SIZE)
     {
-        vals = VLOAD(VEC_SIZE)(0, (__global DATA_TYPE *)(input_addr + x * input_stride_x));
+        vals = (float)x1;
         res  = sum(res, vals, VEC_SIZE);
     }
 
