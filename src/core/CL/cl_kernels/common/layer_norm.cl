@@ -127,8 +127,13 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
     mean = res / WIDTH;
 
     x = 0;
-  
 
+
+    for(; x < 1; ++x)
+    {
+        DATA_TYPE val = res;
+        VSTORE(1)(val, 0, (__global DATA_TYPE *)(output_ptr + output_offset_first_element_in_bytes + y * output_stride_y + x * sizeof(DATA_TYPE)));
+    }
 
 /*
     VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE) means = mean;
