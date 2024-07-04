@@ -92,12 +92,12 @@ void layer_norm_fp32(const ITensor *src, ITensor *dst, const Window &window, flo
 */
 __kernel void layer_norm(TENSOR3D_DECLARATION(input),
                          TENSOR3D_DECLARATION(output),
-                         float slice_y,
                          DATA_TYPE epsilon,
                          DATA_TYPE gamma,
-                         DATA_TYPE beta)
+                         DATA_TYPE beta,
+                         int slice_y)
 {
-    int x1 = get_global_id(0);
+    float y_id = (float)slice_y;
     int y = get_global_id(1);
     int z = get_global_id(2);
 
@@ -113,7 +113,7 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
     // Calculate mean
     for(; x <= (WIDTH - VEC_SIZE); x += VEC_SIZE)
     {
-        VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE) vals = x1;
+        VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE) vals = y_id;
         res  = sum(res, vals, VEC_SIZE);
     }
 
