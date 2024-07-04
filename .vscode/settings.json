@@ -74,6 +74,7 @@
         "iterator": "cpp",
         "version": "cpp",
         "unordered_set": "cpp",
-        "queue": "cpp"
+        "queue": "cpp",
+        "type_traits": "c"
     }
 }
