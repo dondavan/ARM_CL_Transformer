@@ -849,6 +849,7 @@ RawResultAccessor::RawResultAccessor(std::ostream      &output_stream)
 template <typename T>
 void RawResultAccessor::access_typed_tensor(ITensor &tensor)
 {
+    ARM_COMPUTE_UNUSED(tensor);
     _output_stream << std::scientific;
     _output_stream << "---------- Result ----------" << std::endl;
     
