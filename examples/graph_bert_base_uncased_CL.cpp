@@ -179,7 +179,7 @@ class GraphVanillaTransformerExample : public Example
                                     get_weights_accessor(data_path+layer_path, "key_weight.npy"),
                                     get_weights_accessor(data_path+layer_path, "key_bias.npy"),
                                     get_weights_accessor(data_path+layer_path, "value_weight.npy"),
-                                    get_weights_accessor(data_path+layer_path, "value_bias.npy"))
+                                    get_weights_accessor(data_path+layer_path, "value_bias.npy"));
         /*
         SubStream without_attention(graph);
         SubStream with_attention(graph);
