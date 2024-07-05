@@ -211,21 +211,12 @@ void configure_handle_lifetime(std::vector<TaskHandles> &tasks_handles, const Ha
     };
 
 
-    std::cout << "tasks_handles start" << std::endl;
     for (auto &task_handle : tasks_handles)
     {
         // Marking all the input and output tensors of the task as in flight
 
-    std::cout << "acquire input_handles " << std::endl;
         acquire(task_handle.input_handles);
-    std::cout << "acquire input_handles " << std::endl;
-    
-    std::cout << "acquire output_handles " << std::endl;
-
-        std::cout << "task_handle.output_handles " << task_handle.output_handles.size() << std::endl;
-
         acquire(task_handle.output_handles);
-    std::cout << "acquire output_handles " << std::endl;
 
         // Releasing the input tensors
         for (auto &input_handle : task_handle.input_handles)
@@ -244,8 +235,6 @@ void configure_handle_lifetime(std::vector<TaskHandles> &tasks_handles, const Ha
         }
     }
 
-    std::cout << "tasks_handles end" << std::endl;
-
 }
 } // namespace
 
@@ -257,7 +246,6 @@ void configure_transition_manager(Graph &g, GraphContext &ctx, ExecutionWorkload
     std::vector<TaskHandles> tasks_handles;
     TargetHandleCounter      target_handle_count;
     // Count handles
-    std::cout << "Count handles start" << std::endl;
     for (auto &task : workload.tasks)
     {
         // Populates IO handles
@@ -266,12 +254,7 @@ void configure_transition_manager(Graph &g, GraphContext &ctx, ExecutionWorkload
         // Count handles
         count_input_handles_per_target(tasks_handles.back(), target_handle_count);
     }
-    std::cout << "Count handles end" << std::endl;
 
-    std::cout << "target_handle_count " << target_handle_count.size() << std::endl;
-
-
-    std::cout << "Setup memory managers start" << std::endl;
     // Setup memory managers
     for (auto &hc : target_handle_count)
     {   
@@ -285,7 +268,6 @@ void configure_transition_manager(Graph &g, GraphContext &ctx, ExecutionWorkload
             }
         }
     }
-    std::cout << "Setup memory managers end" << std::endl;
 
 }
 } // namespace detail
