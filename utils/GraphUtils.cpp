@@ -851,23 +851,7 @@ void RawResultAccessor::access_typed_tensor(ITensor &tensor)
 {
     _output_stream << std::scientific;
     _output_stream << "---------- Result ----------" << std::endl;
-    for(size_t y = 0; y < tensor.info()->tensor_shape().y(); y++)
-    {
-        size_t x = tensor.info()->tensor_shape().x();
-        _output_stream << "[ ";
-        _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(0,y)))  << ", ";
-        _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(1,y)))  << ", ";
-        _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(2,y)))  << ", ";
-
-        _output_stream  << " ..., ";
-
-        _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(x-3,y)))  << ", ";
-        _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(x-2,y)))  << ", ";
-        _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(x-1,y)))  << ", ";
-
-        _output_stream << "] ";
-        _output_stream << std::endl;
-    }
+    
     _output_stream  << std::endl;
 }
 
