@@ -147,21 +147,13 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
     }
 #endif // (WIDTH % VEC_SIZE)
 
-    var = var / WIDTH;
-    x = 0;
-    // Calculate mean
-    for(; x <= (WIDTH - VEC_SIZE); x += VEC_SIZE)
-    {
-        VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE) vals = var;
-        VSTORE(VEC_SIZE)(vals, 0, (__global DATA_TYPE *)(output_addr + x * output_stride_x));
-    }
-
-/*
     var = var / mean;
     sqrt_var_epsilon = sqrt(var + epsilon);
     VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE) sqrt_var_epsilons = sqrt_var_epsilon;
     VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE) gammas = gamma;
     VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE) betas = beta; 
+
+    x = 0;
 
     // Calculate layer normalization
     for(; x <= (WIDTH - VEC_SIZE); x += VEC_SIZE)
@@ -187,6 +179,6 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
     
     }
 #endif // (WIDTH % VEC_SIZE)
-*/
+
 
 }
