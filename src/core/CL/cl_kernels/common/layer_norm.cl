@@ -172,7 +172,7 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
     {
         DATA_TYPE val = *((__global DATA_TYPE *)(input_addr + x * sizeof(DATA_TYPE)));
         val = val - mean;
-        val = val / sqrt_var_epsilon;`
+        val = val / sqrt_var_epsilon;
         val = val * gamma;
         val = val + beta;
         VSTORE(1)(val, 0, (__global DATA_TYPE *)(output_ptr + output_offset_first_element_in_bytes + y * output_stride_y + x * output_stride_x));
