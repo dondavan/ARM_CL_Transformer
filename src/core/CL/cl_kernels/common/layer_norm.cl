@@ -145,6 +145,7 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
         val           = val * val;
         var           = sum(var, val, 1);
     }
+#endif // (WIDTH % VEC_SIZE)
 
     x = 0;
     // Calculate mean
