@@ -147,7 +147,7 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
     }
 #endif // (WIDTH % VEC_SIZE)
 
-    var = var / mean;
+    var = var / WIDTH;
     sqrt_var_epsilon = sqrt(var + epsilon);
     VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE) sqrt_var_epsilons = sqrt_var_epsilon;
     VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE) gammas = gamma;
@@ -164,7 +164,7 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
         vals = vals * gammas;
         vals = vals + betas;
         
-        VSTORE(VEC_SIZE)(vals, 0, (__global DATA_TYPE *)(output_ptr + output_offset_first_element_in_bytes + y * output_stride_y + x * output_stride_x));
+        VSTORE(VEC_SIZE)(vals, 0, (__global DATA_TYPE *)(output_addr + x * output_stride_x));
     }
 
 #if(WIDTH % VEC_SIZE)
@@ -175,7 +175,7 @@ __kernel void layer_norm(TENSOR3D_DECLARATION(input),
         val = val / sqrt_var_epsilon;
         val = val * gamma;
         val = val + beta;
-        VSTORE(1)(val, 0, (__global DATA_TYPE *)(output_ptr + output_offset_first_element_in_bytes + y * output_stride_y + x * output_stride_x));
+        VSTORE(1)(val, 0, (__global DATA_TYPE *)(output_addr + x * output_stride_x));
     
     }
 #endif // (WIDTH % VEC_SIZE)
