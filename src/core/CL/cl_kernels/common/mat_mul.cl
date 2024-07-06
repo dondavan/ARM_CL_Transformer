@@ -115,10 +115,12 @@ __kernel void mat_mul_native_nt_nt(
 
     const int rhs_z = z * rhs_h;
     int       k;
+
+    TILE(DATA_TYPE, M0, K0, a);
+    TILE(DATA_TYPE, K0, N0, b);
+    
     for(k = 0; k <= K - K0; k += K0)
     {
-        TILE(DATA_TYPE, M0, K0, a);
-        TILE(DATA_TYPE, K0, N0, b);
 
         LOOP_UNROLLING(int, i, 0, 1, M0,
         {
