@@ -107,10 +107,11 @@ __kernel void mat_mul_native_nt_nt(
 
     // Initialize the accumulators
     //TILE_GLOBAL(DATA_TYPE, M0, N0, acc);
-    union {
+    union acc_union{
         float s[2];
         float2 v;
-    } acc[6];
+    };
+    union acc_union acc[6];
 
     LOOP_UNROLLING(int, i, 0, 1, M0,
     {
