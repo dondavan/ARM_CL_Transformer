@@ -343,7 +343,7 @@ __kernel void mat_mul_native_mmul_nt_nt(
         {
             LOOP_UNROLLING(int, n0, 0, 1, N0,
             {
-                c_f32[m0].s[n0] = fma(a[m0].s[0], b[0].s[n0], c_f32[m0].s[n0]);
+                c_f32[m0].s[n0] += a[m0].s[0]*b[0].s[n0];
             })
         })
 
