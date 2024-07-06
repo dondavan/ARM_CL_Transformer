@@ -341,10 +341,7 @@ __kernel void mat_mul_native_mmul_nt_nt(
 
         LOOP_UNROLLING(int, m0, 0, 1, M0,
         {
-            LOOP_UNROLLING(int, n0, 0, 1, N0,
-            {
-                c_f32[m0].s[n0] = 1.1f;
-            })
+            c_f32[m0].s[0] = 1.1f;
         })
 
         lhs_offset_first_element_in_bytes += MMUL_K0 * sizeof(DATA_TYPE);
