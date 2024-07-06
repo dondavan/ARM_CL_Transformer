@@ -193,8 +193,7 @@ void ClLinearKernel::run_op(ITensorPack &tensors, const Window &window, cl::Comm
         utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC_0));
     const ICLTensor *rhs =
         utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC_1));
-    const ICLTensor *bias = utils::cast::polymorphic_downcast<const ICLTensor *>(
-        tensors.get_const_tensor(TensorType::ACL_SRC_2)); // nullptr if bias is not present
+    //const ICLTensor *bias = utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC_2)); // nullptr if bias is not present
     ICLTensor *dst = utils::cast::polymorphic_downcast<ICLTensor *>(tensors.get_tensor(TensorType::ACL_DST));
 
     ARM_COMPUTE_ERROR_ON_NULLPTR(lhs, rhs, dst);
