@@ -7,8 +7,9 @@
 #include "src/common/utils/Log.h"
 
 #include "src/core/helpers/MemoryHelpers.h"
-#include "src/gpu/cl/utils/ClAuxTensorHandler.h"
+#include "src/core/helpers/AutoConfiguration.h"
 
+#include "src/gpu/cl/utils/ClAuxTensorHandler.h"
 #include "src/gpu/cl/kernels/ClVectorizeKernel.h"
 
 #include "src/runtime/heuristics/matmul_native/ClMatMulNativeKernelConfig.h"
@@ -29,6 +30,7 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
     ARM_COMPUTE_LOG_PARAMS(key, value, query, output);
     ARM_COMPUTE_UNUSED(compile_context, query, key, value, output, info);
     std::cout << "ClScaleDotProduction::configure start " << std::endl;
+    /*
     // Query multi-Head reshape
     TensorShape query_reshape = TensorShape(query->tensor_shape().x() / info.h(),
                                             info.h(),
@@ -114,8 +116,16 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
     product_mm_kernel->set_target(gpu_target);
     product_mm_kernel->configure(compile_context, &_permuted_query, &_transposed_key, nullptr, output, scale, 1, mm_kernel_info_qk);
     _product_mm_kernel = std::move(product_mm_kernel);
+    */
 
-    std::cout << "      _product_mm_kernel " <<std::endl;
+
+
+    auto_init_if_empty(*output, query->clone()->set_tensor_shape(query->tensor_shape()));
+    auto k = std::make_unique<kernels::ClSimpleForward1Kernel>();
+    k->configure(compile_context, query,output);
+    _sf_kernel = std::move(k);
+
+    std::cout << "      ClSimpleForward1Kernel " <<std::endl;
 
     /*
     //  Softmax of previous product
@@ -159,6 +169,7 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
     concat_reshape_kernel->configure(compile_context, &_permuted_concat, output);
     _concat_reshape_kernel = std::move(concat_reshape_kernel);
 */
+
     std::cout << "ClScaleDotProduction::configure end " << std::endl;
 
     //auto product_mm_kernel = std::make_unique<kernels::ClMatMulNativeKernel>();
@@ -297,9 +308,20 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
     ARM_COMPUTE_UNUSED(tensors);
 
     auto query = tensors.get_const_tensor(ACL_SRC_0);
-    auto key   = tensors.get_const_tensor(ACL_SRC_1);
-    auto value  = tensors.get_const_tensor(ACL_SRC_2);
+    //auto key   = tensors.get_const_tensor(ACL_SRC_1);
+    //auto value  = tensors.get_const_tensor(ACL_SRC_2);
     auto output = tensors.get_tensor(ACL_DST);
+
+    ITensorPack query_reshape_pack{ { ACL_SRC_0, query }, { ACL_DST, output} };
+
+    std::cout << "query->info()->tensor_shape().x() " <<query->info()->tensor_shape().x() << std::endl;
+    std::cout << "query->info()->tensor_shape().y() " <<query->info()->tensor_shape().y() << std::endl;
+    std::cout << "query->info()->tensor_shape().z() " <<query->info()->tensor_shape().z() << std::endl;
+
+    CLScheduler::get().enqueue_op(*_sf_kernel, query_reshape_pack, true);
+    std::cout << " wo cao ni ma de bi " <<std::endl; 
+
+    /*
 
     CLAuxTensorHandler reshaped_query(offset_int_vec(QueryReshape), _reshaped_query, tensors);
     CLAuxTensorHandler permuted_query(offset_int_vec(QueryPermute), _permuted_query, tensors);
@@ -372,7 +394,7 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
     ARM_COMPUTE_UNUSED(softmax_pack,gemm_context_pack,concat_permute_pack,concat_reshape_pack);
 
 
-    /*
+    
     CpuAuxTensorHandler reshaped_query(offset_int_vec(QueryReshape), _reshaped_query, tensors);
     CpuAuxTensorHandler permuted_query(offset_int_vec(QueryPermute), _permuted_query, tensors);
     CpuAuxTensorHandler reshaped_key(offset_int_vec(KeyReshape), _reshaped_key, tensors);
