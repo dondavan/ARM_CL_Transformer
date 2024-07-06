@@ -42,8 +42,10 @@ void ClLinear::configure(const ClCompileContext &compile_context,
 
     auto kernel = std::make_unique<ClMatMulNativeMMULKernel>();
     kernel->set_target(gpu_target);
+
     kernel->configure(compile_context, a, b, nullptr /* bias */, d, kernel_info);
-    _kernel = std::move(kernel);
+    _matmul_kernel = std::move(kernel);
+
 
     /*
     auto k = std::make_unique<kernels::ClLinearKernel>();
@@ -74,7 +76,7 @@ ClLinear::validate(const ITensorInfo *a,
 void ClLinear::run(ITensorPack &tensors)
 {
     ARM_COMPUTE_ERROR_ON_MSG(tensors.empty(), "No inputs provided");
-    CLScheduler::get().enqueue_op(*_kernel.get(), tensors, true);
+    CLScheduler::get().enqueue_op(*_matmul_kernel.get(), tensors, true);
 }
 
 } // namespace opencl

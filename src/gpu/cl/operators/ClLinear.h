@@ -64,6 +64,8 @@ private:
         TempResult,
         Count
     };
+    
+    std::unique_ptr<opencl::IClKernel> _matmul_kernel{nullptr};
 
     TensorInfo _tmp_a{};
     TensorInfo _pretransposed_b{};
