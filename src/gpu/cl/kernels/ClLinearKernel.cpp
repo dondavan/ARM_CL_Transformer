@@ -61,6 +61,7 @@ void ClLinearKernel::configure(const CLCompileContext &compile_context,
     std::cout << "k " << k << std::endl;
     std::cout << "m0 " << m0 << std::endl;
     std::cout << "n0 " << n0 << std::endl;
+    std::cout << "k0 " << matmul_kernel_info.k0 << std::endl;
 
     // Configure kernel window
     Window win = calculate_max_window(*dst, Steps(n0, m0));
