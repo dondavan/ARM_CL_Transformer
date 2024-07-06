@@ -138,49 +138,6 @@ __kernel void mat_mul_native_nt_nt(
         lhs_offset_first_element_in_bytes += K0 * sizeof(DATA_TYPE);
     }
 
-#if K % K0 != 0
-    /* Leftover Loop */
-    for(; k < K; ++k)
-    {
-        TILE(DATA_TYPE, M0, 1, a);
-        TILE(DATA_TYPE, 1, N0, b);
-
-        LOOP_UNROLLING(int, i, 0, 1, M0,
-        {
-            a[i].v = 0.f;
-        })
-
-        LOOP_UNROLLING(int, i, 0, 1, 1,
-        {
-            b[i].v = 0.f;
-        })
-
-        // Load tile from the lhs/rhs tensors
-        T_LOAD(DATA_TYPE, M0, 1, BUFFER, lhs, 0, 0, 1, lhs_stride_y, a);
-        T_LOAD(DATA_TYPE, 1, N0, BUFFER, rhs, x, k + rhs_z, 1, rhs_stride_y, b);
-
-        T_MMUL(DATA_TYPE, DATA_TYPE, DATA_TYPE, M0, N0, 1, NT, NT, a, b, acc);
-
-        lhs_offset_first_element_in_bytes += 1 * sizeof(DATA_TYPE);
-    }
-#endif // K % K0 != 0
-
-    const bool x_cond = PARTIAL_STORE_N0 != 0 && get_global_id(0) == 0;
-    const bool y_cond = PARTIAL_STORE_M0 != 0 && get_global_id(1) == 0;
-
-    TILE(int, M0, 1, indirect_buffer);
-    LOOP_UNROLLING(int, _i, 0, 1, M0,
-    {
-        indirect_buffer[_i].v = min(_i, select(M0 - 1, PARTIAL_STORE_M0 - 1, y_cond));
-    });
-
-#ifdef BIAS
-    perform_bias_addition(bias_ptr, bias_offset_first_element_in_bytes, acc, x);
-#endif // defined(BIAS)
-
-    T_ACTIVATION(DATA_TYPE, M0, N0, ACTIVATION_TYPE, A_VAL, B_VAL, acc, acc);
-
-    //T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, acc, indirect_buffer);
 }
 #endif // defined(MAT_MUL_NATIVE_NT_NT)
 
