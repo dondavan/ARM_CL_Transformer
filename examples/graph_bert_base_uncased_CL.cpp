@@ -174,7 +174,13 @@ class GraphVanillaTransformerExample : public Example
                            unsigned int d_model, unsigned int h, float eps, unsigned int d_ff)
     {
         ARM_COMPUTE_UNUSED(h,eps,d_ff,data_path,layer_path,d_model);
-        graph << MultiHeadAttentionLayer(MultiHeadAttentionLayerInfo(d_model, h)).set_name("mha1");
+        graph << MultiHeadLinearLayer(LinearLayerInfo(d_model), get_weights_accessor(data_path+layer_path, "query_weight.npy"),
+                                    get_weights_accessor(data_path+layer_path, "query_bias.npy"),
+                                    get_weights_accessor(data_path+layer_path, "key_weight.npy"),
+                                    get_weights_accessor(data_path+layer_path, "key_bias.npy"),
+                                    get_weights_accessor(data_path+layer_path, "value_weight.npy"),
+                                    get_weights_accessor(data_path+layer_path, "value_bias.npy"))
+              << MultiHeadAttentionLayer(MultiHeadAttentionLayerInfo(d_model, h)).set_name("mha1");
         /*
         SubStream without_attention(graph);
         SubStream with_attention(graph);

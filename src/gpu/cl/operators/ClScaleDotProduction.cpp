@@ -318,7 +318,17 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
 
     // Run Query multi-Head reshape
     ITensorPack query_reshape_pack{ { ACL_SRC_0, query }, { ACL_DST, reshaped_query.get() } };
+
+    std::cout << "query->info()->tensor_shape().x() " <<query->info()->tensor_shape().x() << std::endl;
+    std::cout << "query->info()->tensor_shape().y() " <<query->info()->tensor_shape().y() << std::endl;
+    std::cout << "query->info()->tensor_shape().z() " <<query->info()->tensor_shape().z() << std::endl;
+
     CLScheduler::get().enqueue_op(*_query_reshape_kernel, query_reshape_pack, true);
+
+    std::cout << "reshaped_query.get()->info()->tensor_shape().x() " <<reshaped_query.get()->info()->tensor_shape().x() << std::endl;
+    std::cout << "reshaped_query.get()->info()->tensor_shape().y() " <<reshaped_query.get()->info()->tensor_shape().y() << std::endl;
+    std::cout << "reshaped_query.get()->info()->tensor_shape().z() " <<reshaped_query.get()->info()->tensor_shape().z() << std::endl;
+
     ITensorPack query_permute_pack{ { ACL_SRC, reshaped_query.get() }, { ACL_DST, permuted_query.get() } };
     CLScheduler::get().enqueue_op(*_query_permute_kernel, query_permute_pack, true);
 
