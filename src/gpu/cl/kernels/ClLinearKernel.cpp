@@ -215,7 +215,7 @@ void ClLinearKernel::run_op(ITensorPack &tensors, const Window &window, cl::Comm
 
     // LWS_x should be multiple of 16 at least. (32, 2) has been chosen to have more work-items on a single core
     // LWS also enforces the order of execution of the work items which improves cache utilization
-    enqueue(queue, *this, window, cl::NDRange(32, 2), false);
+    enqueue(queue, *this, window);
     
     std::cout << "src/gpu/cl/kernels/ClLinearKernel.cpp run end" << std::endl;
 
