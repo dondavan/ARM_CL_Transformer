@@ -2,6 +2,7 @@
 #define ARM_COMPUTE_CL_LINEAR_H
 
 #include "src/gpu/cl/ClCompileContext.h"
+#include "src/gpu/cl/IClKernel.h"
 #include "src/gpu/cl/IClOperator.h"
 
 #include "arm_compute/core/TensorInfo.h"
