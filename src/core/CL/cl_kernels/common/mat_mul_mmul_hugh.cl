@@ -96,9 +96,9 @@ __kernel void mat_mul_mmul_hugh(
 #endif // defined(BIAS)
     TENSOR3D_T(dst, BUFFER))
 {
-    const uint x = GET_SPATIAL_IDX(0, N0, PARTIAL_STORE_N0);
-    const uint y = GET_SPATIAL_IDX(1, M0, PARTIAL_STORE_M0);
-    const uint z = GET_SPATIAL_IDX(2, 1, 0);
+    uint x = GET_SPATIAL_IDX(0, N0, PARTIAL_STORE_N0);
+    uint y = GET_SPATIAL_IDX(1, M0, PARTIAL_STORE_M0);
+    uint z = GET_SPATIAL_IDX(2, 1, 0);
 
     // Compute LHS/RHS/DST matrix address
     lhs_offset_first_element_in_bytes += y * lhs_stride_y + z * lhs_stride_z;
