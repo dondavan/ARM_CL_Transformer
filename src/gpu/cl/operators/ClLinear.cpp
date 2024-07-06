@@ -16,8 +16,6 @@ namespace arm_compute
 {
 namespace opencl
 {
-    
-using namespace arm_compute::opencl::kernels;
 
 void ClLinear::configure(const ClCompileContext &compile_context,
                          ITensorInfo      *a,
@@ -40,7 +38,7 @@ void ClLinear::configure(const ClCompileContext &compile_context,
         cl_matmul::ClMatMulNativeKernelConfigurationFactory::create(gpu_target);
     MatMulKernelInfo kernel_info = kernel_config->configure(a, b, mat_info);
 
-    auto kernel = std::make_unique<ClMatMulNativeMMULKernel>();
+    auto kernel = std::make_unique<kernels::ClMatMulNativeMMULKernel>();
     kernel->set_target(gpu_target);
 
     kernel->configure(compile_context, a, b, nullptr /* bias */, d, kernel_info);
