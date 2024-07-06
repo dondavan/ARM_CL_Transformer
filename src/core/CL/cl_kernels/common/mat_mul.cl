@@ -118,7 +118,7 @@ __kernel void mat_mul_native_nt_nt(
 
     TILE(DATA_TYPE, M0, K0, a);
     TILE(DATA_TYPE, K0, N0, b);
-    
+
     for(k = 0; k <= K - K0; k += K0)
     {
 
@@ -141,7 +141,7 @@ __kernel void mat_mul_native_nt_nt(
         {
             LOOP_UNROLLING(int, _k, 0, 1, K0,
             {
-                acc[_m].v = fma((DATA_TYPE)(a[_m].s[_k]), (b[_k].v), acc[_m].v);
+                acc[_m].v = fma((DATA_TYPE)(a[_m].s[_k]), (b[_k].v));
             })
         })
 
