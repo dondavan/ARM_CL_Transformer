@@ -181,7 +181,7 @@ __kernel void mat_mul_mmul_hugh(
         {
             LOOP_UNROLLING(int, _n, 0, 1, N0,
             {
-                c_f32[_m].s[_n] = fma((DATA_TYPE)(a[_m].s[_n]), (b[_n].v), c_f32[_m].s[_n]);
+                c_f32[_m].v = fma((DATA_TYPE)(a[_m].s[_n]), (b[_n].v), c_f32[_m].v);
             })
         }) 
         
