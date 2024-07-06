@@ -83,9 +83,7 @@ void ClLinearKernel::configure(const CLCompileContext &compile_context,
     build_opts.add_option("-DK=" + support::cpp11::to_string(k));
     build_opts.add_option("-DRHS_TENSOR_TYPE=BUFFER");
 
-    std::string kernel_name("mat_mul_native");
-    kernel_name += matmul_kernel_info.adj_lhs ? "_t" : "_nt";
-    kernel_name += matmul_kernel_info.adj_rhs ? "_t" : "_nt";
+    std::string kernel_name("mat_mul_mmul_hugh");
 
     std::cout << kernel_name << std::endl;
 
