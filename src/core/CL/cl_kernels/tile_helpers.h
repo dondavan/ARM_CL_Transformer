@@ -80,6 +80,13 @@
 
 // Hugh added local
 
+#define TILE_GLOBAL(DATA_TYPE, H, W, BASENAME) TILE_GLOBAL_STR(DATA_TYPE, H, W, BASENAME)
+#define TILE_GLOBAL_STR(DATA_TYPE, H, W, BASENAME) \
+    union {                                 \
+        DATA_TYPE                      s[TILE_VECTOR_SIZE##W];                  \
+        TILE_VECTOR_TYPE##W(DATA_TYPE) v;                     \
+    } global BASENAME[H]
+
 #define TENSOR4D_IMAGE(name)          \
     __read_only image2d_t name##_img, \
     __global uchar *name##_ptr,       \

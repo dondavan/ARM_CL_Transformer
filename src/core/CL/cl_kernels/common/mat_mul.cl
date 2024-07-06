@@ -40,12 +40,6 @@ inline void perform_bias_addition(uchar *bias_ptr, uint bias_offset_first_elemen
 }
 #endif // defined(BIAS)
 
-#define TILE_GLOBAL(DATA_TYPE, H, W, BASENAME) TILE_GLOBAL_STR(DATA_TYPE, H, W, BASENAME)
-#define TILE_GLOBAL_STR(DATA_TYPE, H, W, BASENAME) \
-    union {                                 \
-        DATA_TYPE                      s[TILE_VECTOR_SIZE##W];                  \
-        TILE_VECTOR_TYPE##W(DATA_TYPE) v;                     \
-    } global BASENAME[H]
 
 #if defined(MAT_MUL_NATIVE_NT_NT)
 /** This OpenCL kernel performs the batch matrix multiplication (BatchMatMul): LHS non-transposed, RHS non-transposed - buffer only
