@@ -393,8 +393,7 @@ __kernel void mat_mul_native_mmul_nt_nt(
         {
             if(dst_y + m0 < M || M0_LEFTOVER == 0)
             {
-                VSTORE_PARTIAL(N0, N0_LEFTOVER)
-                (c[m0].v, 0, (__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + m0 * dst_stride_y));
+                VSTORE_PARTIAL(N0, N0_LEFTOVER)(c[m0].v, 0, (__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + m0 * dst_stride_y));
             }
         })
     }
