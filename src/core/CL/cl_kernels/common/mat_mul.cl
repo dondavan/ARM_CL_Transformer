@@ -106,13 +106,8 @@ __kernel void mat_mul_native_nt_nt(
     dst_offset_first_element_in_bytes += x * sizeof(DATA_TYPE) + y * dst_stride_y + z * dst_stride_z;
 
     // Initialize the accumulators
-    //TILE_GLOBAL(DATA_TYPE, M0, N0, acc);
-    union acc_union{
-        float s[2];
-        float2 v;
-    };
-    union acc_union acc[6];
-
+    TILE(DATA_TYPE, M0, N0, acc);
+    
     LOOP_UNROLLING(int, i, 0, 1, M0,
     {
         acc[i].v = 0.f;
