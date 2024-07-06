@@ -110,7 +110,7 @@ __kernel void mat_mul_native_nt_nt(
     union {
         float s[2];
         float2 v;
-    } acc[6];
+    } local acc[6];
 
     LOOP_UNROLLING(int, i, 0, 1, M0,
     {
