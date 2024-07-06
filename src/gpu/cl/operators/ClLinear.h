@@ -56,38 +56,7 @@ public:
     void run(ITensorPack &tensors) override;
 
 private:
-    enum AuxTensorIdx
-    {
-        /* Slots 0 - 2 reserved for CpuGemmAssemblyDispatch */
-        InterleavedLHS = 3,
-        PreTransposedRHS,
-        Transposed1xWRHS,
-        TempResult,
-        Count
-    };
-
-    std::unique_ptr<IClKernel> _matmul_kernel{nullptr};
-
-    TensorInfo _tmp_a{};
-    TensorInfo _pretransposed_b{};
-    TensorInfo _tmp_b{};
-    TensorInfo _tmp_d{};
-
-    bool _run_vector_matrix_multiplication{false};
-    bool _run_bias_addition{false};
-    bool _reshape_b_only_on_first_run{false};
-    bool _run_interleave_transpose{
-        true}; /**< If we run CpuGemmInterleave4x4Kernel on lhs and CpuGemmTranspose1xWKernel on rhs */
-
-    /*
-    std::unique_ptr<kernels::CpuGemmMatrixMultiplyKernel> _mm_kernel{nullptr};
-    std::unique_ptr<CpuTranspose>                         _pretranspose_b_func{nullptr};
-    std::unique_ptr<kernels::CpuGemmInterleave4x4Kernel>  _interleave_kernel{nullptr};
-    std::unique_ptr<kernels::CpuGemmTranspose1xWKernel>   _transpose1xW_b_kernel{nullptr};
-    std::unique_ptr<kernels::CpuAddVecKernel>             _add_bias{nullptr};
-    */
-
-    experimental::MemoryRequirements _aux_mem{Count};
+    
 };
 
 } // namespace cpu

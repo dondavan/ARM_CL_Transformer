@@ -7,7 +7,6 @@
 #include "src/gpu/cl/utils/ClAuxTensorHandler.h"
 
 #include "src/gpu/cl/kernels/ClLinearKernel.h"
-#include "src/gpu/cl/kernels/ClMatMulNativeMMULKernel.cpp"
 #include "src/runtime/heuristics/matmul_native/ClMatMulNativeKernelConfig.h"
 #include "src/runtime/heuristics/matmul_native/IClMatMulNativeKernelConfig.h"
 
@@ -16,7 +15,6 @@ namespace arm_compute
 {
 namespace opencl
 {
-
 void ClLinear::configure(const ClCompileContext &compile_context,
                          ITensorInfo      *a,
                          ITensorInfo      *b,
@@ -38,19 +36,10 @@ void ClLinear::configure(const ClCompileContext &compile_context,
         cl_matmul::ClMatMulNativeKernelConfigurationFactory::create(gpu_target);
     MatMulKernelInfo kernel_info = kernel_config->configure(a, b, mat_info);
 
-    auto kernel = std::make_unique<kernels::ClMatMulNativeMMULKernel>();
-    kernel->set_target(gpu_target);
-
-    kernel->configure(compile_context, a, b, nullptr /* bias */, d, kernel_info);
-    _matmul_kernel = std::move(kernel);
-
-
-    /*
     auto k = std::make_unique<kernels::ClLinearKernel>();
     k->set_target(gpu_target);
     k->configure(compile_context, a, b, c, d, alpha, beta, kernel_info);
     _kernel = std::move(k);
-    */
 }
 
 Status
@@ -74,7 +63,7 @@ ClLinear::validate(const ITensorInfo *a,
 void ClLinear::run(ITensorPack &tensors)
 {
     ARM_COMPUTE_ERROR_ON_MSG(tensors.empty(), "No inputs provided");
-    CLScheduler::get().enqueue_op(*_matmul_kernel.get(), tensors, true);
+    CLScheduler::get().enqueue_op(*_kernel.get(), tensors, true);
 }
 
 } // namespace opencl
