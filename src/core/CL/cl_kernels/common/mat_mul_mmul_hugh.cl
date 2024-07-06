@@ -113,7 +113,7 @@ __kernel void mat_mul_mmul_hugh(
     })
 
     const int rhs_z = z * rhs_h;
-    int       k;
+    unsigned int       k;
 
     TILE(DATA_TYPE, M0, K0, a);
     TILE(DATA_TYPE, K0, N0, b);
@@ -133,7 +133,7 @@ __kernel void mat_mul_mmul_hugh(
 
         // Load tile from the lhs/rhs tensors
         T_LOAD(DATA_TYPE, M0, K0, BUFFER, lhs, 0, 0, 1, lhs_stride_y, a);
-        T_LOAD(DATA_TYPE, K0, N0, RHS_TENSOR_TYPE, rhs, x, k + rhs_z, 1, rhs_stride_y, b);
+        T_LOAD(DATA_TYPE, N0, K0, RHS_TENSOR_TYPE, rhs, k, x + rhs_z, 1, rhs_stride_y, b);
 
         //(DATA_TYPE, DATA_TYPE, DATA_TYPE, M0, N0, K0, NT, NT, a, b, acc);
         /*
