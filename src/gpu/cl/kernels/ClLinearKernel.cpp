@@ -52,12 +52,15 @@ void ClLinearKernel::configure(const CLCompileContext &compile_context,
     const int  k       = matmul_kernel_info.adj_lhs ? lhs->tensor_shape().y() : lhs->tensor_shape().x();
     const bool adj_lhs = matmul_kernel_info.adj_lhs;
 
+    int m0 = adj_lhs ? adjust_vec_size(matmul_kernel_info.m0, m) : std::min(matmul_kernel_info.m0, m);
+    int n0 = adjust_vec_size(matmul_kernel_info.n0, n);
+
+
     std::cout << "m " << m << std::endl;
     std::cout << "n " << n << std::endl;
     std::cout << "k " << k << std::endl;
-
-    int m0 = adj_lhs ? adjust_vec_size(matmul_kernel_info.m0, m) : std::min(matmul_kernel_info.m0, m);
-    int n0 = adjust_vec_size(matmul_kernel_info.n0, n);
+    std::cout << "m0 " << m0 << std::endl;
+    std::cout << "n0 " << n0 << std::endl;
 
     // Configure kernel window
     Window win = calculate_max_window(*dst, Steps(n0, m0));
