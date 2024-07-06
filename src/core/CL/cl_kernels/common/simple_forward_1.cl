@@ -29,7 +29,7 @@
  * @param[in]  output_step_z                         output_stride_z * number of elements along Z processed per workitem(in bytes)
  * @param[in]  output_offset_first_element_in_bytes  The offset of the first element in the destination tensor
  */
-__kernel void simple_forward(TENSOR3D_DECLARATION(src1),
+__kernel void simple_forward_1(TENSOR3D_DECLARATION(src1),
                              TENSOR3D_DECLARATION(dst1))
 {
     int id_x = get_global_id(0);
