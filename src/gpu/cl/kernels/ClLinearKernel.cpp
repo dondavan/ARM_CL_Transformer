@@ -198,14 +198,14 @@ void ClLinearKernel::run_op(ITensorPack &tensors, const Window &window, cl::Comm
 
     ARM_COMPUTE_ERROR_ON_NULLPTR(lhs, rhs, dst);
     ARM_COMPUTE_LOG_PARAMS(lhs, rhs, bias, dst);
-
-    Window slice = window.first_slice_window_3D();
+    
+    //Window slice = window.first_slice_window_3D();
     unsigned int idx = 0;
 
-    add_3D_tensor_argument(idx, lhs, slice);
-    add_3D_tensor_argument(idx, rhs, slice);
+    add_3d_tensor_nhw_argument(idx, lhs);
+    add_3d_tensor_nhw_argument(idx, rhs);
     
-    add_3D_tensor_argument(idx, dst, slice);
+    add_3d_tensor_nhw_argument(idx, dst);
 
     // Pass m and n at runtime as signed ints, to ensure results of any subtractions they could be operand in, would still be signed.
     _kernel.setArg<cl_int>(idx++, _m);
