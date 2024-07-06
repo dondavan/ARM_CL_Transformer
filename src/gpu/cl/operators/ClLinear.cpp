@@ -62,11 +62,7 @@ ClLinear::validate(const ITensorInfo *a,
 void ClLinear::run(ITensorPack &tensors)
 {
     ARM_COMPUTE_ERROR_ON_MSG(tensors.empty(), "No inputs provided");
-    auto a = tensors.get_const_tensor(ACL_SRC_0);
-    auto b = tensors.get_const_tensor(ACL_SRC_1);
-    auto c = tensors.get_const_tensor(ACL_SRC_2);
-    auto d = tensors.get_tensor(ACL_DST);
-    ARM_COMPUTE_UNUSED(a, b, c, d);
+    CLScheduler::get().enqueue_op(*_kernel.get(), tensors, true);
 }
 
 } // namespace opencl
