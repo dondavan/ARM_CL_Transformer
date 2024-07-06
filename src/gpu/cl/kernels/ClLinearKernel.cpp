@@ -40,7 +40,73 @@ void ClLinearKernel::configure(const CLCompileContext &compile_context,
                                const MatMulKernelInfo &matmul_kernel_info)
 {
     std::cout << "src/gpu/cl/kernels/ClLinearKernel.cpp configure start" << std::endl;
+    ARM_COMPUTE_ERROR_ON_NULLPTR(lhs, rhs, dst);
+    ARM_COMPUTE_LOG_PARAMS(lhs, rhs, bias, dst, matmul_kernel_info);
+    ARM_COMPUTE_ERROR_THROW_ON(validate(lhs, rhs, bias, dst, matmul_kernel_info));
 
+    // dst tensor auto initialization if not yet initialized
+    auto_init_if_empty(*dst, lhs->clone()->set_tensor_shape(misc::shape_calculator::compute_matmul_shape(
+                                 lhs->tensor_shape(), rhs->tensor_shape(), matmul_kernel_info)));
+
+    const int m = dst->dimension(1);
+    const int n = dst->dimension(0);
+    const int k = matmul_kernel_info.adj_lhs ? lhs->tensor_shape().y() : lhs->tensor_shape().x();
+
+    _m = m;
+    _n = n;
+    _k = k;
+
+    const int m0 = std::min(matmul_kernel_info.m0, m);
+    const int n0 = adjust_vec_size(matmul_kernel_info.n0, n);
+
+    // Configure kernel window
+    const auto win_config =
+        validate_and_configure_window_for_mmul_kernels(lhs, rhs, dst, matmul_kernel_info, mmul_m0, mmul_n0);
+    ARM_COMPUTE_ERROR_THROW_ON(win_config.first);
+    IClKernel::configure_internal(win_config.second);
+
+    // Calculate partial (store instead of load) M0 and partial N0 for the partial blocks at the end of a row/column if any. This is to avoid padding.
+    const unsigned int m0_leftover = m % m0;
+    const unsigned int n0_leftover = n % n0;
+
+    CLBuildOptions build_opts;
+    build_opts.add_option("-DDATA_TYPE=" + get_cl_type_from_data_type(lhs->data_type()));
+    build_opts.add_option_if(lhs->data_type() == DataType::F16, "-DHALF_PRECISION");
+    build_opts.add_option("-DM0=" + support::cpp11::to_string(m0));
+    build_opts.add_option("-DN0=" + support::cpp11::to_string(n0));
+    build_opts.add_option("-DM0_LEFTOVER=" + support::cpp11::to_string(m0_leftover));
+    build_opts.add_option("-DN0_LEFTOVER=" + support::cpp11::to_string(n0_leftover));
+    build_opts.add_option("-DMMUL_M0=" + support::cpp11::to_string(mmul_m0));
+    build_opts.add_option("-DMMUL_N0=" + support::cpp11::to_string(mmul_n0));
+    build_opts.add_option("-DMMUL_K0=" + support::cpp11::to_string(mmul_k0));
+
+    std::string kernel_name("mat_mul_native_mmul");
+    kernel_name += matmul_kernel_info.adj_lhs ? "_t" : "_nt";
+    kernel_name += matmul_kernel_info.adj_rhs ? "_t" : "_nt";
+
+    std::cout << "kernel_name " <<kernel_name << std::endl;
+
+    // A macro guard to compile ONLY the kernel of interest
+    build_opts.add_option("-D" + upper_string(kernel_name));
+
+    // Create kernel
+    _kernel = create_kernel(compile_context, kernel_name, build_opts.options());
+
+    // Set config_id for enabling LWS tuning
+    _config_id = kernel_name;
+    _config_id += "_";
+    _config_id += lower_string(string_from_data_type(lhs->data_type()));
+    _config_id += "_";
+    _config_id += support::cpp11::to_string(k);
+    _config_id += "_";
+    _config_id += support::cpp11::to_string(dst->dimension(2));
+    _config_id += "_";
+    _config_id += support::cpp11::to_string(m0);
+    _config_id += "_";
+    _config_id += support::cpp11::to_string(n0);
+    _config_id += "_";
+    _config_id += support::cpp11::to_string(matmul_kernel_info.k0);
+    /*
     ARM_COMPUTE_ERROR_ON_NULLPTR(lhs, rhs, dst);
     ARM_COMPUTE_LOG_PARAMS(lhs, rhs, bias, dst, matmul_kernel_info);
     ARM_COMPUTE_ERROR_THROW_ON(validate(lhs, rhs, bias, dst, matmul_kernel_info));
@@ -91,7 +157,7 @@ void ClLinearKernel::configure(const CLCompileContext &compile_context,
 
     // Create kernel
     _kernel = create_kernel(compile_context, kernel_name, build_opts.options());
-
+*/
     std::cout << "src/gpu/cl/kernels/ClLinearKernel.cpp configure end" << std::endl;
     /*
     ARM_COMPUTE_UNUSED(compile_context);
@@ -188,7 +254,32 @@ Status ClLinearKernel::validate(const ITensorInfo *src, const ITensorInfo *vecto
 void ClLinearKernel::run_op(ITensorPack &tensors, const Window &window, cl::CommandQueue &queue)
 {
     std::cout << "src/gpu/cl/kernels/ClLinearKernel.cpp run start" << std::endl;
+    ARM_COMPUTE_ERROR_ON_UNCONFIGURED_KERNEL(this);
+    ARM_COMPUTE_ERROR_ON_INVALID_SUBWINDOW(ICLKernel::window(), window);
 
+    const ICLTensor *lhs =
+        utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC_0));
+    const ICLTensor *rhs =
+        utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC_1));
+    
+    ICLTensor *dst = utils::cast::polymorphic_downcast<ICLTensor *>(tensors.get_tensor(TensorType::ACL_DST));
+    ARM_COMPUTE_ERROR_ON_NULLPTR(lhs, rhs, dst);
+    ARM_COMPUTE_LOG_PARAMS(lhs, rhs, bias, dst);
+    unsigned int idx = 0;
+
+    add_3d_tensor_nhw_argument(idx, lhs);
+    add_3d_tensor_nhw_argument(idx, rhs);
+    add_3d_tensor_nhw_argument(idx, dst);
+
+    // Pass m and n at runtime as signed ints, to ensure results of any subtractions they could be operand in, would still be signed.
+    _kernel.setArg<cl_int>(idx++, _m);
+    _kernel.setArg<cl_int>(idx++, _n);
+    _kernel.setArg<cl_int>(idx++, _k);
+
+    // LWS_x should be multiple of 16 at least. (32, 2) has been chosen to have more work-items on a single core
+    // LWS also enforces the order of execution of the work items which improves cache utilization
+    enqueue(queue, *this, window, cl::NDRange(32, 2), false);
+    /*
     const ICLTensor *lhs =
         utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC_0));
     const ICLTensor *rhs =
@@ -218,7 +309,7 @@ void ClLinearKernel::run_op(ITensorPack &tensors, const Window &window, cl::Comm
     std::cout <<"window.y().end() " << window.y().end() << std::endl;
     std::cout <<"window.z().end() "<< window.z().end() << std::endl;
     enqueue(queue, *this, window);
-    
+    */
     std::cout << "src/gpu/cl/kernels/ClLinearKernel.cpp run end" << std::endl;
 
     /*
