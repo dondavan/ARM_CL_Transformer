@@ -158,20 +158,10 @@ __kernel void mat_mul_native_nt_nt(
 
 
     //T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, acc, indirect_buffer);
-    if(x_cond)
-    {
-        LOOP_UNROLLING(int, _i, 0, 1, M0,
-        {
-            VSTORE_PARTIAL(N0, PARTIAL_STORE_N0)(CONVERT(acc[M0 - 1 - _i].v, VEC_DATA_TYPE(DATA_TYPE, N0)), 0, (__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + (indirect_buffer[M0 - 1 - _i].v) * dst_stride_y));
-        })
-    }
-    else
-    {
-        LOOP_UNROLLING(int, _i, 0, 1, M0,
+    LOOP_UNROLLING(int, _i, 0, 1, M0,
         {
             VSTORE(N0)(CONVERT(acc[M0 - 1 - _i].v, VEC_DATA_TYPE(DATA_TYPE, N0)), 0, (__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + (indirect_buffer[M0 - 1 - _i].v) * dst_stride_y));
         })
-    }      
 }
 #endif // defined(MAT_MUL_NATIVE_NT_NT)
 
