@@ -56,6 +56,7 @@ void ClLinearKernel::configure(const CLCompileContext &compile_context,
     int n0 = adjust_vec_size(matmul_kernel_info.n0, n);
 
 
+    std::cout << "matmul_kernel_info.adj_lhs " << matmul_kernel_info.adj_lhs << std::endl;
     std::cout << "m " << m << std::endl;
     std::cout << "n " << n << std::endl;
     std::cout << "k " << k << std::endl;
