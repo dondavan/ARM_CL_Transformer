@@ -132,7 +132,12 @@ __kernel void mat_mul_mmul_hugh(
     LOOP_UNROLLING(int, i, 0, 1, M0,
     {
         acc_v[i] = (float)x;
-    })
+    });
+
+    union {
+        DATA_TYPE s[2];
+        float2 v;
+    } sb[M0];
 
     uint rhs_z = z * rhs_h;
     uint       k;
