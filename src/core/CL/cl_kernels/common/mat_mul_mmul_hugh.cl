@@ -107,8 +107,8 @@ __kernel void mat_mul_mmul_hugh(
     // Initialize the accumulators
     //TILE(DATA_TYPE, M0, N0, acc);
     union acc_private{
-        float s[2];
-        float2(DATA_TYPE) v;
+        DATA_TYPE s[2];
+        float2 v;
     };
     union acc_private acc[M0];
 
