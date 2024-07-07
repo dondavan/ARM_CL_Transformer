@@ -192,9 +192,12 @@ __kernel void mat_mul_mmul_hugh(
     } 
     */
     LOOP_UNROLLING(int, _i, 0, 1, M0,
+    {
+        LOOP_UNROLLING(int, _j, 0, 1, N0,
         {
-            VSTORE(N0)(CONVERT(acc_v[M0 - 1 - _i], VEC_DATA_TYPE(DATA_TYPE, N0)), 0, (__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + (indirect_buffer[M0 - 1 - _i].v) * dst_stride_y));
+            vstore1(acc_s[_i][_j],0,(__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + (indirect_buffer[M0 - 1 - _i].v) * dst_stride_y));
         })
+    })
     
 
 }
