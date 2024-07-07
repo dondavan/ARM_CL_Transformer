@@ -114,7 +114,7 @@ __kernel void mat_mul_mmul_hugh(
 
     uint rhs_z = z * rhs_h;
     uint       k;
-
+    
     for(k = 0; k <= K - K0; k += K0)
     {
 
