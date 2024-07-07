@@ -109,7 +109,7 @@ __kernel void mat_mul_mmul_hugh(
 
     LOOP_UNROLLING(int, i, 0, 1, M0,
     {
-        acc[i].v = (float)get_global_id(0);
+        acc[i].v = (float)x;
     })
     /*
     uint rhs_z = z * rhs_h;
