@@ -137,8 +137,8 @@ __kernel void mat_mul_mmul_hugh(
     });
 
     union wocaonima {
-        DATA_TYPE s[2];
-        float2 v;
+        DATA_TYPE s[2] __attribute__ ((aligned));
+        float2 v __attribute__ ((aligned));
     } AMD_UNION_ALIGN_BUG_WORKAROUND() sb[M0];
 
     sb[0].v = 1.0f;
@@ -155,7 +155,6 @@ __kernel void mat_mul_mmul_hugh(
         {
             a[i].v = 0.f;
         })
-
 
         LOOP_UNROLLING(int, i, 0, 1, N0,
         {
