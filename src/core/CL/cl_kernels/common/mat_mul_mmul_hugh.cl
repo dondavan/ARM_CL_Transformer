@@ -100,7 +100,6 @@ __kernel void mat_mul_mmul_hugh(
     uint y = GET_SPATIAL_IDX(1, M0, PARTIAL_STORE_M0);
     uint z = GET_SPATIAL_IDX(2, 1, 0);
 
-    
     // Compute LHS/RHS/DST matrix address
     lhs_offset_first_element_in_bytes += y * lhs_stride_y + z * lhs_stride_z;
     dst_offset_first_element_in_bytes += x * sizeof(DATA_TYPE) + y * dst_stride_y + z * dst_stride_z;
@@ -110,7 +109,7 @@ __kernel void mat_mul_mmul_hugh(
 
     LOOP_UNROLLING(int, i, 0, 1, M0,
     {
-        acc[i].v = y;
+        acc[i].v = (float)y;
     })
     /*
     uint rhs_z = z * rhs_h;
@@ -158,8 +157,8 @@ __kernel void mat_mul_mmul_hugh(
 
         lhs_offset_first_element_in_bytes += K0 * sizeof(DATA_TYPE);
     }
-
     */
+
     const bool x_cond = PARTIAL_STORE_N0 != 0 && get_global_id(0) == 0;
     const bool y_cond = PARTIAL_STORE_M0 != 0 && get_global_id(1) == 0;
 
@@ -170,7 +169,10 @@ __kernel void mat_mul_mmul_hugh(
     });
 
 
-    T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, acc, indirect_buffer);
-    
+    //T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, acc, indirect_buffer);
+    LOOP_UNROLLING(int, _i, 0, 1, M0,
+    {
+        VSTORE(N0)(CONVERT(acc[M0 - 1 - _i].v, VEC_DATA_TYPE(DATA_TYPE, N0)), 0, (__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + (indirect_buffer[M0 - 1 - _i].v) * dst_stride_y));
+    })
 }
 #endif // defined(MAT_MUL_MMUL_HUGH)
