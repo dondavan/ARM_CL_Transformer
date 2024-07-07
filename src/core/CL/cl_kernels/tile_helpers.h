@@ -76,7 +76,7 @@
     union {                                 \
         DATA_TYPE                      s[TILE_VECTOR_SIZE##W];                  \
         TILE_VECTOR_TYPE##W(DATA_TYPE) v;                     \
-    } BASENAME[H]
+    } BASENAME[H];
 
 // Hugh added local
 
