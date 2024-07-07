@@ -860,9 +860,13 @@ void RawResultAccessor::access_typed_tensor(ITensor &tensor)
         _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(2,y)))  << ", ";
         _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(3,y)))  << ", ";
         _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(4,y)))  << ", ";
+        _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(5,y)))  << ", ";
+        _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(6,y)))  << ", ";
 
         _output_stream  << " ..., ";
 
+        _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(x-7,y)))  << ", ";
+        _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(x-6,y)))  << ", ";
         _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(x-5,y)))  << ", ";
         _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(x-4,y)))  << ", ";
         _output_stream << *reinterpret_cast<T *>(tensor.ptr_to_element(Coordinates(x-3,y)))  << ", ";
