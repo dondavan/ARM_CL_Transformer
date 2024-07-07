@@ -39,6 +39,14 @@ inline void perform_bias_addition(uchar *bias_ptr, uint bias_offset_first_elemen
 }
 #endif // defined(BIAS)
 
+#define T_LOAD_MINE(DATA_TYPE, HEIGHT, WIDTH, TENSOR_TYPE, TENSOR, X, Y, YI_MULTIPLIER, STRIDE_Y, dst)                      \
+    {                                                                                                                 \
+        LOOP_UNROLLING(int, _i, 0, 1, HEIGHT,                                                                          \
+        {                                                                                                              \
+            dst[_i] = V_LOAD(DATA_TYPE, WIDTH, TENSOR_TYPE, TENSOR, X, ((Y) + _i * (int)(YI_MULTIPLIER)), STRIDE_Y); \
+        })                                                                                                             \
+    }
+
 #if defined(MAT_MUL_MMUL_HUGH)
 /** This OpenCL kernel performs the batch matrix multiplication (BatchMatMul) using MMUL: LHS non-transposed, RHS non-transposed - buffer only
  *
@@ -101,7 +109,7 @@ __kernel void mat_mul_mmul_hugh(
     uint z = GET_SPATIAL_IDX(2, 1, 0);
 
     // Compute LHS/RHS/DST matrix address
-    //lhs_offset_first_element_in_bytes += y * lhs_stride_y + z * lhs_stride_z;
+    lhs_offset_first_element_in_bytes += y * lhs_stride_y + z * lhs_stride_z;
     dst_offset_first_element_in_bytes += x * sizeof(DATA_TYPE) + y * dst_stride_y + z * dst_stride_z;
 
     // Initialize the accumulators
