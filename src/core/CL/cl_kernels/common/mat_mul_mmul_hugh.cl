@@ -136,7 +136,7 @@ __kernel void mat_mul_mmul_hugh(
         acc_v[i] = (float)x;
     });
 
-    TILE(DATA_TYPE, M0, K0, a);
+    TILE(DATA_TYPE, M0, N0, a);
     TILE(DATA_TYPE, N0, K0, b);
 
     LOOP_UNROLLING(int, i, 0, 1, M0,
