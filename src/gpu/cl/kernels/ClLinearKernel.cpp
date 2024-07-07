@@ -254,6 +254,11 @@ void ClLinearKernel::run_op(ITensorPack &tensors, const Window &window, cl::Comm
     std::cout <<"window_collapsed.y().end() " << window_collapsed.y().end() << std::endl;
     std::cout <<"window_collapsed.z().end() "<< window_collapsed.z().end() << std::endl;
 
+
+    std::cout <<"window.x().end() " <<window.x().end() << std::endl;
+    std::cout <<"window.y().end() " << window.y().end() << std::endl;
+    std::cout <<"window.z().end() "<< window.z().end() << std::endl;
+
     add_3d_tensor_nhw_argument(idx, lhs);
     add_3d_tensor_nhw_argument(idx, rhs);
     add_3d_tensor_nhw_argument(idx, dst);
