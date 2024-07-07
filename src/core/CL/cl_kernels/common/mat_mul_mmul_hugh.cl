@@ -96,20 +96,20 @@ __kernel void mat_mul_mmul_hugh(
 #endif // defined(BIAS)
     TENSOR3D_T(dst, BUFFER))
 {
-    uint x = GET_SPATIAL_IDX(0, M0, PARTIAL_STORE_M0);
-    uint y = GET_SPATIAL_IDX(1, N0, PARTIAL_STORE_N0);
+    uint x = GET_SPATIAL_IDX(0, N0, PARTIAL_STORE_N0);
+    uint y = GET_SPATIAL_IDX(1, M0, PARTIAL_STORE_M0);
     uint z = GET_SPATIAL_IDX(2, 1, 0);
 
     // Compute LHS/RHS/DST matrix address
-    lhs_offset_first_element_in_bytes += y * lhs_stride_y + z * lhs_stride_z;
-    dst_offset_first_element_in_bytes += x * sizeof(DATA_TYPE) + y * dst_stride_y + z * dst_stride_z;
+    //lhs_offset_first_element_in_bytes += y * lhs_stride_y + z * lhs_stride_z;
+    //dst_offset_first_element_in_bytes += x * sizeof(DATA_TYPE) + y * dst_stride_y + z * dst_stride_z;
 
     // Initialize the accumulators
     TILE(DATA_TYPE, M0, N0, acc);
 
     LOOP_UNROLLING(int, i, 0, 1, M0,
     {
-        acc[i].v = (float)x;
+        acc[i].v = (float)y;
     })
     /*
     uint rhs_z = z * rhs_h;
