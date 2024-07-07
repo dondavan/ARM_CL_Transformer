@@ -120,15 +120,14 @@ __kernel void mat_mul_mmul_hugh(
         float2 v;
     };
     union acc_private acc[M0];
-
     union {                                 \
         DATA_TYPE                      s[TILE_VECTOR_SIZE##W];                  \
         TILE_VECTOR_TYPE##W(DATA_TYPE) v;                     \
     } local BASENAME[H]
 
     */
-    DATA_TYPE acc_s[M0][TILE_VECTOR_SIZE##W];
-    TILE_VECTOR_TYPE##W(DATA_TYPE) acc_v[M0];
+    DATA_TYPE acc_s[M0][N0];
+    float2 acc_v[M0];
 
     LOOP_UNROLLING(int, i, 0, 1, M0,
     {
