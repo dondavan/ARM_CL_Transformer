@@ -136,10 +136,10 @@ __kernel void mat_mul_mmul_hugh(
         acc_v[i] = (float)x;
     });
 
-    union wocaonima {
+    struct wocaonima {
         DATA_TYPE s[2];
         float2 v;
-    } __attribute__ ((endian(host))) sb[M0];
+    } sb[M0];
 
     sb[0].s[0] = 1;
 
