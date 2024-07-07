@@ -105,13 +105,13 @@ __kernel void mat_mul_mmul_hugh(
     dst_offset_first_element_in_bytes += x * sizeof(DATA_TYPE) + y * dst_stride_y + z * dst_stride_z;
 
     // Initialize the accumulators
-    TILE(DATA_TYPE, M0, N0, acc);
+    //TILE(DATA_TYPE, M0, N0, acc);
     union acc_private{
-        DATA_TYPE s[2];
+        float s[2];
         float2(DATA_TYPE) v;
     };
     union acc_private acc[M0];
-    
+
     LOOP_UNROLLING(int, i, 0, 1, M0,
     {
         acc[i].v = (float)x;
