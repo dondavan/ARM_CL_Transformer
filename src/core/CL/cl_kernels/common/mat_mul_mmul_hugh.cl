@@ -141,7 +141,7 @@ __kernel void mat_mul_mmul_hugh(
         float2 v;
     } __attribute__ ((endian(host))) sb[M0];
 
-    sb[0].v = 1.0f;
+    sb[0].s[0] = 1;
 
     uint rhs_z = z * rhs_h;
     uint       k;
