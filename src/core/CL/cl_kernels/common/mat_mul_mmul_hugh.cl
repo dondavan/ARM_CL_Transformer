@@ -114,14 +114,14 @@ __kernel void mat_mul_mmul_hugh(
     union acc_private acc[M0];
 
     */
-
-    float2 acc[M0];
+    DATA_TYPE acc_s[M0][N0];
+    float2 acc_v[M0];
 
     LOOP_UNROLLING(int, i, 0, 1, M0,
     {
         acc[i] = (float)x;
     })
-    /*
+
     uint rhs_z = z * rhs_h;
     uint       k;
     for(k = 0; k <= K - K0; k += K0)
@@ -150,7 +150,7 @@ __kernel void mat_mul_mmul_hugh(
         {
             LOOP_UNROLLING(int, _k, 0, 1, K0,
             {
-                acc[_m].v = fma((DATA_TYPE)(a[_m].s[_k]), (b[_k].v), acc[_m].v);
+                acc_v[_m] = fma((DATA_TYPE)(a[_m].s[_k]), (b[_k].v), acc_v[_m]);
             })
         })
         
@@ -160,14 +160,14 @@ __kernel void mat_mul_mmul_hugh(
             {
                 LOOP_UNROLLING(int, _k, 0, 1, K0,
                 {
-                    acc[_m].s[_n] = fma(a[_m].s[_k], b[_n].s[_k], acc[_m].s[_n]);
+                    acc_s[_m][_n] = fma(a[_m].s[_k], b[_n].s[_k], acc_s[_m][_n]);
                 })
             })
         })  
 
         lhs_offset_first_element_in_bytes += K0 * sizeof(DATA_TYPE);
     }
-    */
+    
 
     const bool x_cond = PARTIAL_STORE_N0 != 0 && get_global_id(0) == 0;
     const bool y_cond = PARTIAL_STORE_M0 != 0 && get_global_id(1) == 0;
