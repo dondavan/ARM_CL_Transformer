@@ -109,7 +109,7 @@ __kernel void mat_mul_mmul_hugh(
 
     LOOP_UNROLLING(int, i, 0, 1, M0,
     {
-        acc[i].v = (float)x;
+        acc[i].v = (float)y;
     })
     /*
     uint rhs_z = z * rhs_h;
@@ -160,7 +160,7 @@ __kernel void mat_mul_mmul_hugh(
     */
 
     const bool x_cond = PARTIAL_STORE_N0 != 0 && get_global_id(0) == 0;
-    const bool y_cond = 0;
+    const bool y_cond = PARTIAL_STORE_M0 != 0 && get_global_id(1) == 0;
 
     TILE(int, M0, 1, indirect_buffer);
     LOOP_UNROLLING(int, _i, 0, 1, M0,
