@@ -139,6 +139,8 @@ __kernel void mat_mul_mmul_hugh(
         float2 v;
     } sb[M0];
 
+    sb[0].v = 1.0f;
+
     uint rhs_z = z * rhs_h;
     uint       k;
     for(k = 0; k <= K - K0; k += K0)
