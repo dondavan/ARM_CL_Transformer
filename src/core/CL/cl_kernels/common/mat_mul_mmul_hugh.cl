@@ -106,7 +106,12 @@ __kernel void mat_mul_mmul_hugh(
 
     // Initialize the accumulators
     TILE(DATA_TYPE, M0, N0, acc);
-
+    union acc_private{
+        DATA_TYPE s[2];
+        float2(DATA_TYPE) v;
+    };
+    union acc_private acc[M0];
+    
     LOOP_UNROLLING(int, i, 0, 1, M0,
     {
         acc[i].v = (float)x;
