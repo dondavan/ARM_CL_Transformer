@@ -78,7 +78,7 @@
         TILE_VECTOR_TYPE##W(DATA_TYPE) v;                     \
     } BASENAME[H]
 
-// Hugh added local
+// Hugh changed union to struct
 
 #define TILE_GLOBAL(DATA_TYPE, H, W, BASENAME) TILE_GLOBAL_STR(DATA_TYPE, H, W, BASENAME)
 #define TILE_GLOBAL_STR(DATA_TYPE, H, W, BASENAME) \
