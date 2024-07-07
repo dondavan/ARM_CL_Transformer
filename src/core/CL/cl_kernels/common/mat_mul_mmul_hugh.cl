@@ -47,6 +47,8 @@ inline void perform_bias_addition(uchar *bias_ptr, uint bias_offset_first_elemen
         })                                                                                                             \
     }
 
+#define AMD_UNION_ALIGN_BUG_WORKAROUND() __attribute__((aligned(32)))
+
 #if defined(MAT_MUL_MMUL_HUGH)
 /** This OpenCL kernel performs the batch matrix multiplication (BatchMatMul) using MMUL: LHS non-transposed, RHS non-transposed - buffer only
  *
@@ -134,10 +136,10 @@ __kernel void mat_mul_mmul_hugh(
         acc_v[i] = (float)x;
     });
 
-    union {
+    union wocaonima {
         DATA_TYPE s[2];
         float2 v;
-    } sb[M0];
+    } AMD_UNION_ALIGN_BUG_WORKAROUND() sb[M0];
 
     sb[0].v = 1.0f;
 
