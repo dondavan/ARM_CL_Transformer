@@ -134,6 +134,29 @@ __kernel void mat_mul_mmul_hugh(
         T_LOAD(DATA_TYPE, M0, K0, BUFFER, lhs, 0, 0, 1, lhs_stride_y, a);
         T_LOAD(DATA_TYPE, N0, K0, RHS_TENSOR_TYPE, rhs, k, x + rhs_z, 1, rhs_stride_y, b);
 
+        LOOP_UNROLLING(int, _i, 0, 1, M0,
+        {
+            a[_i].s[0] =  a[_i].v.s0;
+            a[_i].s[1] =  a[_i].v.s1;
+            a[_i].s[2] =  a[_i].v.s2;
+            a[_i].s[3] =  a[_i].v.s3;
+            a[_i].s[4] =  a[_i].v.s4;
+            a[_i].s[5] =  a[_i].v.s5;
+            a[_i].s[6] =  a[_i].v.s6;
+            a[_i].s[7] =  a[_i].v.s7;
+        })
+        LOOP_UNROLLING(int, _i, 0, 1, N0,
+        {
+            b[_i].s[0] =  b[_i].v.s0;
+            b[_i].s[1] =  b[_i].v.s1;
+            b[_i].s[2] =  b[_i].v.s2;
+            b[_i].s[3] =  b[_i].v.s3;
+            b[_i].s[4] =  b[_i].v.s4;
+            b[_i].s[5] =  b[_i].v.s5;
+            b[_i].s[6] =  b[_i].v.s6;
+            b[_i].s[7] =  b[_i].v.s7;
+        })
+
         //T_MMUL(DATA_TYPE, DATA_TYPE, DATA_TYPE, M0, N0, K0, NT, NT, a, b, acc);
 
         //define T_MMUL_NT_NT_FLOAT(LHS_DATA_TYPE, RHS_DATA_TYPE, DST_DATA_TYPE, M0, N0, K0, lhs, rhs, dst)
