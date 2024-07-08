@@ -214,7 +214,7 @@ __kernel void mat_mul_mmul_hugh(
     //T_LOAD(DATA_TYPE, M0, N0, BUFFER, lhs, 0, 0, 1, lhs_stride_y, acc);
     LOOP_UNROLLING(int, _i, 0, 1, M0,
     {
-        acc[_i].v = acc[_i].s[0];
+        acc[_i].v = 1.0f;
     })
     T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, acc, indirect_buffer);
     /*
