@@ -53,7 +53,7 @@ void ClLinearKernel::configure(const CLCompileContext &compile_context,
     const bool adj_lhs = matmul_kernel_info.adj_lhs;
 
     int m0 = adj_lhs ? adjust_vec_size(matmul_kernel_info.m0, m) : std::min(matmul_kernel_info.m0, m);
-    int n0 = adjust_vec_size(matmul_kernel_info.n0, n);
+    int n0 = 1;
 
 
     std::cout << "matmul_kernel_info.adj_lhs " << matmul_kernel_info.adj_lhs << std::endl;
