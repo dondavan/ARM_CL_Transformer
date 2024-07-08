@@ -203,7 +203,7 @@ __kernel void mat_mul_mmul_hugh(
 
     LOOP_UNROLLING(int, _i, 0, 1, M0,
     {
-        acc[_i].v.s0 = acc[_i].s[0];
+        ///acc[_i].v.s0 = acc[_i].s[0];
         acc[_i].v.s1 = acc[_i].s[1];
     })
 
