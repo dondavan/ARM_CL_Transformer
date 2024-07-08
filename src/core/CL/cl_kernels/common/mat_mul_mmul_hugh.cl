@@ -211,7 +211,9 @@ __kernel void mat_mul_mmul_hugh(
         acc[_i].v.s0 = acc[_i].s[0];
         acc[_i].v.s1 = acc[_i].s[1];
     })
-    T_LOAD(DATA_TYPE, M0, N0, BUFFER, lhs, 0, 0, 1, lhs_stride_y, acc);
+
+    rhs_offset_first_element_in_bytes += y * rhs_stride_y + z * rhs_stride_z;
+    T_LOAD(DATA_TYPE, M0, N0, BUFFER, rhs, 0, 0, 1, rhs_stride_y, acc);
 
     T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, acc, indirect_buffer);
     /*
