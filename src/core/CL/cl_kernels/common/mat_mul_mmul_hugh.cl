@@ -138,13 +138,24 @@ __kernel void mat_mul_mmul_hugh(
 
         //define T_MMUL_NT_NT_FLOAT(LHS_DATA_TYPE, RHS_DATA_TYPE, DST_DATA_TYPE, M0, N0, K0, lhs, rhs, dst)
         
+        /*
         LOOP_UNROLLING(int, _m, 0, 1, M0,
         {
             LOOP_UNROLLING(int, _k, 0, 1, K0,
             {
                 acc[_m].v = fma(a[_m].v, b[_k].v, acc[_m].v);
             })
-        })
+        })*/
+        LOOP_UNROLLING(int, _m, 0, 1, M0,
+        {
+            LOOP_UNROLLING(int, _n, 0, 1, N0,
+            {
+                LOOP_UNROLLING(int, _k, 0, 1, K0,
+                {
+                    acc[_m].s[_n] = fma((DATA_TYPE)a[_m].s[_k], (DATA_TYPE)b[_n].s[_k], acc[_m].s[_n]);
+                })
+            })
+        }) 
 
         lhs_offset_first_element_in_bytes += K0 * sizeof(DATA_TYPE);
     }
