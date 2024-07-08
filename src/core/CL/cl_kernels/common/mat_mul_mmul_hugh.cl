@@ -129,11 +129,11 @@ __kernel void mat_mul_mmul_hugh(
             })
         })
 
-        LOOP_UNROLLING(int, _m, 0, 1, N0,
+        LOOP_UNROLLING(int, _n, 0, 1, N0,
         {
             LOOP_UNROLLING(int, _k, 0, 1, K0,
             {
-                b[_m].s[_k] = 1.f;
+                b[_n].s[_k] = 1.f;
             })
         })
 
