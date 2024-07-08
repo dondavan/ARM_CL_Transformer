@@ -125,8 +125,7 @@ __kernel void mat_mul_mmul_hugh(
 
     LOOP_UNROLLING(int, _i, 0, 1, M0,
     {
-        VSTORE(1)(CONVERT(acc[M0 - 1 - _i].v.s0, VEC_DATA_TYPE(DATA_TYPE, N0)), 0, (__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + (0) * sizeof(DATA_TYPE) + (indirect_buffer[M0 - 1 - _i].v) * dst_stride_y));
-        VSTORE(1)(CONVERT(acc[M0 - 1 - _i].v.s1, VEC_DATA_TYPE(DATA_TYPE, N0)), 0, (__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + (0) * sizeof(DATA_TYPE) + (indirect_buffer[M0 - 1 - _i].v) * dst_stride_y) + sizeof(DATA_TYPE));
+        *((__global DATA_TYPE *)dst_ptr + dst_offset_first_element_in_bytes + (0) * sizeof(DATA_TYPE) + (indirect_buffer[M0 - 1 - _i].v) * dst_stride_y) = acc[_i].v.s0;
     })
 
     //T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, acc, indirect_buffer);
