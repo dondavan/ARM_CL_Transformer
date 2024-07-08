@@ -99,7 +99,7 @@ __kernel void mat_mul_mmul_hugh(
     uint x = GET_SPATIAL_IDX(0, N0, PARTIAL_STORE_N0);
     uint y = GET_SPATIAL_IDX(1, M0, PARTIAL_STORE_M0);
     uint z = GET_SPATIAL_IDX(2, 1, 0);
-
+    
     // Compute LHS/RHS/DST matrix address
     lhs_offset_first_element_in_bytes += y * lhs_stride_y + z * lhs_stride_z;
     dst_offset_first_element_in_bytes += x * sizeof(DATA_TYPE) + y * dst_stride_y + z * dst_stride_z;
@@ -112,8 +112,8 @@ __kernel void mat_mul_mmul_hugh(
         acc[i].v = (float)x;
     })
     
-    uint rhs_z = z * rhs_h;
-    uint       k;
+    const int rhs_z = z * rhs_h;
+    int       k;
     for(k = 0; k <= K - K0; k += K0)
     {
 
@@ -132,28 +132,10 @@ __kernel void mat_mul_mmul_hugh(
 
         // Load tile from the lhs/rhs tensors
         T_LOAD(DATA_TYPE, M0, K0, BUFFER, lhs, 0, 0, 1, lhs_stride_y, a);
-        T_LOAD(DATA_TYPE, N0, K0, RHS_TENSOR_TYPE, rhs, k, x + rhs_z, 1, rhs_stride_y, b);
+        T_LOAD(DATA_TYPE, K0, N0, RHS_TENSOR_TYPE, rhs, x, k + rhs_z, 1, rhs_stride_y, b);
 
-        //(DATA_TYPE, DATA_TYPE, DATA_TYPE, M0, N0, K0, NT, NT, a, b, acc);
+        T_MMUL(DATA_TYPE, DATA_TYPE, DATA_TYPE, M0, N0, K0, NT, NT, a, b, acc);
         
-        LOOP_UNROLLING(int, _m, 0, 1, M0,
-        {
-            LOOP_UNROLLING(int, _k, 0, 1, K0,
-            {
-                acc[_m].v = fma((DATA_TYPE)(a[_m].s[_k]), (b[_k].v), acc[_m].v);
-            })
-        })
-        
-        LOOP_UNROLLING(int, _m, 0, 1, M0,
-        {
-            LOOP_UNROLLING(int, _n, 0, 1, N0,
-            {
-                LOOP_UNROLLING(int, _k, 0, 1, K0,
-                {
-                    acc[_m].s[_n] = fma(a[_m].s[_k], b[_n].s[_k], acc[_m].s[_n]);
-                })
-            })
-        })  
 
         lhs_offset_first_element_in_bytes += K0 * sizeof(DATA_TYPE);
     }
