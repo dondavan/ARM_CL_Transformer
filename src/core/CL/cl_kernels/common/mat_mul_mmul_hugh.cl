@@ -96,12 +96,12 @@ __kernel void mat_mul_mmul_hugh(
 #endif // defined(BIAS)
     TENSOR3D_T(dst, BUFFER))
 {
-    uint x = GET_SPATIAL_IDX(0, N0, PARTIAL_STORE_N0);
-    uint y = GET_SPATIAL_IDX(1, M0, PARTIAL_STORE_M0);
-    uint z = GET_SPATIAL_IDX(2, 1, 0);
+    const uint x = GET_SPATIAL_IDX(0, N0, PARTIAL_STORE_N0);
+    const uint y = GET_SPATIAL_IDX(1, M0, PARTIAL_STORE_M0);
+    const uint z = GET_SPATIAL_IDX(2, 1, 0);
 
     // Compute LHS/RHS/DST matrix address
-    //lhs_offset_first_element_in_bytes += y * lhs_stride_y + z * lhs_stride_z;
+    lhs_offset_first_element_in_bytes += y * lhs_stride_y + z * lhs_stride_z;
     dst_offset_first_element_in_bytes += x * sizeof(DATA_TYPE) + y * dst_stride_y + z * dst_stride_z;
 
     // Initialize the accumulators
@@ -109,14 +109,13 @@ __kernel void mat_mul_mmul_hugh(
 
     LOOP_UNROLLING(int, i, 0, 1, M0,
     {
-        acc[i].v = (float)x;
+        acc[i].v = 0.f;
     })
-    /*
-    uint rhs_z = z * rhs_h;
-    uint       k;
+
+    const int rhs_z = z * rhs_h;
+    int       k;
     for(k = 0; k <= K - K0; k += K0)
     {
-
         TILE(DATA_TYPE, M0, K0, a);
         TILE(DATA_TYPE, N0, K0, b);
 
@@ -134,30 +133,39 @@ __kernel void mat_mul_mmul_hugh(
         T_LOAD(DATA_TYPE, M0, K0, BUFFER, lhs, 0, 0, 1, lhs_stride_y, a);
         T_LOAD(DATA_TYPE, N0, K0, RHS_TENSOR_TYPE, rhs, k, x + rhs_z, 1, rhs_stride_y, b);
 
-        //(DATA_TYPE, DATA_TYPE, DATA_TYPE, M0, N0, K0, NT, NT, a, b, acc);
-        
-        LOOP_UNROLLING(int, _m, 0, 1, M0,
-        {
-            LOOP_UNROLLING(int, _k, 0, 1, K0,
-            {
-                acc[_m].v = fma((DATA_TYPE)(a[_m].s[_k]), (b[_k].v), acc[_m].v);
-            })
-        })
-        
-        LOOP_UNROLLING(int, _m, 0, 1, M0,
-        {
-            LOOP_UNROLLING(int, _n, 0, 1, N0,
-            {
-                LOOP_UNROLLING(int, _k, 0, 1, K0,
-                {
-                    acc[_m].s[_n] = fma(a[_m].s[_k], b[_n].s[_k], acc[_m].s[_n]);
-                })
-            })
-        })  
+
+        T_MMUL(DATA_TYPE, DATA_TYPE, DATA_TYPE, M0, N0, K0, NT, T, a, b, acc);
 
         lhs_offset_first_element_in_bytes += K0 * sizeof(DATA_TYPE);
     }
-    */
+
+#if K % K0 != 0
+    /* Leftover Loop */
+    for(; k < K; ++k)
+    {
+        TILE(DATA_TYPE, M0, 1, a);
+        TILE(DATA_TYPE, N0, 1, b);
+
+        LOOP_UNROLLING(int, i, 0, 1, M0,
+        {
+            a[i].v = 0.f;
+        })
+
+        LOOP_UNROLLING(int, i, 0, 1, N0,
+        {
+            b[i].v = 0.f;
+        })
+
+        // Load tile from the lhs/rhs tensors
+        T_LOAD(DATA_TYPE, M0, 1, BUFFER, lhs, 0, 0, 1, lhs_stride_y, a);
+        T_LOAD(DATA_TYPE, N0, 1, BUFFER, rhs, k, x + rhs_z, 1, rhs_stride_y, b);
+
+
+        T_MMUL(DATA_TYPE, DATA_TYPE, DATA_TYPE, M0, N0, 1, NT, T, a, b, acc);
+
+        lhs_offset_first_element_in_bytes += 1 * sizeof(DATA_TYPE);
+    }
+#endif // K % K0 != 0
 
     const bool x_cond = PARTIAL_STORE_N0 != 0 && get_global_id(0) == 0;
     const bool y_cond = PARTIAL_STORE_M0 != 0 && get_global_id(1) == 0;
@@ -168,25 +176,13 @@ __kernel void mat_mul_mmul_hugh(
         indirect_buffer[_i].v = min(_i, select(M0 - 1, PARTIAL_STORE_M0 - 1, y_cond));
     });
 
+#ifdef BIAS
+    perform_bias_addition(bias_ptr, bias_offset_first_element_in_bytes, acc, x);
+#endif // defined(BIAS)
+
 
     T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, acc, indirect_buffer);
-    //T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, HEIGHT, WIDTH0, WIDTH1, TENSOR_TYPE, TENSOR, X, STRIDE_Y, WIDTH1_CONDITION, src, indirect_y)
-    /*
-    if(x_cond)
-    {
-        LOOP_UNROLLING(int, _i, 0, 1, M0,
-        {
-            VSTORE_PARTIAL(N0, PARTIAL_STORE_N0)(CONVERT(acc[M0 - 1 - _i].v, VEC_DATA_TYPE(DATA_TYPE, N0)), 0, (__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + 0 * sizeof(DATA_TYPE) + (indirect_buffer[M0 - 1 - _i].v) * dst_stride_y));
-        })
-    }
-    else
-    {
-        LOOP_UNROLLING(int, _i, 0, 1, M0,
-        {
-            VSTORE(N0)(CONVERT(acc[M0 - 1 - _i].v, VEC_DATA_TYPE(DATA_TYPE, N0)), 0, (__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + (indirect_buffer[M0 - 1 - _i].v) * dst_stride_y));
-        })
-    } 
-    */
+
 
 }
 #endif // defined(MAT_MUL_MMUL_HUGH)
