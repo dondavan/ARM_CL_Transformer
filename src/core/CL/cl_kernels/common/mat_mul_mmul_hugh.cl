@@ -123,12 +123,12 @@ __kernel void mat_mul_mmul_hugh(
 
         LOOP_UNROLLING(int, i, 0, 1, M0,
         {
-            a[i].v = 1.f;
+            a[i].v = 0.f;
         })
 
         LOOP_UNROLLING(int, i, 0, 1, N0,
         {
-            b[i].v = 1.f;
+            b[i].v = 0.f;
         })
 
         // Load tile from the lhs/rhs tensors
