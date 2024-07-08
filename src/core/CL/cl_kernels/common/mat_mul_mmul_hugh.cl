@@ -123,8 +123,8 @@ __kernel void mat_mul_mmul_hugh(
         indirect_buffer[_i].v = min(_i, select(M0 - 1, PARTIAL_STORE_M0 - 1, y_cond));
     });
 
-    T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, acc, indirect_buffer);
-    /*
+    //T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, acc, indirect_buffer);
+    
     if(x_cond)
     {
         LOOP_UNROLLING(int, _i, 0, 1, M0,
@@ -138,6 +138,6 @@ __kernel void mat_mul_mmul_hugh(
         {
             VSTORE(N0)(CONVERT(acc[M0 - 1 - _i].v, VEC_DATA_TYPE(DATA_TYPE, N0)), 0, (__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + (0) * sizeof(DATA_TYPE) + (indirect_buffer[M0 - 1 - _i].v) * dst_stride_y));
         })
-    }*/
+    }
 }
 #endif // defined(MAT_MUL_MMUL_HUGH)
