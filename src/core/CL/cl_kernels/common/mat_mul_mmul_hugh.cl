@@ -107,7 +107,7 @@ __kernel void mat_mul_mmul_hugh(
     // Initialize the accumulators
     TILE(DATA_TYPE, M0, N0, acc);
 
-    T_LOAD(DATA_TYPE, M0, N0, BUFFER, lhs, x, 0, 1, lhs_stride_y, acc);
+    //T_LOAD(DATA_TYPE, M0, N0, BUFFER, lhs, x, 0, 1, lhs_stride_y, acc);
     
     /*
     LOOP_UNROLLING(int, i, 0, 1, M0,
