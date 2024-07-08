@@ -242,7 +242,7 @@ __kernel void mat_mul_mmul_hugh(
                 VSTORE(WIDTH0)(CONVERT(src[HEIGHT - 1 - _i].v, VEC_DATA_TYPE(DATA_TYPE, WIDTH0)), 0, (__global DATA_TYPE *)(TENSOR##_ptr + TENSOR##_offset_first_element_in_bytes + (X) * sizeof(DATA_TYPE) + (indirect_y[HEIGHT - 1 - _i].v) * STRIDE_Y)); \
             })                                                                                                                                                                                     \
         }                                                                                                                                                                                          \
-    }*/
+    }
     if(x_cond)
     {
         LOOP_UNROLLING(int, _i, 0, 1, M0,
@@ -258,9 +258,13 @@ __kernel void mat_mul_mmul_hugh(
             LOOP_UNROLLING(int, _j, 0, 1, N0,
             {
                 //VSTORE(1)(acc[M0 - 1 - _i].s[_j], 0, (__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + 0 * sizeof(DATA_TYPE) + (indirect_buffer[M0 - 1 - _i].v.s0) * dst_stride_y));
-                *((__global DATA_TYPE *)dst_ptr + dst_offset_first_element_in_bytes + indirect_buffer[_i].v * dst_stride_y + _j *sizeof(DATA_TYPE)) = 2.f;
+                *((__global DATA_TYPE *)dst_ptr + dst_offset_first_element_in_bytes + (indirect_buffer[_i].v) * dst_stride_y) = get_global_id(0)*2 +_j;
             })
         })
-    }
+    }*/
+    LOOP_UNROLLING(int, _i, 0, 1, M0,
+    {
+        VSTORE(N0)(CONVERT(acc[M0 - 1 - _i].v, VEC_DATA_TYPE(DATA_TYPE, N0)), 0, (__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + 0 * sizeof(DATA_TYPE) + (indirect_buffer[M0 - 1 - _i].v) * dst_stride_y));
+    })
 }
 #endif // defined(MAT_MUL_MMUL_HUGH)
