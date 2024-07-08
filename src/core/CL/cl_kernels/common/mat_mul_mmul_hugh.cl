@@ -101,6 +101,7 @@ __kernel void mat_mul_mmul_hugh(
     uint z = GET_SPATIAL_IDX(2, 1, 0);
     
     // Compute LHS/RHS/DST matrix address
+    lhs_offset_first_element_in_bytes += y * lhs_stride_y + z * lhs_stride_z;
     dst_offset_first_element_in_bytes += x * sizeof(DATA_TYPE) + y * dst_stride_y + z * dst_stride_z;
 
     // Initialize the accumulators
@@ -108,11 +109,8 @@ __kernel void mat_mul_mmul_hugh(
 
     LOOP_UNROLLING(int, i, 0, 1, M0,
     {
-        acc[i].v = 0.f;
+        acc[i].v = y;
     })
-
-    TILE(DATA_TYPE, M0, N0, acc_b);
-    T_LOAD(DATA_TYPE, M0, N0, BUFFER, rhs, 0, 0, 1, rhs_stride_y, acc_b);
     
     const int rhs_z = z * rhs_h;
     int       k;
@@ -155,7 +153,7 @@ __kernel void mat_mul_mmul_hugh(
     perform_bias_addition(bias_ptr, bias_offset_first_element_in_bytes, acc, x);
 #endif // defined(BIAS)
 
-    T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, acc_b, indirect_buffer);
+    T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, acc, indirect_buffer);
 
 }
 #endif // defined(MAT_MUL_MMUL_HUGH)
