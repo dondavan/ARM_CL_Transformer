@@ -212,6 +212,7 @@ __kernel void mat_mul_mmul_hugh(
         acc[_i].v.s1 = acc[_i].s[1];
     })
 
+    TILE(DATA_TYPE, N0, K0, bcc);
     //rhs_offset_first_element_in_bytes += y * rhs_stride_y + z * rhs_stride_z;
     T_LOAD(DATA_TYPE, N0, K0, BUFFER, rhs, k, x + rhs_z, 1, rhs_stride_y, acc);
 
