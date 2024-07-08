@@ -109,9 +109,19 @@ __kernel void mat_mul_mmul_hugh(
 
     T_LOAD(DATA_TYPE, M0, N0, BUFFER, lhs, x, 0, 1, lhs_stride_y, acc);
     
+    /*
     LOOP_UNROLLING(int, i, 0, 1, M0,
     {
         acc[i].v = x;
+    })
+    */
+
+    LOOP_UNROLLING(int, _m, 0, 1, M0,
+    {
+        LOOP_UNROLLING(int, _n, 0, 1, N0,
+        {
+            acc[_m].s[_n] = 0.f;
+        })
     })
 
     const int rhs_z = z * rhs_h;
