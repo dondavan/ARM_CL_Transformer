@@ -109,7 +109,7 @@ __kernel void mat_mul_mmul_hugh(
 
     LOOP_UNROLLING(int, i, 0, 1, M0,
     {
-        acc[i].v = x;
+        acc[i].v = 0.f;
     })
     
     const int rhs_z = z * rhs_h;
