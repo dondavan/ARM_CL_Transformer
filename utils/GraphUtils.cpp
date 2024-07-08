@@ -851,7 +851,7 @@ void RawResultAccessor::access_typed_tensor(ITensor &tensor)
 {
     _output_stream << std::scientific;
     _output_stream << "---------- Result ----------" << std::endl;
-    for(size_t y = 0; y < tensor.info()->tensor_shape().y(); y++)
+    for(size_t y = 0; y <= tensor.info()->tensor_shape().y(); y++)
     {
         _output_stream << " ################# " << y << " ################# " << std::endl;
         for(size_t x = 0; x <= tensor.info()->tensor_shape().x()-4; x+=4)
