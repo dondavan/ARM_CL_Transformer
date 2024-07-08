@@ -192,7 +192,7 @@ __kernel void mat_mul_mmul_hugh(
 #endif // defined(BIAS)
 */
 
-    //T_LOAD(DATA_TYPE, M0, N0, BUFFER, lhs, 0, 0, 1, lhs_stride_y, acc);
+    T_LOAD(DATA_TYPE, M0, N0, BUFFER, rhs, 0, 0, 1, rhs_stride_y, acc);
     /*
     LOOP_UNROLLING(int, _i, 0, 1, M0,
     {
