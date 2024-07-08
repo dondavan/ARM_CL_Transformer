@@ -211,14 +211,17 @@ __kernel void mat_mul_mmul_hugh(
 #endif // defined(BIAS)
 */
 
-    //T_LOAD(DATA_TYPE, M0, N0, BUFFER, lhs, 0, 0, 1, lhs_stride_y, acc);
+    T_LOAD(DATA_TYPE, M0, N0, BUFFER, lhs, 0, 0, 1, lhs_stride_y, acc);
 
     LOOP_UNROLLING(int, _i, 0, 1, M0,
     {
-        acc[_i].v.s0 = acc[_i].s[0];
-        acc[_i].v.s1 = acc[_i].s[1];
-        acc[_i].v.s2 = acc[_i].s[2];
-        acc[_i].v.s3 = acc[_i].s[3];
+        acc[_i].s[0] = acc[_i].v.s0;
+        acc[_i].s[1] = acc[_i].v.s1;;
+    })
+
+    LOOP_UNROLLING(int, _i, 0, 1, M0,
+    {
+        acc[_i].v = 0;
     })
 
     //rhs_offset_first_element_in_bytes += y * rhs_stride_y + z * rhs_stride_z;
