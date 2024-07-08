@@ -157,7 +157,7 @@ __kernel void mat_mul_mmul_hugh(
             })
         }) 
 
-        lhs_offset_first_element_in_bytes += K0 * sizeof(DATA_TYPE);
+        //lhs_offset_first_element_in_bytes += K0 * sizeof(DATA_TYPE);
     }
 #if K % K0 != 0
     /* Leftover Loop */
@@ -192,7 +192,7 @@ __kernel void mat_mul_mmul_hugh(
             })
         }) 
 
-        lhs_offset_first_element_in_bytes += 1 * sizeof(DATA_TYPE);
+        //lhs_offset_first_element_in_bytes += 1 * sizeof(DATA_TYPE);
     }
 #endif // K % K0 != 0
 
@@ -205,9 +205,11 @@ __kernel void mat_mul_mmul_hugh(
         indirect_buffer[_i].v = min(_i, select(M0 - 1, PARTIAL_STORE_M0 - 1, y_cond));
     });
 
+/*
 #ifdef BIAS
     perform_bias_addition(bias_ptr, bias_offset_first_element_in_bytes, acc, x);
 #endif // defined(BIAS)
+*/
 
     T_LOAD(DATA_TYPE, M0, N0, BUFFER, lhs, 0, 0, 1, lhs_stride_y, acc);
     T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, acc, indirect_buffer);
