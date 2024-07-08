@@ -193,7 +193,7 @@ __kernel void mat_mul_mmul_hugh(
             }
         }
 
-        lhs_offset_first_element_in_bytes += K0 * sizeof(DATA_TYPE);
+        //lhs_offset_first_element_in_bytes += K0 * sizeof(DATA_TYPE);
     }
 
     const bool x_cond = PARTIAL_STORE_N0 != 0 && get_global_id(0) == 0;
