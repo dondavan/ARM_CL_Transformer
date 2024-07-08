@@ -112,8 +112,8 @@ __kernel void mat_mul_mmul_hugh(
         acc[i].v = x;
     })
     
-    uint rhs_z = z * rhs_h;
-    uint       k;
+    const int rhs_z = z * rhs_h;
+    int       k;
     for(k = 0; k <= K - K0; k += K0)
     {
 
@@ -132,7 +132,11 @@ __kernel void mat_mul_mmul_hugh(
 
         // Load tile from the lhs/rhs tensors
         T_LOAD(DATA_TYPE, M0, K0, BUFFER, lhs, 0, 0, 1, lhs_stride_y, a);
-        T_LOAD(DATA_TYPE, K0, N0, BUFFER, rhs, 0, 0, 1, rhs_stride_y, b);
+        //T_LOAD(DATA_TYPE, K0, N0, BUFFER, rhs, x, k + rhs_z, 1, rhs_stride_y, b);
+        LOOP_UNROLLING(int, _i, 0, 1, K0,
+        {
+            b[_i].v = V_LOAD(DATA_TYPE, N0, BUFFER, rhs, x, (k + rhs_z + _i * (int)(1)),rhs_stride_y);
+        }) 
 
         //T_MMUL(DATA_TYPE, DATA_TYPE, DATA_TYPE, M0, N0, K0, NT, NT, a, b, acc);
         
