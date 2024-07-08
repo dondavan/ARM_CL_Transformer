@@ -112,8 +112,8 @@ __kernel void mat_mul_mmul_hugh(
         acc[i].v = x;
     })
     
-    const int rhs_z = z * rhs_h;
-    int       k;
+    uint rhs_z = z * rhs_h;
+    uint       k;
     for(k = 0; k <= K - K0; k += K0)
     {
 
