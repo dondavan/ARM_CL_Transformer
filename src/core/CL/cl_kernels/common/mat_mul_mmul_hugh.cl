@@ -258,7 +258,7 @@ __kernel void mat_mul_mmul_hugh(
             LOOP_UNROLLING(int, _j, 0, 1, N0,
             {
                 //VSTORE(1)(acc[M0 - 1 - _i].s[_j], 0, (__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + 0 * sizeof(DATA_TYPE) + (indirect_buffer[M0 - 1 - _i].v.s0) * dst_stride_y));
-                *((__global DATA_TYPE *)dst_ptr + dst_offset_first_element_in_bytes + _i * dst_stride_y + _j *sizeof(DATA_TYPE)) = get_global_id(0)*2 +_j;
+                *((__global DATA_TYPE *)dst_ptr + dst_offset_first_element_in_bytes + _i * dst_stride_y + _j *sizeof(DATA_TYPE)) = (float)get_global_id(0)*2 +_j;
             })
         })
     }
