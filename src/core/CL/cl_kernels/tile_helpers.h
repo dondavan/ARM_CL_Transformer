@@ -76,7 +76,7 @@
     struct {                                 \
         DATA_TYPE                      s[TILE_VECTOR_SIZE##W];                  \
         TILE_VECTOR_TYPE##W(DATA_TYPE) v;                     \
-    } BASENAME[H]
+    } __local BASENAME[H]
 
 // Hugh changed union to struct
 
