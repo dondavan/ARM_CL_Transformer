@@ -124,48 +124,6 @@ __kernel void mat_mul_mmul_hugh(
         })
     })
 
-    const int rhs_z = z * rhs_h;
-    int       k;
-    for(k = 0; k <= K - K0; k += K0)
-    {
-        TILE(DATA_TYPE, M0, K0, a);
-        TILE(DATA_TYPE, N0, K0, b);
-
-        LOOP_UNROLLING(int, _m, 0, 1, M0,
-        {
-            LOOP_UNROLLING(int, _k, 0, 1, K0,
-            {
-                a[_m].s[_k] = 1.f;
-            })
-        })
-
-        LOOP_UNROLLING(int, _n, 0, 1, N0,
-        {
-            LOOP_UNROLLING(int, _k, 0, 1, K0,
-            {
-                b[_n].s[_k] = 1.f;
-            })
-        })
-
-        // Load tile from the lhs/rhs tensors
-        //T_LOAD(DATA_TYPE, M0, K0, BUFFER, lhs, 0, 0, 1, lhs_stride_y, a);
-        //T_LOAD(DATA_TYPE, N0, K0, RHS_TENSOR_TYPE, rhs, k, x + rhs_z, 1, rhs_stride_y, b);
-
-
-        //T_MMUL(DATA_TYPE, DATA_TYPE, DATA_TYPE, M0, N0, K0, NT, T, a, b, acc);
-        LOOP_UNROLLING(int, _m, 0, 1, M0,
-        {
-            LOOP_UNROLLING(int, _n, 0, 1, N0,
-            {
-                LOOP_UNROLLING(int, _k, 0, 1, K0,
-                {
-                    acc[_m].s[_n] = fma((DATA_TYPE)(a[_m].s[_k]), (DATA_TYPE)(b[_n].s[_k]), acc[_m].s[_n]);
-                })
-            })
-        }) 
-        
-        lhs_offset_first_element_in_bytes += K0 * sizeof(DATA_TYPE);
-    }
 
     const bool x_cond = PARTIAL_STORE_N0 != 0 && get_global_id(0) == 0;
     const bool y_cond = PARTIAL_STORE_M0 != 0 && get_global_id(1) == 0;
