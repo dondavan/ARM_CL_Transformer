@@ -107,10 +107,12 @@ __kernel void mat_mul_mmul_hugh(
     // Initialize the accumulators
     TILE(DATA_TYPE, M0, N0, acc);
 
+    T_LOAD(DATA_TYPE, M0, N0, BUFFER, lhs, 0, 0, 1, lhs_stride_y, acc);
+    /*
     LOOP_UNROLLING(int, i, 0, 1, M0,
     {
         acc[i].v = x;
-    })
+    })*/
 
     const bool x_cond = PARTIAL_STORE_N0 != 0 && get_global_id(0) == 0;
     const bool y_cond = PARTIAL_STORE_M0 != 0 && get_global_id(1) == 0;
