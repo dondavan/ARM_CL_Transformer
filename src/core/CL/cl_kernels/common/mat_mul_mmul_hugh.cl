@@ -213,9 +213,9 @@ __kernel void mat_mul_mmul_hugh(
     })
 
     //rhs_offset_first_element_in_bytes += y * rhs_stride_y + z * rhs_stride_z;
-    T_LOAD(DATA_TYPE, M0, N0, BUFFER, rhs, k, x + rhs_z, 1, rhs_stride_y, acc);
+    T_LOAD(DATA_TYPE, N0, K0, BUFFER, rhs, k, x + rhs_z, 1, rhs_stride_y, acc);
 
-    T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, acc, indirect_buffer);
+    T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, N0, K0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, acc, indirect_buffer);
     /*
     #define T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, HEIGHT, WIDTH0, WIDTH1, TENSOR_TYPE, TENSOR, X, STRIDE_Y, WIDTH1_CONDITION, src, indirect_y)                                                      \
     {                                                                                                                                                                                             \
