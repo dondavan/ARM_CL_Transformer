@@ -492,8 +492,7 @@
 #define V_LOAD(DATA_TYPE, WIDTH, TENSOR_TYPE, TENSOR, X, Y, STRIDE_Y) V_LOAD_STR(DATA_TYPE, WIDTH, TENSOR_TYPE, TENSOR, X, Y, STRIDE_Y)
 #define V_LOAD_STR(DATA_TYPE, WIDTH, TENSOR_TYPE, TENSOR, X, Y, STRIDE_Y) V_LOAD_##TENSOR_TYPE(DATA_TYPE, WIDTH, TENSOR, X, Y, STRIDE_Y)
 #define V_LOAD_BUFFER(DATA_TYPE, WIDTH, TENSOR, X, Y, STRIDE_Y) \
-    VLOAD(WIDTH)                                                \
-    (0, (__global DATA_TYPE *)(TENSOR##_ptr + TENSOR##_offset_first_element_in_bytes + (X) * sizeof(DATA_TYPE) + (Y) * (STRIDE_Y)))
+    VLOAD(WIDTH)(0, (__global DATA_TYPE *)(TENSOR##_ptr + TENSOR##_offset_first_element_in_bytes + (X) * sizeof(DATA_TYPE) + (Y) * (STRIDE_Y)))
 #define V_LOAD_IMAGE(DATA_TYPE, WIDTH, TENSOR, X, Y, STRIDE_Y) READ_IMAGE2D(DATA_TYPE, CONVERT_VECTOR_SIZE_TO_PIXEL_UNIT(WIDTH), TENSOR##_img, (X) / 4, (Y))
 
 /** Store a vector in global memory (tensor)
@@ -511,8 +510,7 @@
 #define V_STORE(DATA_TYPE, WIDTH, TENSOR_TYPE, TENSOR, X, Y, STRIDE_Y, VALUES) V_STORE_STR(DATA_TYPE, WIDTH, TENSOR_TYPE, TENSOR, X, Y, STRIDE_Y, VALUES)
 #define V_STORE_STR(DATA_TYPE, WIDTH, TENSOR_TYPE, TENSOR, X, Y, STRIDE_Y, VALUES) V_STORE_##TENSOR_TYPE(DATA_TYPE, WIDTH, TENSOR, X, Y, STRIDE_Y, VALUES)
 #define V_STORE_BUFFER(DATA_TYPE, WIDTH, TENSOR, X, Y, STRIDE_Y, VALUES) \
-    VSTORE(WIDTH)                                                \
-    (VALUES, 0, (__global DATA_TYPE *)(TENSOR##_ptr + TENSOR##_offset_first_element_in_bytes + (X) * sizeof(DATA_TYPE) + (Y) * (STRIDE_Y)))
+    VSTORE(WIDTH)(VALUES, 0, (__global DATA_TYPE *)(TENSOR##_ptr + TENSOR##_offset_first_element_in_bytes + (X) * sizeof(DATA_TYPE) + (Y) * (STRIDE_Y)))
 #define V_STORE_IMAGE(DATA_TYPE, WIDTH, TENSOR, X, Y, STRIDE_Y, VALUES) WRITE_IMAGE2D(DATA_TYPE, CONVERT_VECTOR_SIZE_TO_PIXEL_UNIT(WIDTH), TENSOR##_img, (X) / 4, (Y), VALUES)
 
 /** Load a tile from global memory (tensor)
@@ -532,12 +530,12 @@
  * @param[out] dst           Output tile
  */
 #define T_LOAD(DATA_TYPE, HEIGHT, WIDTH, TENSOR_TYPE, TENSOR, X, Y, YI_MULTIPLIER, STRIDE_Y, dst)                      \
-    ({                                                                                                                 \
+    {                                                                                                                 \
         LOOP_UNROLLING(int, _i, 0, 1, HEIGHT,                                                                          \
         {                                                                                                              \
             dst[_i].v = V_LOAD(DATA_TYPE, WIDTH, TENSOR_TYPE, TENSOR, X, ((Y) + _i * (int)(YI_MULTIPLIER)), STRIDE_Y); \
         })                                                                                                             \
-    })
+    }
 
 /** Store a VECTOR variable (e.g. int4, int8, char2 etc.) to a specified column in the TILE object
  *
