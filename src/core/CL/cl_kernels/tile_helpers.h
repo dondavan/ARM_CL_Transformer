@@ -518,7 +518,7 @@
 #define V_STORE_STR(DATA_TYPE, WIDTH, TENSOR_TYPE, TENSOR, X, Y, STRIDE_Y, VALUES) V_STORE_##TENSOR_TYPE(DATA_TYPE, WIDTH, TENSOR, X, Y, STRIDE_Y, VALUES)
 #define V_STORE_BUFFER(DATA_TYPE, WIDTH, TENSOR, X, Y, STRIDE_Y, VALUES) \
     VSTORE(WIDTH)                                                \
-    (VALUES, 0, (__global DATA_TYPE *)(TENSOR##_ptr + TENSOR##_offset_first_element_in_bytes + (X) * sizeof(DATA_TYPE) + (Y) * (STRIDE_Y)))
+    (VALUES, 0, (__global DATA_TYPE *)(TENSOR##_ptr + TENSOR##_offset_first_element_in_bytes + X * sizeof(DATA_TYPE) + Y * STRIDE_Y))
 #define V_STORE_IMAGE(DATA_TYPE, WIDTH, TENSOR, X, Y, STRIDE_Y, VALUES) WRITE_IMAGE2D(DATA_TYPE, CONVERT_VECTOR_SIZE_TO_PIXEL_UNIT(WIDTH), TENSOR##_img, (X) / 4, (Y), VALUES)
 
 /** Load a tile from global memory (tensor)
