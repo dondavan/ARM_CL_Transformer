@@ -121,14 +121,20 @@ __kernel void mat_mul_mmul_hugh(
         TILE(DATA_TYPE, M0, K0, a);
         TILE(DATA_TYPE, N0, K0, b);
 
-        LOOP_UNROLLING(int, i, 0, 1, M0,
+        LOOP_UNROLLING(int, _m, 0, 1, M0,
         {
-            a[i].v = 1.f;
+            LOOP_UNROLLING(int, _k, 0, 1, K0,
+            {
+                a[_m].s[_k] = 1.f;
+            })
         })
 
-        LOOP_UNROLLING(int, i, 0, 1, N0,
+        LOOP_UNROLLING(int, _m, 0, 1, M0,
         {
-            b[i].v = 1.f;
+            LOOP_UNROLLING(int, _k, 0, 1, K0,
+            {
+                b[_m].s[_k] = 1.f;
+            })
         })
 
         // Load tile from the lhs/rhs tensors
