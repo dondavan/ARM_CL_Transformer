@@ -134,7 +134,7 @@ __kernel void mat_mul_mmul_hugh(
         T_LOAD(DATA_TYPE, M0, K0, BUFFER, lhs, 0, 0, 1, lhs_stride_y, a);
         //T_LOAD(DATA_TYPE, N0, K0, RHS_TENSOR_TYPE, rhs, k, x + rhs_z, 1, rhs_stride_y, b);
         b[0].v = VLOAD(K0)(0, (__global DATA_TYPE *)(rhs_ptr + rhs_offset_first_element_in_bytes + k * sizeof(DATA_TYPE) + x * rhs_stride_y));
-        b[1].v = VLOAD(K0)(0, (__global DATA_TYPE *)(rhs_ptr + rhs_offset_first_element_in_bytes + k * sizeof(DATA_TYPE) + (x+1) * rhs_stride_yY));
+        b[1].v = VLOAD(K0)(0, (__global DATA_TYPE *)(rhs_ptr + rhs_offset_first_element_in_bytes + k * sizeof(DATA_TYPE) + (x+1) * rhs_stride_y));
 
         LOOP_UNROLLING(int, _i, 0, 1, M0,
         {
