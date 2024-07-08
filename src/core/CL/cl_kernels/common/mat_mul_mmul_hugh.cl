@@ -217,6 +217,8 @@ __kernel void mat_mul_mmul_hugh(
     {
         acc[_i].v.s0 = acc[_i].s[0];
         acc[_i].v.s1 = acc[_i].s[1];
+        acc[_i].v.s2 = acc[_i].s[2];
+        acc[_i].v.s3 = acc[_i].s[3];
     })
 
     //rhs_offset_first_element_in_bytes += y * rhs_stride_y + z * rhs_stride_z;
