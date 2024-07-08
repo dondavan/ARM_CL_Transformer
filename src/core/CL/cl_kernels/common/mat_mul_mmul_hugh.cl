@@ -170,7 +170,7 @@ __kernel void mat_mul_mmul_hugh(
             {
                 acc[_m].v = fma(a[_m].v, b[_k].v, acc[_m].v);
             })
-        })*/
+        })
         LOOP_UNROLLING(int, _m, 0, 1, M0,
         {
             LOOP_UNROLLING(int, _n, 0, 1, N0,
@@ -181,7 +181,17 @@ __kernel void mat_mul_mmul_hugh(
                     //acc[_m].s[_n] = fma((DATA_TYPE)a[_m].s[_k], (DATA_TYPE)b[_n].s[_k], acc[_m].s[_n]);
                 })
             })
-        }) 
+        }) */
+        for(int _m=0; _m<M0; _m++)
+        {
+            for(int _n=0; _n<N0; _n++)
+            {
+                for(int _k=0; _k<K0; _k++)
+                {
+                    acc[_m].s[_n] += a[_m].s[_k]* b[_n].s[_k];
+                }
+            }
+        }
 
         lhs_offset_first_element_in_bytes += K0 * sizeof(DATA_TYPE);
     }
@@ -210,7 +220,7 @@ __kernel void mat_mul_mmul_hugh(
     })
 
     //rhs_offset_first_element_in_bytes += y * rhs_stride_y + z * rhs_stride_z;
-    T_LOAD(DATA_TYPE, M0, N0, BUFFER, rhs, 0, x + rhs_z, 1, rhs_stride_y, acc);
+    //T_LOAD(DATA_TYPE, M0, N0, BUFFER, rhs, k, x + rhs_z, 1, rhs_stride_y, acc);
 
     T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, acc, indirect_buffer);
     /*
