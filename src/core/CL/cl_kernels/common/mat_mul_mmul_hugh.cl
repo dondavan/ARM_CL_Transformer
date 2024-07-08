@@ -175,13 +175,13 @@ __kernel void mat_mul_mmul_hugh(
             {
                 LOOP_UNROLLING(int, _k, 0, 1, K0,
                 {
+                    acc[_m].s[_n] = fma((DATA_TYPE)a[_m].s[_k], (DATA_TYPE)b[_n].s[_k], acc[_m].s[_n]);
                     //acc[_m].s[_n] = fma((DATA_TYPE)a[_m].s[_k], (DATA_TYPE)b[_n].s[_k], acc[_m].s[_n]);
-                    acc[_m].s[_n] += (DATA_TYPE)a[_m].s[_k]* (DATA_TYPE)b[_n].s[_k];
                 })
             })
         }) 
 
-        lhs_offset_first_element_in_bytes += K0 * sizeof(DATA_TYPE);
+        //lhs_offset_first_element_in_bytes += K0 * sizeof(DATA_TYPE);
     }
 
     const bool x_cond = PARTIAL_STORE_N0 != 0 && get_global_id(0) == 0;
@@ -211,7 +211,8 @@ __kernel void mat_mul_mmul_hugh(
         acc[_i].v.s0 = acc[_i].s[0];
         acc[_i].v.s1 = acc[_i].s[1];
     })
-    
+    T_LOAD(DATA_TYPE, M0, N0, BUFFER, lhs, 0, 0, 1, lhs_stride_y, a);
+
     T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, acc, indirect_buffer);
     /*
     #define T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, HEIGHT, WIDTH0, WIDTH1, TENSOR_TYPE, TENSOR, X, STRIDE_Y, WIDTH1_CONDITION, src, indirect_y)                                                      \
