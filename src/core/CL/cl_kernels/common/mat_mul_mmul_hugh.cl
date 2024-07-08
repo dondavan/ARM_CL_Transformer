@@ -143,7 +143,7 @@ __kernel void mat_mul_mmul_hugh(
             {
                 acc[_m].v = fma(a[_m].s[_k], b[_k].v, acc[_m].v);
             })
-        })
+        }
 
         lhs_offset_first_element_in_bytes += K0 * sizeof(DATA_TYPE);
     }
