@@ -541,7 +541,7 @@
     {                                                                                                                 \
         LOOP_UNROLLING(int, _i, 0, 1, HEIGHT,                                                                          \
         {                                                                                                              \
-            dst[_i].v = V_LOAD(DATA_TYPE, WIDTH, TENSOR_TYPE, TENSOR, X, ((Y) + _i * (int)(YI_MULTIPLIER)), STRIDE_Y); \
+            dst[_i].v = V_LOAD(DATA_TYPE, WIDTH, TENSOR_TYPE, TENSOR, X, (Y + _i * (int)(YI_MULTIPLIER)), STRIDE_Y); \
         })                                                                                                             \
     }
 
