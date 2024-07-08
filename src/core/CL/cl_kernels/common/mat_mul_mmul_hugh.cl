@@ -219,21 +219,12 @@ __kernel void mat_mul_mmul_hugh(
         acc[_i].s[1] = acc[_i].v.s1;;
     })
 
-    LOOP_UNROLLING(int, _i, 0, 1, M0,
-    {
-        acc[_i].v = 0;
-    })
-
-    LOOP_UNROLLING(int, _i, 0, 1, M0,
-    {
-        acc[_i].v.s0 = acc[_i].s[0];
-        acc[_i].v.s1 = acc[_i].s[1];
-    })
+    
 
     //rhs_offset_first_element_in_bytes += y * rhs_stride_y + z * rhs_stride_z;
     //T_LOAD(DATA_TYPE, M0, N0, BUFFER, rhs, k, x + rhs_z, 1, rhs_stride_y, acc);
 
-    T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, acc, indirect_buffer);
+    //T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, acc, indirect_buffer);
     /*
     #define T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, HEIGHT, WIDTH0, WIDTH1, TENSOR_TYPE, TENSOR, X, STRIDE_Y, WIDTH1_CONDITION, src, indirect_y)                                                      \
     {                                                                                                                                                                                             \
@@ -251,7 +242,7 @@ __kernel void mat_mul_mmul_hugh(
                 VSTORE(WIDTH0)(CONVERT(src[HEIGHT - 1 - _i].v, VEC_DATA_TYPE(DATA_TYPE, WIDTH0)), 0, (__global DATA_TYPE *)(TENSOR##_ptr + TENSOR##_offset_first_element_in_bytes + (X) * sizeof(DATA_TYPE) + (indirect_y[HEIGHT - 1 - _i].v) * STRIDE_Y)); \
             })                                                                                                                                                                                     \
         }                                                                                                                                                                                          \
-    }
+    }*/
     if(x_cond)
     {
         LOOP_UNROLLING(int, _i, 0, 1, M0,
@@ -270,6 +261,6 @@ __kernel void mat_mul_mmul_hugh(
                 *((__global DATA_TYPE *)dst_ptr + dst_offset_first_element_in_bytes + (indirect_buffer[_i].v) * dst_stride_y) = acc[_i].s[_j];
             })
         })
-    }*/
+    }
 }
 #endif // defined(MAT_MUL_MMUL_HUGH)
