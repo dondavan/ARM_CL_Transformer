@@ -101,7 +101,6 @@ __kernel void mat_mul_mmul_hugh(
     uint z = GET_SPATIAL_IDX(2, 1, 0);
     
     // Compute LHS/RHS/DST matrix address
-    lhs_offset_first_element_in_bytes += y * lhs_stride_y + z * lhs_stride_z;
     dst_offset_first_element_in_bytes += x * sizeof(DATA_TYPE) + y * dst_stride_y + z * dst_stride_z;
 
     // Initialize the accumulators
