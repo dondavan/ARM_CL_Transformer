@@ -120,7 +120,7 @@ __kernel void mat_mul_mmul_hugh(
     {
         LOOP_UNROLLING(int, _n, 0, 1, N0,
         {
-            acc[_m].s[_n] = 0.f;
+            acc[_m].s[_n] = 1.f;
         })
     })
 
