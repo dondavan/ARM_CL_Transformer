@@ -113,7 +113,7 @@ __kernel void mat_mul_mmul_hugh(
     })
 
     TILE(DATA_TYPE, M0, N0, acc_b);
-    T_LOAD(DATA_TYPE, M0, N0, BUFFER, lhs, 0, 0, 1, lhs_stride_y, acc_b);
+    T_LOAD(DATA_TYPE, M0, N0, BUFFER, rhs, 0, 0, 1, rhs_stride_y, acc_b);
     
     const int rhs_z = z * rhs_h;
     int       k;
