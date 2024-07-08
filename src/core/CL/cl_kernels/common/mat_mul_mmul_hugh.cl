@@ -165,7 +165,7 @@ __kernel void mat_mul_mmul_hugh(
                 *((__global DATA_TYPE *)dst_ptr + dst_offset_first_element_in_bytes + indirect_buffer[M0 - 1 - _i].v * dst_stride_y) = CONVERT(acc[M0 - 1 - _i].s[_j], VEC_DATA_TYPE(DATA_TYPE, 1));
             })
             */
-            *((__global DATA_TYPE *)dst_ptr + dst_offset_first_element_in_bytes + indirect_buffer[M0 - 1 - _i].v * dst_stride_y) = acc[M0 - 1 - _i].v.s0;
+            *((__global DATA_TYPE *)dst_ptr + dst_offset_first_element_in_bytes + indirect_buffer[_i].v * dst_stride_y) = acc[_i].v.s0;
         })
     }
 }
