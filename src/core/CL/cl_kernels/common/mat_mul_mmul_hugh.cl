@@ -224,6 +224,12 @@ __kernel void mat_mul_mmul_hugh(
         acc[_i].v = 0;
     })
 
+    LOOP_UNROLLING(int, _i, 0, 1, M0,
+    {
+        acc[_i].v.s0 = acc[_i].s[0];
+        acc[_i].v.s1 = acc[_i].s[1];
+    })
+
     //rhs_offset_first_element_in_bytes += y * rhs_stride_y + z * rhs_stride_z;
     //T_LOAD(DATA_TYPE, M0, N0, BUFFER, rhs, k, x + rhs_z, 1, rhs_stride_y, acc);
 
