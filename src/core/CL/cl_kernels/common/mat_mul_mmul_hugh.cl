@@ -190,7 +190,7 @@ __kernel void mat_mul_mmul_hugh(
     TILE(int, N0, 1, indirect_buffer);
     LOOP_UNROLLING(int, _i, 0, 1, N0,
     {
-        indirect_buffer[_i].v = min(_i, select(M0 - 1, PARTIAL_STORE_M0 - 1, y_cond));
+        indirect_buffer[_i].v = min(_i, select(N0 - 1, PARTIAL_STORE_N0 - 1, y_cond));
     });
 
 /*
