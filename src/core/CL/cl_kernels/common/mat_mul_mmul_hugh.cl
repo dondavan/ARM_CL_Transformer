@@ -188,7 +188,7 @@ __kernel void mat_mul_mmul_hugh(
     const bool y_cond = PARTIAL_STORE_M0 != 0 && get_global_id(1) == 0;
 
     TILE(int, N0, 1, indirect_buffer);
-    LOOP_UNROLLING(int, _i, 0, 1, M0,
+    LOOP_UNROLLING(int, _i, 0, 1, N0,
     {
         indirect_buffer[_i].v = min(_i, select(M0 - 1, PARTIAL_STORE_M0 - 1, y_cond));
     });
