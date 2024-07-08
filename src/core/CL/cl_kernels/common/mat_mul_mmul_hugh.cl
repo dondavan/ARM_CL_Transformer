@@ -109,12 +109,8 @@ __kernel void mat_mul_mmul_hugh(
 
     LOOP_UNROLLING(int, i, 0, 1, M0,
     {
-        acc[i].v = 0.f;
+        acc[i].v = x;
     })
-    
-    const int rhs_z = z * rhs_h;
-    int       k;
-    
 
     const bool x_cond = PARTIAL_STORE_N0 != 0 && get_global_id(0) == 0;
     const bool y_cond = PARTIAL_STORE_M0 != 0 && get_global_id(1) == 0;
@@ -125,59 +121,7 @@ __kernel void mat_mul_mmul_hugh(
         indirect_buffer[_i].v = min(_i, select(M0 - 1, PARTIAL_STORE_M0 - 1, y_cond));
     });
 
-/*
-#ifdef BIAS
-    perform_bias_addition(bias_ptr, bias_offset_first_element_in_bytes, acc, x);
-#endif // defined(BIAS)
-*/
-
-    T_LOAD(DATA_TYPE, M0, N0, BUFFER, lhs, x, 0, 1, lhs_stride_y, acc);
-
-    
-
-    //rhs_offset_first_element_in_bytes += y * rhs_stride_y + z * rhs_stride_z;
-    //T_LOAD(DATA_TYPE, M0, N0, BUFFER, rhs, k, x + rhs_z, 1, rhs_stride_y, acc);
-
-    T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, x, dst_stride_y, x_cond, acc, indirect_buffer);
-    /*
-    #define T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, HEIGHT, WIDTH0, WIDTH1, TENSOR_TYPE, TENSOR, X, STRIDE_Y, WIDTH1_CONDITION, src, indirect_y)                                                      \
-    {                                                                                                                                                                                             \
-        if(WIDTH1_CONDITION)                                                                                                                                                                       \
-        {                                                                                                                                                                                          \
-            LOOP_UNROLLING(int, _i, 0, 1, HEIGHT,                                                                                                                                                  \
-            {                                                                                                                                                                                      \
-                VSTORE_PARTIAL(WIDTH0, WIDTH1)(CONVERT(src[HEIGHT - 1 - _i].v, VEC_DATA_TYPE(DATA_TYPE, WIDTH0)), 0, (__global DATA_TYPE *)(TENSOR##_ptr + TENSOR##_offset_first_element_in_bytes + (X) * sizeof(DATA_TYPE) + (indirect_y[HEIGHT - 1 - _i].v) * STRIDE_Y)); \
-            })                                                                                                                                                                                     \
-        }                                                                                                                                                                                          \
-        else                                                                                                                                                                                       \
-        {                                                                                                                                                                                          \
-            LOOP_UNROLLING(int, _i, 0, 1, HEIGHT,                                                                                                                                                  \
-            {                                                                                                                                                                                      \
-                VSTORE(WIDTH0)(CONVERT(src[HEIGHT - 1 - _i].v, VEC_DATA_TYPE(DATA_TYPE, WIDTH0)), 0, (__global DATA_TYPE *)(TENSOR##_ptr + TENSOR##_offset_first_element_in_bytes + (X) * sizeof(DATA_TYPE) + (indirect_y[HEIGHT - 1 - _i].v) * STRIDE_Y)); \
-            })                                                                                                                                                                                     \
-        }                                                                                                                                                                                          \
-    }
-    */
-    /*
-    if(x_cond)
-    {
-        LOOP_UNROLLING(int, _i, 0, 1, M0,
-        {
-            VSTORE_PARTIAL(N0, PARTIAL_STORE_N0)(CONVERT(acc[M0 - 1 - _i].v, VEC_DATA_TYPE(DATA_TYPE, N0)), 0, (__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + 0 * sizeof(DATA_TYPE) + (indirect_buffer[M0 - 1 - _i].v) * dst_stride_y));
-        })
-    }
-    else
-    {
-        LOOP_UNROLLING(int, _i, 0, 1, M0,
-        {
-            //VSTORE(N0)(CONVERT(acc[M0 - 1 - _i].v, VEC_DATA_TYPE(DATA_TYPE, N0)), 0, (__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + 0 * sizeof(DATA_TYPE) + (indirect_buffer[M0 - 1 - _i].v) * dst_stride_y));
-            LOOP_UNROLLING(int, _j, 0, 1, N0,
-            {
-                //VSTORE(1)(acc[M0 - 1 - _i].s[_j], 0, (__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + 0 * sizeof(DATA_TYPE) + (indirect_buffer[M0 - 1 - _i].v.s0) * dst_stride_y));
-                *((__global DATA_TYPE *)dst_ptr + dst_offset_first_element_in_bytes + (indirect_buffer[_i].v) * dst_stride_y) = get_global_id(0)*2 +_j;
-            })
-        })
-    }*/
+    T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, acc, indirect_buffer);
     
 }
 #endif // defined(MAT_MUL_MMUL_HUGH)
