@@ -109,7 +109,7 @@ __kernel void mat_mul_mmul_hugh(
 
     LOOP_UNROLLING(int, i, 0, 1, M0,
     {
-        acc[i].v = y;
+        acc[i].v = 0.f;
     })
     
     const int rhs_z = z * rhs_h;
@@ -142,7 +142,7 @@ __kernel void mat_mul_mmul_hugh(
         {
             LOOP_UNROLLING(int, _k, 0, 1, K0,
             {
-                acc[_m].v = fma(a[_m].s[_k], b[_k].v, acc[_m].v);
+                acc[_m].v = fma(a[_m].v, b[_k].v, acc[_m].v);
             })
         })
 
