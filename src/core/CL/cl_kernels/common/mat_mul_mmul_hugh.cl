@@ -146,14 +146,24 @@ __kernel void mat_mul_mmul_hugh(
             })                                                                                                                                                                                     \
         }                                                                                                                                                                                          \
     }*/
-    LOOP_UNROLLING(int, _i, 0, 1, M0,
+    if(x_cond)
+    {
+        LOOP_UNROLLING(int, _i, 0, 1, M0,
+        {
+            VSTORE_PARTIAL(N0, PARTIAL_STORE_N0)(CONVERT(acc[M0 - 1 - _i].v, VEC_DATA_TYPE(DATA_TYPE, N0)), 0, (__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + 0 * sizeof(DATA_TYPE) + (indirect_buffer[M0 - 1 - _i].v) * dst_stride_y));
+        })
+    }
+    else
+    {
+        LOOP_UNROLLING(int, _i, 0, 1, M0,
         {
             //VSTORE(N0)(CONVERT(acc[M0 - 1 - _i].v, VEC_DATA_TYPE(DATA_TYPE, N0)), 0, (__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + 0 * sizeof(DATA_TYPE) + (indirect_buffer[M0 - 1 - _i].v) * dst_stride_y));
             LOOP_UNROLLING(int, _j, 0, 1, N0,
             {
                 //VSTORE(1)(acc[M0 - 1 - _i].s[_j], 0, (__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + 0 * sizeof(DATA_TYPE) + (indirect_buffer[M0 - 1 - _i].v.s0) * dst_stride_y));
-                *((__global DATA_TYPE *)dst_ptr + dst_offset_first_element_in_bytes + (indirect_buffer[_i].v) * dst_stride_y) = acc[_i].s[_j];
+                *((__global DATA_TYPE *)dst_ptr + dst_offset_first_element_in_bytes + (indirect_buffer[_i].v) * dst_stride_y) = CONVERT(acc[M0 - 1 - _i].s[_j], VEC_DATA_TYPE(DATA_TYPE, 1));
             })
         })
+    }
 }
 #endif // defined(MAT_MUL_MMUL_HUGH)
