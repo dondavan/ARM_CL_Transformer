@@ -193,10 +193,10 @@ __kernel void mat_mul_mmul_hugh(
 
 */
     #pragma unroll
-        for(int _m = 0; _m < M0; _m++)
+        for(int _m = 0; _m < 6; _m++)
         {
             #pragma unroll
-            for(int _n = 0; _n < N0; _n++)
+            for(int _n = 0; _n < 2; _n++)
             {
                 acc[_m].s[_n] = 2.0f;
             }
