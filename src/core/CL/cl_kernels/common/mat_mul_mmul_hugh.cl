@@ -195,8 +195,10 @@ __kernel void mat_mul_mmul_hugh(
 
         LOOP_UNROLLING(int, _m, 0, 1, M0,
         {
-            acc[_m].s[0] = 1.0f;
-            acc[_m].s[1] = 2.0f;
+            for(int _n = 0; _n < N0; _n++)
+            {
+                acc[_m].s[_n] = 2.0f;
+            }
         })
 
         
