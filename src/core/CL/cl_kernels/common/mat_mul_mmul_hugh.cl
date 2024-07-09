@@ -150,14 +150,13 @@ __kernel void mat_mul_mmul_hugh(
                 b[_n].s[_k] = 1.f;
             })
         })*/
- /*
+ 
         TILE(DATA_TYPE, M0, K0, a);
         TILE(DATA_TYPE, N0, K0, b);
 
-
         // Load tile from the lhs/rhs tensors
         T_LOAD(DATA_TYPE, M0, K0, BUFFER, lhs, 0, 0, 1, lhs_stride_y, a);
-        T_LOAD(DATA_TYPE, N0, K0, RHS_TENSOR_TYPE, rhs, k, x + rhs_z, 1, rhs_stride_y, b);
+        T_LOAD(DATA_TYPE, N0, K0, RHS_TENSOR_TYPE, rhs, k, x, 1, rhs_stride_y, b);
 
         for(int _m = 0; _m < M0; _m++)
         {
@@ -188,6 +187,7 @@ __kernel void mat_mul_mmul_hugh(
 
         //T_MMUL(DATA_TYPE, DATA_TYPE, DATA_TYPE, M0, N0, K0, NT, T, a, b, acc);
         
+        /*
         LOOP_UNROLLING(int, _m, 0, 1, M0,
         {
             LOOP_UNROLLING(int, _n, 0, 1, N0,
@@ -197,7 +197,7 @@ __kernel void mat_mul_mmul_hugh(
                     acc[_m].s[_n] = fma((DATA_TYPE)(a[_m].s[_k]), (DATA_TYPE)(b[_n].s[_k]), acc[_m].s[_n]);
                 })
             })
-        }) 
+        }) */
         
 
         LOOP_UNROLLING(int, _m, 0, 1, M0,
@@ -221,9 +221,9 @@ __kernel void mat_mul_mmul_hugh(
             acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[7]), (DATA_TYPE)(b[1].s[7]), acc[_m].s[1]);
 
         }) 
-*/
 
 
+        /*
         TILE(DATA_TYPE, M0, K0, a);
         TILE(DATA_TYPE, K0, N0, b);
 
@@ -269,6 +269,7 @@ __kernel void mat_mul_mmul_hugh(
             acc[_m].s[0] = fma((DATA_TYPE)(a[_m].s[7]), (b[7].s[0]), acc[_m].s[0]);
             acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[7]), (b[7].s[1]), acc[_m].s[1]);
         })   
+        */
         
         
         lhs_offset_first_element_in_bytes += K0 * sizeof(DATA_TYPE);
