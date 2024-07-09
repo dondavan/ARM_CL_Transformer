@@ -198,7 +198,7 @@ __kernel void mat_mul_mmul_hugh(
             #pragma unroll
             for(int _n = 0; _n < 2; _n++)
             {
-                acc[_m].s[_n] = 2.0f;
+                acc[_m].s[_n] = (float)_n;
             }
         }
 
