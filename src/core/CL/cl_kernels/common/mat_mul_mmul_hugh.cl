@@ -245,8 +245,8 @@ __kernel void mat_mul_mmul_hugh(
 
         for(int _k = 0; _k < K0; _k++)
         {
-            a[_k].s[0] = a[_k].v.s0;
-            a[_k].s[1] = a[_k].v.s1;
+            b[_k].s[0] = b[_k].v.s0;
+            b[_k].s[1] = b[_k].v.s1;
         }
 
         LOOP_UNROLLING(int, _m, 0, 1, M0,
