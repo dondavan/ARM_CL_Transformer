@@ -123,17 +123,14 @@ __kernel void mat_mul_mmul_hugh(
             acc[_m].s[_n] = 1.f;
         })
     })*/
-    acc[0].s[0] = 1.f;
-    acc[0].s[1] = 1.f;
-
-    acc[1].s[0] = 1.f;
-    acc[1].s[1] = 1.f;
-
-    acc[2].s[0] = 1.f;
-    acc[2].s[1] = 1.f;
-
-    acc[3].s[0] = 1.f;
-    acc[3].s[1] = 1.f;
+    
+    for(int _m = 0; _m < M0; _m++)
+    {
+        for(int _n = 0; _n < N0; _n++)
+        {
+            acc[_m].s[_n] = 0.f;
+        }
+    }
 
     const int rhs_z = z * rhs_h;
     int       k;
@@ -142,6 +139,7 @@ __kernel void mat_mul_mmul_hugh(
         TILE(DATA_TYPE, M0, K0, a);
         TILE(DATA_TYPE, N0, K0, b);
 
+        /*
         LOOP_UNROLLING(int, _m, 0, 1, M0,
         {
             LOOP_UNROLLING(int, _k, 0, 1, K0,
@@ -149,14 +147,30 @@ __kernel void mat_mul_mmul_hugh(
                 a[_m].s[_k] = 1.f;
             })
         })
-
         LOOP_UNROLLING(int, _n, 0, 1, N0,
         {
             LOOP_UNROLLING(int, _k, 0, 1, K0,
             {
                 b[_n].s[_k] = 1.f;
             })
-        })
+        })*/
+
+        for(int _m = 0; _m < M0; _m++)
+        {
+            for(int _k = 0; _k < K0; _k++)
+            {
+                a[_m].s[_k] = 1.f;
+            }
+        }
+
+        for(int _n = 0; _n < N0; _n++)
+        {
+            for(int _k = 0; _k < K0; _k++)
+            {
+                b[_n].s[_k] = 1.f;
+            }
+        }
+
 
         // Load tile from the lhs/rhs tensors
         //T_LOAD(DATA_TYPE, M0, K0, BUFFER, lhs, 0, 0, 1, lhs_stride_y, a);
