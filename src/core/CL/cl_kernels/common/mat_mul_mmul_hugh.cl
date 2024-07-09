@@ -123,7 +123,7 @@ __kernel void mat_mul_mmul_hugh(
             acc[_m].s[_n] = 1.f;
         })
     })*/
-    
+
     for(int _m = 0; _m < M0; _m++)
     {
         for(int _n = 0; _n < N0; _n++)
@@ -178,6 +178,7 @@ __kernel void mat_mul_mmul_hugh(
 
 
         //T_MMUL(DATA_TYPE, DATA_TYPE, DATA_TYPE, M0, N0, K0, NT, T, a, b, acc);
+        /*
         LOOP_UNROLLING(int, _m, 0, 1, M0,
         {
             LOOP_UNROLLING(int, _n, 0, 1, N0,
@@ -188,6 +189,19 @@ __kernel void mat_mul_mmul_hugh(
                 })
             })
         }) 
+        */
+
+
+        for(int _m = 0; _m < M0; _m++)
+        {
+            for(int _n = 0; _n < N0; _n++)
+            {
+                for(int _k = 0; _k < K0; _k++)
+                {
+                    acc[_m].s[_n] = fma((DATA_TYPE)(a[_m].s[_k]), (DATA_TYPE)(b[_n].s[_k]), acc[_m].s[_n]);
+                }
+            }
+        }
         
         lhs_offset_first_element_in_bytes += K0 * sizeof(DATA_TYPE);
     }
