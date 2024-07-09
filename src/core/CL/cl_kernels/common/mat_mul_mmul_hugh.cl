@@ -155,18 +155,28 @@ __kernel void mat_mul_mmul_hugh(
 
         for(int _m = 0; _m < M0; _m++)
         {
-            for(int _k = 0; _k < K0; _k++)
-            {
-                a[_m].s[_k] = 1.f;
-            }
+            a[_m].s[0] = 1.f;
+            a[_m].s[1] = 1.f;
+            a[_m].s[2] = 1.f;
+            a[_m].s[3] = 1.f;
+
+            a[_m].s[4] = 1.f;
+            a[_m].s[5] = 1.f;
+            a[_m].s[6] = 1.f;
+            a[_m].s[7] = 1.f;
         }
 
         for(int _n = 0; _n < N0; _n++)
         {
-            for(int _k = 0; _k < K0; _k++)
-            {
-                b[_n].s[_k] = 1.f;
-            }
+            b[_n].s[0] = 1.f;
+            b[_n].s[1] = 1.f;
+            b[_n].s[2] = 1.f;
+            b[_n].s[3] = 1.f;
+
+            b[_n].s[4] = 1.f;
+            b[_n].s[5] = 1.f;
+            b[_n].s[6] = 1.f;
+            b[_n].s[7] = 1.f;
         }
 
 
