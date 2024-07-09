@@ -251,23 +251,23 @@ __kernel void mat_mul_mmul_hugh(
 
         LOOP_UNROLLING(int, _m, 0, 1, M0,
         {
-            acc[_m].s[0] = fma((DST_DATA_TYPE)(a[_m].s[0]), (b[0].s[0]), dst[_m].s[0]);
-            acc[_m].s[1] = fma((DST_DATA_TYPE)(a[_m].s[0]), (b[0].s[1]), dst[_m].s[1]);
-            acc[_m].s[0] = fma((DST_DATA_TYPE)(a[_m].s[1]), (b[1].s[0]), dst[_m].s[0]);
-            acc[_m].s[1] = fma((DST_DATA_TYPE)(a[_m].s[1]), (b[1].s[1]), dst[_m].s[1]);
-            acc[_m].s[0] = fma((DST_DATA_TYPE)(a[_m].s[2]), (b[2].s[0]), dst[_m].s[0]);
-            acc[_m].s[1] = fma((DST_DATA_TYPE)(a[_m].s[2]), (b[2].s[1]), dst[_m].s[1]);
-            acc[_m].s[0] = fma((DST_DATA_TYPE)(a[_m].s[3]), (b[3].s[0]), dst[_m].s[0]);
-            acc[_m].s[1] = fma((DST_DATA_TYPE)(a[_m].s[3]), (b[3].s[1]), dst[_m].s[1]);
+            acc[_m].s[0] = fma((DATA_TYPE)(a[_m].s[0]), (b[0].s[0]), dst[_m].s[0]);
+            acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[0]), (b[0].s[1]), dst[_m].s[1]);
+            acc[_m].s[0] = fma((DATA_TYPE)(a[_m].s[1]), (b[1].s[0]), dst[_m].s[0]);
+            acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[1]), (b[1].s[1]), dst[_m].s[1]);
+            acc[_m].s[0] = fma((DATA_TYPE)(a[_m].s[2]), (b[2].s[0]), dst[_m].s[0]);
+            acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[2]), (b[2].s[1]), dst[_m].s[1]);
+            acc[_m].s[0] = fma((DATA_TYPE)(a[_m].s[3]), (b[3].s[0]), dst[_m].s[0]);
+            acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[3]), (b[3].s[1]), dst[_m].s[1]);
             
-            acc[_m].s[0] = fma((DST_DATA_TYPE)(a[_m].s[4]), (b[4].s[0]), dst[_m].s[0]);
-            acc[_m].s[1] = fma((DST_DATA_TYPE)(a[_m].s[4]), (b[4].s[1]), dst[_m].s[1]);
-            acc[_m].s[0] = fma((DST_DATA_TYPE)(a[_m].s[5]), (b[5].s[0]), dst[_m].s[0]);
-            acc[_m].s[1] = fma((DST_DATA_TYPE)(a[_m].s[5]), (b[5].s[1]), dst[_m].s[1]);
-            acc[_m].s[0] = fma((DST_DATA_TYPE)(a[_m].s[6]), (b[6].s[0]), dst[_m].s[0]);
-            acc[_m].s[1] = fma((DST_DATA_TYPE)(a[_m].s[6]), (b[6].s[1]), dst[_m].s[1]);
-            acc[_m].s[0] = fma((DST_DATA_TYPE)(a[_m].s[7]), (b[7].s[0]), dst[_m].s[0]);
-            acc[_m].s[1] = fma((DST_DATA_TYPE)(a[_m].s[7]), (b[7].s[1]), dst[_m].s[1]);
+            acc[_m].s[0] = fma((DATA_TYPE)(a[_m].s[4]), (b[4].s[0]), dst[_m].s[0]);
+            acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[4]), (b[4].s[1]), dst[_m].s[1]);
+            acc[_m].s[0] = fma((DATA_TYPE)(a[_m].s[5]), (b[5].s[0]), dst[_m].s[0]);
+            acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[5]), (b[5].s[1]), dst[_m].s[1]);
+            acc[_m].s[0] = fma((DATA_TYPE)(a[_m].s[6]), (b[6].s[0]), dst[_m].s[0]);
+            acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[6]), (b[6].s[1]), dst[_m].s[1]);
+            acc[_m].s[0] = fma((DATA_TYPE)(a[_m].s[7]), (b[7].s[0]), dst[_m].s[0]);
+            acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[7]), (b[7].s[1]), dst[_m].s[1]);
         })   
         
         
