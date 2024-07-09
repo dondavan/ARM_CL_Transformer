@@ -204,15 +204,12 @@ __kernel void mat_mul_mmul_hugh(
             }
         }*/
 
-        for(int _n = 0; _n < N0; _n++)
-        {
-            acc[0].s[_n] = 1.0f;
+        acc[0].s[_n] = 1.0f;
             acc[1].s[_n] = 2.0f;
             acc[2].s[_n] = 3.0f;
             acc[3].s[_n] = 4.0f;
             acc[4].s[_n] = 5.0f;
             acc[5].s[_n] = 6.0f;
-        }
         
         lhs_offset_first_element_in_bytes += K0 * sizeof(DATA_TYPE);
     }
