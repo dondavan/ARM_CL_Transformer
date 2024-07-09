@@ -198,7 +198,8 @@ __kernel void mat_mul_mmul_hugh(
             {
                 for(int _k = 0; _k < K0; _k++)
                 {
-                    acc[_m].s[_n] = fma((DATA_TYPE)(a[_m].s[_k]), (DATA_TYPE)(b[_n].s[_k]), acc[_m].s[_n]);
+                    //acc[_m].s[_n] = fma((DATA_TYPE)(a[_m].s[_k]), (DATA_TYPE)(b[_n].s[_k]), acc[_m].s[_n]);
+                    acc[_m].s[_n] = 2.0f;
                 }
             }
         }
