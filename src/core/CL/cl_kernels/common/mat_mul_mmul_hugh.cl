@@ -191,25 +191,17 @@ __kernel void mat_mul_mmul_hugh(
         }) 
         
 
+*/
 
-        for(int _m = 0; _m < M0; _m++)
+        LOOP_UNROLLING(int, _m, 0, 1, M0,
         {
             for(int _n = 0; _n < N0; _n++)
             {
-                for(int _k = 0; _k < K0; _k++)
-                {
-                    //acc[_m].s[_n] = fma((DATA_TYPE)(a[_m].s[_k]), (DATA_TYPE)(b[_n].s[_k]), acc[_m].s[_n]);
-                    acc[_m].s[_n] = 2.0f;
-                }
+                acc[_m].s[_n] = 2.0f;
             }
-        }*/
+        })
 
-        acc[0].s[_n] = 1.0f;
-            acc[1].s[_n] = 2.0f;
-            acc[2].s[_n] = 3.0f;
-            acc[3].s[_n] = 4.0f;
-            acc[4].s[_n] = 5.0f;
-            acc[5].s[_n] = 6.0f;
+        
         
         lhs_offset_first_element_in_bytes += K0 * sizeof(DATA_TYPE);
     }
