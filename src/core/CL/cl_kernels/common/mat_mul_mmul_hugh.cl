@@ -153,36 +153,37 @@ __kernel void mat_mul_mmul_hugh(
             })
         })*/
 
+
+
+        // Load tile from the lhs/rhs tensors
+        T_LOAD(DATA_TYPE, M0, K0, BUFFER, lhs, 0, 0, 1, lhs_stride_y, a);
+        T_LOAD(DATA_TYPE, N0, K0, RHS_TENSOR_TYPE, rhs, k, x + rhs_z, 1, rhs_stride_y, b);
+
         for(int _m = 0; _m < M0; _m++)
         {
-            a[_m].s[0] = 1.f;
-            a[_m].s[1] = 1.f;
-            a[_m].s[2] = 1.f;
-            a[_m].s[3] = 1.f;
+            a[_m].s[0] = a[_m].v.s0;
+            a[_m].s[1] = a[_m].v.s1;
+            a[_m].s[2] = a[_m].v.s2;
+            a[_m].s[3] = a[_m].v.s3;
 
-            a[_m].s[4] = 1.f;
-            a[_m].s[5] = 1.f;
-            a[_m].s[6] = 1.f;
-            a[_m].s[7] = 1.f;
+            a[_m].s[4] = a[_m].v.s4;
+            a[_m].s[5] = a[_m].v.s5;
+            a[_m].s[6] = a[_m].v.s6;
+            a[_m].s[7] = a[_m].v.s7;
         }
 
         for(int _n = 0; _n < N0; _n++)
         {
-            b[_n].s[0] = 1.f;
-            b[_n].s[1] = 1.f;
-            b[_n].s[2] = 1.f;
-            b[_n].s[3] = 1.f;
+            b[_n].s[0] = b[_n].v.s0;
+            b[_n].s[1] = b[_n].v.s1;
+            b[_n].s[2] = b[_n].v.s2;
+            b[_n].s[3] = b[_n].v.s3;
 
-            b[_n].s[4] = 1.f;
-            b[_n].s[5] = 1.f;
-            b[_n].s[6] = 1.f;
-            b[_n].s[7] = 1.f;
+            b[_n].s[4] = b[_n].v.s4;
+            b[_n].s[5] = b[_n].v.s5;
+            b[_n].s[6] = b[_n].v.s6;
+            b[_n].s[7] = b[_n].v.s7;
         }
-
-
-        // Load tile from the lhs/rhs tensors
-        //T_LOAD(DATA_TYPE, M0, K0, BUFFER, lhs, 0, 0, 1, lhs_stride_y, a);
-        //T_LOAD(DATA_TYPE, N0, K0, RHS_TENSOR_TYPE, rhs, k, x + rhs_z, 1, rhs_stride_y, b);
 
 
         //T_MMUL(DATA_TYPE, DATA_TYPE, DATA_TYPE, M0, N0, K0, NT, T, a, b, acc);
