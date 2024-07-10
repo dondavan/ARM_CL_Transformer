@@ -131,7 +131,7 @@ __kernel void mat_mul_mmul_hugh(
     }
 
     const int rhs_z = z * rhs_h;
-    int       k;
+    int       k = 0;
     
         
         /*
