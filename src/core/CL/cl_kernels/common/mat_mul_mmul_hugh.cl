@@ -126,10 +126,10 @@ __kernel void mat_mul_mmul_hugh(
     TILE(DATA_TYPE, M0, K0, acc);
 
 
-    HUGH_2D(DATA_TYPE, M0, N0, shabi);
-    T_LOAD_HUGH(DATA_TYPE, M0, N0, BUFFER, lhs, 0, 0, 1, lhs_stride_y, shabi);
-    //TILE(DATA_TYPE, M0, N0, shabi);
-    //T_LOAD(DATA_TYPE, M0, N0, BUFFER, lhs, 0, 0, 1, lhs_stride_y, shabi);
+    //HUGH_2D(DATA_TYPE, M0, N0, shabi);
+    //T_LOAD_HUGH(DATA_TYPE, M0, N0, BUFFER, lhs, 0, 0, 1, lhs_stride_y, shabi);
+    TILE(DATA_TYPE, M0, N0, shabi);
+    T_LOAD(DATA_TYPE, M0, N0, BUFFER, lhs, 0, 0, 1, lhs_stride_y, shabi);
 
     for(int _m = 0; _m < M0; _m++)
     {
@@ -230,7 +230,7 @@ __kernel void mat_mul_mmul_hugh(
         ret[_m].v.s0 = HUGH_2D_ACCESS(shabi, 0, _m, N0); //ret[_m].s[0]; HUGH_2D_ACCESS(shabi, 0,_m, N0);
         ret[_m].v.s1 = HUGH_2D_ACCESS(shabi, 1, _m, N0);
     }) 
-    T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, ret, indirect_buffer);
+    T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, shabi, indirect_buffer);
    
 }
 #endif // defined(MAT_MUL_MMUL_HUGH)
