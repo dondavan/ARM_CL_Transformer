@@ -207,7 +207,7 @@ __kernel void mat_mul_mmul_hugh(
     {
         for(int j = 0; j <N0; j++)
         {
-            *((__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + (j) * sizeof(DATA_TYPE) + (indirect_buffer[M0 - 1 - i].v) * dst_stride_y)) = i+j;
+            *((__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + (j) * sizeof(DATA_TYPE) + (indirect_buffer[M0 - 1 - i].v) * dst_stride_y)) = acc[M0 - 1 - i].s[j] * ALPHA + BETA;
         }
     }
    
