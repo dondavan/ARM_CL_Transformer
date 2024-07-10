@@ -203,13 +203,11 @@ __kernel void mat_mul_mmul_hugh(
     }) 
 #endif // defined(BIAS)
 
-    LOOP_UNROLLING(int, _ib_i, 0, 1, M0,
+    for(int i = 0; i <M0; i++)
     {
-        LOOP_UNROLLING(int, _ib_in, 0, 1, N0,
-        {
-            *((__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + (_ib_in) * sizeof(DATA_TYPE) + (indirect_buffer[M0 - 1 - _ib_i].v) * dst_stride_y)) = acc[M0 - 1 - _ib_i].s[_ib_in] * ALPHA + BETA;
-        })
-    })
-
+        *((__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + (0) * sizeof(DATA_TYPE) + (indirect_buffer[M0 - 1 - _ib_i].v) * dst_stride_y)) = acc[M0 - 1 - _ib_i].s[0] * ALPHA + BETA;
+        *((__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + (1) * sizeof(DATA_TYPE) + (indirect_buffer[M0 - 1 - _ib_i].v) * dst_stride_y)) = acc[M0 - 1 - _ib_i].s[1] * ALPHA + BETA;
+    }
+   
 }
 #endif // defined(MAT_MUL_MMUL_HUGH)
