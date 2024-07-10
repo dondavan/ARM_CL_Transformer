@@ -106,29 +106,11 @@ __kernel void mat_mul_mmul_hugh(
 
     // Initialize the accumulators
     TILE(DATA_TYPE, M0, N0, acc);
-
-    //T_LOAD(DATA_TYPE, M0, N0, BUFFER, lhs, x, 0, 1, lhs_stride_y, acc);
     
-    /*
-    LOOP_UNROLLING(int, i, 0, 1, M0,
-    {
-        acc[i].v = x;
-    })
-    
-
-    LOOP_UNROLLING(int, _m, 0, 1, M0,
-    {
-        LOOP_UNROLLING(int, _n, 0, 1, N0,
-        {
-            acc[_m].s[_n] = 1.f;
-        })
-    })*/
-
     for(int _m = 0; _m < M0; _m++)
     {
         acc[_m].s[0] = 0.f;
         acc[_m].s[1] = 0.f;
-        acc[_m].v = 0.f;
     }
 
     const int rhs_z = z * rhs_h;
@@ -136,21 +118,6 @@ __kernel void mat_mul_mmul_hugh(
     for(k = 0; k <= K - K0; k += K0)
     {
         
-        /*
-        LOOP_UNROLLING(int, _m, 0, 1, M0,
-        {
-            LOOP_UNROLLING(int, _k, 0, 1, K0,
-            {
-                a[_m].s[_k] = 1.f;
-            })
-        })
-        LOOP_UNROLLING(int, _n, 0, 1, N0,
-        {
-            LOOP_UNROLLING(int, _k, 0, 1, K0,
-            {
-                b[_n].s[_k] = 1.f;
-            })
-        })*/
  
         TILE(DATA_TYPE, M0, K0, a);
         TILE(DATA_TYPE, N0, K0, b);
@@ -185,22 +152,6 @@ __kernel void mat_mul_mmul_hugh(
             b[_n].s[7] = b[_n].v.s7;
         }
 
-
-        //T_MMUL(DATA_TYPE, DATA_TYPE, DATA_TYPE, M0, N0, K0, NT, T, a, b, acc);
-        
-        /*
-        LOOP_UNROLLING(int, _m, 0, 1, M0,
-        {
-            LOOP_UNROLLING(int, _n, 0, 1, N0,
-            {
-                LOOP_UNROLLING(int, _k, 0, 1, K0,
-                {
-                    acc[_m].s[_n] = fma((DATA_TYPE)(a[_m].s[_k]), (DATA_TYPE)(b[_n].s[_k]), acc[_m].s[_n]);
-                })
-            })
-        }) */
-        
-        /*
         LOOP_UNROLLING(int, _m, 0, 1, M0,
         {
             acc[_m].s[0] = fma((DATA_TYPE)(a[_m].s[0]), (DATA_TYPE)(b[0].s[0]), acc[_m].s[0]);
@@ -222,94 +173,6 @@ __kernel void mat_mul_mmul_hugh(
             acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[7]), (DATA_TYPE)(b[1].s[7]), acc[_m].s[1]);
 
         }) 
-        
-        LOOP_UNROLLING(int, _m, 0, 1, M0,
-        {
-            acc[_m].s[0] = fma((DATA_TYPE)(a[_m].s[0]), (DATA_TYPE)(b[0].s[0]), acc[_m].s[0]);
-            acc[_m].s[0] = fma((DATA_TYPE)(a[_m].s[1]), (DATA_TYPE)(b[0].s[1]), acc[_m].s[0]);
-            acc[_m].s[0] = fma((DATA_TYPE)(a[_m].s[2]), (DATA_TYPE)(b[0].s[2]), acc[_m].s[0]);
-            acc[_m].s[0] = fma((DATA_TYPE)(a[_m].s[3]), (DATA_TYPE)(b[0].s[3]), acc[_m].s[0]);
-            acc[_m].s[0] = fma((DATA_TYPE)(a[_m].s[4]), (DATA_TYPE)(b[0].s[4]), acc[_m].s[0]);
-            acc[_m].s[0] = fma((DATA_TYPE)(a[_m].s[5]), (DATA_TYPE)(b[0].s[5]), acc[_m].s[0]);
-            acc[_m].s[0] = fma((DATA_TYPE)(a[_m].s[6]), (DATA_TYPE)(b[0].s[6]), acc[_m].s[0]);
-            acc[_m].s[0] = fma((DATA_TYPE)(a[_m].s[7]), (DATA_TYPE)(b[0].s[7]), acc[_m].s[0]);
-
-            acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[0]), (DATA_TYPE)(b[1].s[0]), acc[_m].s[1]);
-            acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[1]), (DATA_TYPE)(b[1].s[1]), acc[_m].s[1]);
-            acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[2]), (DATA_TYPE)(b[1].s[2]), acc[_m].s[1]);
-            acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[3]), (DATA_TYPE)(b[1].s[3]), acc[_m].s[1]);
-            acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[4]), (DATA_TYPE)(b[1].s[4]), acc[_m].s[1]);
-            acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[5]), (DATA_TYPE)(b[1].s[5]), acc[_m].s[1]);
-            acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[6]), (DATA_TYPE)(b[1].s[6]), acc[_m].s[1]);
-            acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[7]), (DATA_TYPE)(b[1].s[7]), acc[_m].s[1]);
-
-        }) */
-        
-        //LOOP_UNROLLING_HUGH(int, caonima, 0, 1, M0,LOOP_UNROLLING_HUGH(int, nimasile, 0, 1, N0, acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[0]), (DATA_TYPE)(b[nimasile].s[0]), acc[caonima].s[nimasile]);acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[1]), (DATA_TYPE)(b[nimasile].s[1]), acc[caonima].s[nimasile]);acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[2]), (DATA_TYPE)(b[nimasile].s[2]), acc[caonima].s[nimasile]);acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[3]), (DATA_TYPE)(b[nimasile].s[3]), acc[caonima].s[nimasile]);acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[4]), (DATA_TYPE)(b[nimasile].s[4]), acc[caonima].s[nimasile]);acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[5]), (DATA_TYPE)(b[nimasile].s[5]), acc[caonima].s[nimasile]);acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[6]), (DATA_TYPE)(b[nimasile].s[6]), acc[caonima].s[nimasile]);acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[7]), (DATA_TYPE)(b[nimasile].s[7]), acc[caonima].s[nimasile]);))
-        for(int _m = 0; _m < M0; _m++)
-        {
-            for(int _nimasile = 0; _nimasile < N0; _nimasile++)
-            {
-            acc[_m].s[_nimasile] = fma((DATA_TYPE)(a[_m].s[0]), (DATA_TYPE)(b[_nimasile].s[0]), acc[_m].s[_nimasile]);
-            }
-        }
-        /*
-        LOOP_UNROLLING(int, _m, 0, 1, M0,
-        {
-            LOOP_UNROLLING(int, _k, 0, 1, K0,
-            {
-                acc[_m].s[_n] = fma((DATA_TYPE)(a[_m].s[_k]), (DATA_TYPE)(b[_n].s[_k]), acc[_m].s[_n]);
-            })
-
-        })
-        */
-        /*
-        TILE(DATA_TYPE, M0, K0, a);
-        TILE(DATA_TYPE, K0, N0, b);
-
-        T_LOAD(DATA_TYPE, M0, K0, BUFFER, lhs, 0, 0, 1, lhs_stride_y, a);
-        T_LOAD(DATA_TYPE, K0, N0, RHS_TENSOR_TYPE, rhs, x, k + rhs_z, 1, rhs_stride_y, b);
-
-        for(int _m = 0; _m < M0; _m++)
-        {
-            a[_m].s[0] = a[_m].v.s0;
-            a[_m].s[1] = a[_m].v.s1;
-            a[_m].s[2] = a[_m].v.s2;
-            a[_m].s[3] = a[_m].v.s3;
-
-            a[_m].s[4] = a[_m].v.s4;
-            a[_m].s[5] = a[_m].v.s5;
-            a[_m].s[6] = a[_m].v.s6;
-            a[_m].s[7] = a[_m].v.s7;
-        }
-
-        for(int _k = 0; _k < K0; _k++)
-        {
-            b[_k].s[0] = b[_k].v.s0;
-            b[_k].s[1] = b[_k].v.s1;
-        }
-
-        LOOP_UNROLLING(int, _m, 0, 1, M0,
-        {
-            acc[_m].s[0] = fma((DATA_TYPE)(a[_m].s[0]), (b[0].s[0]), acc[_m].s[0]);
-            acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[0]), (b[0].s[1]), acc[_m].s[1]);
-            acc[_m].s[0] = fma((DATA_TYPE)(a[_m].s[1]), (b[1].s[0]), acc[_m].s[0]);
-            acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[1]), (b[1].s[1]), acc[_m].s[1]);
-            acc[_m].s[0] = fma((DATA_TYPE)(a[_m].s[2]), (b[2].s[0]), acc[_m].s[0]);
-            acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[2]), (b[2].s[1]), acc[_m].s[1]);
-            acc[_m].s[0] = fma((DATA_TYPE)(a[_m].s[3]), (b[3].s[0]), acc[_m].s[0]);
-            acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[3]), (b[3].s[1]), acc[_m].s[1]);
-            
-            acc[_m].s[0] = fma((DATA_TYPE)(a[_m].s[4]), (b[4].s[0]), acc[_m].s[0]);
-            acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[4]), (b[4].s[1]), acc[_m].s[1]);
-            acc[_m].s[0] = fma((DATA_TYPE)(a[_m].s[5]), (b[5].s[0]), acc[_m].s[0]);
-            acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[5]), (b[5].s[1]), acc[_m].s[1]);
-            acc[_m].s[0] = fma((DATA_TYPE)(a[_m].s[6]), (b[6].s[0]), acc[_m].s[0]);
-            acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[6]), (b[6].s[1]), acc[_m].s[1]);
-            acc[_m].s[0] = fma((DATA_TYPE)(a[_m].s[7]), (b[7].s[0]), acc[_m].s[0]);
-            acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[7]), (b[7].s[1]), acc[_m].s[1]);
-        })   
-        */
         
         
         //lhs_offset_first_element_in_bytes += K0 * sizeof(DATA_TYPE);
@@ -346,22 +209,5 @@ __kernel void mat_mul_mmul_hugh(
         *((__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + (1) * sizeof(DATA_TYPE) + (indirect_buffer[M0 - 1 - _ib_i].v) * dst_stride_y)) = acc[M0 - 1 - _ib_i].s[1] * ALPHA + BETA;
     })
 
-    //T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, acc, indirect_buffer);
-    
-    /*
-    if(x_cond)
-    {
-        LOOP_UNROLLING(int, _i, 0, 1, M0,
-        {
-            VSTORE_PARTIAL(N0, PARTIAL_STORE_N0)(CONVERT(acc[M0 - 1 - _i].v, VEC_DATA_TYPE(DATA_TYPE, N0)), 0, (__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + (0) * sizeof(DATA_TYPE) + (indirect_buffer[M0 - 1 - _i].v) * dst_stride_y));
-        })
-    }
-    else
-    {
-        LOOP_UNROLLING(int, _i, 0, 1, M0,
-        {
-            VSTORE(N0)(CONVERT(acc[M0 - 1 - _i].v, VEC_DATA_TYPE(DATA_TYPE, N0)), 0, (__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + (0) * sizeof(DATA_TYPE) + (indirect_buffer[M0 - 1 - _i].v) * dst_stride_y));
-        })
-    }*/
 }
 #endif // defined(MAT_MUL_MMUL_HUGH)
