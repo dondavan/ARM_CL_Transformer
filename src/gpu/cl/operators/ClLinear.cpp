@@ -10,18 +10,18 @@
 #include "src/runtime/heuristics/matmul_native/ClMatMulNativeKernelConfig.h"
 #include "src/runtime/heuristics/matmul_native/IClMatMulNativeKernelConfig.h"
 
-
 namespace arm_compute
 {
 namespace opencl
 {
 void ClLinear::configure(const ClCompileContext &compile_context,
-                         ITensorInfo      *a,
-                         ITensorInfo      *b,
-                         ITensorInfo      *c,
+                         ITensorInfo            *a,
+                         ITensorInfo            *b,
+                         ITensorInfo            *c,
                          ITensorInfo            *d,
                          float                   alpha,
-                         float beta, const LinearLayerInfo &linear_info)
+                         float                   beta,
+                         const LinearLayerInfo  &linear_info)
 {
     ARM_COMPUTE_LOG_PARAMS(a, b, c, d, alpha, beta, linear_info);
     ARM_COMPUTE_UNUSED(a, b, c, d, alpha);

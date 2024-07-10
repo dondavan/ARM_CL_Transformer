@@ -35,8 +35,8 @@ void ClLinearKernel::configure(const CLCompileContext &compile_context,
                                ITensorInfo            *rhs,
                                ITensorInfo            *bias,
                                ITensorInfo            *dst,
-                               float                   alpha = 1.f,
-                               float                   beta = 0,
+                               float                   alpha,
+                               float                   beta,
                                const MatMulKernelInfo &matmul_kernel_info)
 {
     std::cout << "src/gpu/cl/kernels/ClLinearKernel.cpp configure start" << std::endl;
