@@ -124,7 +124,7 @@ __kernel void mat_mul_mmul_hugh(
     TILE(DATA_TYPE, M0, K0, acc);
 
 
-    HUGH_2D(DATA_TYPE, H, W, shabi);
+    HUGH_2D(DATA_TYPE, M0, N0, shabi);
 
     for(int _m = 0; _m < M0; _m++)
     {
