@@ -242,7 +242,6 @@ __kernel void mat_mul_mmul_hugh(
             acc[_m].s[1] += fma((DATA_TYPE)(a[_m].s[6]), (DATA_TYPE)(b[1].s[6]), 0.f);
             acc[_m].s[1] += fma((DATA_TYPE)(a[_m].s[7]), (DATA_TYPE)(b[1].s[7]), 0.f);
 
-
         }) 
 
         /*
@@ -308,8 +307,8 @@ __kernel void mat_mul_mmul_hugh(
 
     LOOP_UNROLLING(int, _i, 0, 1, M0,
     {
-        *((__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + (0) * sizeof(DATA_TYPE) + (indirect_buffer[_i].v) * dst_stride_y)) = acc[_i].s[0];
-        *((__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + (1) * sizeof(DATA_TYPE) + (indirect_buffer[_i].v) * dst_stride_y)) = acc[_i].s[1];
+        *((__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + (0) * sizeof(DATA_TYPE) + (indirect_buffer[_i].v) * dst_stride_y)) = y;
+        *((__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + (1) * sizeof(DATA_TYPE) + (indirect_buffer[_i].v) * dst_stride_y)) = y;
     })
 
     //T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, acc, indirect_buffer);
