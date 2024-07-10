@@ -35,7 +35,7 @@ inline void perform_bias_addition(uchar *bias_ptr, uint bias_offset_first_elemen
     T_LOAD(DATA_TYPE, 1, N0, BUFFER, bias, x, 0, 1, 0, bias_tile);
 
     // c = c + bias[broadcasted]
-    T_ELTWISE_BROADCAST_ADD_X(DATA_TYPE, M0, N0, acc, bias_tile, acc);
+    //T_ELTWISE_BROADCAST_ADD_X(DATA_TYPE, M0, N0, acc, bias_tile, acc);
 }
 #endif // defined(BIAS)
 
@@ -304,6 +304,10 @@ __kernel void mat_mul_mmul_hugh(
     {
         indirect_buffer[_i].v = min(_i, select(M0 - 1, PARTIAL_STORE_M0 - 1, y_cond));
     });
+
+#ifdef BIAS
+    perform_bias_addition(bias_ptr, bias_offset_first_element_in_bytes, acc, x);
+#endif // defined(BIAS)
 
     LOOP_UNROLLING(int, _i, 0, 1, M0,
     {
