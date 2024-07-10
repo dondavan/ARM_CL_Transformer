@@ -111,6 +111,7 @@ __kernel void mat_mul_mmul_hugh(
     {
         acc[_m].s[0] = 0.f;
         acc[_m].s[1] = 0.f;
+        acc[_m].v = 0.f;
     }
 
     const int rhs_z = z * rhs_h;
