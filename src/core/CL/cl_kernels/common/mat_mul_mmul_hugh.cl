@@ -43,16 +43,17 @@ inline void perform_bias_addition(uchar *bias_ptr, uint bias_offset_first_elemen
 #define HUGH_2D(DATA_TYPE, H, W, BASENAME) HUGH_2D_STR(DATA_TYPE, H, W, BASENAME)
 #define HUGH_2D_STR(DATA_TYPE, H, W, BASENAME) DATA_TYPE BASENAME[W * H]
 
-#define T_LOAD_HUGH_2D(DATA_TYPE, WIDTH, HEIGHT, TENSOR, X, Y, STRIDE_Y, DST) T_LOAD_HUGH_2D_STR(DATA_TYPE, WIDTH, HEIGHT, TENSOR, X, Y, STRIDE_Y, DST)
-#define T_LOAD_HUGH_2D_STR(DATA_TYPE, WIDTH, HEIGHT, TENSOR, X, Y, STRIDE_Y, DST)  \
-    LOOP_UNROLLING(int, _x, 0, 1, WIDTH, \
-    { \
-        LOOP_UNROLLING(int, _y, 0, 1, HEIGHT, \
-        { \
-            DST[_y* WIDTH + _x] = *(__global DATA_TYPE *)(TENSOR##_ptr + TENSOR##_offset_first_element_in_bytes + (X+_x) * sizeof(DATA_TYPE) + (Y+_y) * (STRIDE_Y)); \
-        }) \
-    })
-
+#define T_LOAD_HUGH(DATA_TYPE, HEIGHT, WIDTH, TENSOR_TYPE, TENSOR, X, Y, YI_MULTIPLIER, STRIDE_Y, dst)                      \
+    {                                                                                                                       \
+        LOOP_UNROLLING(int, _y, 0, 1, HEIGHT,                                                                               \
+        {                                                                                                                   \
+            LOOP_UNROLLING(int, _x, 0, 1, WIDTH,                                                                               \
+            {                                                                                                                   \
+                dst[_y*HEIGHT + _x] = *(__global DATA_TYPE *)(TENSOR##_ptr + TENSOR##_offset_first_element_in_bytes + (X+_x) * sizeof(DATA_TYPE) + (Y+_y) * (STRIDE_Y));      \
+            })                                                                                                                  \
+        })                                                                                                                  \
+    }
+    
 #define HUGH_2D_ACCESS(BASENAME,X,Y,WIDTH) BASENAME[Y*WIDTH+X]
 
 #if defined(MAT_MUL_MMUL_HUGH)
@@ -126,7 +127,7 @@ __kernel void mat_mul_mmul_hugh(
 
 
     HUGH_2D(DATA_TYPE, M0, N0, shabi);
-    T_LOAD_HUGH_2D(DATA_TYPE, M0, N0, lhs, 0, 0, lhs_stride_y, shabi)
+    T_LOAD_HUGH(DATA_TYPE, M0, N0, BUFFER, lhs, 0, 0, 1, lhs_stride_y, shabi);
     //TILE(DATA_TYPE, M0, N0, shabi);
     //T_LOAD(DATA_TYPE, M0, N0, BUFFER, lhs, 0, 0, 1, lhs_stride_y, shabi);
 
