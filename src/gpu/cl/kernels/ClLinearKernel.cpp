@@ -94,7 +94,7 @@ void ClLinearKernel::configure(const CLCompileContext &compile_context,
     build_opts.add_option("-DALPHA=" + support::cpp11::to_string(alpha));
     build_opts.add_option("-DBETA=" + support::cpp11::to_string(beta));
 
-    std::string kernel_name("mat_mul_mmul_hugh_nt_t");
+    std::string kernel_name("mat_mul_mmul_hugh");
 
     std::cout << kernel_name << std::endl;
 

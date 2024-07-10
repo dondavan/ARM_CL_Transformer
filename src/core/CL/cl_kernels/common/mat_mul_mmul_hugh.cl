@@ -88,7 +88,7 @@ inline void perform_bias_addition(uchar *bias_ptr, uint bias_offset_first_elemen
  * @param[in]  K                                  Number of columns in LHS matrix and rows in RHS matrix, which is multiple of MMUL_K0.
  */
  //mat_mul_native_mmul_nt_nt
-__kernel void mat_mul_mmul_hugh_nt_t(
+__kernel void mat_mul_mmul_hugh(
     TENSOR3D_T(lhs, BUFFER),
     TENSOR3D_T(rhs, RHS_TENSOR_TYPE),
 #ifdef BIAS
