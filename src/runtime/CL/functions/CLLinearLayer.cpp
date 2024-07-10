@@ -63,7 +63,7 @@ void CLLinearLayer::configure(const CLCompileContext &compile_context,
     _impl->dst    = output;
 
     _impl->op = std::make_unique<opencl::ClLinear>();
-    _impl->op->configure(compile_context, input->info(), weight->info(), bias->info(), output->info(), 0.5f, 0.f);
+    _impl->op->configure(compile_context, input->info(), weight->info(), bias->info(), output->info(), 1.0f, 0.f);
 
 #ifdef MEASURE_TIME
     auto          end_time  = std::chrono::high_resolution_clock::now();
