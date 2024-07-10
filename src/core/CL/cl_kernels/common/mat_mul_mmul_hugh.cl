@@ -244,7 +244,7 @@ __kernel void mat_mul_mmul_hugh(
             acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[7]), (DATA_TYPE)(b[1].s[7]), acc[_m].s[1]);
 
         }) */
-        for(int _nimamasile = 0, _nimamasile < M0; _nimamasile++ )
+        for(int _nimamasile = 0; _nimamasile < M0; _nimamasile++)
         {
             acc[_nimamasile].s[0] = fma((DATA_TYPE)(a[_nimamasile].s[0]), (DATA_TYPE)(b[0].s[0]), acc[_nimamasile].s[0]);
             acc[_nimamasile].s[0] = fma((DATA_TYPE)(a[_nimamasile].s[1]), (DATA_TYPE)(b[0].s[1]), acc[_nimamasile].s[0]);
