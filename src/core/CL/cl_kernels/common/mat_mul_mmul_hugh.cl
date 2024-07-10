@@ -221,8 +221,13 @@ __kernel void mat_mul_mmul_hugh(
 
         }) 
         */
-        acc[0].s[0] = (DATA_TYPE)a[0].s[0] * (DATA_TYPE)b[0].s[0];
-        acc[0].s[1] = (DATA_TYPE)a[0].s[0] * (DATA_TYPE)b[1].s[0];
+        LOOP_UNROLLING(int, _m, 0, 1, M0,
+        {
+            acc[_m].s[0] = (DATA_TYPE)a[_m].s[0];
+
+            acc[_m].s[1] = (DATA_TYPE)a[_m].s[1];
+
+        }) 
 
         /*
         TILE(DATA_TYPE, M0, K0, a);
