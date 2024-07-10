@@ -225,11 +225,7 @@ __kernel void mat_mul_mmul_hugh(
     }) 
 #endif // defined(BIAS)
 
-     LOOP_UNROLLING(int, _m, 0, 1, M0,
-    {
-        ret[_m].v.s0 = HUGH_2D_ACCESS(shabi, 0, _m, N0); //ret[_m].s[0]; HUGH_2D_ACCESS(shabi, 0,_m, N0);
-        ret[_m].v.s1 = HUGH_2D_ACCESS(shabi, 1, _m, N0);
-    }) 
+    
     T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, shabi, indirect_buffer);
    
 }
