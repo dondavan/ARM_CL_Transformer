@@ -39,16 +39,17 @@ inline void perform_bias_addition(uchar *bias_ptr, uint bias_offset_first_elemen
 }
 #endif // defined(BIAS)
 
+
 #define HUGH_2D(DATA_TYPE, H, W, BASENAME) HUGH_2D_STR(DATA_TYPE, H, W, BASENAME)
 #define HUGH_2D_STR(DATA_TYPE, H, W, BASENAME) DATA_TYPE BASENAME[W * H]
 
-#define V_LOAD_HUGH_2D(DATA_TYPE, WIDTH, HEIGHT, TENSOR, X, Y, STRIDE_Y, 2d_dst) V_LOAD_HUGH_2D_STR(DATA_TYPE, WIDTH, HEIGHT, TENSOR, X, Y, STRIDE_Y, 2d_dst)
-#define V_LOAD_HUGH_2D_STR(DATA_TYPE, WIDTH, HEIGHT, TENSOR, X, Y, STRIDE_Y, 2d_dst)  \
+#define V_LOAD_HUGH_2D(DATA_TYPE, WIDTH, HEIGHT, TENSOR, X, Y, STRIDE_Y, DST) V_LOAD_HUGH_2D_STR(DATA_TYPE, WIDTH, HEIGHT, TENSOR, X, Y, STRIDE_Y, DST)
+#define V_LOAD_HUGH_2D_STR(DATA_TYPE, WIDTH, HEIGHT, TENSOR, X, Y, STRIDE_Y, DST)  \
     LOOP_UNROLLING(int, _x, 0, 1, WIDTH, \
     { \
         LOOP_UNROLLING(int, _y, 0, 1, HEIGHT, \
         { \
-            2d_dst[_y* HEIGHT + _x] = *(__global DATA_TYPE *)(TENSOR##_ptr + TENSOR##_offset_first_element_in_bytes + (X+_x) * sizeof(DATA_TYPE) + (Y+_y) * (STRIDE_Y)) \
+            DST[_y* HEIGHT + _x] = *(__global DATA_TYPE *)(TENSOR##_ptr + TENSOR##_offset_first_element_in_bytes + (X+_x) * sizeof(DATA_TYPE) + (Y+_y) * (STRIDE_Y)); \
         }) \
     })
 
