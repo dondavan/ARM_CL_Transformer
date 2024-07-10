@@ -106,7 +106,6 @@ __kernel void mat_mul_mmul_hugh(
 
     // Initialize the accumulators
     TILE(DATA_TYPE, M0, N0, ret);
-    TILE(DATA_TYPE, M0, K0, acc);
 
     for(int _m = 0; _m < M0; _m++)
     {
@@ -123,6 +122,7 @@ __kernel void mat_mul_mmul_hugh(
  
         TILE(DATA_TYPE, M0, K0, a);
         TILE(DATA_TYPE, N0, K0, b);
+        TILE(DATA_TYPE, M0, K0, acc);
 
         // Load tile from the lhs/rhs tensors
         T_LOAD(DATA_TYPE, M0, K0, BUFFER, lhs, k, 0, 1, lhs_stride_y, a);
