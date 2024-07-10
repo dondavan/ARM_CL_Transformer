@@ -49,7 +49,7 @@ inline void perform_bias_addition(uchar *bias_ptr, uint bias_offset_first_elemen
         {                                                                                                                   \
             LOOP_UNROLLING(int, _x, 0, 1, WIDTH,                                                                               \
             {                                                                                                                   \
-                dst[_y*HEIGHT + _x] = *(__global DATA_TYPE *)(TENSOR##_ptr + TENSOR##_offset_first_element_in_bytes + (X+_x) * sizeof(DATA_TYPE) + (Y+_y) * (STRIDE_Y));      \
+                dst[_y*WIDTH + _x] = *(__global DATA_TYPE *)(TENSOR##_ptr + TENSOR##_offset_first_element_in_bytes + (X+_x) * sizeof(DATA_TYPE) + (Y+_y) * (STRIDE_Y));      \
             })                                                                                                                  \
         })                                                                                                                  \
     }
