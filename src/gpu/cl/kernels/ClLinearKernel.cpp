@@ -35,8 +35,8 @@ void ClLinearKernel::configure(const CLCompileContext &compile_context,
                                ITensorInfo            *rhs,
                                ITensorInfo            *bias,
                                ITensorInfo            *dst,
-                               float                   alpha,
-                               float                   beta,
+                               float                   alpha = 1.f,
+                               float                   beta = 0,
                                const MatMulKernelInfo &matmul_kernel_info)
 {
     std::cout << "src/gpu/cl/kernels/ClLinearKernel.cpp configure start" << std::endl;
@@ -91,6 +91,8 @@ void ClLinearKernel::configure(const CLCompileContext &compile_context,
     build_opts.add_option("-DK=" + support::cpp11::to_string(k));
     build_opts.add_option("-DRHS_TENSOR_TYPE=BUFFER");
     build_opts.add_option_if(bias != nullptr, "-DBIAS");
+    build_opts.add_option("-DALPHA=" + support::cpp11::to_string(alpha));
+    build_opts.add_option("-DBETA=" + support::cpp11::to_string(beta));
 
     std::string kernel_name("mat_mul_mmul_hugh");
 
