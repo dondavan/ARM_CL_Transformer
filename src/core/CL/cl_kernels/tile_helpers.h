@@ -340,11 +340,15 @@
 
 
 
-
-
-
-
-
+#define LOOP_UNROLLING_HUGH_1(idx, step, macro) macro
+#define LOOP_UNROLLING_HUGH_2(idx, step, macro) macro; idx+=step; LOOP_UNROLLING_HUGH_1(idx, step, macro)
+#define LOOP_UNROLLING_HUGH_3(idx, step, macro) macro; idx+=step; LOOP_UNROLLING_HUGH_2(idx, step, macro)
+#define LOOP_UNROLLING_HUGH_4(idx, step, macro) macro; idx+=step; LOOP_UNROLLING_HUGH_3(idx, step, macro)
+#define LOOP_UNROLLING_HUGH_5(idx, step, macro) macro; idx+=step; LOOP_UNROLLING_HUGH_4(idx, step, macro)
+#define LOOP_UNROLLING_HUGH_6(idx, step, macro) macro; idx+=step; LOOP_UNROLLING_HUGH_5(idx, step, macro)
+#define LOOP_UNROLLING_HUGH_7(idx, step, macro) macro; idx+=step; LOOP_UNROLLING_HUGH_6(idx, step, macro)
+#define LOOP_UNROLLING_HUGH_8(idx, step, macro) macro; idx+=step; LOOP_UNROLLING_HUGH_7(idx, step, macro)
+#define LOOP_UNROLLING_HUGH_9(idx, step, macro) macro; idx+=step; LOOP_UNROLLING_HUGH_8(idx, step, macro)
 
 
 #define LOOP_UNROLLING_HUGH_STR(type, idx, start, step, num, macro) {type idx = start;LOOP_UNROLLING_HUGH_##num(idx, step, macro);}
