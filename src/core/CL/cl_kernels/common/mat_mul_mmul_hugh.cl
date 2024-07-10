@@ -203,13 +203,12 @@ __kernel void mat_mul_mmul_hugh(
     }) 
 #endif // defined(BIAS)
 
-    for(int i = 0; i <M0; i++)
+     LOOP_UNROLLING(int, _m, 0, 1, M0,
     {
-        for(int j = 0; j <N0; j++)
-        {
-            *((__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + (j) * sizeof(DATA_TYPE) + (indirect_buffer[M0 - 1 - i].v) * dst_stride_y)) = i+j;
-        }
-    }
+        acc[_m].v.s0 = acc[_m].s[0];
+        acc[_m].v.s1 = acc[_m].s[1];
+    }) 
+    T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, acc, indirect_buffer);
    
 }
 #endif // defined(MAT_MUL_MMUL_HUGH)
