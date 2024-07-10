@@ -156,12 +156,11 @@ __kernel void mat_mul_mmul_hugh(
 
         LOOP_UNROLLING(int, _m, 0, 1, M0,
         {
-
-            acc[_m].v = fma((DATA_TYPE)(a[_m].v), (DATA_TYPE)(b[0].v), acc[_m].v);
-            ret[_m].s[0] = SUM_REDUCE(acc[_m].v,K0);
-
-            acc[_m].v = fma((DATA_TYPE)(a[_m].v), (DATA_TYPE)(b[1].v), acc[_m].v);
-            ret[_m].s[1] = SUM_REDUCE(acc[_m].v,K0);
+            LOOP_UNROLLING(int, _n, 0, 1, N0,
+            {
+                acc[_m].v = fma((DATA_TYPE)(a[_m].v), (DATA_TYPE)(b[_n].v), acc[_m].v);
+                ret[_m].s[_n] = SUM_REDUCE(acc[_m].v,K0);
+            })
 
         }) 
         
