@@ -155,7 +155,7 @@ __kernel void mat_mul_mmul_hugh(
         TILE(DATA_TYPE, N0, K0, b);
 
         // Load tile from the lhs/rhs tensors
-        T_LOAD(DATA_TYPE, M0, K0, BUFFER, lhs, 0, 0, 1, lhs_stride_y, a);
+        T_LOAD(DATA_TYPE, M0, K0, BUFFER, lhs, k, 0, 1, lhs_stride_y, a);
         T_LOAD(DATA_TYPE, N0, K0, RHS_TENSOR_TYPE, rhs, k, x + rhs_z, 1, rhs_stride_y, b);
 
         for(int _m = 0; _m < M0; _m++)
@@ -293,7 +293,7 @@ __kernel void mat_mul_mmul_hugh(
         */
         
         
-        lhs_offset_first_element_in_bytes += K0 * sizeof(DATA_TYPE);
+        //lhs_offset_first_element_in_bytes += K0 * sizeof(DATA_TYPE);
     }
 
     const bool x_cond = PARTIAL_STORE_N0 != 0 && get_global_id(0) == 0;
@@ -307,8 +307,8 @@ __kernel void mat_mul_mmul_hugh(
 
     LOOP_UNROLLING(int, _i, 0, 1, M0,
     {
-        *((__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + (0) * sizeof(DATA_TYPE) + (indirect_buffer[_i].v) * dst_stride_y)) = y;
-        *((__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + (1) * sizeof(DATA_TYPE) + (indirect_buffer[_i].v) * dst_stride_y)) = y;
+        *((__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + (0) * sizeof(DATA_TYPE) + (indirect_buffer[_i].v) * dst_stride_y)) = acc[_i].s[0];
+        *((__global DATA_TYPE *)(dst_ptr + dst_offset_first_element_in_bytes + (1) * sizeof(DATA_TYPE) + (indirect_buffer[_i].v) * dst_stride_y)) = acc[_i].s[1];
     })
 
     //T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, acc, indirect_buffer);
