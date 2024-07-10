@@ -193,7 +193,7 @@
 #if !defined(UNROLL_WITH_PRAGMA)
 #define UNROLL_INCR(idx, step, macro) idx += (step); macro
 
-#define LOOP_UNROLLING_1(idx, step, macro) macro
+#define LOOP_UNROLLING_1(idx, step, macro) (macro)
 #define LOOP_UNROLLING_2(idx, step, macro) LOOP_UNROLLING_1(idx, step, macro); UNROLL_INCR(idx, step, macro)
 #define LOOP_UNROLLING_3(idx, step, macro) LOOP_UNROLLING_2(idx, step, macro); UNROLL_INCR(idx, step, macro)
 #define LOOP_UNROLLING_4(idx, step, macro) LOOP_UNROLLING_3(idx, step, macro); UNROLL_INCR(idx, step, macro)
