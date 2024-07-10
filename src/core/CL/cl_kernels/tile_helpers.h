@@ -336,16 +336,6 @@
 #define LOOP_UNROLLING(type, idx, start, step, num, macro) LOOP_UNROLLING_STR(type, idx, start, step, num, macro)
 
 #define LOOP_UNROLLING_HUGH_STR(type, idx, start, step, num, macro) idx = start;LOOP_UNROLLING_##num(idx, step, macro);
-#else // !defined(UNROLL_WITH_PRAGMA)
-#define LOOP_UNROLLING_STR(type, idx, start, step, num, macro) \
-    {                                                          \
-        _Pragma("unroll")                                      \
-        for(type idx = start; idx < (num * step); idx += step) \
-        {                                                      \
-            (macro);                                           \
-        }                                                      \
-    }
-#endif // !defined(UNROLL_WITH_PRAGMA)
 #define LOOP_UNROLLING_HUGH(type, idx, start, step, num, macro) LOOP_UNROLLING_HUGH_STR(type, idx, start, step, num, macro)
 
 /** Get the get_global_id with partial N0. This function is useful when the dimension is not multiple of N0 and we need to use a partial N0
