@@ -133,7 +133,8 @@ __kernel void mat_mul_mmul_hugh(
 
     const int rhs_z = z * rhs_h;
     int       k;
-    
+    for(k = 0; k <= K - K0; k += K0)
+    {
         
         /*
         LOOP_UNROLLING(int, _m, 0, 1, M0,
@@ -244,18 +245,7 @@ __kernel void mat_mul_mmul_hugh(
 
         }) */
         
-        LOOP_UNROLLING_HUGH(int, caonima, 0, 1, M0,
-            LOOP_UNROLLING_HUGH(int, nimasile, 0, 1, N0,
-                acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[0]), (DATA_TYPE)(b[nimasile].s[0]), acc[caonima].s[nimasile]);
-                acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[1]), (DATA_TYPE)(b[nimasile].s[1]), acc[caonima].s[nimasile]);
-                acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[2]), (DATA_TYPE)(b[nimasile].s[2]), acc[caonima].s[nimasile]);
-                acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[3]), (DATA_TYPE)(b[nimasile].s[3]), acc[caonima].s[nimasile]);
-                acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[4]), (DATA_TYPE)(b[nimasile].s[4]), acc[caonima].s[nimasile]);
-                acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[5]), (DATA_TYPE)(b[nimasile].s[5]), acc[caonima].s[nimasile]);
-                acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[6]), (DATA_TYPE)(b[nimasile].s[6]), acc[caonima].s[nimasile]);
-                acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[7]), (DATA_TYPE)(b[nimasile].s[7]), acc[caonima].s[nimasile])
-            )
-        )
+        LOOP_UNROLLING_HUGH(int, caonima, 0, 1, M0,LOOP_UNROLLING_HUGH(int, nimasile, 0, 1, N0, acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[0]), (DATA_TYPE)(b[nimasile].s[0]), acc[caonima].s[nimasile]);acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[1]), (DATA_TYPE)(b[nimasile].s[1]), acc[caonima].s[nimasile]);acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[2]), (DATA_TYPE)(b[nimasile].s[2]), acc[caonima].s[nimasile]);acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[3]), (DATA_TYPE)(b[nimasile].s[3]), acc[caonima].s[nimasile]);acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[4]), (DATA_TYPE)(b[nimasile].s[4]), acc[caonima].s[nimasile]);acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[5]), (DATA_TYPE)(b[nimasile].s[5]), acc[caonima].s[nimasile]);acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[6]), (DATA_TYPE)(b[nimasile].s[6]), acc[caonima].s[nimasile]);acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[7]), (DATA_TYPE)(b[nimasile].s[7]), acc[caonima].s[nimasile]);))
         /*
         LOOP_UNROLLING(int, _m, 0, 1, M0,
         {
@@ -316,7 +306,7 @@ __kernel void mat_mul_mmul_hugh(
         
         
         //lhs_offset_first_element_in_bytes += K0 * sizeof(DATA_TYPE);
-    
+    }
 
     const bool x_cond = PARTIAL_STORE_N0 != 0 && get_global_id(0) == 0;
     const bool y_cond = PARTIAL_STORE_M0 != 0 && get_global_id(1) == 0;
