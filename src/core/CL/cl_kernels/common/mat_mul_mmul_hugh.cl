@@ -248,24 +248,17 @@ __kernel void mat_mul_mmul_hugh(
         //LOOP_UNROLLING_HUGH(int, caonima, 0, 1, M0,LOOP_UNROLLING_HUGH(int, nimasile, 0, 1, N0, acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[0]), (DATA_TYPE)(b[nimasile].s[0]), acc[caonima].s[nimasile]);acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[1]), (DATA_TYPE)(b[nimasile].s[1]), acc[caonima].s[nimasile]);acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[2]), (DATA_TYPE)(b[nimasile].s[2]), acc[caonima].s[nimasile]);acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[3]), (DATA_TYPE)(b[nimasile].s[3]), acc[caonima].s[nimasile]);acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[4]), (DATA_TYPE)(b[nimasile].s[4]), acc[caonima].s[nimasile]);acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[5]), (DATA_TYPE)(b[nimasile].s[5]), acc[caonima].s[nimasile]);acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[6]), (DATA_TYPE)(b[nimasile].s[6]), acc[caonima].s[nimasile]);acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[7]), (DATA_TYPE)(b[nimasile].s[7]), acc[caonima].s[nimasile]);))
         for(int _m = 0; _m < M0; _m++)
         {
-            acc[_m].s[0] = fma((DATA_TYPE)(a[_m].s[0]), (DATA_TYPE)(b[0].s[0]), acc[_m].s[0]);
-            acc[_m].s[0] = fma((DATA_TYPE)(a[_m].s[1]), (DATA_TYPE)(b[0].s[1]), acc[_m].s[0]);
-            acc[_m].s[0] = fma((DATA_TYPE)(a[_m].s[2]), (DATA_TYPE)(b[0].s[2]), acc[_m].s[0]);
-            acc[_m].s[0] = fma((DATA_TYPE)(a[_m].s[3]), (DATA_TYPE)(b[0].s[3]), acc[_m].s[0]);
-            acc[_m].s[0] = fma((DATA_TYPE)(a[_m].s[4]), (DATA_TYPE)(b[0].s[4]), acc[_m].s[0]);
-            acc[_m].s[0] = fma((DATA_TYPE)(a[_m].s[5]), (DATA_TYPE)(b[0].s[5]), acc[_m].s[0]);
-            acc[_m].s[0] = fma((DATA_TYPE)(a[_m].s[6]), (DATA_TYPE)(b[0].s[6]), acc[_m].s[0]);
-            acc[_m].s[0] = fma((DATA_TYPE)(a[_m].s[7]), (DATA_TYPE)(b[0].s[7]), acc[_m].s[0]);
-
-            acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[0]), (DATA_TYPE)(b[1].s[0]), acc[_m].s[1]);
-            acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[1]), (DATA_TYPE)(b[1].s[1]), acc[_m].s[1]);
-            acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[2]), (DATA_TYPE)(b[1].s[2]), acc[_m].s[1]);
-            acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[3]), (DATA_TYPE)(b[1].s[3]), acc[_m].s[1]);
-            acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[4]), (DATA_TYPE)(b[1].s[4]), acc[_m].s[1]);
-            acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[5]), (DATA_TYPE)(b[1].s[5]), acc[_m].s[1]);
-            acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[6]), (DATA_TYPE)(b[1].s[6]), acc[_m].s[1]);
-            acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[7]), (DATA_TYPE)(b[1].s[7]), acc[_m].s[1]);
-
+            for(int _nimasile = 0; _nimasile < N0; _nimasile++)
+            {
+            acc[_m].s[_nimasile] = fma((DATA_TYPE)(a[_m].s[0]), (DATA_TYPE)(b[_nimasile].s[0]), acc[_m].s[_nimasile]);
+            acc[_m].s[_nimasile] = fma((DATA_TYPE)(a[_m].s[1]), (DATA_TYPE)(b[_nimasile].s[1]), acc[_m].s[_nimasile]);
+            acc[_m].s[_nimasile] = fma((DATA_TYPE)(a[_m].s[2]), (DATA_TYPE)(b[_nimasile].s[2]), acc[_m].s[_nimasile]);
+            acc[_m].s[_nimasile] = fma((DATA_TYPE)(a[_m].s[3]), (DATA_TYPE)(b[_nimasile].s[3]), acc[_m].s[_nimasile]);
+            acc[_m].s[_nimasile] = fma((DATA_TYPE)(a[_m].s[4]), (DATA_TYPE)(b[_nimasile].s[4]), acc[_m].s[_nimasile]);
+            acc[_m].s[_nimasile] = fma((DATA_TYPE)(a[_m].s[5]), (DATA_TYPE)(b[_nimasile].s[5]), acc[_m].s[_nimasile]);
+            acc[_m].s[_nimasile] = fma((DATA_TYPE)(a[_m].s[6]), (DATA_TYPE)(b[_nimasile].s[6]), acc[_m].s[_nimasile]);
+            acc[_m].s[_nimasile] = fma((DATA_TYPE)(a[_m].s[7]), (DATA_TYPE)(b[_nimasile].s[7]), acc[_m].s[_nimasile]);
+            }
         }
         /*
         LOOP_UNROLLING(int, _m, 0, 1, M0,
