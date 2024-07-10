@@ -160,14 +160,8 @@ __kernel void mat_mul_mmul_hugh(
             acc[_m].v = fma((DATA_TYPE)(a[_m].v), (DATA_TYPE)(b[0].v), acc[_m].v);
             ret[_m].s[0] = SUM_REDUCE(acc[_m].v,K0);
 
-            ret[_m].s[1] = fma((DATA_TYPE)(a[_m].s[0]), (DATA_TYPE)(b[1].s[0]), ret[_m].s[1]);
-            ret[_m].s[1] = fma((DATA_TYPE)(a[_m].s[1]), (DATA_TYPE)(b[1].s[1]), ret[_m].s[1]);
-            ret[_m].s[1] = fma((DATA_TYPE)(a[_m].s[2]), (DATA_TYPE)(b[1].s[2]), ret[_m].s[1]);
-            ret[_m].s[1] = fma((DATA_TYPE)(a[_m].s[3]), (DATA_TYPE)(b[1].s[3]), ret[_m].s[1]);
-            ret[_m].s[1] = fma((DATA_TYPE)(a[_m].s[4]), (DATA_TYPE)(b[1].s[4]), ret[_m].s[1]);
-            ret[_m].s[1] = fma((DATA_TYPE)(a[_m].s[5]), (DATA_TYPE)(b[1].s[5]), ret[_m].s[1]);
-            ret[_m].s[1] = fma((DATA_TYPE)(a[_m].s[6]), (DATA_TYPE)(b[1].s[6]), ret[_m].s[1]);
-            ret[_m].s[1] = fma((DATA_TYPE)(a[_m].s[7]), (DATA_TYPE)(b[1].s[7]), ret[_m].s[1]);
+            acc[_m].v = fma((DATA_TYPE)(a[_m].v), (DATA_TYPE)(b[1].v), acc[_m].v);
+            ret[_m].s[1] = SUM_REDUCE(acc[_m].v,K0);
 
         }) 
         
