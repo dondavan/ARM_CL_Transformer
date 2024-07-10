@@ -251,13 +251,6 @@ __kernel void mat_mul_mmul_hugh(
             for(int _nimasile = 0; _nimasile < N0; _nimasile++)
             {
             acc[_m].s[_nimasile] = fma((DATA_TYPE)(a[_m].s[0]), (DATA_TYPE)(b[_nimasile].s[0]), acc[_m].s[_nimasile]);
-            acc[_m].s[_nimasile] = fma((DATA_TYPE)(a[_m].s[1]), (DATA_TYPE)(b[_nimasile].s[1]), acc[_m].s[_nimasile]);
-            acc[_m].s[_nimasile] = fma((DATA_TYPE)(a[_m].s[2]), (DATA_TYPE)(b[_nimasile].s[2]), acc[_m].s[_nimasile]);
-            acc[_m].s[_nimasile] = fma((DATA_TYPE)(a[_m].s[3]), (DATA_TYPE)(b[_nimasile].s[3]), acc[_m].s[_nimasile]);
-            acc[_m].s[_nimasile] = fma((DATA_TYPE)(a[_m].s[4]), (DATA_TYPE)(b[_nimasile].s[4]), acc[_m].s[_nimasile]);
-            acc[_m].s[_nimasile] = fma((DATA_TYPE)(a[_m].s[5]), (DATA_TYPE)(b[_nimasile].s[5]), acc[_m].s[_nimasile]);
-            acc[_m].s[_nimasile] = fma((DATA_TYPE)(a[_m].s[6]), (DATA_TYPE)(b[_nimasile].s[6]), acc[_m].s[_nimasile]);
-            acc[_m].s[_nimasile] = fma((DATA_TYPE)(a[_m].s[7]), (DATA_TYPE)(b[_nimasile].s[7]), acc[_m].s[_nimasile]);
             }
         }
         /*
