@@ -39,8 +39,6 @@ inline void perform_bias_addition(uchar *bias_ptr, uint bias_offset_first_elemen
 }
 #endif // defined(BIAS)
 
-#define 2D_ACCESS(2d_obj,X,Y,WIDTH) 2d_obj[Y*WIDTH + X] 
-
 #define HUGH_2D(DATA_TYPE, H, W, BASENAME) HUGH_2D_STR(DATA_TYPE, H, W, BASENAME)
 #define HUGH_2D_STR(DATA_TYPE, H, W, BASENAME) DATA_TYPE BASENAME[W * H]
 
