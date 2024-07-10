@@ -24,9 +24,10 @@
 #include "helpers.h"
 #include "tile_helpers.h"
 
+#ifdef BIAS
 // This function performs in-place bias addition for float and half datatypes when bias is enabled.
 // Note The tile's dimensions used for the LHS and RHS matrices (M0, N0) must be passed at compile time using -DN0, -DM0 (e.g. -DN0=8, -DM0=4).
-inline void perform_bias_addition(uchar *bias_ptr, uint bias_offset_first_element_in_bytes, TILE(DATA_TYPE, M0, N0, acc), uint x)
+inline void perform_bias_addition(uchar *bias_ptr, uint bias_offset_first_element_in_bytes,  uint x)
 {
     TILE(DATA_TYPE, 1, N0, bias_tile);
 
@@ -36,6 +37,7 @@ inline void perform_bias_addition(uchar *bias_ptr, uint bias_offset_first_elemen
     // c = c + bias[broadcasted]
     //T_ELTWISE_BROADCAST_ADD_X(DATA_TYPE, M0, N0, acc, bias_tile, acc);
 }
+#endif // defined(BIAS)
 
 #if defined(MAT_MUL_MMUL_HUGH)
 /** This OpenCL kernel performs the batch matrix multiplication (BatchMatMul) using MMUL: LHS non-transposed, RHS non-transposed - buffer only
@@ -304,7 +306,7 @@ __kernel void mat_mul_mmul_hugh(
     });
 
 #ifdef BIAS
-    perform_bias_addition(bias_ptr, bias_offset_first_element_in_bytes, acc, x);
+    perform_bias_addition(bias_ptr, bias_offset_first_element_in_bytes, x);
 #endif // defined(BIAS)
 
     LOOP_UNROLLING(int, _i, 0, 1, M0,
