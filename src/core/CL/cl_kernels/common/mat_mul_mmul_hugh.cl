@@ -306,7 +306,19 @@ __kernel void mat_mul_mmul_hugh(
     });
 
 #ifdef BIAS
-    perform_bias_addition(bias_ptr, bias_offset_first_element_in_bytes, x);
+    TILE(DATA_TYPE, 1, N0, bias_tile);
+
+    // below expands to use bias_ptr and bias_offset_first_element_in_bytes
+    T_LOAD(DATA_TYPE, 1, N0, BUFFER, bias, x, 0, 1, 0, bias_tile);
+
+    bias_tile[0].s[0] = b[0].v.s0;
+    bias_tile[0].s[1] = b[0].v.s1;
+
+    LOOP_UNROLLING(int, _m, 0, 1, M0,
+    {
+        acc[_m].s[0] += bias_tile[0].s[0];
+        acc[_m].s[1] += bias_tile[0].s[1];
+    }) 
 #endif // defined(BIAS)
 
     LOOP_UNROLLING(int, _i, 0, 1, M0,
