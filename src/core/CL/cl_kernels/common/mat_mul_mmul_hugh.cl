@@ -245,7 +245,18 @@ __kernel void mat_mul_mmul_hugh(
 
         }) */
         
-        T_MMUL(DATA_TYPE, DATA_TYPE, DATA_TYPE, M0, N0, 1, NT, T, a, b, acc);
+        LOOP_UNROLLING_HUGH(int, caonima, 0, 1, M0,
+            LOOP_UNROLLING_HUGH(int, nimasile, 0, 1, N0,
+                acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[0]), (DATA_TYPE)(b[nimasile].s[0]), acc[caonima].s[nimasile]);
+                acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[1]), (DATA_TYPE)(b[nimasile].s[1]), acc[caonima].s[nimasile]);
+                acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[2]), (DATA_TYPE)(b[nimasile].s[2]), acc[caonima].s[nimasile]);
+                acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[3]), (DATA_TYPE)(b[nimasile].s[3]), acc[caonima].s[nimasile]);
+                acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[4]), (DATA_TYPE)(b[nimasile].s[4]), acc[caonima].s[nimasile]);
+                acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[5]), (DATA_TYPE)(b[nimasile].s[5]), acc[caonima].s[nimasile]);
+                acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[6]), (DATA_TYPE)(b[nimasile].s[6]), acc[caonima].s[nimasile]);
+                acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[7]), (DATA_TYPE)(b[nimasile].s[7]), acc[caonima].s[nimasile]);
+            )
+        )
         /*
         LOOP_UNROLLING(int, _m, 0, 1, M0,
         {
