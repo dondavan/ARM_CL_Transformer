@@ -322,7 +322,7 @@
 #define LOOP_UNROLLING_127(idx, step, macro) LOOP_UNROLLING_126(idx, step, macro); UNROLL_INCR(idx, step, macro)
 #define LOOP_UNROLLING_128(idx, step, macro) LOOP_UNROLLING_127(idx, step, macro); UNROLL_INCR(idx, step, macro)
 
-#define LOOP_UNROLLING_STR(type, idx, start, step, num, macro) type idx = start;LOOP_UNROLLING_##num(idx, step, macro);
+#define LOOP_UNROLLING_STR(type, idx, start, step, num, macro) {type idx = start;LOOP_UNROLLING_##num(idx, step, macro);}
 #else // !defined(UNROLL_WITH_PRAGMA)
 #define LOOP_UNROLLING_STR(type, idx, start, step, num, macro) \
     {                                                          \
