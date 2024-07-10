@@ -248,7 +248,7 @@ __kernel void mat_mul_mmul_hugh(
         int nimasile;
         LOOP_UNROLLING_HUGH(int, caonima, 0, 1, M0,
             LOOP_UNROLLING_HUGH(int, nimasile, 0, 1, N0,
-                
+                {
                 acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[0]), (DATA_TYPE)(b[0].s[0]), acc[caonima].s[nimasile]);
                 acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[1]), (DATA_TYPE)(b[0].s[1]), acc[caonima].s[nimasile]);
                 acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[2]), (DATA_TYPE)(b[0].s[2]), acc[caonima].s[nimasile]);
@@ -257,7 +257,7 @@ __kernel void mat_mul_mmul_hugh(
                 acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[5]), (DATA_TYPE)(b[0].s[5]), acc[caonima].s[nimasile]);
                 acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[6]), (DATA_TYPE)(b[0].s[6]), acc[caonima].s[nimasile]);
                 acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[7]), (DATA_TYPE)(b[0].s[7]), acc[caonima].s[nimasile]);
-                
+                }
             )
         )
         /*
