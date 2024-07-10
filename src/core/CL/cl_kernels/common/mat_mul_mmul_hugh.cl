@@ -246,7 +246,7 @@ __kernel void mat_mul_mmul_hugh(
         }) */
         int caonima;
         int nimasile;
-        LOOP_UNROLLING_HUGH(int, caonima, 0, 1, M0,
+        LOOP_UNROLLING_HUGH(int, caonima, 1, 1, M0,
         
             LOOP_UNROLLING_HUGH(int, nimasile, 0, 1, N0,
                 
