@@ -132,7 +132,7 @@ __kernel void mat_mul_mmul_hugh(
 
     const int rhs_z = z * rhs_h;
     int       k;
-    for(k = 0; k <= K - K0; k += K0)
+    for(k = 0; k < K; k += 1)
     {
         
         /*
@@ -151,37 +151,21 @@ __kernel void mat_mul_mmul_hugh(
             })
         })*/
  
-        TILE(DATA_TYPE, M0, K0, a);
-        TILE(DATA_TYPE, N0, K0, b);
+        TILE(DATA_TYPE, M0, 1, a);
+        TILE(DATA_TYPE, N0, 1, b);
 
         // Load tile from the lhs/rhs tensors
-        T_LOAD(DATA_TYPE, M0, K0, BUFFER, lhs, k, 0, 1, lhs_stride_y, a);
-        T_LOAD(DATA_TYPE, N0, K0, RHS_TENSOR_TYPE, rhs, k, x + rhs_z, 1, rhs_stride_y, b);
+        T_LOAD(DATA_TYPE, M0, 1, BUFFER, lhs, k, 0, 1, lhs_stride_y, a);
+        T_LOAD(DATA_TYPE, N0, 1, RHS_TENSOR_TYPE, rhs, k, x + rhs_z, 1, rhs_stride_y, b);
 
         for(int _m = 0; _m < M0; _m++)
         {
-            a[_m].s[0] = a[_m].v.s0;
-            a[_m].s[1] = a[_m].v.s1;
-            a[_m].s[2] = a[_m].v.s2;
-            a[_m].s[3] = a[_m].v.s3;
-
-            a[_m].s[4] = a[_m].v.s4;
-            a[_m].s[5] = a[_m].v.s5;
-            a[_m].s[6] = a[_m].v.s6;
-            a[_m].s[7] = a[_m].v.s7;
+            a[_m].s[0] = a[_m].v.s0
         }
 
         for(int _n = 0; _n < N0; _n++)
         {
             b[_n].s[0] = b[_n].v.s0;
-            b[_n].s[1] = b[_n].v.s1;
-            b[_n].s[2] = b[_n].v.s2;
-            b[_n].s[3] = b[_n].v.s3;
-
-            b[_n].s[4] = b[_n].v.s4;
-            b[_n].s[5] = b[_n].v.s5;
-            b[_n].s[6] = b[_n].v.s6;
-            b[_n].s[7] = b[_n].v.s7;
         }
 
 
@@ -225,22 +209,7 @@ __kernel void mat_mul_mmul_hugh(
         LOOP_UNROLLING(int, _m, 0, 1, M0,
         {
             acc[_m].s[0] += fma((DATA_TYPE)(a[_m].s[0]), (DATA_TYPE)(b[0].s[0]), 0.f);
-            acc[_m].s[0] += fma((DATA_TYPE)(a[_m].s[1]), (DATA_TYPE)(b[0].s[1]), 0.f);
-            acc[_m].s[0] += fma((DATA_TYPE)(a[_m].s[2]), (DATA_TYPE)(b[0].s[2]), 0.f);
-            acc[_m].s[0] += fma((DATA_TYPE)(a[_m].s[3]), (DATA_TYPE)(b[0].s[3]), 0.f);
-            acc[_m].s[0] += fma((DATA_TYPE)(a[_m].s[4]), (DATA_TYPE)(b[0].s[4]), 0.f);
-            acc[_m].s[0] += fma((DATA_TYPE)(a[_m].s[5]), (DATA_TYPE)(b[0].s[5]), 0.f);
-            acc[_m].s[0] += fma((DATA_TYPE)(a[_m].s[6]), (DATA_TYPE)(b[0].s[6]), 0.f);
-            acc[_m].s[0] += fma((DATA_TYPE)(a[_m].s[7]), (DATA_TYPE)(b[0].s[7]), 0.f);
-
             acc[_m].s[1] += fma((DATA_TYPE)(a[_m].s[0]), (DATA_TYPE)(b[1].s[0]), 0.f);
-            acc[_m].s[1] += fma((DATA_TYPE)(a[_m].s[1]), (DATA_TYPE)(b[1].s[1]), 0.f);
-            acc[_m].s[1] += fma((DATA_TYPE)(a[_m].s[2]), (DATA_TYPE)(b[1].s[2]), 0.f);
-            acc[_m].s[1] += fma((DATA_TYPE)(a[_m].s[3]), (DATA_TYPE)(b[1].s[3]), 0.f);
-            acc[_m].s[1] += fma((DATA_TYPE)(a[_m].s[4]), (DATA_TYPE)(b[1].s[4]), 0.f);
-            acc[_m].s[1] += fma((DATA_TYPE)(a[_m].s[5]), (DATA_TYPE)(b[1].s[5]), 0.f);
-            acc[_m].s[1] += fma((DATA_TYPE)(a[_m].s[6]), (DATA_TYPE)(b[1].s[6]), 0.f);
-            acc[_m].s[1] += fma((DATA_TYPE)(a[_m].s[7]), (DATA_TYPE)(b[1].s[7]), 0.f);
 
         }) 
 
