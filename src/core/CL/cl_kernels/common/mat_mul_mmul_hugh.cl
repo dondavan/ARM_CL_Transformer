@@ -35,7 +35,7 @@ inline void perform_bias_addition(uchar *bias_ptr, uint bias_offset_first_elemen
     T_LOAD(DATA_TYPE, 1, N0, BUFFER, bias, x, 0, 1, 0, bias_tile);
 
     // c = c + bias[broadcasted]
-    //T_ELTWISE_BROADCAST_ADD_X(DATA_TYPE, M0, N0, acc, bias_tile, acc);
+    //T_ELTWISE_BROADCAST_ADD_X(DATA_TYPE, M0, N0, ret, bias_tile, ret);
 }
 #endif // defined(BIAS)
 
@@ -105,12 +105,13 @@ __kernel void mat_mul_mmul_hugh(
     dst_offset_first_element_in_bytes += x * sizeof(DATA_TYPE) + y * dst_stride_y + z * dst_stride_z;
 
     // Initialize the accumulators
-    TILE(DATA_TYPE, M0, N0, acc);
+    TILE(DATA_TYPE, M0, N0, ret);
+    TILE(DATA_TYPE, M0, K0, acc);
 
     for(int _m = 0; _m < M0; _m++)
     {
-        acc[_m].s[0] = 0.f;
-        acc[_m].s[1] = 0.f;
+        ret[_m].s[0] = 0.f;
+        ret[_m].s[1] = 0.f;
         acc[_m].v = 0.f;
     }
 
@@ -157,16 +158,16 @@ __kernel void mat_mul_mmul_hugh(
         {
 
             acc[_m].v = fma((DATA_TYPE)(a[_m].v), (DATA_TYPE)(b[0].v), acc[_m].v);
-            acc[_m].s[0] = SUM_REDUCE(acc[_m].v,K0);
+            ret[_m].s[0] = SUM_REDUCE(ret[_m].v,K0);
 
-            acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[0]), (DATA_TYPE)(b[1].s[0]), acc[_m].s[1]);
-            acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[1]), (DATA_TYPE)(b[1].s[1]), acc[_m].s[1]);
-            acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[2]), (DATA_TYPE)(b[1].s[2]), acc[_m].s[1]);
-            acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[3]), (DATA_TYPE)(b[1].s[3]), acc[_m].s[1]);
-            acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[4]), (DATA_TYPE)(b[1].s[4]), acc[_m].s[1]);
-            acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[5]), (DATA_TYPE)(b[1].s[5]), acc[_m].s[1]);
-            acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[6]), (DATA_TYPE)(b[1].s[6]), acc[_m].s[1]);
-            acc[_m].s[1] = fma((DATA_TYPE)(a[_m].s[7]), (DATA_TYPE)(b[1].s[7]), acc[_m].s[1]);
+            ret[_m].s[1] = fma((DATA_TYPE)(a[_m].s[0]), (DATA_TYPE)(b[1].s[0]), ret[_m].s[1]);
+            ret[_m].s[1] = fma((DATA_TYPE)(a[_m].s[1]), (DATA_TYPE)(b[1].s[1]), ret[_m].s[1]);
+            ret[_m].s[1] = fma((DATA_TYPE)(a[_m].s[2]), (DATA_TYPE)(b[1].s[2]), ret[_m].s[1]);
+            ret[_m].s[1] = fma((DATA_TYPE)(a[_m].s[3]), (DATA_TYPE)(b[1].s[3]), ret[_m].s[1]);
+            ret[_m].s[1] = fma((DATA_TYPE)(a[_m].s[4]), (DATA_TYPE)(b[1].s[4]), ret[_m].s[1]);
+            ret[_m].s[1] = fma((DATA_TYPE)(a[_m].s[5]), (DATA_TYPE)(b[1].s[5]), ret[_m].s[1]);
+            ret[_m].s[1] = fma((DATA_TYPE)(a[_m].s[6]), (DATA_TYPE)(b[1].s[6]), ret[_m].s[1]);
+            ret[_m].s[1] = fma((DATA_TYPE)(a[_m].s[7]), (DATA_TYPE)(b[1].s[7]), ret[_m].s[1]);
 
         }) 
         
@@ -194,17 +195,17 @@ __kernel void mat_mul_mmul_hugh(
 
     LOOP_UNROLLING(int, _m, 0, 1, M0,
     {
-        acc[_m].s[0] += bias_tile[0].s[0];
-        acc[_m].s[1] += bias_tile[0].s[1];
+        ret[_m].s[0] += bias_tile[0].s[0];
+        ret[_m].s[1] += bias_tile[0].s[1];
     }) 
 #endif // defined(BIAS)
 
      LOOP_UNROLLING(int, _m, 0, 1, M0,
     {
-        acc[_m].v.s0 = acc[_m].s[0];
-        acc[_m].v.s1 = acc[_m].s[1];
+        ret[_m].v.s0 = ret[_m].s[0];
+        ret[_m].v.s1 = ret[_m].s[1];
     }) 
-    T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, acc, indirect_buffer);
+    T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, ret, indirect_buffer);
    
 }
 #endif // defined(MAT_MUL_MMUL_HUGH)
