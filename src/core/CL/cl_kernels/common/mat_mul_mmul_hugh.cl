@@ -254,7 +254,7 @@ __kernel void mat_mul_mmul_hugh(
                 acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[4]), (DATA_TYPE)(b[nimasile].s[4]), acc[caonima].s[nimasile]);
                 acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[5]), (DATA_TYPE)(b[nimasile].s[5]), acc[caonima].s[nimasile]);
                 acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[6]), (DATA_TYPE)(b[nimasile].s[6]), acc[caonima].s[nimasile]);
-                acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[7]), (DATA_TYPE)(b[nimasile].s[7]), acc[caonima].s[nimasile]);
+                acc[caonima].s[nimasile] = fma((DATA_TYPE)(a[caonima].s[7]), (DATA_TYPE)(b[nimasile].s[7]), acc[caonima].s[nimasile])
             )
         )
         /*
