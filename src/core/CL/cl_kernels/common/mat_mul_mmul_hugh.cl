@@ -39,6 +39,22 @@ inline void perform_bias_addition(uchar *bias_ptr, uint bias_offset_first_elemen
 }
 #endif // defined(BIAS)
 
+#define 2D_ACCESS(2d_obj,X,Y,WIDTH) 2d_obj[Y*WIDTH + X] 
+
+#define HUGH_2D(DATA_TYPE, H, W, BASENAME) HUGH_2D_STR(DATA_TYPE, H, W, BASENAME)
+#define HUGH_2D_STR(DATA_TYPE, H, W, BASENAME) DATA_TYPE BASENAME[W * H]
+
+#define V_LOAD_HUGH_2D(DATA_TYPE, WIDTH, HEIGHT, TENSOR, X, Y, STRIDE_Y, 2d_dst) V_LOAD_HUGH_2D_STR(DATA_TYPE, WIDTH, HEIGHT, TENSOR, X, Y, STRIDE_Y, 2d_dst)
+#define V_LOAD_HUGH_2D_STR(DATA_TYPE, WIDTH, HEIGHT, TENSOR, X, Y, STRIDE_Y, 2d_dst)  \
+    LOOP_UNROLLING(int, _x, 0, 1, WIDTH, \
+    { \
+        LOOP_UNROLLING(int, _y, 0, 1, HEIGHT, \
+        { \
+            2d_dst[_y* HEIGHT + _x] = *(__global DATA_TYPE *)(TENSOR##_ptr + TENSOR##_offset_first_element_in_bytes + (X+_x) * sizeof(DATA_TYPE) + (Y+_y) * (STRIDE_Y)) \
+        }) \
+    })
+
+
 #if defined(MAT_MUL_MMUL_HUGH)
 /** This OpenCL kernel performs the batch matrix multiplication (BatchMatMul) using MMUL: LHS non-transposed, RHS non-transposed - buffer only
  *
@@ -106,6 +122,10 @@ __kernel void mat_mul_mmul_hugh(
 
     // Initialize the accumulators
     TILE(DATA_TYPE, M0, N0, ret);
+    TILE(DATA_TYPE, M0, K0, acc);
+
+
+    HUGH_2D(DATA_TYPE, H, W, shabi);
 
     for(int _m = 0; _m < M0; _m++)
     {
@@ -119,10 +139,8 @@ __kernel void mat_mul_mmul_hugh(
     for(k = 0; k <= K - K0; k += K0)
     {
         
- 
         TILE(DATA_TYPE, M0, K0, a);
         TILE(DATA_TYPE, N0, K0, b);
-        TILE(DATA_TYPE, M0, K0, acc);
 
         // Load tile from the lhs/rhs tensors
         T_LOAD(DATA_TYPE, M0, K0, BUFFER, lhs, k, 0, 1, lhs_stride_y, a);
@@ -156,11 +174,21 @@ __kernel void mat_mul_mmul_hugh(
 
         LOOP_UNROLLING(int, _m, 0, 1, M0,
         {
-            LOOP_UNROLLING(int, _n, 0, 1, N0,
-            {
-                acc[_m].v = fma((DATA_TYPE)(a[_m].v), (DATA_TYPE)(b[_n].v), acc[_m].v);
-                ret[_m].s[_n] = SUM_REDUCE(acc[_m].v,K0);
-            })
+
+            acc[_m].v = fma((DATA_TYPE)(a[_m].v), (DATA_TYPE)(b[0].v), acc[_m].v);
+            ret[_m].s[0] = SUM_REDUCE(acc[_m].v,K0);
+
+            acc[_m].v = fma((DATA_TYPE)(a[_m].v), (DATA_TYPE)(b[0].v), acc[_m].v);
+            ret[_m].s[0] = SUM_REDUCE(acc[_m].v,K0);
+            
+            ret[_m].s[1] = fma((DATA_TYPE)(a[_m].s[0]), (DATA_TYPE)(b[1].s[0]), ret[_m].s[1]);
+            ret[_m].s[1] = fma((DATA_TYPE)(a[_m].s[1]), (DATA_TYPE)(b[1].s[1]), ret[_m].s[1]);
+            ret[_m].s[1] = fma((DATA_TYPE)(a[_m].s[2]), (DATA_TYPE)(b[1].s[2]), ret[_m].s[1]);
+            ret[_m].s[1] = fma((DATA_TYPE)(a[_m].s[3]), (DATA_TYPE)(b[1].s[3]), ret[_m].s[1]);
+            ret[_m].s[1] = fma((DATA_TYPE)(a[_m].s[4]), (DATA_TYPE)(b[1].s[4]), ret[_m].s[1]);
+            ret[_m].s[1] = fma((DATA_TYPE)(a[_m].s[5]), (DATA_TYPE)(b[1].s[5]), ret[_m].s[1]);
+            ret[_m].s[1] = fma((DATA_TYPE)(a[_m].s[6]), (DATA_TYPE)(b[1].s[6]), ret[_m].s[1]);
+            ret[_m].s[1] = fma((DATA_TYPE)(a[_m].s[7]), (DATA_TYPE)(b[1].s[7]), ret[_m].s[1]);
 
         }) 
         
