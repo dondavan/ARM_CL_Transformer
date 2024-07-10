@@ -158,7 +158,7 @@ __kernel void mat_mul_mmul_hugh(
         {
 
             acc[_m].v = fma((DATA_TYPE)(a[_m].v), (DATA_TYPE)(b[0].v), acc[_m].v);
-            ret[_m].s[0] = SUM_REDUCE(ret[_m].v,K0);
+            ret[_m].s[0] = SUM_REDUCE(acc[_m].v,K0);
 
             ret[_m].s[1] = fma((DATA_TYPE)(a[_m].s[0]), (DATA_TYPE)(b[1].s[0]), ret[_m].s[1]);
             ret[_m].s[1] = fma((DATA_TYPE)(a[_m].s[1]), (DATA_TYPE)(b[1].s[1]), ret[_m].s[1]);
