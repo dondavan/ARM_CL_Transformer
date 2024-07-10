@@ -43,8 +43,8 @@ inline void perform_bias_addition(uchar *bias_ptr, uint bias_offset_first_elemen
 #define HUGH_2D(DATA_TYPE, H, W, BASENAME) HUGH_2D_STR(DATA_TYPE, H, W, BASENAME)
 #define HUGH_2D_STR(DATA_TYPE, H, W, BASENAME) DATA_TYPE BASENAME[W * H]
 
-#define V_LOAD_HUGH_2D(DATA_TYPE, WIDTH, HEIGHT, TENSOR, X, Y, STRIDE_Y, DST) V_LOAD_HUGH_2D_STR(DATA_TYPE, WIDTH, HEIGHT, TENSOR, X, Y, STRIDE_Y, DST)
-#define V_LOAD_HUGH_2D_STR(DATA_TYPE, WIDTH, HEIGHT, TENSOR, X, Y, STRIDE_Y, DST)  \
+#define T_LOAD_HUGH_2D(DATA_TYPE, WIDTH, HEIGHT, TENSOR, X, Y, STRIDE_Y, DST) T_LOAD_HUGH_2D_STR(DATA_TYPE, WIDTH, HEIGHT, TENSOR, X, Y, STRIDE_Y, DST)
+#define T_LOAD_HUGH_2D_STR(DATA_TYPE, WIDTH, HEIGHT, TENSOR, X, Y, STRIDE_Y, DST)  \
     LOOP_UNROLLING(int, _x, 0, 1, WIDTH, \
     { \
         LOOP_UNROLLING(int, _y, 0, 1, HEIGHT, \
@@ -53,6 +53,7 @@ inline void perform_bias_addition(uchar *bias_ptr, uint bias_offset_first_elemen
         }) \
     })
 
+#define HUGH_2D_ACCESS(BASENAME,X,Y,WIDTH) BASENAME[Y*WIDTH+X]
 
 #if defined(MAT_MUL_MMUL_HUGH)
 /** This OpenCL kernel performs the batch matrix multiplication (BatchMatMul) using MMUL: LHS non-transposed, RHS non-transposed - buffer only
@@ -125,6 +126,7 @@ __kernel void mat_mul_mmul_hugh(
 
 
     HUGH_2D(DATA_TYPE, M0, N0, shabi);
+    T_LOAD_HUGH_2D(DATA_TYPE, M0, N0, lhs, 0, 1, lhs_stride_y, shabi)
 
     for(int _m = 0; _m < M0; _m++)
     {
@@ -222,8 +224,8 @@ __kernel void mat_mul_mmul_hugh(
 
      LOOP_UNROLLING(int, _m, 0, 1, M0,
     {
-        ret[_m].v.s0 = ret[_m].s[0];
-        ret[_m].v.s1 = ret[_m].s[1];
+        ret[_m].v.s0 = HUGH_2D_ACCESS(shabi, 0,_m, N0); //ret[_m].s[0];
+        ret[_m].v.s1 = HUGH_2D_ACCESS(shabi, 1,_m, N0);
     }) 
     T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, ret, indirect_buffer);
    
