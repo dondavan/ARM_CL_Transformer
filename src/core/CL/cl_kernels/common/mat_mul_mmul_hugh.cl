@@ -246,8 +246,10 @@ __kernel void mat_mul_mmul_hugh(
 
     for(int _m = 0; _m < M0; _m++)
     {
-        ret[_m].v.s0 = HUGH_2D_ACCESS(acc,_m,0,N0);
-        ret[_m].v.s1 = HUGH_2D_ACCESS(acc,_m,1,N0);
+        for(int _n = 0; _n < N0; _n++)
+        {
+            ret[_m].v.s0 = HUGH_2D_ACCESS(acc,_m,_n,N0);
+        }
     }
     
     T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, ret, indirect_buffer);
