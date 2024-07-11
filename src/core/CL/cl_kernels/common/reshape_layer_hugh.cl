@@ -66,5 +66,5 @@ __kernel void reshape_layer_hugh(TENSOR3D_DECLARATION(input),
     // Store result
     input_ptr += input_offset_first_element_in_bytes + in_x * input_stride_x + in_y * input_stride_y + in_z * input_stride_z;
     output_ptr += output_offset_first_element_in_bytes + out_x_id * output_stride_x + out_y_id * output_stride_y + out_z_id * output_stride_z;
-    *((__global DATA_TYPE *)output_ptr) = out_x_id;
+    *((__global DATA_TYPE *)output_ptr) = (DATA_TYPE)out_z_id;
 }
