@@ -115,6 +115,15 @@ void ClHughReshapeKernel::run_op(ITensorPack &tensors, const Window &window, cl:
     auto dst = utils::cast::polymorphic_downcast<ICLTensor *>(tensors.get_tensor(TensorType::ACL_DST));
 
     std::cout << "HughReshapeKernel " << std::endl;
+
+    std::cout << "src->info()->strides_in_bytes().x() " << src->info()->strides_in_bytes().x() << std::endl;
+    std::cout << "src->info()->strides_in_bytes().y() " << src->info()->strides_in_bytes().y() << std::endl;
+    std::cout << "src->info()->strides_in_bytes().z() " << src->info()->strides_in_bytes().z() << std::endl;
+
+    std::cout << "dst->info()->strides_in_bytes().x() " << dst->info()->strides_in_bytes().x() << std::endl;
+    std::cout << "dst->info()->strides_in_bytes().y() " << dst->info()->strides_in_bytes().y() << std::endl;
+    std::cout << "dst->info()->strides_in_bytes().z() " << dst->info()->strides_in_bytes().z() << std::endl;
+    
     // Set srcs
     unsigned int idx = 0;
     add_3D_tensor_argument(idx, src, window_collapsed);
