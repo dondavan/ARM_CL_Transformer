@@ -115,12 +115,12 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
     auto        product_mm_kernel = std::make_unique<kernels::ClLinearKernel>();
     const float scale             = 1.0f / sqrt(info.d_model() / info.h());
     product_mm_kernel->set_target(gpu_target);
-    product_mm_kernel->configure(compile_context, &_permuted_query, &_transposed_key, nullptr, &_scaled_query_key, scale, 1, mm_kernel_info_qk);
+    product_mm_kernel->configure(compile_context, &_permuted_query, &_transposed_key, nullptr, output, scale, 1, mm_kernel_info_qk);
     _product_mm_kernel = std::move(product_mm_kernel);
 
      std::cout << "      _product_mm_kernel end" <<std::endl;
     
-    
+    /*
     //  Softmax of previous product
     SoftmaxKernelInfo softmax_info{1.0f, false, query->data_type(), 0};
     auto softmax_kernel = std::make_unique<kernels::ClSoftmaxKernel>();
@@ -146,6 +146,7 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
         cl_matmul::ClMatMulNativeKernelConfigurationFactory::create(gpu_target);
     MatMulKernelInfo mm_kernel_info_pv = kernel_config_pv->configure(&_softmaxed_product, &_permuted_value, mat_info_pv);
 
+    
     //  Multiply between scaled product and value
     auto context_mm_kernel = std::make_unique<kernels::ClLinearKernel>();
     context_mm_kernel->set_target(gpu_target);
@@ -169,7 +170,7 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
     auto concat_reshape_kernel = std::make_unique<kernels::ClReshapeKernel>();
     concat_reshape_kernel->configure(compile_context, &_permuted_concat, output);
     _concat_reshape_kernel = std::move(concat_reshape_kernel);
-
+    */
     std::cout << "ClScaleDotProduction::configure end " << std::endl;
     
 
@@ -200,7 +201,7 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
 
     auto query = tensors.get_const_tensor(ACL_SRC_0);
     auto key   = tensors.get_const_tensor(ACL_SRC_1);
-    auto value  = tensors.get_const_tensor(ACL_SRC_2);
+    //auto value  = tensors.get_const_tensor(ACL_SRC_2);
     auto output = tensors.get_tensor(ACL_DST);
 
     /*
@@ -252,22 +253,24 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
     ITensorPack key_permute_pack{ { ACL_SRC, reshaped_key.get() }, { ACL_DST, permuted_key.get() } };
     CLScheduler::get().enqueue_op(*_key_permute_kernel, key_permute_pack, true);
     
+    /*
     // Run Value multi-Head reshape
     ITensorPack value_reshape_pack{ { ACL_SRC_0, value }, { ACL_DST, reshaped_value.get() } };
     CLScheduler::get().enqueue_op(*_value_reshape_kernel, value_reshape_pack, true);
     ITensorPack value_permute_pack{ { ACL_SRC, reshaped_value.get() }, { ACL_DST, permuted_value.get() } };
     CLScheduler::get().enqueue_op(*_value_permute_kernel, value_permute_pack, true);
-
+*/
     // Run Key pre-transpose
     ITensorPack key_transpose_pack{ { ACL_SRC, permuted_key.get() }, { ACL_DST, transposed_key.get() } };
     CLScheduler::get().enqueue_op(*_key_transpose_kernel, key_transpose_pack, true);
 
     std::cout << "      gemm_QK_pack " <<std::endl;
     // Run matrix multiply compute multi-head attention between Query and Key
-    ITensorPack gemm_QK_pack{ { ACL_SRC_0, query }, { ACL_SRC_1, transposed_key.get() }, { ACL_DST, scaled_query_key.get() } };
+    ITensorPack gemm_QK_pack{ { ACL_SRC_0, query }, { ACL_SRC_1, transposed_key.get() }, { ACL_DST, output } };
     CLScheduler::get().enqueue_op(*_product_mm_kernel, gemm_QK_pack, true);
     std::cout << "      gemm_QK_pack " <<std::endl;
 
+    /*
     // Softmax scaled product
     ITensorPack softmax_pack = { { ACL_SRC, scaled_query_key.get() }, { ACL_DST, softmaxed_product.get() } };
     CLScheduler::get().enqueue_op(*_softmax_kernel, softmax_pack, true);
@@ -282,7 +285,7 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
 
     ITensorPack concat_reshape_pack{ { ACL_SRC_0, permuted_concat.get() }, { ACL_DST, output } };
     CLScheduler::get().enqueue_op(*_concat_reshape_kernel, concat_reshape_pack, true);
-    
+    */
 }
 
 experimental::MemoryRequirements ClScaleDotProduction::workspace() const
