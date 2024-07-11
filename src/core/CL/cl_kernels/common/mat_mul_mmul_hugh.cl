@@ -174,19 +174,23 @@ __kernel void mat_mul_mmul_hugh(
     });
 
 #ifdef BIAS
+    TILE(DATA_TYPE, 1, N0, bias_tile);
 
-    HUGH_2D(DATA_TYPE, 1, N0, bias_tile);
-    T_LOAD_HUGH(DATA_TYPE, 1, N0, BUFFER, bias, x, 0, 1, 0, bias_tile);
+    // below expands to use bias_ptr and bias_offset_first_element_in_bytes
+    T_LOAD(DATA_TYPE, 1, N0, BUFFER, bias, x, 0, 1, 0, bias_tile);
+
+    bias_tile[0].s[0] = bias_tile[0].v.s0;
+    bias_tile[0].s[1] = bias_tile[0].v.s1;
 
     LOOP_UNROLLING(int, _m, 0, 1, M0,
     {
-        for(int _n = 0; _n < N0; _n++)
+        LOOP_UNROLLING(int, _n, 0, 1, N0,
         {
-            HUGH_2D_ACCESS(acc,_m,_n,N0) += HUGH_2D_ACCESS(bias_tile,_n,0,N0);
-        }
+            HUGH_2D_ACCESS(acc,_m,_n,N0) += bias_tile[0].s[_n];
+        })
     }) 
 #endif // defined(BIAS)
-    
+
     for(int _m = 0; _m < M0; _m++)
     {
         ret[_m].v.s0 =  HUGH_2D_ACCESS(acc,_m,0,N0); //V_LOAD_HUGH(DATA_TYPE, N0, acc, 0, _m, N0);
