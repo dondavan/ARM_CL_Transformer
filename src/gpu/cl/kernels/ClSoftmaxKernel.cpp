@@ -109,6 +109,7 @@ void ClSoftmaxKernel::configure(const CLCompileContext  &compile_context,
     const auto tmp_data_type = is_quantized ? DataType::F32 : data_type;
 
     const auto vec_size          = adjust_vec_size(16 / element_size, dst_shape[0]);
+    std::cout << "wo cao ni ma de vec_size " << vec_size <<std::endl;
     const auto vec_size_leftover = dst_shape[0] % vec_size;
 std::cout << "wo cao ni ma de query type 4" << std::endl;
     std::string    kernel_name("softmax");
