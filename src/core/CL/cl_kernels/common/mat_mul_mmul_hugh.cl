@@ -183,7 +183,7 @@ __kernel void mat_mul_mmul_hugh(
     {
         LOOP_UNROLLING(int, _n, 0, 1, N0,
         {
-            HUGH_2D_ACCESS(acc,_m,_n,N0) += HUGH_2D_ACCESS(bias_tile, _n, 0, N0);//bias_tile[0].s[_n];
+            HUGH_2D_ACCESS(acc,_m,_n,N0) += bias_tile[_n];//bias_tile[0].s[_n];
         })
     }) 
 #endif // defined(BIAS)
