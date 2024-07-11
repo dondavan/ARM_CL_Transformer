@@ -26,6 +26,7 @@ void ClSimpleForward1Kernel::configure(const CLCompileContext &compile_context, 
 
     auto_init_if_empty(*dst1, src1->clone()->set_tensor_shape(src1->tensor_shape()));
 
+    dst1->set_tensor_shape(src1->tensor_shape());
     std::cout << "ff dst x " << dst1->tensor_shape().x() << std::endl;
     std::cout << "ff dst y " << dst1->tensor_shape().y() << std::endl;
     std::cout << "ff dst z " << dst1->tensor_shape().z() << std::endl;
