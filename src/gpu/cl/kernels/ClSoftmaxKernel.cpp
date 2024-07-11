@@ -110,7 +110,7 @@ void ClSoftmaxKernel::configure(const CLCompileContext  &compile_context,
 
     const auto vec_size          = adjust_vec_size(16 / element_size, dst_shape[0]);
     const auto vec_size_leftover = dst_shape[0] % vec_size;
-
+std::cout << "wo cao ni ma de query type 4" << std::endl;
     std::string    kernel_name("softmax");
     CLBuildOptions build_opts;
 
@@ -127,7 +127,7 @@ void ClSoftmaxKernel::configure(const CLCompileContext  &compile_context,
     build_opts.add_option_if(is_quantized, "-DSRC_SCALE=" + float_to_string_with_full_precision(src_qinfo.scale));
     build_opts.add_option_if(is_quantized, "-DDST_OFFSET=" + float_to_string_with_full_precision(dst_qinfo.offset));
     build_opts.add_option_if(is_quantized, "-DDST_SCALE=" + float_to_string_with_full_precision(dst_qinfo.scale));
-
+    std::cout << "wo cao ni ma de query type 5" << std::endl;
     if (axis == 0)
     {
         kernel_name += "_x";
