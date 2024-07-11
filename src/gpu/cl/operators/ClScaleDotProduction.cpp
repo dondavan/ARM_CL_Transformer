@@ -297,6 +297,10 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
     std::cout << "output->info()->tensor_shape() x " << output->info()->tensor_shape().x() << std::endl;
     std::cout << "output->info()->tensor_shape() y " << output->info()->tensor_shape().y() << std::endl;
     std::cout << "output->info()->tensor_shape() z " << output->info()->tensor_shape().z() << std::endl;
+
+    std::cout << "output->info()->strides_in_bytes() x " << output->info()->strides_in_bytes().x() << std::endl;
+    std::cout << "output->info()->strides_in_bytes() y " << output->info()->strides_in_bytes().y() << std::endl;
+    std::cout << "output->info()->strides_in_bytes() z " << output->info()->strides_in_bytes().z() << std::endl;
 }
 
 experimental::MemoryRequirements ClScaleDotProduction::workspace() const
