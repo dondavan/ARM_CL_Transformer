@@ -675,7 +675,7 @@
  * @param[out] indirect_y       Indirect Y index tile
  */
 #define T_LOAD_INDIRECT_WIDTH_SELECT(DATA_TYPE, HEIGHT, WIDTH0, WIDTH1, TENSOR_TYPE, TENSOR, X, STRIDE_Y, WIDTH1_CONDITION, dst, indirect_y)                                                      \
-    ({                                                                                                                                                                                             \
+    {                                                                                                                                                                                             \
         if(WIDTH1_CONDITION)                                                                                                                                                                       \
         {                                                                                                                                                                                          \
             LOOP_UNROLLING(int, _i, 0, 1, HEIGHT,                                                                                                                                                  \
@@ -691,7 +691,7 @@
                 dst[HEIGHT - 1 - _i].v = V_LOAD(DATA_TYPE, WIDTH0, TENSOR_TYPE, TENSOR, X, (indirect_y[HEIGHT - 1 - _i].v), STRIDE_Y); \
             })                                                                                                                                                                                     \
         }                                                                                                                                                                                          \
-    })
+    }
 /** Load a tile from global memory (tensor) when the tensor is stored using a NHWC layout
  *
  * @param[in]  DATA_TYPE     Data type
