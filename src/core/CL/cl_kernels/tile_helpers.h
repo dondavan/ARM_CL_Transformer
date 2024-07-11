@@ -899,7 +899,7 @@
  * @param[in] indirect_y       Indirect Y index tile
  */
 #define T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, HEIGHT, WIDTH0, WIDTH1, TENSOR_TYPE, TENSOR, X, STRIDE_Y, WIDTH1_CONDITION, src, indirect_y)                                                      \
-    ({                                                                                                                                                                                             \
+    {                                                                                                                                                                                             \
         if(WIDTH1_CONDITION)                                                                                                                                                                       \
         {                                                                                                                                                                                          \
             LOOP_UNROLLING(int, _i, 0, 1, HEIGHT,                                                                                                                                                  \
@@ -916,7 +916,7 @@
                 (CONVERT(src[HEIGHT - 1 - _i].v, VEC_DATA_TYPE(DATA_TYPE, WIDTH0)), 0, (__global DATA_TYPE *)(TENSOR##_ptr + TENSOR##_offset_first_element_in_bytes + (X) * sizeof(DATA_TYPE) + (indirect_y[HEIGHT - 1 - _i].v) * STRIDE_Y)); \
             })                                                                                                                                                                                     \
         }                                                                                                                                                                                          \
-    })
+    }
 
 /** Offset correction for the QASYMM8 computation
  *
