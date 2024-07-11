@@ -264,12 +264,12 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
     CLScheduler::get().enqueue_op(*_value_permute_kernel, value_permute_pack, true);
 
     // Run Key pre-transpose
-    ITensorPack key_transpose_pack{ { ACL_SRC, permuted_key.get() }, { ACL_DST, transposed_key.get() } };
-    CLScheduler::get().enqueue_op(*_key_transpose_kernel, key_transpose_pack, true);
+    //ITensorPack key_transpose_pack{ { ACL_SRC, permuted_key.get() }, { ACL_DST, transposed_key.get() } };
+    //CLScheduler::get().enqueue_op(*_key_transpose_kernel, key_transpose_pack, true);
 
     std::cout << "      gemm_QK_pack " <<std::endl;
     // Run matrix multiply compute multi-head attention between Query and Key
-    ITensorPack gemm_QK_pack{ { ACL_SRC_0, query }, { ACL_SRC_1, transposed_key.get() }, { ACL_DST, scaled_query_key.get() } };
+    ITensorPack gemm_QK_pack{ { ACL_SRC_0, query }, { ACL_SRC_1, permuted_key.get() }, { ACL_DST, scaled_query_key.get() } };
     CLScheduler::get().enqueue_op(*_product_mm_kernel, gemm_QK_pack, true);
     std::cout << "      gemm_QK_pack " <<std::endl;
 
