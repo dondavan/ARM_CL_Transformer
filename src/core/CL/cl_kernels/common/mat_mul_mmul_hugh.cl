@@ -53,6 +53,11 @@ inline void perform_bias_addition(uchar *bias_ptr, uint bias_offset_first_elemen
             })                                                                                                                  \
         })                                                                                                                  \
     }
+
+#define V_LOAD_HUGH(DATA_TYPE, WIDTH, TENSOR, X, Y, STRIDE_Y) V_LOAD_HUGH_STR(DATA_TYPE, WIDTH, TENSOR, X, Y, STRIDE_Y)
+#define V_LOAD_HUGH_STR(DATA_TYPE, WIDTH, TENSOR, X, Y, STRIDE_Y) \
+VLOAD(WIDTH)(0, (DATA_TYPE *)(TENSOR + (X) * sizeof(DATA_TYPE) + (Y) * (STRIDE_Y)))
+
     
 #define HUGH_2D_ACCESS(BASENAME,Y,X,WIDTH) BASENAME[Y*WIDTH+X]
 
@@ -246,10 +251,7 @@ __kernel void mat_mul_mmul_hugh(
 
     for(int _m = 0; _m < M0; _m++)
     {
-        for(int _n = 0; _n < N0; _n++)
-        {
-            ret[_m].v.s0 = HUGH_2D_ACCESS(acc,_m,_n,N0);
-        }
+        ret[_m].v = V_LOAD_HUGH(DATA_TYPE, N0, &acc, 0, _m, N0);
     }
     
     T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, ret, indirect_buffer);
