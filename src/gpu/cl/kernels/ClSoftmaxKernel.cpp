@@ -43,6 +43,7 @@
 #include "arm_compute/core/Validate.h"
 #include "arm_compute/core/Window.h"
 
+#include "src/core/helpers/AutoConfiguration.h"
 #include "src/core/helpers/WindowHelpers.h"
 #include "support/Cast.h"
 #include "support/StringSupport.h"
@@ -94,7 +95,17 @@ void ClSoftmaxKernel::configure(const CLCompileContext  &compile_context,
 {
     ARM_COMPUTE_UNUSED(compile_context, src, dst, info);
     
-    //const auto &dst_shape = dst.tensor_shape();
+    // HUGH
+        // Configure kernel window
+        const bool is_quantized_asymmetric = is_data_type_quantized_asymmetric(src.data_type());
+
+        // Output auto initialization if not yet initialized
+        const QuantizationInfo output_quantization =
+            is_quantized_asymmetric ? arm_compute::get_softmax_output_quantization_info(src.data_type(), info.is_log)
+                                    : dst.quantization_info();
+        auto_init_if_empty(dst, TensorInfo(src).set_quantization_info(output_quantization).reset_padding());
+    //
+
     const auto &dst_shape = dst.tensor_shape();
     
 
