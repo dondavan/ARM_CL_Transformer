@@ -56,7 +56,7 @@ inline void perform_bias_addition(uchar *bias_ptr, uint bias_offset_first_elemen
 
 #define V_LOAD_HUGH(DATA_TYPE, WIDTH, TENSOR, X, Y, STRIDE_Y) V_LOAD_HUGH_STR(DATA_TYPE, WIDTH, TENSOR, X, Y, STRIDE_Y)
 #define V_LOAD_HUGH_STR(DATA_TYPE, WIDTH, TENSOR, X, Y, STRIDE_Y) \
-VLOAD(WIDTH)(0, (DATA_TYPE *)(TENSOR + (X) * sizeof(DATA_TYPE) + (Y) * (STRIDE_Y)))
+VLOAD(WIDTH)(0, (DATA_TYPE *)(TENSOR + (X)  + (Y) * (STRIDE_Y)))
 
     
 #define HUGH_2D_ACCESS(BASENAME,Y,X,WIDTH) BASENAME[Y*WIDTH+X]
