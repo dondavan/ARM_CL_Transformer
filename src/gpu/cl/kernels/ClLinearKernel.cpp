@@ -44,6 +44,11 @@ void ClLinearKernel::configure(const CLCompileContext &compile_context,
     auto_init_if_empty(*dst, lhs->clone()->set_tensor_shape(misc::shape_calculator::compute_matmul_shape(
                                  lhs->tensor_shape(), rhs->tensor_shape(), matmul_kernel_info)));
     ARM_COMPUTE_UNUSED(alpha,beta,bias);
+
+if(dst->data_type() == DataType::F32)
+    std::cout << "dst->tensor_shape().x() "  << std::endl;
+    else std::cout << "caonima "  << std::endl;
+
     std::cout << "dst->tensor_shape().x() " << dst->tensor_shape().x() << std::endl;
     std::cout << "dst->tensor_shape().y() " <<dst->tensor_shape().y() << std::endl;
     std::cout << "dst->tensor_shape().z() " <<dst->tensor_shape().z() << std::endl;
