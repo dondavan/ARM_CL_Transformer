@@ -163,28 +163,6 @@ __kernel void mat_mul_mmul_hugh(
 
     }
 
-#if K % K0 != 0
-    /* Leftover Loop */
-    for(; k < K; ++k)
-    {
-        HUGH_2D(DATA_TYPE, M0, 1, a);
-        HUGH_2D(DATA_TYPE, N0, 1, b);
-
-        T_LOAD_HUGH(DATA_TYPE, M0, 1, BUFFER, lhs, k, 0, 1, lhs_stride_y, a);
-        T_LOAD_HUGH(DATA_TYPE, N0, 1, RHS_TENSOR_TYPE, rhs, k, x + rhs_z, 1, rhs_stride_y, b);
-
-        LOOP_UNROLLING(int, _m, 0, 1, M0,
-        {
-            LOOP_UNROLLING(int, _n, 0, 1, N0,
-            {
-                for(int _k = 0; _k < 1; _k++ )
-                {
-                    HUGH_2D_ACCESS(acc, _m, _n ,N0) = fma((DATA_TYPE)HUGH_2D_ACCESS(a, _m, _k, K0), (DATA_TYPE)HUGH_2D_ACCESS(b, _n, _k, K0), HUGH_2D_ACCESS(acc, _m, _n, N0));
-                }
-            })
-        })
-    }
-#endif // K % K0 != 0
 
     const bool x_cond = PARTIAL_STORE_N0 != 0 && get_global_id(0) == 0;
     const bool y_cond = PARTIAL_STORE_M0 != 0 && get_global_id(1) == 0;
