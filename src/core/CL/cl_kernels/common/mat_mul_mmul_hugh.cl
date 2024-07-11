@@ -54,7 +54,7 @@ inline void perform_bias_addition(uchar *bias_ptr, uint bias_offset_first_elemen
         })                                                                                                                  \
     }
     
-#define HUGH_2D_ACCESS(BASENAME,X,Y,WIDTH) BASENAME[Y*WIDTH+X]
+#define HUGH_2D_ACCESS(BASENAME,Y,X,WIDTH) BASENAME[Y*WIDTH+X]
 
 #if defined(MAT_MUL_MMUL_HUGH)
 /** This OpenCL kernel performs the batch matrix multiplication (BatchMatMul) using MMUL: LHS non-transposed, RHS non-transposed - buffer only
@@ -123,19 +123,25 @@ __kernel void mat_mul_mmul_hugh(
 
     // Initialize the accumulators
     TILE(DATA_TYPE, M0, N0, ret);
-    TILE(DATA_TYPE, M0, K0, acc);
+    //TILE(DATA_TYPE, M0, K0, acc);
 
 
-    //HUGH_2D(DATA_TYPE, M0, N0, shabi);
-    //T_LOAD_HUGH(DATA_TYPE, M0, N0, BUFFER, lhs, 0, 0, 1, lhs_stride_y, shabi);
-    TILE(DATA_TYPE, M0, N0, shabi);
-    T_LOAD(DATA_TYPE, M0, N0, BUFFER, lhs, 0, 0, 1, lhs_stride_y, shabi);
+    HUGH_2D(DATA_TYPE, M0, N0, acc);
+    T_LOAD_HUGH(DATA_TYPE, M0, N0, BUFFER, lhs, 0, 0, 1, lhs_stride_y, acc);
+    //TILE(DATA_TYPE, M0, N0, shabi);
+    //T_LOAD(DATA_TYPE, M0, N0, BUFFER, lhs, 0, 0, 1, lhs_stride_y, shabi);
 
+    /*
     for(int _m = 0; _m < M0; _m++)
     {
         ret[_m].s[0] = 0.f;
         ret[_m].s[1] = 0.f;
         acc[_m].v = 0.f;
+    }*/
+    for(int _m = 0; _m < M0; _m++)
+    {
+        HUGH_2D_ACCESS(acc,_m,0,N0) = 0.f;
+        HUGH_2D_ACCESS(acc,_m,1,N0) = 0.f;
     }
 
     const int rhs_z = z * rhs_h;
@@ -143,13 +149,26 @@ __kernel void mat_mul_mmul_hugh(
     for(k = 0; k <= K - K0; k += K0)
     {
         
-        TILE(DATA_TYPE, M0, K0, a);
-        TILE(DATA_TYPE, N0, K0, b);
+        //TILE(DATA_TYPE, M0, K0, a);
+        //TILE(DATA_TYPE, N0, K0, b);
+        HUGH_2D(DATA_TYPE, M0, K0, a);
+        HUGH_2D(DATA_TYPE, N0, K0, b);
 
         // Load tile from the lhs/rhs tensors
-        T_LOAD(DATA_TYPE, M0, K0, BUFFER, lhs, k, 0, 1, lhs_stride_y, a);
-        T_LOAD(DATA_TYPE, N0, K0, RHS_TENSOR_TYPE, rhs, k, x + rhs_z, 1, rhs_stride_y, b);
+        //T_LOAD(DATA_TYPE, M0, K0, BUFFER, lhs, k, 0, 1, lhs_stride_y, a);
+        //T_LOAD(DATA_TYPE, N0, K0, RHS_TENSOR_TYPE, rhs, k, x + rhs_z, 1, rhs_stride_y, b);
 
+        T_LOAD_HUGH(DATA_TYPE, M0, K0, BUFFER, lhs, k, 0, 1, lhs_stride_y, a);
+        T_LOAD_HUGH(DATA_TYPE, N0, K0, RHS_TENSOR_TYPE, rhs, k, x + rhs_z, 1, rhs_stride_y, b);
+
+        LOOP_UNROLLING(int, _m, 0, 1, M0,
+        {
+            LOOP_UNROLLING(int, _k, 0, 1, K0,
+            {
+                HUGH_2D_ACCESS(acc,_m,1,N0) = fma((DATA_TYPE)HUGH_2D_ACCESS(a,_m,_k,K0), (DATA_TYPE)HUGH_2D_ACCESS(b,1,_k,K0), HUGH_2D_ACCESS(acc,_m,1,N0));
+            })
+        })
+        /*
         for(int _m = 0; _m < M0; _m++)
         {
             a[_m].s[0] = a[_m].v.s0;
@@ -195,7 +214,7 @@ __kernel void mat_mul_mmul_hugh(
             ret[_m].s[1] = fma((DATA_TYPE)(a[_m].s[7]), (DATA_TYPE)(b[1].s[7]), ret[_m].s[1]);
 
         }) 
-        
+        */
         
         //lhs_offset_first_element_in_bytes += K0 * sizeof(DATA_TYPE);
     }
@@ -220,13 +239,18 @@ __kernel void mat_mul_mmul_hugh(
 
     LOOP_UNROLLING(int, _m, 0, 1, M0,
     {
-        ret[_m].s[0] += bias_tile[0].s[0];
-        ret[_m].s[1] += bias_tile[0].s[1];
+        HUGH_2D_ACCESS(acc,_m,0,N0) += bias_tile[0].s[0];
+        HUGH_2D_ACCESS(acc,_m,1,N0) += bias_tile[0].s[1];
     }) 
 #endif // defined(BIAS)
 
+    for(int _m = 0; _m < M0; _m++)
+    {
+        ret[_m].v.s0 = HUGH_2D_ACCESS(acc,_m,0,N0);
+        ret[_m].v.s1 = HUGH_2D_ACCESS(acc,_m,1,N0);
+    }
     
-    T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, shabi, indirect_buffer);
+    T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, ret, indirect_buffer);
    
 }
 #endif // defined(MAT_MUL_MMUL_HUGH)
