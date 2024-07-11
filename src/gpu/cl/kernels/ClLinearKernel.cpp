@@ -135,21 +135,32 @@ void ClLinearKernel::run_op(ITensorPack &tensors, const Window &window, cl::Comm
     unsigned int idx              = 0;
     Window       window_collapsed = window.collapse(ICLKernel::window(), Window::DimZ);
 
+
+    std::cout << "lhs->info()->tensor_shape().x() " << lhs->info()->tensor_shape().x() << std::endl;
+    std::cout << "lhs->info()->tensor_shape().y() " << lhs->info()->tensor_shape().y() << std::endl;
+    std::cout << "lhs->info()->tensor_shape().z() " << lhs->info()->tensor_shape().z() << std::endl;
+
+
+    std::cout << "rhs->info()->tensor_shape().x() " << rhs->info()->tensor_shape().x() << std::endl;
+    std::cout << "rhs->info()->tensor_shape().y() " << rhs->info()->tensor_shape().y() << std::endl;
+    std::cout << "rhs->info()->tensor_shape().z() " << rhs->info()->tensor_shape().z() << std::endl;
+
+
+    std::cout << "dst->tensor_shape().x() " << dst->info()->tensor_shape().x() << std::endl;
+    std::cout << "dst->tensor_shape().y() " << dst->info()->tensor_shape().y() << std::endl;
+    std::cout << "dst->tensor_shape().z() " << dst->info()->tensor_shape().z() << std::endl;
+
     std::cout <<"window_collapsed.x().end() " <<window_collapsed.x().end() << std::endl;
     std::cout <<"window_collapsed.y().end() " << window_collapsed.y().end() << std::endl;
     std::cout <<"window_collapsed.z().end() "<< window_collapsed.z().end() << std::endl;
 
-
-    std::cout <<"window.x().end() " <<window.x().end() << std::endl;
-    std::cout <<"window.y().end() " << window.y().end() << std::endl;
-    std::cout <<"window.z().end() "<< window.z().end() << std::endl;
 
     add_3d_tensor_nhw_argument(idx, lhs);
     add_3d_tensor_nhw_argument(idx, rhs);
     if (bias != nullptr)
     {
         add_3d_tensor_nhw_argument(idx, bias);
-    }
+    }else std::cout << " no bias " << std::endl;
     add_3d_tensor_nhw_argument(idx, dst);
 
     enqueue(queue, *this, window_collapsed, lws_hint());
