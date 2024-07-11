@@ -174,10 +174,8 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
     std::cout << "ClScaleDotProduction::configure end " << std::endl;
     
 
-   
-    auto_init_if_empty(*output,  query->clone()->set_tensor_shape(query_reshape));
     auto k = std::make_unique<kernels::ClSimpleForward1Kernel>();
-    k->configure(compile_context, &_reshaped_query,output);
+    k->configure(compile_context, &_reshaped_query, output);
     _sf_kernel = std::move(k);
 
     std::cout << "      ClSimpleForward1Kernel " <<std::endl;
@@ -242,9 +240,9 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
 
     CLScheduler::get().enqueue_op(*_query_reshape_kernel, query_reshape_pack, true);
 
-    std::cout << " output ->info()->tensor_shape().x() " << reshaped_query.get()->info()->tensor_shape().x() << std::endl;
-    std::cout << " output ->info()->tensor_shape().y() " << reshaped_query.get()->info()->tensor_shape().y() << std::endl;
-    std::cout << " output ->info()->tensor_shape().z() " << reshaped_query.get()->info()->tensor_shape().z() << std::endl;
+    std::cout << "reshaped_query->info()->tensor_shape().x() " << reshaped_query.get()->info()->tensor_shape().x() << std::endl;
+    std::cout << "reshaped_query->info()->tensor_shape().y() " << reshaped_query.get()->info()->tensor_shape().y() << std::endl;
+    std::cout << "reshaped_query->info()->tensor_shape().z() " << reshaped_query.get()->info()->tensor_shape().z() << std::endl;
 /*
     std::cout << "reshaped_query.get()->info()->tensor_shape().x() " <<reshaped_query.get()->info()->tensor_shape().x() << std::endl;
     std::cout << "reshaped_query.get()->info()->tensor_shape().y() " <<reshaped_query.get()->info()->tensor_shape().y() << std::endl;
@@ -294,8 +292,11 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
     */
 
    ITensorPack ff_pack{ { ACL_SRC_0, reshaped_query.get() }, { ACL_DST, output} };
-
     CLScheduler::get().enqueue_op(*_sf_kernel, ff_pack, true);
+
+    std::cout << "output->info()->tensor_shape() x " << output->info()->tensor_shape().x() << std::endl;
+    std::cout << "output->info()->tensor_shape() y " << output->info()->tensor_shape().y() << std::endl;
+    std::cout << "output->info()->tensor_shape() z " << output->info()->tensor_shape().z() << std::endl;
 }
 
 experimental::MemoryRequirements ClScaleDotProduction::workspace() const
