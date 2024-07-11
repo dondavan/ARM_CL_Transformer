@@ -175,7 +175,7 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
     
 
     auto k = std::make_unique<kernels::ClSimpleForward1Kernel>();
-    k->configure(compile_context, &_permuted_query, output);
+    k->configure(compile_context, &_scaled_query_key, output);
     _sf_kernel = std::move(k);
 
     std::cout << "      ClSimpleForward1Kernel " <<std::endl;
