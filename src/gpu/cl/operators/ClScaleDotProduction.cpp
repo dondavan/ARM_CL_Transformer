@@ -175,7 +175,7 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
     
 
    
-    auto_init_if_empty(*output, _reshaped_query.clone()->set_tensor_shape(_reshaped_query.tensor_shape()));
+    auto_init_if_empty(*output,  query->clone()->set_tensor_shape(query_reshape));
     auto k = std::make_unique<kernels::ClSimpleForward1Kernel>();
     k->configure(compile_context, &_reshaped_query,output);
     _sf_kernel = std::move(k);
