@@ -234,13 +234,17 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
     */
 
     // Run Query multi-Head reshape
-    ITensorPack query_reshape_pack{ { ACL_SRC_0, query }, { ACL_DST, reshaped_query.get() } };
+    ITensorPack query_reshape_pack{ { ACL_SRC_0, query }, { ACL_DST, output } };
 
     std::cout << "query->info()->tensor_shape().x() " <<query->info()->tensor_shape().x() << std::endl;
     std::cout << "query->info()->tensor_shape().y() " <<query->info()->tensor_shape().y() << std::endl;
     std::cout << "query->info()->tensor_shape().z() " <<query->info()->tensor_shape().z() << std::endl;
 
     CLScheduler::get().enqueue_op(*_query_reshape_kernel, query_reshape_pack, true);
+
+    std::cout << " output ->info()->tensor_shape().x() " << output ->info()->tensor_shape().x() << std::endl;
+    std::cout << " output ->info()->tensor_shape().y() " << output ->info()->tensor_shape().y() << std::endl;
+    std::cout << " output ->info()->tensor_shape().z() " << output ->info()->tensor_shape().z() << std::endl;
 /*
     std::cout << "reshaped_query.get()->info()->tensor_shape().x() " <<reshaped_query.get()->info()->tensor_shape().x() << std::endl;
     std::cout << "reshaped_query.get()->info()->tensor_shape().y() " <<reshaped_query.get()->info()->tensor_shape().y() << std::endl;
@@ -261,7 +265,7 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
     CLScheduler::get().enqueue_op(*_value_reshape_kernel, value_reshape_pack, true);
     ITensorPack value_permute_pack{ { ACL_SRC, reshaped_value.get() }, { ACL_DST, permuted_value.get() } };
     CLScheduler::get().enqueue_op(*_value_permute_kernel, value_permute_pack, true);
-*/
+
     // Run Key pre-transpose
     ITensorPack key_transpose_pack{ { ACL_SRC, permuted_key.get() }, { ACL_DST, transposed_key.get() } };
     CLScheduler::get().enqueue_op(*_key_transpose_kernel, key_transpose_pack, true);
@@ -271,7 +275,7 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
     ITensorPack gemm_QK_pack{ { ACL_SRC_0, query }, { ACL_SRC_1, transposed_key.get() }, { ACL_DST, scaled_query_key.get() } };
     CLScheduler::get().enqueue_op(*_product_mm_kernel, gemm_QK_pack, true);
     std::cout << "      gemm_QK_pack " <<std::endl;
-
+*/
     /*
     // Softmax scaled product
     ITensorPack softmax_pack = { { ACL_SRC, scaled_query_key.get() }, { ACL_DST, softmaxed_product.get() } };
