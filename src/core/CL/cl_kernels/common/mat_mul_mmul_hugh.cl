@@ -133,11 +133,13 @@ __kernel void mat_mul_mmul_hugh(
     HUGH_2D(DATA_TYPE, M0, N0, acc);
     T_LOAD_HUGH(DATA_TYPE, M0, N0, BUFFER, lhs, 0, 0, 1, lhs_stride_y, acc);
     
-    for(int _m = 0; _m < M0; _m++)
+    LOOP_UNROLLING(int, _m, 0, 1, M0,
     {
-        HUGH_2D_ACCESS(acc,_m,0,N0) = 0.f;
-        HUGH_2D_ACCESS(acc,_m,1,N0) = 0.f;
-    }
+        LOOP_UNROLLING(int, _n, 0, 1, N0,
+        {
+            HUGH_2D_ACCESS(acc,_m,_n,N0) = 0.f;
+        })
+    })
 
     const int rhs_z = z * rhs_h;
     int       k;
@@ -151,9 +153,9 @@ __kernel void mat_mul_mmul_hugh(
 
         LOOP_UNROLLING(int, _m, 0, 1, M0,
         {
-            LOOP_UNROLLING(int, _k, 0, 1, K0,
+            LOOP_UNROLLING(int, _n, 0, 1, N0,
             {
-                for(int _n = 0; _n < N0; _n++ )
+                for(int _k = 0; _k < K0; _k++ )
                 {
                     HUGH_2D_ACCESS(acc, _m, _n ,N0) = fma((DATA_TYPE)HUGH_2D_ACCESS(a, _m, _k, K0), (DATA_TYPE)HUGH_2D_ACCESS(b, _n, _k, K0), HUGH_2D_ACCESS(acc, _m, _n, N0));
                 }
