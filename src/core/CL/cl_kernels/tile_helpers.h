@@ -534,12 +534,12 @@
  * @param[out] dst           Output tile
  */
 #define T_LOAD(DATA_TYPE, HEIGHT, WIDTH, TENSOR_TYPE, TENSOR, X, Y, YI_MULTIPLIER, STRIDE_Y, dst)                      \
-    ({                                                                                                                 \
+    {                                                                                                                 \
         LOOP_UNROLLING(int, _i, 0, 1, HEIGHT,                                                                          \
         {                                                                                                              \
             dst[_i].v = V_LOAD(DATA_TYPE, WIDTH, TENSOR_TYPE, TENSOR, X, ((Y) + _i * (int)(YI_MULTIPLIER)), STRIDE_Y); \
         })                                                                                                             \
-    })
+    }
 
 /** Store a VECTOR variable (e.g. int4, int8, char2 etc.) to a specified column in the TILE object
  *
