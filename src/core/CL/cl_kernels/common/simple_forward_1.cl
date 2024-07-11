@@ -37,10 +37,10 @@ __kernel void simple_forward_1(TENSOR3D_DECLARATION(src1),
     int id_z = get_global_id(2);
 
     // Compute the output linearized index
-    int dst1_linear_idx = id_y * dst1_stride_y + id_x * dst1_stride_x;
+    int dst1_linear_idx = id_y * dst1_stride_y + id_x * dst1_stride_x + id_z * dst1_stride_z;
 
     // Compute the src linearized index
-    int src1_linear_idx = id_y * src1_stride_y + id_x * src1_stride_x;
+    int src1_linear_idx = id_y * src1_stride_y + id_x * src1_stride_x + id_z * src1_stride_z;
 
     // Store result
     dst1_ptr += dst1_offset_first_element_in_bytes + dst1_linear_idx;
