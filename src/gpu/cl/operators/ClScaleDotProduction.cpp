@@ -121,6 +121,13 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
      std::cout << "      _product_mm_kernel end" <<std::endl;
     
     
+    //  Softmax of previous product
+    std::cout << support::cpp11::to_string(query->data_type()) << std::endl;
+    SoftmaxKernelInfo softmax_info{1.0f, false, query->data_type(), 0};
+    auto softmax_kernel = std::make_unique<kernels::ClSoftmaxKernel>();
+    softmax_kernel->configure(compile_context,_scaled_query_key, _softmaxed_product, softmax_info);
+    _softmax_kernel = std::move(softmax_kernel);
+
 
      std::cout << "      context_mm_kernel start" <<std::endl;
     // Specify whether transpose weights is necessary in matmul info
