@@ -293,9 +293,9 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
     CLScheduler::get().enqueue_op(*_concat_reshape_kernel, concat_reshape_pack, true);
     */
 
-   ITensorPack query_reshape_pack{ { ACL_SRC_0, reshaped_query.get() }, { ACL_DST, output} };
+   ITensorPack ff_pack{ { ACL_SRC_0, reshaped_query.get() }, { ACL_DST, output} };
 
-    CLScheduler::get().enqueue_op(*_sf_kernel, query_reshape_pack, true);
+    CLScheduler::get().enqueue_op(*_sf_kernel, ff_pack, true);
 }
 
 experimental::MemoryRequirements ClScaleDotProduction::workspace() const
