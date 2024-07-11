@@ -129,7 +129,6 @@ __kernel void mat_mul_mmul_hugh(
     // Initialize the accumulators
     TILE(DATA_TYPE, M0, N0, ret);
 
-
     HUGH_2D(DATA_TYPE, M0, N0, acc);
     T_LOAD_HUGH(DATA_TYPE, M0, N0, BUFFER, lhs, 0, 0, 1, lhs_stride_y, acc);
     
