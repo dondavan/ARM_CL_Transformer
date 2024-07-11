@@ -62,7 +62,7 @@ __kernel void reshape_layer_hugh(TENSOR3D_DECLARATION(input),
 
     // Store result
     output_ptr += output_offset_first_element_in_bytes + out_linear_idx;
-    *((__global DATA_TYPE *)output_ptr) = (DATA_TYPE)out_z_id;
+    *((__global DATA_TYPE *)output_ptr) = (DATA_TYPE)(output_shape.z - out_z_id);
     /*  
     // Compute the output linearized index
     int out_linear_idx = out_x_id + out_y_id * output_shape.x + out_z_id * output_shape.x * output_shape.y;
