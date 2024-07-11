@@ -1031,6 +1031,7 @@
       "ScaleDotProduction": {
         "files": {
           "common": [
+            "src/gpu/cl/kernels/ClHughReshapeKernel.h.cpp",
             "src/gpu/cl/operators/ClScaleDotProduction.cpp",
             "src/runtime/CL/functions/CLScaleDotProductionAttentionLayer.cpp"
           ]
