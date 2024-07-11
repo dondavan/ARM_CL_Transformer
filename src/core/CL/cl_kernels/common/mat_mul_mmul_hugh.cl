@@ -155,7 +155,7 @@ __kernel void mat_mul_mmul_hugh(
             {
                 LOOP_UNROLLING(int, _n, 0, 1, N0,
                 {
-                    HUGH_2D_ACCESS(acc, _m, _n ,N0) = fma((DATA_TYPE)HUGH_2D_ACCESS(a, _m, _k, K0), (DATA_TYPE)HUGH_2D_ACCESS(b, _n, _k, K0), HUGH_2D_ACCESS(acc, _m, _n, N0));
+                    fma((DATA_TYPE)HUGH_2D_ACCESS(a, _m, _k, K0), (DATA_TYPE)HUGH_2D_ACCESS(b, _n, _k, K0), HUGH_2D_ACCESS(acc, _m, _n, N0));
                 })
             })
         })
