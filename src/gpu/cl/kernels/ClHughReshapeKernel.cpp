@@ -114,7 +114,7 @@ void ClHughReshapeKernel::run_op(ITensorPack &tensors, const Window &window, cl:
         utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC));
     auto dst = utils::cast::polymorphic_downcast<ICLTensor *>(tensors.get_tensor(TensorType::ACL_DST));
 
-    std::Cout << "HughReshapeKernel " << std::endl;
+    std::cout << "HughReshapeKernel " << std::endl;
     // Set srcs
     unsigned int idx = 0;
     add_3D_tensor_argument(idx, src, window_collapsed);
