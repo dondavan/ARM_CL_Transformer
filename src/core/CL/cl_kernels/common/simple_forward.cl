@@ -41,14 +41,14 @@ __kernel void simple_forward(TENSOR3D_DECLARATION(src1),
     int id_z = get_global_id(2);
 
     // Compute the output linearized index
-    int dst1_linear_idx = id_y * dst1_stride_y + id_x * dst1_stride_x;
-    int dst2_linear_idx = id_y * dst2_stride_y + id_x * dst2_stride_x;
-    int dst3_linear_idx = id_y * dst3_stride_y + id_x * dst3_stride_x;
+    int dst1_linear_idx = id_y * dst1_stride_y + id_x * dst1_stride_x + id_z * dst1_stride_z;
+    int dst2_linear_idx = id_y * dst2_stride_y + id_x * dst2_stride_x + id_z * dst2_stride_z;
+    int dst3_linear_idx = id_y * dst3_stride_y + id_x * dst3_stride_x + id_z * dst3_stride_z;
 
     // Compute the src linearized index
-    int src1_linear_idx = id_y * src1_stride_y + id_x * src1_stride_x;
-    int src2_linear_idx = id_y * src2_stride_y + id_x * src2_stride_x;
-    int src3_linear_idx = id_y * src3_stride_y + id_x * src3_stride_x;
+    int src1_linear_idx = id_y * src1_stride_y + id_x * src1_stride_x + id_z * src1_stride_z;
+    int src2_linear_idx = id_y * src2_stride_y + id_x * src2_stride_x + id_z * src2_stride_z;
+    int src3_linear_idx = id_y * src3_stride_y + id_x * src3_stride_x + id_z * src3_stride_z;
 
     // Store result
     dst1_ptr += dst1_offset_first_element_in_bytes + dst1_linear_idx;
