@@ -67,7 +67,6 @@ std::string get_cl_type_from_data_type(const DataType &dt)
         case DataType::F16:
             return "half";
         case DataType::F32:
-            std::cout << "src/core/CL/CLHelpers.cpp  float " << std::endl; 
             return "float";
         default:
             ARM_COMPUTE_ERROR("Unsupported input data type.");
