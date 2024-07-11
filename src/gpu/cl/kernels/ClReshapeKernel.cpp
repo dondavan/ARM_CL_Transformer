@@ -113,9 +113,7 @@ void ClReshapeKernel::run_op(ITensorPack &tensors, const Window &window, cl::Com
     const auto src =
         utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC));
     auto dst = utils::cast::polymorphic_downcast<ICLTensor *>(tensors.get_tensor(TensorType::ACL_DST));
-    std::cout << "slice.x().end() " << slice.x().end() << std::endl;
-    std::cout << "slice.y().end() " << slice.y().end() << std::endl;
-    std::cout << "slice.z().end() " << slice.z().end() << std::endl;
+    
     // Set srcs
     unsigned int idx = 0;
     add_3D_tensor_argument(idx, src, window_collapsed);
