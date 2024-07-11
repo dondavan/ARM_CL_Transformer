@@ -37,7 +37,7 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
                                             info.h(),
                                             query->tensor_shape().y(),
                                             1);
-    output           = &query->clone()->set_tensor_shape(query_reshape);
+    _reshaped_query           = query->clone()->set_tensor_shape(query_reshape);
     TensorShape query_permute = TensorShape(query->tensor_shape().x() / info.h(),
                                             query->tensor_shape().y(),
                                             info.h(),
@@ -45,7 +45,7 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
     _permuted_query           = query->clone()->set_tensor_shape(query_permute);
 
     auto query_reshape_kernel = std::make_unique<kernels::ClReshapeKernel>();
-    query_reshape_kernel->configure(compile_context, query, output);
+    query_reshape_kernel->configure(compile_context, query, &_reshaped_query);
     _query_reshape_kernel = std::move(query_reshape_kernel);
     /*
     auto query_permute_kernel = std::make_unique<kernels::ClPermuteKernel>();
@@ -174,15 +174,15 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
     std::cout << "ClScaleDotProduction::configure end " << std::endl;
     
 
-   /*
-    auto_init_if_empty(*output, query->clone()->set_tensor_shape(query->tensor_shape()));
+   
+    auto_init_if_empty(*output, _reshaped_query.clone()->set_tensor_shape(_reshaped_query.tensor_shape()));
     auto k = std::make_unique<kernels::ClSimpleForward1Kernel>();
-    k->configure(compile_context, query,output);
+    k->configure(compile_context, &_reshaped_query,output);
     _sf_kernel = std::move(k);
 
     std::cout << "      ClSimpleForward1Kernel " <<std::endl;
 
-   */
+   
 }
 
 Status
@@ -234,7 +234,7 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
     */
 
     // Run Query multi-Head reshape
-    ITensorPack query_reshape_pack{ { ACL_SRC_0, query }, { ACL_DST, output } };
+    ITensorPack query_reshape_pack{ { ACL_SRC_0, query }, { ACL_DST, reshaped_query.get() } };
 
     std::cout << "query->info()->tensor_shape().x() " <<query->info()->tensor_shape().x() << std::endl;
     std::cout << "query->info()->tensor_shape().y() " <<query->info()->tensor_shape().y() << std::endl;
@@ -242,9 +242,9 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
 
     CLScheduler::get().enqueue_op(*_query_reshape_kernel, query_reshape_pack, true);
 
-    std::cout << " output ->info()->tensor_shape().x() " << output ->info()->tensor_shape().x() << std::endl;
-    std::cout << " output ->info()->tensor_shape().y() " << output ->info()->tensor_shape().y() << std::endl;
-    std::cout << " output ->info()->tensor_shape().z() " << output ->info()->tensor_shape().z() << std::endl;
+    std::cout << " output ->info()->tensor_shape().x() " << reshaped_query.get()->info()->tensor_shape().x() << std::endl;
+    std::cout << " output ->info()->tensor_shape().y() " << reshaped_query.get()->info()->tensor_shape().y() << std::endl;
+    std::cout << " output ->info()->tensor_shape().z() " << reshaped_query.get()->info()->tensor_shape().z() << std::endl;
 /*
     std::cout << "reshaped_query.get()->info()->tensor_shape().x() " <<reshaped_query.get()->info()->tensor_shape().x() << std::endl;
     std::cout << "reshaped_query.get()->info()->tensor_shape().y() " <<reshaped_query.get()->info()->tensor_shape().y() << std::endl;
@@ -292,6 +292,10 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
     ITensorPack concat_reshape_pack{ { ACL_SRC_0, permuted_concat.get() }, { ACL_DST, output } };
     CLScheduler::get().enqueue_op(*_concat_reshape_kernel, concat_reshape_pack, true);
     */
+
+   ITensorPack query_reshape_pack{ { ACL_SRC_0, reshaped_query.get() }, { ACL_DST, output} };
+
+    CLScheduler::get().enqueue_op(*_sf_kernel, query_reshape_pack, true);
 }
 
 experimental::MemoryRequirements ClScaleDotProduction::workspace() const
