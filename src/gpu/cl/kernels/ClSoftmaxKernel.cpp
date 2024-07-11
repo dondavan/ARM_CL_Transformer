@@ -93,8 +93,9 @@ void ClSoftmaxKernel::configure(const CLCompileContext  &compile_context,
                                 const SoftmaxKernelInfo &info)
 {
     ARM_COMPUTE_UNUSED(compile_context, src, dst, info);
-
-    const auto &dst_shape = dst.tensor_shape();
+    
+    //const auto &dst_shape = dst.tensor_shape();
+    const auto dst_shape = dst.tensor_shape();
     
 
     const auto data_type    = src.data_type();
