@@ -180,7 +180,7 @@ __kernel void mat_mul_mmul_hugh(
 
     LOOP_UNROLLING(int, _m, 0, 1, M0,
     {
-        for(int _n = 0; _n < N0; _n++
+        for(int _n = 0; _n < N0; _n++)
         {
             HUGH_2D_ACCESS(acc,_m,_n,N0) += HUGH_2D_ACCESS(bias_tile,_n,0,N0);
         }
