@@ -26,6 +26,11 @@ void ClSimpleForward1Kernel::configure(const CLCompileContext &compile_context, 
 
     auto_init_if_empty(*dst1, src1->clone()->set_tensor_shape(src1->tensor_shape()));
 
+    std::cout << "ff dst x " << dst1->tensor_shape().x() << std::endl;
+    std::cout << "ff dst y " << dst1->tensor_shape().y() << std::endl;
+    std::cout << "ff dst z " << dst1->tensor_shape().z() << std::endl;
+
+
     Window win;
     win = calculate_max_window(*dst1, Steps());
     // Configure kernel window
@@ -60,19 +65,6 @@ void ClSimpleForward1Kernel::run_op(ITensorPack &tensors, const Window &window, 
     Window     slice = window.first_slice_window_3D();
     const auto src1 = utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC_0));
     auto       dst1 = utils::cast::polymorphic_downcast<ICLTensor *>(tensors.get_tensor(TensorType::ACL_DST_0));
-
-    std::cout << "slice x " << slice.x().end() << std::endl;
-    std::cout << "slice y " << slice.y().end() << std::endl;
-    std::cout << "slice z " << slice.z().end() << std::endl;
-
-    std::cout << "src->info()->strides_in_bytes().x() " << src1->info()->strides_in_bytes().x() << std::endl;
-    std::cout << "src->info()->strides_in_bytes().y() " << src1->info()->strides_in_bytes().y() << std::endl;
-    std::cout << "src->info()->strides_in_bytes().z() " << src1->info()->strides_in_bytes().z() << std::endl;
-
-
-    std::cout << "dst->info()->strides_in_bytes().x() " << dst1->info()->strides_in_bytes().x() << std::endl;
-    std::cout << "dst->info()->strides_in_bytes().y() " << dst1->info()->strides_in_bytes().y() << std::endl;
-    std::cout << "dst->info()->strides_in_bytes().z() " << dst1->info()->strides_in_bytes().z() << std::endl;
 
     // Set srcs
     unsigned int idx = 0;
