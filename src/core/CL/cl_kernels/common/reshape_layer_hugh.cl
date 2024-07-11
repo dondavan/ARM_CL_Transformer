@@ -51,12 +51,12 @@ __kernel void reshape_layer_hugh(TENSOR3D_DECLARATION(input),
                             int3 input_shape,
                             int3 output_shape)
 {
-    int out_x = get_global_id(0);
-    int out_y = get_global_id(1);
-    int out_z = get_global_id(2);
+    int out_x_id = get_global_id(0);
+    int out_y_id = get_global_id(1);
+    int out_z_id = get_global_id(2);
 
     // Compute the output linearized index
-    int out_linear_idx = out_x + out_y * output_shape.x + out_z * output_shape.x * output_shape.y;
+    int out_linear_idx = out_x_id + out_y_id * output_shape.x + out_z_id * output_shape.x * output_shape.y;
 
     // Translate to intput
     int in_x = out_linear_idx % input_shape.x;
@@ -65,6 +65,6 @@ __kernel void reshape_layer_hugh(TENSOR3D_DECLARATION(input),
 
     // Store result
     input_ptr += input_offset_first_element_in_bytes + in_x * input_stride_x + in_y * input_stride_y + in_z * input_stride_z;
-    output_ptr += output_offset_first_element_in_bytes + out_x * output_stride_x + out_y * output_stride_y + out_z * output_stride_z;
-    *((__global DATA_TYPE *)output_ptr) = *((__global DATA_TYPE *)input_ptr);
+    output_ptr += output_offset_first_element_in_bytes + out_x_id * output_stride_x + out_y_id * output_stride_y + out_z_id * output_stride_z;
+    *((__global DATA_TYPE *)output_ptr) = out_z_id;
 }
