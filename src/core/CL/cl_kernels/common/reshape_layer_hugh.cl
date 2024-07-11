@@ -57,7 +57,7 @@ __kernel void reshape_layer_hugh(TENSOR3D_DECLARATION(input),
 
     
     // Compute the output linearized index
-    int out_linear_idx = out_y_id * output_stride_y + out_x_id * output_stride_x + out_z_id * output_stride_z;
+    int out_linear_idx =  out_z_id * output_stride_z;
 
 
     // Store result
