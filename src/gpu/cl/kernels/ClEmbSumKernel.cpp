@@ -28,8 +28,6 @@ void ClEmbSumKernel::configure(const CLCompileContext &compile_context,
     ARM_COMPUTE_UNUSED(segemnt,position);
     ARM_COMPUTE_UNUSED(compile_context);
 
-    std::cout << "src/gpu/cl/kernels/ClEmbSumKernel.cpp configure start" << std::endl;
-
     // Configure output tensor info.
     auto_init_if_empty(*dst, TensorInfo(*token->clone()));
 
@@ -43,8 +41,6 @@ void ClEmbSumKernel::configure(const CLCompileContext &compile_context,
     Window win = calculate_max_window(*dst, Steps());
     ICLKernel::configure_internal(win);
 
-
-    std::cout << "src/gpu/cl/kernels/ClEmbSumKernel.cpp configure end" << std::endl;
 }
 
 Status ClEmbSumKernel::validate(const ITensorInfo *src, const ITensorInfo *vector, ITensorInfo *dst)
@@ -57,7 +53,6 @@ Status ClEmbSumKernel::validate(const ITensorInfo *src, const ITensorInfo *vecto
 
 void ClEmbSumKernel::run_op(ITensorPack &tensors, const Window &window, cl::CommandQueue &queue)
 {
-    std::cout << "src/gpu/cl/kernels/ClEmbSumKernel.cpp run start" << std::endl;
 
     ARM_COMPUTE_ERROR_ON_UNCONFIGURED_KERNEL(this);
     ARM_COMPUTE_ERROR_ON_INVALID_SUBWINDOW(IKernel::window(), window);
@@ -70,29 +65,6 @@ void ClEmbSumKernel::run_op(ITensorPack &tensors, const Window &window, cl::Comm
     const auto position = utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC_2));
     auto       dst      = utils::cast::polymorphic_downcast<ICLTensor *>(tensors.get_tensor(TensorType::ACL_DST));
 
-    //run_vectorize<float>(window, src, vector, dst);
-    //slice.set_broadcasted(Window::DimZ);
-    
-    std::cout << "slice x " << slice.x().end() << std::endl;
-    std::cout << "slice y " << slice.y().end() << std::endl;
-    std::cout << "slice z " << slice.z().end() << std::endl;
-
-    std::cout << "token->info()->strides_in_bytes().x() " << token->info()->strides_in_bytes().x() << std::endl;
-    std::cout << "token->info()->strides_in_bytes().y() " << token->info()->strides_in_bytes().y() << std::endl;
-    std::cout << "token->info()->strides_in_bytes().z() " << token->info()->strides_in_bytes().z() << std::endl;
-
-    std::cout << "segemnt->info()->strides_in_bytes().x() " << segemnt->info()->strides_in_bytes().x() << std::endl;
-    std::cout << "segemnt->info()->strides_in_bytes().y() " << segemnt->info()->strides_in_bytes().y() << std::endl;
-    std::cout << "segemnt->info()->strides_in_bytes().z() " << segemnt->info()->strides_in_bytes().z() << std::endl;
-
-    std::cout << "position->info()->strides_in_bytes().x() " << position->info()->strides_in_bytes().x() << std::endl;
-    std::cout << "position->info()->strides_in_bytes().y() " << position->info()->strides_in_bytes().y() << std::endl;
-    std::cout << "position->info()->strides_in_bytes().z() " << position->info()->strides_in_bytes().z() << std::endl;
-
-    std::cout << "dst->info()->strides_in_bytes().x() " << dst->info()->strides_in_bytes().x() << std::endl;
-    std::cout << "dst->info()->strides_in_bytes().y() " << dst->info()->strides_in_bytes().y() << std::endl;
-    std::cout << "dst->info()->strides_in_bytes().z() " << dst->info()->strides_in_bytes().z() << std::endl;
-
     // Set srcs
     unsigned int idx = 0;
     add_3D_tensor_argument(idx, token, window);
@@ -102,7 +74,6 @@ void ClEmbSumKernel::run_op(ITensorPack &tensors, const Window &window, cl::Comm
 
     enqueue(queue, *this, slice, lws_hint());
 
-    std::cout << "src/gpu/cl/kernels/ClEmbSumKernel.cpp run end" << std::endl;
 }
 
 } // namespace kernels
