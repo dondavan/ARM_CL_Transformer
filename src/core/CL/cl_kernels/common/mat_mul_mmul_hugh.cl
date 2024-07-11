@@ -168,9 +168,12 @@ __kernel void mat_mul_mmul_hugh(
 
         LOOP_UNROLLING(int, _m, 0, 1, M0,
         {
-            LOOP_UNROLLING(int, _k, 0, 1, K0,
+            LOOP_UNROLLING(int, _n, 0, 1, N0,
             {
-                HUGH_2D_ACCESS(acc,_m,1,N0) = fma((DATA_TYPE)HUGH_2D_ACCESS(a,_m,_k,K0), (DATA_TYPE)HUGH_2D_ACCESS(b,1,_k,K0), HUGH_2D_ACCESS(acc,_m,1,N0));
+                LOOP_UNROLLING(int, _k, 0, 1, K0,
+                {
+                    HUGH_2D_ACCESS(acc,_m,_n,N0) = fma((DATA_TYPE)HUGH_2D_ACCESS(a,_m,_k,K0), (DATA_TYPE)HUGH_2D_ACCESS(b,_n,_k,K0), HUGH_2D_ACCESS(acc,_m,_n,N0));
+                })
             })
         })
         /*
@@ -244,8 +247,10 @@ __kernel void mat_mul_mmul_hugh(
 
     LOOP_UNROLLING(int, _m, 0, 1, M0,
     {
-        HUGH_2D_ACCESS(acc,_m,0,N0) += bias_tile[0].s[0];
-        HUGH_2D_ACCESS(acc,_m,1,N0) += bias_tile[0].s[1];
+        LOOP_UNROLLING(int, _n, 0, 1, N0,
+        {
+            HUGH_2D_ACCESS(acc,_m,_n,N0) += bias_tile[0].s[_n];
+        })
     }) 
 #endif // defined(BIAS)
 
