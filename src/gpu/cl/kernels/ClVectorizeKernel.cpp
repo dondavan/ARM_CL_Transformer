@@ -66,11 +66,9 @@ void ClVectorizeKernel::configure(const CLCompileContext &compile_context, const
     ARM_COMPUTE_ERROR_ON_NULLPTR(vector);
     ARM_COMPUTE_UNUSED(compile_context);
 
-    std::cout << "src/gpu/cl/kernels/ClVectorizeKernel.cpp configure start" << std::endl;
     auto               padding_info = get_padding_info({ src, dst });
     int vector_depth = vector->tensor_shape().x();
     vector_depth =  vector_depth-1;
-    std::cout <<"vector_depth " <<vector_depth << std::endl;
 
     // Configure output tensor info.
     const TensorShape dst_shape(vector->tensor_shape().x(), src->tensor_shape().x());
@@ -100,8 +98,6 @@ void ClVectorizeKernel::configure(const CLCompileContext &compile_context, const
     ICLKernel::configure_internal(win);
 
     ARM_COMPUTE_ERROR_ON(has_padding_changed(padding_info));
-
-    std::cout << "src/gpu/cl/kernels/ClVectorizeKernel.cpp configure end" << std::endl;
 }
 
 Status ClVectorizeKernel::validate(const ITensorInfo *src, const ITensorInfo *vector, ITensorInfo *dst)
@@ -114,7 +110,6 @@ Status ClVectorizeKernel::validate(const ITensorInfo *src, const ITensorInfo *ve
 
 void ClVectorizeKernel::run_op(ITensorPack &tensors, const Window &window, cl::CommandQueue &queue)
 {
-    std::cout << "src/gpu/cl/kernels/ClVectorizeKernel.cpp run start" << std::endl;
 
     ARM_COMPUTE_ERROR_ON_UNCONFIGURED_KERNEL(this);
     ARM_COMPUTE_ERROR_ON_INVALID_SUBWINDOW(IKernel::window(), window);
@@ -126,24 +121,6 @@ void ClVectorizeKernel::run_op(ITensorPack &tensors, const Window &window, cl::C
     const auto vector = utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC_1));
     auto       dst    = utils::cast::polymorphic_downcast<ICLTensor *>(tensors.get_tensor(TensorType::ACL_DST));
 
-    //run_vectorize<float>(window, src, vector, dst);
-    //slice.set_broadcasted(Window::DimZ);
-    std::cout << "slice x " <<slice.x().end() << std::endl;
-    std::cout << "slice y " <<slice.y().end() << std::endl;
-    std::cout << "slice z " <<slice.z().end() << std::endl;
-
-    std::cout << "src->info()->strides_in_bytes().x() " <<src->info()->strides_in_bytes().x() << std::endl;
-    std::cout << "src->info()->strides_in_bytes().y() " <<src->info()->strides_in_bytes().y() << std::endl;
-    std::cout << "src->info()->strides_in_bytes().z() " <<src->info()->strides_in_bytes().z() << std::endl;
-
-    std::cout << "vector->info()->strides_in_bytes().x() " <<vector->info()->strides_in_bytes().x() << std::endl;
-    std::cout << "vector->info()->strides_in_bytes().y() " <<vector->info()->strides_in_bytes().y() << std::endl;
-    std::cout << "vector->info()->strides_in_bytes().z() " <<vector->info()->strides_in_bytes().z() << std::endl;
-
-    std::cout << "dst->info()->strides_in_bytes().x() " <<dst->info()->strides_in_bytes().x() << std::endl;
-    std::cout << "dst->info()->strides_in_bytes().y() " <<dst->info()->strides_in_bytes().y() << std::endl;
-    std::cout << "dst->info()->strides_in_bytes().z() " <<dst->info()->strides_in_bytes().z() << std::endl;
-
     // Set srcs
     unsigned int idx = 0;
     add_3D_tensor_argument(idx, src, window);
@@ -152,7 +129,6 @@ void ClVectorizeKernel::run_op(ITensorPack &tensors, const Window &window, cl::C
 
     enqueue(queue, *this, slice, lws_hint());
 
-    std::cout << "src/gpu/cl/kernels/ClVectorizeKernel.cpp run end" << std::endl;
 }
 
 } // namespace kernels
