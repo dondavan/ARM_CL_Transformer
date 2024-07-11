@@ -48,8 +48,8 @@
  */
 __kernel void reshape_layer_hugh(TENSOR3D_DECLARATION(input),
                             TENSOR3D_DECLARATION(output),
-                            int2 input_shape,
-                            int2 output_shape)
+                            int3 input_shape,
+                            int3 output_shape)
 {
     int out_x = get_global_id(0);
     int out_y = get_global_id(1);

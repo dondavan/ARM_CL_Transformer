@@ -80,13 +80,13 @@ void ClHughReshapeKernel::configure(const CLCompileContext &compile_context, con
     _kernel                          = create_kernel(compile_context, "reshape_layer_hugh", build_opts);
 
     // Add static arguments
-    const cl_int2 src_shape = {
-        {static_cast<cl_int>(src->tensor_shape()[0]), static_cast<cl_int>(src->tensor_shape()[1])}};
-    const cl_int2 dst_shape = {
-        {static_cast<cl_int>(dst->tensor_shape()[0]), static_cast<cl_int>(dst->tensor_shape()[1])}};
+    const cl_int3 src_shape = {
+        {static_cast<cl_int>(src->tensor_shape()[0]), static_cast<cl_int>(src->tensor_shape()[1]), static_cast<cl_int>(src->tensor_shape()[2])}};
+    const cl_int3 dst_shape = {
+        {static_cast<cl_int>(dst->tensor_shape()[0]), static_cast<cl_int>(dst->tensor_shape()[1], static_cast<cl_int>(dst->tensor_shape()[2]))}};
     unsigned int idx = 2 * num_arguments_per_3D_tensor(); // Skip the src and dst parameters
-    _kernel.setArg<cl_int2>(idx++, src_shape);
-    _kernel.setArg<cl_int2>(idx++, dst_shape);
+    _kernel.setArg<cl_int3>(idx++, src_shape);
+    _kernel.setArg<cl_int3>(idx++, dst_shape);
 
     // Configure kernel window
     Window win = calculate_max_window(*dst);
