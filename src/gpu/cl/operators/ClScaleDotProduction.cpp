@@ -37,7 +37,7 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
                                             info.h(),
                                             query->tensor_shape().y(),
                                             1);
-    _reshaped_query           = query->clone()->set_tensor_shape(query_reshape);
+    output           = &query->clone()->set_tensor_shape(query_reshape);
     TensorShape query_permute = TensorShape(query->tensor_shape().x() / info.h(),
                                             query->tensor_shape().y(),
                                             info.h(),
