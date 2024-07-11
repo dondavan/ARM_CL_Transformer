@@ -115,7 +115,7 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
     auto        product_mm_kernel = std::make_unique<kernels::ClLinearKernel>();
     const float scale             = 1.0f / sqrt(info.d_model() / info.h());
     product_mm_kernel->set_target(gpu_target);
-    product_mm_kernel->configure(compile_context, &_permuted_query, &_transposed_key, nullptr, output, scale, 1, mm_kernel_info_qk);
+    product_mm_kernel->configure(compile_context, &_permuted_query, &_transposed_key, nullptr, &_scaled_query_key, scale, 1, mm_kernel_info_qk);
     _product_mm_kernel = std::move(product_mm_kernel);
 
      std::cout << "      _product_mm_kernel end" <<std::endl;
