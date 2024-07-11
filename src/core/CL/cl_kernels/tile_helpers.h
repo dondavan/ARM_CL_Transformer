@@ -78,6 +78,8 @@
         TILE_VECTOR_TYPE##W(DATA_TYPE) v;                     \
     } BASENAME[H]
 
+// HUGH untion -> struct
+
 #define TENSOR4D_IMAGE(name)          \
     __read_only image2d_t name##_img, \
     __global uchar *name##_ptr,       \
@@ -322,7 +324,11 @@
 #define LOOP_UNROLLING_127(idx, step, macro) LOOP_UNROLLING_126(idx, step, macro); UNROLL_INCR(idx, step, macro)
 #define LOOP_UNROLLING_128(idx, step, macro) LOOP_UNROLLING_127(idx, step, macro); UNROLL_INCR(idx, step, macro)
 
-#define LOOP_UNROLLING_STR(type, idx, start, step, num, macro) {type idx = start;LOOP_UNROLLING_##num(idx, step, macro);}
+#define LOOP_UNROLLING_STR(type, idx, start, step, num, macro) \
+    {                                                          \
+        type idx = start;                                      \
+        LOOP_UNROLLING_##num(idx, step, macro);                \
+    }
 #else // !defined(UNROLL_WITH_PRAGMA)
 #define LOOP_UNROLLING_STR(type, idx, start, step, num, macro) \
     {                                                          \
@@ -334,26 +340,6 @@
     }
 #endif // !defined(UNROLL_WITH_PRAGMA)
 #define LOOP_UNROLLING(type, idx, start, step, num, macro) LOOP_UNROLLING_STR(type, idx, start, step, num, macro)
-
-
-
-
-
-
-#define LOOP_UNROLLING_HUGH_1(idx, step, macro) macro
-#define LOOP_UNROLLING_HUGH_2(idx, step, macro) macro idx+=step; macro idx+=step;
-#define LOOP_UNROLLING_HUGH_3(idx, step, macro) macro idx+=step; macro idx+=step; macro idx+=step;
-#define LOOP_UNROLLING_HUGH_4(idx, step, macro) macro idx+=step; macro idx+=step; macro idx+=step; macro idx+=step;
-#define LOOP_UNROLLING_HUGH_5(idx, step, macro) macro idx+=step; macro idx+=step; macro idx+=step; macro idx+=step; macro idx+=step;
-#define LOOP_UNROLLING_HUGH_6(idx, step, macro) macro idx+=step; macro idx+=step; macro idx+=step; macro idx+=step; macro idx+=step; macro idx+=step; 
-#define LOOP_UNROLLING_HUGH_7(idx, step, macro) macro idx+=step; macro idx+=step; macro idx+=step; macro idx+=step; macro idx+=step; macro idx+=step; idx+=step; macro idx+=step; 
-#define LOOP_UNROLLING_HUGH_8(idx, step, macro) macro idx+=step; LOOP_UNROLLING_HUGH_7(idx, step, macro)
-#define LOOP_UNROLLING_HUGH_9(idx, step, macro) macro; idx+=step; LOOP_UNROLLING_HUGH_8(idx, step, macro)
-
-
-
-#define LOOP_UNROLLING_HUGH_STR(type, idx, start, step, num, macro) {type idx = start;LOOP_UNROLLING_HUGH_##num(idx, step, macro);}
-#define LOOP_UNROLLING_HUGH(type, idx, start, step, num, macro) LOOP_UNROLLING_HUGH_STR(type, idx, start, step, num, macro)
 
 /** Get the get_global_id with partial N0. This function is useful when the dimension is not multiple of N0 and we need to use a partial N0
  *  to avoid out-of-bound read/write
@@ -508,7 +494,8 @@
 #define V_LOAD(DATA_TYPE, WIDTH, TENSOR_TYPE, TENSOR, X, Y, STRIDE_Y) V_LOAD_STR(DATA_TYPE, WIDTH, TENSOR_TYPE, TENSOR, X, Y, STRIDE_Y)
 #define V_LOAD_STR(DATA_TYPE, WIDTH, TENSOR_TYPE, TENSOR, X, Y, STRIDE_Y) V_LOAD_##TENSOR_TYPE(DATA_TYPE, WIDTH, TENSOR, X, Y, STRIDE_Y)
 #define V_LOAD_BUFFER(DATA_TYPE, WIDTH, TENSOR, X, Y, STRIDE_Y) \
-    VLOAD(WIDTH)(0, (__global DATA_TYPE *)(TENSOR##_ptr + TENSOR##_offset_first_element_in_bytes + (X) * sizeof(DATA_TYPE) + (Y) * (STRIDE_Y)))
+    VLOAD(WIDTH)                                                \
+    (0, (__global DATA_TYPE *)(TENSOR##_ptr + TENSOR##_offset_first_element_in_bytes + (X) * sizeof(DATA_TYPE) + (Y) * (STRIDE_Y)))
 #define V_LOAD_IMAGE(DATA_TYPE, WIDTH, TENSOR, X, Y, STRIDE_Y) READ_IMAGE2D(DATA_TYPE, CONVERT_VECTOR_SIZE_TO_PIXEL_UNIT(WIDTH), TENSOR##_img, (X) / 4, (Y))
 
 /** Store a vector in global memory (tensor)
@@ -526,7 +513,8 @@
 #define V_STORE(DATA_TYPE, WIDTH, TENSOR_TYPE, TENSOR, X, Y, STRIDE_Y, VALUES) V_STORE_STR(DATA_TYPE, WIDTH, TENSOR_TYPE, TENSOR, X, Y, STRIDE_Y, VALUES)
 #define V_STORE_STR(DATA_TYPE, WIDTH, TENSOR_TYPE, TENSOR, X, Y, STRIDE_Y, VALUES) V_STORE_##TENSOR_TYPE(DATA_TYPE, WIDTH, TENSOR, X, Y, STRIDE_Y, VALUES)
 #define V_STORE_BUFFER(DATA_TYPE, WIDTH, TENSOR, X, Y, STRIDE_Y, VALUES) \
-    VSTORE(WIDTH)(VALUES, 0, (__global DATA_TYPE *)(TENSOR##_ptr + TENSOR##_offset_first_element_in_bytes + (X) * sizeof(DATA_TYPE) + (Y) * (STRIDE_Y)))
+    VSTORE(WIDTH)                                                \
+    (VALUES, 0, (__global DATA_TYPE *)(TENSOR##_ptr + TENSOR##_offset_first_element_in_bytes + (X) * sizeof(DATA_TYPE) + (Y) * (STRIDE_Y)))
 #define V_STORE_IMAGE(DATA_TYPE, WIDTH, TENSOR, X, Y, STRIDE_Y, VALUES) WRITE_IMAGE2D(DATA_TYPE, CONVERT_VECTOR_SIZE_TO_PIXEL_UNIT(WIDTH), TENSOR##_img, (X) / 4, (Y), VALUES)
 
 /** Load a tile from global memory (tensor)
@@ -546,12 +534,12 @@
  * @param[out] dst           Output tile
  */
 #define T_LOAD(DATA_TYPE, HEIGHT, WIDTH, TENSOR_TYPE, TENSOR, X, Y, YI_MULTIPLIER, STRIDE_Y, dst)                      \
-    {                                                                                                                 \
+    ({                                                                                                                 \
         LOOP_UNROLLING(int, _i, 0, 1, HEIGHT,                                                                          \
         {                                                                                                              \
             dst[_i].v = V_LOAD(DATA_TYPE, WIDTH, TENSOR_TYPE, TENSOR, X, ((Y) + _i * (int)(YI_MULTIPLIER)), STRIDE_Y); \
         })                                                                                                             \
-    }
+    })
 
 /** Store a VECTOR variable (e.g. int4, int8, char2 etc.) to a specified column in the TILE object
  *
@@ -911,7 +899,7 @@
  * @param[in] indirect_y       Indirect Y index tile
  */
 #define T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, HEIGHT, WIDTH0, WIDTH1, TENSOR_TYPE, TENSOR, X, STRIDE_Y, WIDTH1_CONDITION, src, indirect_y)                                                      \
-    {                                                                                                                                                                                             \
+    ({                                                                                                                                                                                             \
         if(WIDTH1_CONDITION)                                                                                                                                                                       \
         {                                                                                                                                                                                          \
             LOOP_UNROLLING(int, _i, 0, 1, HEIGHT,                                                                                                                                                  \
@@ -928,7 +916,7 @@
                 (CONVERT(src[HEIGHT - 1 - _i].v, VEC_DATA_TYPE(DATA_TYPE, WIDTH0)), 0, (__global DATA_TYPE *)(TENSOR##_ptr + TENSOR##_offset_first_element_in_bytes + (X) * sizeof(DATA_TYPE) + (indirect_y[HEIGHT - 1 - _i].v) * STRIDE_Y)); \
             })                                                                                                                                                                                     \
         }                                                                                                                                                                                          \
-    }
+    })
 
 /** Offset correction for the QASYMM8 computation
  *
