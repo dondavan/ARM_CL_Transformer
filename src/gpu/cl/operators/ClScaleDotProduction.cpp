@@ -47,11 +47,11 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
     auto query_reshape_kernel = std::make_unique<kernels::ClHughReshapeKernel>();
     query_reshape_kernel->configure(compile_context, query, &_reshaped_query);
     _query_reshape_kernel = std::move(query_reshape_kernel);
-    /*
+    
     auto query_permute_kernel = std::make_unique<kernels::ClPermuteKernel>();
     query_permute_kernel->configure(compile_context, &_reshaped_query, &_permuted_query, PermutationVector(0U, 2U, 1U));
     _query_permute_kernel = std::move(query_permute_kernel);
-
+/*
     // Key multi-Head reshape
     TensorShape key_reshape = TensorShape(key->tensor_shape().x() / info.h(),
                                           info.h(),
@@ -175,7 +175,7 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
     
 
     auto k = std::make_unique<kernels::ClSimpleForward1Kernel>();
-    k->configure(compile_context, &_reshaped_query, output);
+    k->configure(compile_context, &_permuted_query, output);
     _sf_kernel = std::move(k);
 
     std::cout << "      ClSimpleForward1Kernel " <<std::endl;
@@ -215,9 +215,8 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
     
     
     CLAuxTensorHandler reshaped_query(offset_int_vec(QueryReshape), _reshaped_query, tensors);
-    /*
     CLAuxTensorHandler permuted_query(offset_int_vec(QueryPermute), _permuted_query, tensors);
-    CLAuxTensorHandler reshaped_key(offset_int_vec(KeyReshape), _reshaped_key, tensors);
+    /*CLAuxTensorHandler reshaped_key(offset_int_vec(KeyReshape), _reshaped_key, tensors);
     CLAuxTensorHandler permuted_key(offset_int_vec(KeyPermute), _permuted_key, tensors);
     CLAuxTensorHandler reshaped_value(offset_int_vec(ValueReshape), _reshaped_value, tensors);
     CLAuxTensorHandler permuted_value(offset_int_vec(ValuePermute), _permuted_value, tensors);
@@ -243,14 +242,14 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
     std::cout << "reshaped_query->info()->tensor_shape().x() " << reshaped_query.get()->info()->tensor_shape().x() << std::endl;
     std::cout << "reshaped_query->info()->tensor_shape().y() " << reshaped_query.get()->info()->tensor_shape().y() << std::endl;
     std::cout << "reshaped_query->info()->tensor_shape().z() " << reshaped_query.get()->info()->tensor_shape().z() << std::endl;
-/*
+
     std::cout << "reshaped_query.get()->info()->tensor_shape().x() " <<reshaped_query.get()->info()->tensor_shape().x() << std::endl;
     std::cout << "reshaped_query.get()->info()->tensor_shape().y() " <<reshaped_query.get()->info()->tensor_shape().y() << std::endl;
     std::cout << "reshaped_query.get()->info()->tensor_shape().z() " <<reshaped_query.get()->info()->tensor_shape().z() << std::endl;
 
     ITensorPack query_permute_pack{ { ACL_SRC, reshaped_query.get() }, { ACL_DST, permuted_query.get() } };
     CLScheduler::get().enqueue_op(*_query_permute_kernel, query_permute_pack, true);
-
+/*
     // Run Key multi-Head reshape
     ITensorPack key_reshape_pack{ { ACL_SRC_0, key }, { ACL_DST, reshaped_key.get() } };
     CLScheduler::get().enqueue_op(*_key_reshape_kernel, key_reshape_pack, true);
@@ -291,16 +290,13 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
     CLScheduler::get().enqueue_op(*_concat_reshape_kernel, concat_reshape_pack, true);
     */
 
-   ITensorPack ff_pack{ { ACL_SRC_0, reshaped_query.get() }, { ACL_DST, output} };
+   ITensorPack ff_pack{ { ACL_SRC_0, permuted_query.get() }, { ACL_DST, output} };
     CLScheduler::get().enqueue_op(*_sf_kernel, ff_pack, true);
 
     std::cout << "output->info()->tensor_shape() x " << output->info()->tensor_shape().x() << std::endl;
     std::cout << "output->info()->tensor_shape() y " << output->info()->tensor_shape().y() << std::endl;
     std::cout << "output->info()->tensor_shape() z " << output->info()->tensor_shape().z() << std::endl;
 
-    std::cout << "output->info()->strides_in_bytes() x " << output->info()->strides_in_bytes().x() << std::endl;
-    std::cout << "output->info()->strides_in_bytes() y " << output->info()->strides_in_bytes().y() << std::endl;
-    std::cout << "output->info()->strides_in_bytes() z " << output->info()->strides_in_bytes().z() << std::endl;
 }
 
 experimental::MemoryRequirements ClScaleDotProduction::workspace() const
