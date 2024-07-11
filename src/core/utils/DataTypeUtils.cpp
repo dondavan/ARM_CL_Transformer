@@ -60,6 +60,7 @@ DataType data_type_from_name(const std::string &name)
     static const std::map<std::string, DataType> data_types = {
         {"U32", DataType::U32},
         {"f16", DataType::F16},
+        {"fp32", DataType::F32},
         {"f32", DataType::F32},
         {"qasymm8", DataType::QASYMM8},
         {"qasymm8_signed", DataType::QASYMM8_SIGNED},
