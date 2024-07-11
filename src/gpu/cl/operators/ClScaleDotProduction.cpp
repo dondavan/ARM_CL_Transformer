@@ -122,6 +122,7 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
     
     
     //  Softmax of previous product
+    if(query->data_type() == DataType::F32) std::cout << "wo cao ni ma de query type" << std::endl;
     SoftmaxKernelInfo softmax_info{1.0f, false, query->data_type(), 0};
     auto softmax_kernel = std::make_unique<kernels::ClSoftmaxKernel>();
     softmax_kernel->configure(compile_context,_scaled_query_key, _softmaxed_product, softmax_info);
