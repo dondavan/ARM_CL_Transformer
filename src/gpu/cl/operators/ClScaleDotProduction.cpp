@@ -97,7 +97,7 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
     key_transpose_kernel->configure(compile_context, &_permuted_key, &_transposed_key);
     _key_transpose_kernel = std::move(key_transpose_kernel);
 
-     std::cout << "      _product_mm_kernel " <<std::endl;
+     std::cout << "      _product_mm_kernel start" <<std::endl;
     // Specify whether transpose weights is necessary in matmul info
     const MatMulInfo mat_info_qk = MatMulInfo();
 
@@ -117,6 +117,8 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
     product_mm_kernel->set_target(gpu_target);
     product_mm_kernel->configure(compile_context, &_permuted_query, &_transposed_key, nullptr, output, scale, 1, mm_kernel_info_qk);
     _product_mm_kernel = std::move(product_mm_kernel);
+
+     std::cout << "      _product_mm_kernel end" <<std::endl;
     
     
     //  Softmax of previous product
@@ -126,6 +128,7 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
     _softmax_kernel = std::move(softmax_kernel);
 
 
+     std::cout << "      context_mm_kernel start" <<std::endl;
     // Specify whether transpose weights is necessary in matmul info
     const MatMulInfo mat_info_pv = MatMulInfo();
 
@@ -143,6 +146,8 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
     context_mm_kernel->set_target(gpu_target);
     context_mm_kernel->configure(compile_context, &_softmaxed_product, &_permuted_value, nullptr, &_gemmed_context, 1.0f, 1, mm_kernel_info_pv);
     _context_mm_kernel = std::move(context_mm_kernel);
+
+     std::cout << "      context_mm_kernel end" <<std::endl;
 
 
     // Concat multi-Head reshape
