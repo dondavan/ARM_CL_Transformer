@@ -163,6 +163,7 @@ std::cout << "wo cao ni ma de query type 4" << std::endl;
 
     _kernel = create_kernel(compile_context, kernel_name, build_opts.options());
 
+    std::cout << "wo cao ni ma de query type 6" << std::endl;
     // Configure kernel window and kernel arguments.
     Window win = calculate_max_window(src, Steps(vec_size));
 
