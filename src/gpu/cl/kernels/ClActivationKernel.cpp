@@ -260,6 +260,14 @@ void ClActivationKernel::run_op(ITensorPack &tensors, const Window &window, ::cl
     Window collapsed = window.collapse_if_possible(ICLKernel::window(), Window::DimZ);
     Window slice     = collapsed.first_slice_window_3D();
 
+    cl::NDRange valid_lws;
+    if( ((window.x().end() - window.x().start()) / window.x().step()) % lws_hint().get()[0] != 0)
+    {
+        valid_lws = cl::NDRange((window.x().end() - window.x().start()) / window.x().step());
+    }else
+    {
+        valid_lws = lws_hint();
+    }
     do
     {
         unsigned int idx = 0;
@@ -268,7 +276,7 @@ void ClActivationKernel::run_op(ITensorPack &tensors, const Window &window, ::cl
         {
             add_3D_tensor_argument(idx, dst, slice);
         }
-        enqueue(queue, *this, slice, lws_hint());
+        enqueue(queue, *this, slice, valid_lws);
     } while (collapsed.slide_window_slice_3D(slice));
 }
 } // namespace kernels

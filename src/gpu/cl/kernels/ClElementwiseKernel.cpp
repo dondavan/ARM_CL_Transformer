@@ -470,7 +470,6 @@ void ClSaturatedArithmeticKernel::configure(const ClCompileContext    &compile_c
                                             const ConvertPolicy       &policy,
                                             const ActivationLayerInfo &act_info)
 {   
-    std::cout << "src/gpu/cl/kernels/ClElementwiseKernel.cpp ClSaturatedArithmeticKernel::configure start" << std::endl;
     ARM_COMPUTE_ERROR_ON_NULLPTR(input1, input2, output);
     ARM_COMPUTE_ERROR_THROW_ON(ClSaturatedArithmeticKernel::validate(op, input1, input2, output, policy, act_info));
     auto padding_info = get_padding_info({input1, input2, output});
@@ -481,7 +480,6 @@ void ClSaturatedArithmeticKernel::configure(const ClCompileContext    &compile_c
     configure_common(compile_context, input1, input2, output);
     ARM_COMPUTE_ERROR_ON(has_padding_changed(padding_info));
 
-    std::cout << "src/gpu/cl/kernels/ClElementwiseKernel.cpp ClSaturatedArithmeticKernel::configure end" << std::endl;
 }
 
 Status ClSaturatedArithmeticKernel::validate(ArithmeticOperation        op,
