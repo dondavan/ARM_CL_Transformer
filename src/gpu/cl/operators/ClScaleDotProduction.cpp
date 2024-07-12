@@ -126,7 +126,7 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
     auto softmax_kernel = std::make_unique<kernels::ClSoftmaxKernel>();
     softmax_kernel->configure(compile_context, _scaled_query_key, _softmaxed_product, softmax_info);
     _softmax_kernel = std::move(softmax_kernel);
-/*
+
 
      std::cout << "      context_mm_kernel start" <<std::endl;
     // Specify whether transpose weights is necessary in matmul info
@@ -145,11 +145,11 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
     //  Multiply between scaled product and value
     auto context_mm_kernel = std::make_unique<kernels::ClLinearKernel>();
     context_mm_kernel->set_target(gpu_target);
-    context_mm_kernel->configure(compile_context, &_softmaxed_product, &_permuted_value, nullptr, &_gemmed_context, 1.0f, 1, mm_kernel_info_pv);
+    context_mm_kernel->configure(compile_context, &_softmaxed_product, &_permuted_value, nullptr, &_gemmed_context, 1.0f, 0, mm_kernel_info_pv);
     _context_mm_kernel = std::move(context_mm_kernel);
 
      std::cout << "      context_mm_kernel end" <<std::endl;
-
+/*
 
     // Concat multi-Head reshape
     TensorShape concat_permute = TensorShape(query->tensor_shape().x() / info.h(),
@@ -220,8 +220,8 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
 
     CLAuxTensorHandler scaled_query_key(offset_int_vec(QueryKeyScale), _scaled_query_key, tensors);
     CLAuxTensorHandler softmaxed_product(offset_int_vec(Softmax), _softmaxed_product, tensors);
- /*   CLAuxTensorHandler gemmed_context(offset_int_vec(GemmedContext), _gemmed_context, tensors);
-
+    CLAuxTensorHandler gemmed_context(offset_int_vec(GemmedContext), _gemmed_context, tensors);
+/*
     CLAuxTensorHandler permuted_concat(offset_int_vec(ConcatPermute), _permuted_concat, tensors);
     */
 
@@ -272,11 +272,11 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
     // Softmax scaled product
     ITensorPack softmax_pack = { { ACL_SRC, scaled_query_key.get() }, { ACL_DST, softmaxed_product.get() } };
     CLScheduler::get().enqueue_op(*_softmax_kernel, softmax_pack, true);
-/*   
+ 
     // Run matrix multiply compute multi-head attention between Context and Value
     ITensorPack gemm_context_pack{ { ACL_SRC_0, softmaxed_product.get() }, { ACL_SRC_1, permuted_value.get() }, { ACL_DST, gemmed_context.get() } };
     CLScheduler::get().enqueue_op(*_context_mm_kernel, gemm_context_pack, true);
-
+/*  
     // Concat all attention head together
     ITensorPack concat_permute_pack{ { ACL_SRC, gemmed_context.get() }, { ACL_DST, permuted_concat.get() } };
     CLScheduler::get().enqueue_op(*_concat_permute_kernel, concat_permute_pack, true);
@@ -285,7 +285,7 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
     CLScheduler::get().enqueue_op(*_concat_reshape_kernel, concat_reshape_pack, true);
     */
 
-   ITensorPack ff_pack{ { ACL_SRC_0, softmaxed_product.get() }, { ACL_DST, output} };
+   ITensorPack ff_pack{ { ACL_SRC_0, gemmed_context.get() }, { ACL_DST, output} };
     CLScheduler::get().enqueue_op(*_sf_kernel, ff_pack, true);
 
     std::cout << "output->info()->tensor_shape() x " << output->info()->tensor_shape().x() << std::endl;
