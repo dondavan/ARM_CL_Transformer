@@ -21,8 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef ARM_COMPUTE_CL_ELEMENTWISE_KERNEL_H
-#define ARM_COMPUTE_CL_ELEMENTWISE_KERNEL_H
+#ifndef ARM_COMPUTE_CL_HUGH_ELEMENTWISE_KERNEL_H
+#define ARM_COMPUTE_CL_HUGH_ELEMENTWISE_KERNEL_H
 
 #include "arm_compute/function_info/ActivationLayerInfo.h"
 
@@ -45,11 +45,11 @@ namespace kernels
  * For binary elementwise ops in-place cannot be enabled by passing nullptr to dst, it can only be enabled by passing either src1 or src2 to dst instead.
  *
  */
-class ClElementwiseKernel : public IClKernel
+class ClHughElementwiseKernel : public IClKernel
 {
 public:
-    ClElementwiseKernel();
-    ARM_COMPUTE_DISALLOW_COPY_ALLOW_MOVE(ClElementwiseKernel);
+    ClHughElementwiseKernel();
+    ARM_COMPUTE_DISALLOW_COPY_ALLOW_MOVE(ClHughElementwiseKernel);
 
     // Inherited methods overridden:
     void run_op(ITensorPack &tensors, const Window &window, ::cl::CommandQueue &queue) override;
@@ -92,7 +92,7 @@ protected:
     ActivationLayerInfo _act_info{};
 };
 
-class ClLogicalBinaryKernel : public ClElementwiseKernel
+class ClLogicalBinaryKernel : public ClHughElementwiseKernel
 {
 public:
     ClLogicalBinaryKernel() = default;
@@ -133,7 +133,7 @@ private:
 };
 
 /** Addition operation */
-class ClSaturatedArithmeticKernel : public ClElementwiseKernel
+class ClSaturatedArithmeticKernel : public ClHughElementwiseKernel
 {
 public:
     ClSaturatedArithmeticKernel() = default;
@@ -185,7 +185,7 @@ private:
     ArithmeticOperation _op{};
 };
 
-class ClArithmeticKernel : public ClElementwiseKernel
+class ClArithmeticKernel : public ClHughElementwiseKernel
 {
 public:
     ClArithmeticKernel() = default;
@@ -235,4 +235,4 @@ private:
 } // namespace kernels
 } // namespace opencl
 } // namespace arm_compute
-#endif /* ARM_COMPUTE_CL_ELEMENTWISE_KERNEL_H */
+#endif /* ARM_COMPUTE_CL_HUGH_ELEMENTWISE_KERNEL_H */
