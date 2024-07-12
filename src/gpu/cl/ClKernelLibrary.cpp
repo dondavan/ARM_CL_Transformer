@@ -360,7 +360,8 @@ const std::map<std::string, std::string> ClKernelLibrary::_kernel_program_map = 
     {"simple_forward","common/simple_forward.cl"},
     {"simple_forward_1","common/simple_forward_1.cl"},
     {"layer_norm","common/layer_norm.cl"},
-    {"mat_mul_mmul_hugh","common/mat_mul_mmul_hugh.cl"},
+    {"mat_mul_mmul_hugh_nt_nt","common/mat_mul_mmul_hugh.cl"},
+    {"mat_mul_mmul_hugh_nt_t","common/mat_mul_mmul_hugh.cl"},
     {"reshape_layer_hugh", "common/reshape_layer_hugh.cl"},
 #ifdef ENABLE_NCHW_KERNELS
     {"batch_to_space_nchw", "nchw/batch_to_space.cl"},
