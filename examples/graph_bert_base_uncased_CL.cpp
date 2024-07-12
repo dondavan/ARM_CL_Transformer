@@ -116,10 +116,28 @@ class GraphVanillaTransformerExample : public Example
                                 get_weights_accessor(data_path, "positional_embedding.npy", operation_layout))
                      .set_name("tkemb1");
 
-        add_encoder_block(data_path, "layer_0/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+        add_encoder_block(data_path,"layer_0/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+            add_encoder_block(data_path,"layer_1/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+            add_encoder_block(data_path,"layer_2/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+            add_encoder_block(data_path,"layer_3/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+            add_encoder_block(data_path,"layer_4/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+            add_encoder_block(data_path,"layer_5/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+
+            add_encoder_block(data_path,"layer_6/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+            add_encoder_block(data_path,"layer_7/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+            add_encoder_block(data_path,"layer_8/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+            add_encoder_block(data_path,"layer_9/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+            add_encoder_block(data_path,"layer_10/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+            add_encoder_block(data_path,"layer_11/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
 
         // Pooler
-        graph 
+        graph << LinearLayer(LinearLayerInfo(d_model, TensorShape(d_model, d_model) ,
+                                               TensorShape(d_model) ),
+                               get_weights_accessor(data_path, "pooler_weight.npy"),
+                               get_weights_accessor(data_path, "pooler_bias.npy"))
+                               
+              << ActivationLayer(ActivationLayerInfo(ActivationFunction::TANH,1.f, 1.f))
+              
               << OutputLayer(get_output_accessor(common_params)).set_name("out1");
 
         // Finalize graph
@@ -210,24 +228,6 @@ class GraphVanillaTransformerExample : public Example
 
         /* Output*/
         graph << LayerNormLayer(LayerNormLayerInfo(0 /*Window::DimX*/, eps));
-        /*
-        SubStream without_attention(graph);
-        SubStream with_attention(graph);
-
-        with_attention
-            // Self Attention 
-            << MultiHeadLinearLayer(LinearLayerInfo(d_model), get_weights_accessor(data_path+layer_path, "query_weight.npy"),
-                                    get_weights_accessor(data_path+layer_path, "query_bias.npy"),
-                                    get_weights_accessor(data_path+layer_path, "key_weight.npy"),
-                                    get_weights_accessor(data_path+layer_path, "key_bias.npy"),
-                                    get_weights_accessor(data_path+layer_path, "value_weight.npy"),
-                                    get_weights_accessor(data_path+layer_path, "value_bias.npy"))
-            << MultiHeadAttentionLayer(MultiHeadAttentionLayerInfo(d_model, h)).set_name("mha1");
-
-        graph << EltwiseLayer(std::move(with_attention), std::move(without_attention), EltwiseOperation::Add).set_name("add_4_norm_attention");
-        */
-        //Self output 
-        //graph << LayerNormLayer(LayerNormLayerInfo(0 /*Window::DimX*/, eps));
 
     }
 };
