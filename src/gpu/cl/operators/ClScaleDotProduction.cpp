@@ -99,7 +99,7 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
 
      std::cout << "      _product_mm_kernel start" <<std::endl;
     // Specify whether transpose weights is necessary in matmul info
-    const MatMulInfo mat_info_qk = MatMulInfo();
+    const MatMulInfo mat_info_qk = MatMulInfo().adj_rhs(true);
 
     // Note: MatMul does not need offset negation unlike gemm
     // 1. Change shape when calling matmul to fit batch expectations.
@@ -110,7 +110,6 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
     std::unique_ptr<cl_matmul::IClMatMulNativeKernelConfig> kernel_config_qk =
         cl_matmul::ClMatMulNativeKernelConfigurationFactory::create(gpu_target);
     MatMulKernelInfo mm_kernel_info_qk = kernel_config_qk->configure(&_permuted_query, &_transposed_key, mat_info_qk);
-    mm_kernel_info_qk.adj_rhs = true;
 
     // Matrix multiply compute multi-head attention between Query and Key
     auto        product_mm_kernel = std::make_unique<kernels::ClLinearKernel>();
