@@ -240,8 +240,8 @@ CLBuildOptions generate_build_options_with_arithmetic_rules(const ITensorInfo &s
 
 std::pair<Status, Window> configure_window_arithmetic_common(ITensorInfo &dst)
 {
-    const unsigned int num_elems_processed_per_iteration =
-        adjust_vec_size(vector_size_byte_opencl / dst.element_size(), dst.dimension(0));
+    //const unsigned int num_elems_processed_per_iteration = adjust_vec_size(vector_size_byte_opencl / dst.element_size(), dst.dimension(0));
+    const unsigned int num_elems_processed_per_iteration = 1;
     Window win = calculate_max_window(dst, Steps(num_elems_processed_per_iteration));
     win.broadcast_if_dimension_le_one(dst.tensor_shape());
     return std::make_pair(Status{}, win);
@@ -319,14 +319,6 @@ void ClElementwiseKernel::configure_common(const ClCompileContext &compile_conte
 
     ICLKernel::configure_internal(win_config.second);
 
-
-    std::cout << "win_config.second x" << win_config.second.x().end() << std::endl;
-    std::cout << "win_config.second x" << win_config.second.x().step() << std::endl;
-    std::cout << "win_config.second y" << win_config.second.y().end() << std::endl;
-    std::cout << "win_config.second x" << win_config.second.y().step() << std::endl;
-    std::cout << "win_config.second z" << win_config.second.z().end() << std::endl;
-    std::cout << "win_config.second x" << win_config.second.z().step() << std::endl;
-
     _config_id = generate_id_for_tuning(kernel_name, *src1, *dst);
 }
 
@@ -370,7 +362,7 @@ void ClElementwiseKernel::run_op(ITensorPack &tensors, const Window &window, ::c
     Window slice_src1 = slice.broadcast_if_dimension_le_one(in_shape1_collapsed);
     Window slice_src2 = slice.broadcast_if_dimension_le_one(in_shape2_collapsed);
 
-    
+    /*
     std::cout << "src1 x" << src_0->info()->tensor_shape().x() << std::endl;
     std::cout << "src1 y" << src_0->info()->tensor_shape().y() << std::endl;
     std::cout << "src1 z" << src_0->info()->tensor_shape().z() << std::endl;
@@ -398,22 +390,8 @@ void ClElementwiseKernel::run_op(ITensorPack &tensors, const Window &window, ::c
     std::cout << "lws x " << lws_hint().get()[0] << std::endl;
     std::cout << "lws y " << lws_hint().get()[1] << std::endl;
     std::cout << "lws z " << lws_hint().get()[2] << std::endl;
-    
-    cl::NDRange valid_lws;
-    if(((window.x().end() - window.x().start()) / window.x().step())% valid_lws[0])
-    {
-        cl::NDRange lws((window.x().end() - window.x().start()) / window.x().step(),
-                        lws_hint().get()[1],
-                        lws_hint().get()[2]);
-        valid_lws = lws;
-    }else
-    {
-        valid_lws = lws_hint();
-    }
+    */
 
-    std::cout << "valid_lws x " << valid_lws[0] << std::endl;
-    std::cout << "valid_lws y " << valid_lws[1] << std::endl;
-    std::cout << "valid_lws z " << valid_lws[2] << std::endl;
     // Check whether it is in_place calculation
     const bool in_place = (src_0 == dst) || (src_1 == dst);
     do
@@ -426,7 +404,7 @@ void ClElementwiseKernel::run_op(ITensorPack &tensors, const Window &window, ::c
             add_3D_tensor_argument(idx, dst, slice);
         }
 
-        enqueue(queue, *this, slice, valid_lws);
+        enqueue(queue, *this, slice, lws_hint());
         ARM_COMPUTE_UNUSED(collapsed.slide_window_slice_3D(slice_src1));
         ARM_COMPUTE_UNUSED(collapsed.slide_window_slice_3D(slice_src2));
     } while (collapsed.slide_window_slice_3D(slice));
