@@ -61,7 +61,7 @@ VLOAD(WIDTH)(0, (DATA_TYPE *)(TENSOR + (X) + (Y) * (STRIDE_Y)))
     
 #define HUGH_2D_ACCESS(BASENAME,Y,X,WIDTH) BASENAME[Y*WIDTH+X]
 
-#if defined(MAT_MUL_MMUL_HUGH)
+#if defined(MAT_MUL_MMUL_HUGH_NT_T)
 /** This OpenCL kernel performs the batch matrix multiplication (BatchMatMul) using MMUL: LHS non-transposed, RHS non-transposed - buffer only
  *
  * @note the "batch" here expresses the number of matrix multiplications to run in parallel. However, it
@@ -110,7 +110,7 @@ VLOAD(WIDTH)(0, (DATA_TYPE *)(TENSOR + (X) + (Y) * (STRIDE_Y)))
  * @param[in]  K                                  Number of columns in LHS matrix and rows in RHS matrix, which is multiple of MMUL_K0.
  */
  //mat_mul_native_mmul_nt_nt
-__kernel void mat_mul_mmul_hugh(
+__kernel void mat_mul_mmul_hugh_nt_t(
     TENSOR3D_T(lhs, BUFFER),
     TENSOR3D_T(rhs, RHS_TENSOR_TYPE),
 #ifdef BIAS
@@ -214,4 +214,4 @@ __kernel void mat_mul_mmul_hugh(
     T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, ret, indirect_buffer);
    
 }
-#endif // defined(MAT_MUL_MMUL_HUGH)
+#endif // defined(MAT_MUL_MMUL_HUGH_NT_T)

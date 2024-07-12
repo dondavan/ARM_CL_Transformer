@@ -110,6 +110,7 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
     std::unique_ptr<cl_matmul::IClMatMulNativeKernelConfig> kernel_config_qk =
         cl_matmul::ClMatMulNativeKernelConfigurationFactory::create(gpu_target);
     MatMulKernelInfo mm_kernel_info_qk = kernel_config_qk->configure(&_permuted_query, &_transposed_key, mat_info_qk);
+    mm_kernel_info_qk.adj_rhs = true;
 
     // Matrix multiply compute multi-head attention between Query and Key
     auto        product_mm_kernel = std::make_unique<kernels::ClLinearKernel>();

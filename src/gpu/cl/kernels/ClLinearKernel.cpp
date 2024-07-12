@@ -99,6 +99,8 @@ void ClLinearKernel::configure(const CLCompileContext &compile_context,
     build_opts.add_option("-DBETA=" + support::cpp11::to_string(beta));
 
     std::string kernel_name("mat_mul_mmul_hugh");
+    kernel_name += matmul_kernel_info.adj_lhs ? "_t" : "_nt";
+    kernel_name += matmul_kernel_info.adj_rhs ? "_t" : "_nt";
 
     std::cout << kernel_name << std::endl;
 
