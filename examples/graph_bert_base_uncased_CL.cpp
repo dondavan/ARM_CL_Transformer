@@ -197,7 +197,8 @@ class GraphVanillaTransformerExample : public Example
         graph << LinearLayer(LinearLayerInfo(d_ff, TensorShape(d_model, d_ff) /*weight*/,
                                                TensorShape(d_ff) /*bias*/),
                                get_weights_accessor(data_path+layer_path, "ff_weight_0.npy"),
-                               get_weights_accessor(data_path+layer_path, "ff_bias_0.npy"));
+                               get_weights_accessor(data_path+layer_path, "ff_bias_0.npy"))
+                << ActivationLayer(ActivationLayerInfo(ActivationFunction::GELU));
         /*
         SubStream without_attention(graph);
         SubStream with_attention(graph);
