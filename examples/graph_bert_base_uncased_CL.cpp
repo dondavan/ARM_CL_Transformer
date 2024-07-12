@@ -191,6 +191,7 @@ class GraphVanillaTransformerExample : public Example
         graph << EltwiseLayer(std::move(with_attention), std::move(without_attention), EltwiseOperation::Add).set_name("add_4_norm_attention");
 
         /* Self output */
+        graph << LayerNormLayer(LayerNormLayerInfo(0 /*Window::DimX*/, eps));
 
         /*
         SubStream without_attention(graph);
