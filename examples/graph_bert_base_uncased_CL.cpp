@@ -116,7 +116,7 @@ class GraphVanillaTransformerExample : public Example
                                 get_weights_accessor(data_path, "positional_embedding.npy", operation_layout))
                      .set_name("tkemb1");
 
-        add_encoder_block(data_path,"layer_0/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+            add_encoder_block(data_path,"layer_0/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
             add_encoder_block(data_path,"layer_1/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
             add_encoder_block(data_path,"layer_2/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
             add_encoder_block(data_path,"layer_3/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
@@ -131,14 +131,7 @@ class GraphVanillaTransformerExample : public Example
             add_encoder_block(data_path,"layer_11/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
 
         // Pooler
-        graph << LinearLayer(LinearLayerInfo(d_model, TensorShape(d_model, d_model) ,
-                                               TensorShape(d_model) ),
-                               get_weights_accessor(data_path, "pooler_weight.npy"),
-                               get_weights_accessor(data_path, "pooler_bias.npy"))
-                               
-              << ActivationLayer(ActivationLayerInfo(ActivationFunction::TANH,1.f, 1.f))
-              
-              << OutputLayer(get_output_accessor(common_params)).set_name("out1");
+        graph << OutputLayer(get_output_accessor(common_params)).set_name("out1");
 
         // Finalize graph
         GraphConfig config;
