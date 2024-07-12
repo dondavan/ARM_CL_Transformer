@@ -29,7 +29,7 @@ void ClLinear::configure(const ClCompileContext &compile_context,
     ARM_COMPUTE_UNUSED(beta);
 
     // Specify whether transpose weights is necessary in matmul info
-    const MatMulInfo mat_info = MatMulInfo().adj_rhs(false);
+    const MatMulInfo mat_info = MatMulInfo().adj_rhs(true);
 
     const GPUTarget                                         gpu_target = CLScheduler::get().target();
     std::unique_ptr<cl_matmul::IClMatMulNativeKernelConfig> kernel_config =
