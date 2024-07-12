@@ -355,8 +355,6 @@ void ClElementwiseKernel::run_op(ITensorPack &tensors, const Window &window, ::c
     Window collapsed =
         can_collapse ? window.collapse_if_possible(ICLKernel::window(), Window::DimZ, &has_collapsed) : window;
 
-    const TensorShape &in_shape1_collapsed = has_collapsed ? in_shape1.collapsed_from(Window::DimZ) : in_shape1;
-    const TensorShape &in_shape2_collapsed = has_collapsed ? in_shape2.collapsed_from(Window::DimZ) : in_shape2;
 
     Window slice      = collapsed.first_slice_window_3D();
     slice.set_broadcasted(Window::DimZ);
