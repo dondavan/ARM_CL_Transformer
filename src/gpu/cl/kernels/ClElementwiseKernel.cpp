@@ -327,6 +327,9 @@ void ClElementwiseKernel::run_op(ITensorPack &tensors, const Window &window, ::c
     ARM_COMPUTE_ERROR_ON_UNCONFIGURED_KERNEL(this);
     ARM_COMPUTE_ERROR_ON_INVALID_SUBWINDOW(ICLKernel::window(), window);
     std::cout << "src/gpu/cl/kernels/ClElementwiseKernel.cpp ClElementwiseKernel::run_op start" << std::endl;
+    std::cout << "window.x().end() " <<  window.x().end() << std::endl;
+    std::cout << "window.y().end() " <<  window.y().end() << std::endl;
+    std::cout << "window.z().end() " <<  window.z().end() << std::endl;
 
     const auto src_0 =
         utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC_0));
