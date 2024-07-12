@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include "src/gpu/cl/kernels/ClElementwiseKernel.h"
+#include "src/gpu/cl/kernels/ClHughElementwiseKernel.h"
 
 #include "arm_compute/core/CL/CLHelpers.h"
 #include "arm_compute/core/CL/ICLTensor.h"
@@ -285,12 +285,12 @@ validate_and_configure_window_for_division(ITensorInfo &src1, ITensorInfo &src2,
 }
 } // namespace
 
-ClElementwiseKernel::ClElementwiseKernel()
+ClHughElementwiseKernel::ClHughElementwiseKernel()
 {
     _type = CLKernelType::ELEMENTWISE;
 }
 
-void ClElementwiseKernel::configure_common(const ClCompileContext &compile_context,
+void ClHughElementwiseKernel::configure_common(const ClCompileContext &compile_context,
                                            ITensorInfo            *src1,
                                            ITensorInfo            *src2,
                                            ITensorInfo            *dst)
@@ -330,11 +330,11 @@ void ClElementwiseKernel::configure_common(const ClCompileContext &compile_conte
     _config_id = generate_id_for_tuning(kernel_name, *src1, *dst);
 }
 
-void ClElementwiseKernel::run_op(ITensorPack &tensors, const Window &window, ::cl::CommandQueue &queue)
+void ClHughElementwiseKernel::run_op(ITensorPack &tensors, const Window &window, ::cl::CommandQueue &queue)
 {
     ARM_COMPUTE_ERROR_ON_UNCONFIGURED_KERNEL(this);
     ARM_COMPUTE_ERROR_ON_INVALID_SUBWINDOW(ICLKernel::window(), window);
-    std::cout << "src/gpu/cl/kernels/ClElementwiseKernel.cpp ClElementwiseKernel::run_op start" << std::endl;
+    std::cout << "src/gpu/cl/kernels/ClHughElementwiseKernel.cpp ClHughElementwiseKernel::run_op start" << std::endl;
 
     const auto src_0 =
         utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC_0));
@@ -417,7 +417,7 @@ void ClElementwiseKernel::run_op(ITensorPack &tensors, const Window &window, ::c
         ARM_COMPUTE_UNUSED(collapsed.slide_window_slice_3D(slice_src2));
     } while (collapsed.slide_window_slice_3D(slice));
 
-    std::cout << "src/gpu/cl/kernels/ClElementwiseKernel.cpp ClElementwiseKernel::run_op end" << std::endl;
+    std::cout << "src/gpu/cl/kernels/ClHughElementwiseKernel.cpp ClHughElementwiseKernel::run_op end" << std::endl;
 }
 
 /** Logical binary */
@@ -499,7 +499,7 @@ void ClSaturatedArithmeticKernel::configure(const ClCompileContext    &compile_c
                                             const ConvertPolicy       &policy,
                                             const ActivationLayerInfo &act_info)
 {   
-    std::cout << "src/gpu/cl/kernels/ClElementwiseKernel.cpp ClSaturatedArithmeticKernel::configure start" << std::endl;
+    std::cout << "src/gpu/cl/kernels/ClHughElementwiseKernel.cpp ClSaturatedArithmeticKernel::configure start" << std::endl;
     ARM_COMPUTE_ERROR_ON_NULLPTR(input1, input2, output);
     ARM_COMPUTE_ERROR_THROW_ON(ClSaturatedArithmeticKernel::validate(op, input1, input2, output, policy, act_info));
     auto padding_info = get_padding_info({input1, input2, output});
@@ -510,7 +510,7 @@ void ClSaturatedArithmeticKernel::configure(const ClCompileContext    &compile_c
     configure_common(compile_context, input1, input2, output);
     ARM_COMPUTE_ERROR_ON(has_padding_changed(padding_info));
 
-    std::cout << "src/gpu/cl/kernels/ClElementwiseKernel.cpp ClSaturatedArithmeticKernel::configure end" << std::endl;
+    std::cout << "src/gpu/cl/kernels/ClHughElementwiseKernel.cpp ClSaturatedArithmeticKernel::configure end" << std::endl;
 }
 
 Status ClSaturatedArithmeticKernel::validate(ArithmeticOperation        op,
