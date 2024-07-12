@@ -243,7 +243,6 @@ std::pair<Status, Window> configure_window_arithmetic_common(ITensorInfo &dst)
     const unsigned int num_elems_processed_per_iteration =
         adjust_vec_size(vector_size_byte_opencl / dst.element_size(), dst.dimension(0));
     Window win = calculate_max_window(dst, Steps(num_elems_processed_per_iteration));
-    win.broadcast_if_dimension_le_one(dst.tensor_shape());
     return std::make_pair(Status{}, win);
 }
 
@@ -326,7 +325,6 @@ void ClElementwiseKernel::run_op(ITensorPack &tensors, const Window &window, ::c
 {
     ARM_COMPUTE_ERROR_ON_UNCONFIGURED_KERNEL(this);
     ARM_COMPUTE_ERROR_ON_INVALID_SUBWINDOW(ICLKernel::window(), window);
-    std::cout << "src/gpu/cl/kernels/ClElementwiseKernel.cpp ClElementwiseKernel::run_op start" << std::endl;
 
     const auto src_0 =
         utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC_0));
@@ -355,12 +353,12 @@ void ClElementwiseKernel::run_op(ITensorPack &tensors, const Window &window, ::c
     Window collapsed =
         can_collapse ? window.collapse_if_possible(ICLKernel::window(), Window::DimZ, &has_collapsed) : window;
 
+    const TensorShape &in_shape1_collapsed = has_collapsed ? in_shape1.collapsed_from(Window::DimZ) : in_shape1;
+    const TensorShape &in_shape2_collapsed = has_collapsed ? in_shape2.collapsed_from(Window::DimZ) : in_shape2;
 
     Window slice      = collapsed.first_slice_window_3D();
-    slice.set_broadcasted(Window::DimZ);
-    Window slice_src1 = slice;
-    Window slice_src2 = slice;
-
+    Window slice_src1 = slice.broadcast_if_dimension_le_one(in_shape1_collapsed);
+    Window slice_src2 = slice.broadcast_if_dimension_le_one(in_shape2_collapsed);
 
     // Check whether it is in_place calculation
     const bool in_place = (src_0 == dst) || (src_1 == dst);
@@ -378,8 +376,6 @@ void ClElementwiseKernel::run_op(ITensorPack &tensors, const Window &window, ::c
         ARM_COMPUTE_UNUSED(collapsed.slide_window_slice_3D(slice_src1));
         ARM_COMPUTE_UNUSED(collapsed.slide_window_slice_3D(slice_src2));
     } while (collapsed.slide_window_slice_3D(slice));
-
-    std::cout << "src/gpu/cl/kernels/ClElementwiseKernel.cpp ClElementwiseKernel::run_op end" << std::endl;
 }
 
 /** Logical binary */
@@ -460,8 +456,7 @@ void ClSaturatedArithmeticKernel::configure(const ClCompileContext    &compile_c
                                             ITensorInfo               *output,
                                             const ConvertPolicy       &policy,
                                             const ActivationLayerInfo &act_info)
-{   
-    std::cout << "src/gpu/cl/kernels/ClElementwiseKernel.cpp ClSaturatedArithmeticKernel::configure start" << std::endl;
+{
     ARM_COMPUTE_ERROR_ON_NULLPTR(input1, input2, output);
     ARM_COMPUTE_ERROR_THROW_ON(ClSaturatedArithmeticKernel::validate(op, input1, input2, output, policy, act_info));
     auto padding_info = get_padding_info({input1, input2, output});
@@ -471,8 +466,6 @@ void ClSaturatedArithmeticKernel::configure(const ClCompileContext    &compile_c
     _act_info = act_info;
     configure_common(compile_context, input1, input2, output);
     ARM_COMPUTE_ERROR_ON(has_padding_changed(padding_info));
-
-    std::cout << "src/gpu/cl/kernels/ClElementwiseKernel.cpp ClSaturatedArithmeticKernel::configure end" << std::endl;
 }
 
 Status ClSaturatedArithmeticKernel::validate(ArithmeticOperation        op,
