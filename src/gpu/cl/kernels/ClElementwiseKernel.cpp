@@ -319,6 +319,11 @@ void ClElementwiseKernel::configure_common(const ClCompileContext &compile_conte
 
     ICLKernel::configure_internal(win_config.second);
 
+
+    std::cout << "win_config.second x" << win_config.second.x().end() << std::endl;
+    std::cout << "win_config.second y" << win_config.second.y().end() << std::endl;
+    std::cout << "win_config.second z" << win_config.second.z().end() << std::endl;
+
     _config_id = generate_id_for_tuning(kernel_name, *src1, *dst);
 }
 
