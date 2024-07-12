@@ -405,7 +405,7 @@ void ClElementwiseKernel::run_op(ITensorPack &tensors, const Window &window, ::c
             add_3D_tensor_argument(idx, dst, slice);
         }
 
-        enqueue(queue, *this, slice, lws_hint());
+        enqueue(queue, *this, slice);
         ARM_COMPUTE_UNUSED(collapsed.slide_window_slice_3D(slice_src1));
         ARM_COMPUTE_UNUSED(collapsed.slide_window_slice_3D(slice_src2));
     } while (collapsed.slide_window_slice_3D(slice));
