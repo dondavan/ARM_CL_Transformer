@@ -208,6 +208,15 @@ __kernel void mat_mul_mmul_hugh_nt_t(
     }) 
 #endif // defined(BIAS)
 
+    // Alpha and Beta
+    LOOP_UNROLLING(int, _m, 0, 1, M0,
+    {
+        LOOP_UNROLLING(int, _n, 0, 1, N0,
+        {
+            HUGH_2D_ACCESS(acc,_m,_n,N0) = HUGH_2D_ACCESS(acc,_m,_n,N0) * ALPHA + BETA;
+        })
+    }) 
+
     for(int _m = 0; _m < M0; _m++)
     {
         ret[_m].v = V_LOAD_HUGH(DATA_TYPE, N0, acc, 0, _m, N0);
