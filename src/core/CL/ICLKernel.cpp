@@ -49,9 +49,6 @@ void arm_compute::enqueue(cl::CommandQueue  &queue,
     }
 
     cl::NDRange gws = ICLKernel::gws_from_window(window, use_dummy_work_items);
-    std::cout << "gws 0 " << gws.get()[0] << std::endl;
-    std::cout << "gws 1 " << gws.get()[1] << std::endl;
-    std::cout << "gws 2 " << gws.get()[2] << std::endl;
 
     // Check for empty NDRange
     if (gws.dimensions() == 0)
@@ -77,9 +74,6 @@ void arm_compute::enqueue(cl::CommandQueue  &queue,
     {
         lws = valid_lws;
     }
-    std::cout << "lws 0 " << lws.get()[0] << std::endl;
-    std::cout << "lws 1 " << lws.get()[1] << std::endl;
-    std::cout << "lws 2 " << lws.get()[2] << std::endl;
 
     if (CLKernelLibrary::get().is_wbsm_supported())
     {

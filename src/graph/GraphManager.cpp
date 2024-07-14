@@ -142,12 +142,12 @@ void GraphManager::finalize_graph(Graph &graph, GraphContext &ctx, PassManager &
     // Setup tensor memory (Allocate all tensors or setup transition manager)
     if(ctx.config().use_transition_memory_manager)
     {
-    std::cout << "use_transition_memory_manager" << std::endl;
+        std::cout << "use_transition_memory_manager" << std::endl;
         detail::configure_transition_manager(graph, ctx, workload);
     }
     else
     {
-    std::cout << "allocate_all_tensors" << std::endl;
+        std::cout << "allocate_all_tensors" << std::endl;
         detail::allocate_all_tensors(graph);
     }
     std::cout << "Setup tensor memory end" << std::endl;

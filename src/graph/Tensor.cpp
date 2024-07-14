@@ -87,7 +87,6 @@ bool Tensor::call_accessor()
     {
         // Map tensor
         _handle->map(true);
-        std::cout << " map " << std::endl;
 
         // Return in case of null backend buffer
         if (_handle->tensor().buffer() == nullptr)
@@ -98,30 +97,14 @@ bool Tensor::call_accessor()
     
     // Call accessor
     bool retval = _accessor->access_tensor(_handle->tensor());
-    std::cout << "Tensor x" << _handle->tensor().info()->tensor_shape().x() << std::endl;
-    std::cout << "Tensor y" << _handle->tensor().info()->tensor_shape().y() << std::endl;
-    std::cout << "Tensor z" << _handle->tensor().info()->tensor_shape().z() << std::endl;
 
-    std::cout << "Tensor " << *reinterpret_cast<float *>(_handle->tensor().ptr_to_element(Coordinates(0,0,0))) << std::endl;
-    std::cout << "Tensor " << *reinterpret_cast<float *>(_handle->tensor().ptr_to_element(Coordinates(1,0,0))) << std::endl;
-    std::cout << "Tensor " << *reinterpret_cast<float *>(_handle->tensor().ptr_to_element(Coordinates(2,0,0))) << std::endl;
-    
     if (access_data)
     {
         // Unmap tensor
         _handle->unmap();
-        std::cout << " unmap " << std::endl;
+        
     }
 
-    /*
-    std::cout << "Tensor x" << _handle->tensor().info()->tensor_shape().x() << std::endl;
-    std::cout << "Tensor y" << _handle->tensor().info()->tensor_shape().y() << std::endl;
-    std::cout << "Tensor z" << _handle->tensor().info()->tensor_shape().z() << std::endl;
-
-    std::cout << "Tensor x" << _handle->tensor().ptr_to_element(Coordinates(0,0,0)) << std::endl;
-    std::cout << "Tensor y" << _handle->tensor().ptr_to_element(Coordinates(1,0,0)) << std::endl;
-    std::cout << "Tensor z" << _handle->tensor().ptr_to_element(Coordinates(2,0,0)) << std::endl;
-    */
     return retval;
 }
 
