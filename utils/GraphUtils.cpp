@@ -212,8 +212,6 @@ void atoiPreprocessor::preprocess(ITensor &tensor)
                         [&](const Coordinates &id)
                         {
                             *tensor.ptr_to_element(id) = std::atoi(reinterpret_cast<char *>(tensor.ptr_to_element(id)));
-
-                            std::cout << "utils/GraphUtils.cpp " << std::atoi(reinterpret_cast<char *>(tensor.ptr_to_element(id))) << std::endl;
                         });
 }
 
@@ -850,8 +848,8 @@ template <typename T>
 void RawResultAccessor::access_typed_tensor(ITensor &tensor)
 {
     _output_stream << std::scientific;
-    _output_stream << "---------- Result ----------" << std::endl;
     /*
+    _output_stream << "---------- Result ----------" << std::endl;
     for(size_t y = 0; y < tensor.info()->tensor_shape().y(); y++)
     {
         _output_stream << " ################# " << y << " ################# " << std::endl;

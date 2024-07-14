@@ -175,9 +175,6 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
     CLAuxTensorHandler permuted_key(offset_int_vec(KeyPermute), _permuted_key, tensors);
     CLAuxTensorHandler reshaped_value(offset_int_vec(ValueReshape), _reshaped_value, tensors);
     CLAuxTensorHandler permuted_value(offset_int_vec(ValuePermute), _permuted_value, tensors);
-
-    CLAuxTensorHandler transposed_key(offset_int_vec(KeyTranspose), _transposed_key, tensors);
-
     CLAuxTensorHandler scaled_query_key(offset_int_vec(QueryKeyScale), _scaled_query_key, tensors);
     CLAuxTensorHandler softmaxed_product(offset_int_vec(Softmax), _softmaxed_product, tensors);
     CLAuxTensorHandler gemmed_context(offset_int_vec(GemmedContext), _gemmed_context, tensors);

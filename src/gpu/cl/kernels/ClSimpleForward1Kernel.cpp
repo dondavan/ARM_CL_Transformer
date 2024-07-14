@@ -18,19 +18,13 @@ namespace opencl
 namespace kernels
 {
 
-void ClSimpleForward1Kernel::configure(const CLCompileContext &compile_context, const ITensorInfo *src1, ITensorInfo       *dst1)
+void ClSimpleForward1Kernel::configure(const CLCompileContext &compile_context, const ITensorInfo *src1, ITensorInfo *dst1)
 {
     ARM_COMPUTE_UNUSED(compile_context);
-
-    std::cout << "src/gpu/cl/kernels/ClSimpleForward1Kernel.cpp configure start" << std::endl;
 
     auto_init_if_empty(*dst1, src1->clone()->set_tensor_shape(src1->tensor_shape()));
 
     dst1->set_tensor_shape(src1->tensor_shape());
-    std::cout << "ff dst x " << dst1->tensor_shape().x() << std::endl;
-    std::cout << "ff dst y " << dst1->tensor_shape().y() << std::endl;
-    std::cout << "ff dst z " << dst1->tensor_shape().z() << std::endl;
-
 
     Window win;
     win = calculate_max_window(*dst1, Steps());
@@ -43,8 +37,6 @@ void ClSimpleForward1Kernel::configure(const CLCompileContext &compile_context, 
 
     std::string kernel_name("simple_forward_1");
     _kernel = create_kernel(compile_context, kernel_name, build_opts.options());
-
-    std::cout << "src/gpu/cl/kernels/ClSimpleForward1Kernel.cpp configure end" << std::endl;
 }
 
 Status ClSimpleForward1Kernel::validate(const ITensorInfo *src, const ITensorInfo *vector, ITensorInfo *dst)
@@ -57,15 +49,13 @@ Status ClSimpleForward1Kernel::validate(const ITensorInfo *src, const ITensorInf
 
 void ClSimpleForward1Kernel::run_op(ITensorPack &tensors, const Window &window, cl::CommandQueue &queue)
 {
-    std::cout << "src/gpu/cl/kernels/ClSimpleForward1Kernel.cpp run start" << std::endl;
-
     ARM_COMPUTE_ERROR_ON_UNCONFIGURED_KERNEL(this);
     ARM_COMPUTE_ERROR_ON_INVALID_SUBWINDOW(IKernel::window(), window);
     ARM_COMPUTE_ERROR_ON(tensors.empty());
 
     Window     slice = window.first_slice_window_3D();
-    const auto src1 = utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC_0));
-    auto       dst1 = utils::cast::polymorphic_downcast<ICLTensor *>(tensors.get_tensor(TensorType::ACL_DST_0));
+    const auto src1  = utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC_0));
+    auto       dst1  = utils::cast::polymorphic_downcast<ICLTensor *>(tensors.get_tensor(TensorType::ACL_DST_0));
 
     // Set srcs
     unsigned int idx = 0;
@@ -73,8 +63,6 @@ void ClSimpleForward1Kernel::run_op(ITensorPack &tensors, const Window &window, 
     add_3D_tensor_argument(idx, dst1, window);
 
     enqueue(queue, *this, slice, lws_hint());
-
-    std::cout << "src/gpu/cl/kernels/ClSimpleForward1Kernel.cpp run end" << std::endl;
 }
 
 } // namespace kernels

@@ -197,7 +197,6 @@ public:
                 [&](const Coordinates &)
                 {
                     *reinterpret_cast<unsigned int *>(out.ptr()) = text_ids[i];
-                    std::cout << "utils/TextLoader.h " << *reinterpret_cast<unsigned int *>(out.ptr()) << std::endl;
                     i++;
                 },
                 out

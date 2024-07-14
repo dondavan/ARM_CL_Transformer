@@ -1839,7 +1839,6 @@ template <typename ForwardLayerFunction, typename TargetInfo>
 std::unique_ptr<IFunction> create_simple_forward_layer(SimpleForwardLayerNode &node)
 {
     validate_node<TargetInfo>(node, 3 /* expected inputs */, 3 /* expected outputs */);
-    std::cout << "create_simple_forward_layer" <<std::endl;
     typename TargetInfo::TensorType *src1   = get_backing_tensor<TargetInfo>(node.input(0));
     typename TargetInfo::TensorType *src2   = get_backing_tensor<TargetInfo>(node.input(1));
     typename TargetInfo::TensorType *src3   = get_backing_tensor<TargetInfo>(node.input(2));
@@ -1850,23 +1849,6 @@ std::unique_ptr<IFunction> create_simple_forward_layer(SimpleForwardLayerNode &n
     auto func = std::make_unique<ForwardLayerFunction>();
 
     func->configure(src1,src2,src3,dst1,dst2,dst3);
-    
-    
-    std::cout << "create_simple_forward_layer" <<std::endl;
-    /*
-    for(size_t idx=0; idx <node.num_inputs(); idx++)
-    {
-        std::cout << "Id: " << idx << 
-                     " Input: " << node.input(idx)->id() << " Output: " << node.output(idx)->id() << std::endl;
-        // Update accessor
-        node.input(idx)->set_accessor(node.output(idx)->extract_accessor());
-        // Update output
-        node.set_output_tensor(node.input(idx)->id(),idx);
-        std::cout << "After Id: " << idx << 
-                     " Input: " << node.input(idx)->id() << " Output: " << node.output(idx)->id() << std::endl;
-    }
-    */
-    
 
     return func;
 }
