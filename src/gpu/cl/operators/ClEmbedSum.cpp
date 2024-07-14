@@ -17,14 +17,12 @@ void ClEmbedSum::configure(const ClCompileContext   &compile_context,
                            ITensorInfo              *output,
                            const EmbeddingLayerInfo &emb_info)
 {
-    std::cout << "src/gpu/cl/operators/ClEmbedSum.cpp configure start" << std::endl;
     ARM_COMPUTE_UNUSED(emb_info);
     
     auto k = std::make_unique<kernels::ClEmbSumKernel>();
     k->configure(compile_context,  token, segemnt,position, output);
     _kernel = std::move(k);
 
-    std::cout << "src/gpu/cl/operators/ClEmbedSum.cpp configure end" << std::endl;
 }
 
 Status

@@ -6,11 +6,11 @@
 #include "src/common/utils/LegacySupport.h"
 #include "src/common/utils/Log.h"
 
-#include "src/core/helpers/MemoryHelpers.h"
 #include "src/core/helpers/AutoConfiguration.h"
+#include "src/core/helpers/MemoryHelpers.h"
 
-#include "src/gpu/cl/utils/ClAuxTensorHandler.h"
 #include "src/gpu/cl/kernels/ClVectorizeKernel.h"
+#include "src/gpu/cl/utils/ClAuxTensorHandler.h"
 
 #include "src/runtime/heuristics/matmul_native/ClMatMulNativeKernelConfig.h"
 #include "src/runtime/heuristics/matmul_native/IClMatMulNativeKernelConfig.h"
@@ -29,9 +29,7 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
 {
     ARM_COMPUTE_LOG_PARAMS(key, value, query, output);
     ARM_COMPUTE_UNUSED(compile_context, query, key, value, output, info);
-    std::cout << "ClScaleDotProduction::configure start " << std::endl;
-    
-    
+
     // Query multi-Head reshape
     TensorShape query_reshape = TensorShape(query->tensor_shape().x() / info.h(),
                                             info.h(),
@@ -47,7 +45,7 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
     auto query_reshape_kernel = std::make_unique<kernels::ClHughReshapeKernel>();
     query_reshape_kernel->configure(compile_context, query, &_reshaped_query);
     _query_reshape_kernel = std::move(query_reshape_kernel);
-    
+
     auto query_permute_kernel = std::make_unique<kernels::ClPermuteKernel>();
     query_permute_kernel->configure(compile_context, &_reshaped_query, &_permuted_query, PermutationVector(0U, 2U, 1U));
     _query_permute_kernel = std::move(query_permute_kernel);
@@ -92,12 +90,6 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
     value_permute_kernel->configure(compile_context, &_reshaped_value, &_permuted_value, PermutationVector(0U, 2U, 1U));
     _value_permute_kernel = std::move(value_permute_kernel);
 
-    // Pretranspose Key
-    auto key_transpose_kernel = std::make_unique<kernels::ClTransposeKernel>();
-    key_transpose_kernel->configure(compile_context, &_permuted_key, &_transposed_key);
-    _key_transpose_kernel = std::move(key_transpose_kernel);
-
-     std::cout << "      _product_mm_kernel start" <<std::endl;
     // Specify whether transpose weights is necessary in matmul info
     const MatMulInfo mat_info_qk = MatMulInfo().adj_rhs(true);
 
@@ -118,17 +110,12 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
     product_mm_kernel->configure(compile_context, &_permuted_query, &_permuted_key, nullptr, &_scaled_query_key, scale, 0, mm_kernel_info_qk);
     _product_mm_kernel = std::move(product_mm_kernel);
 
-     std::cout << "      _product_mm_kernel end" <<std::endl;
-    
-
     //  Softmax of previous product
-    SoftmaxKernelInfo softmax_info{1.0f, false, query->data_type(), 0};
-    auto softmax_kernel = std::make_unique<kernels::ClSoftmaxKernel>();
+    SoftmaxKernelInfo softmax_info{ 1.0f, false, query->data_type(), 0 };
+    auto              softmax_kernel = std::make_unique<kernels::ClSoftmaxKernel>();
     softmax_kernel->configure(compile_context, _scaled_query_key, _softmaxed_product, softmax_info);
     _softmax_kernel = std::move(softmax_kernel);
 
-
-     std::cout << "      context_mm_kernel start" <<std::endl;
     // Specify whether transpose weights is necessary in matmul info
     const MatMulInfo mat_info_pv = MatMulInfo();
 
@@ -141,15 +128,11 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
         cl_matmul::ClMatMulNativeKernelConfigurationFactory::create(gpu_target);
     MatMulKernelInfo mm_kernel_info_pv = kernel_config_pv->configure(&_softmaxed_product, &_permuted_value, mat_info_pv);
 
-    
     //  Multiply between scaled product and value
     auto context_mm_kernel = std::make_unique<kernels::ClLinearKernel>();
     context_mm_kernel->set_target(gpu_target);
     context_mm_kernel->configure(compile_context, &_softmaxed_product, &_permuted_value, nullptr, &_gemmed_context, 1.0f, 0, mm_kernel_info_pv);
     _context_mm_kernel = std::move(context_mm_kernel);
-
-     std::cout << "      context_mm_kernel end" <<std::endl;
-
 
     // Concat multi-Head reshape
     TensorShape concat_permute = TensorShape(query->tensor_shape().x() / info.h(),
@@ -157,20 +140,14 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
                                              query->tensor_shape().y(),
                                              1);
     _permuted_concat           = query->clone()->set_tensor_shape(concat_permute);
-    
-    auto concat_permute_kernel       = std::make_unique<kernels::ClPermuteKernel>();
+
+    auto concat_permute_kernel = std::make_unique<kernels::ClPermuteKernel>();
     concat_permute_kernel->configure(compile_context, &_gemmed_context, &_permuted_concat, PermutationVector(0U, 2U, 1U));
     _concat_permute_kernel = std::move(concat_permute_kernel);
 
     auto concat_reshape_kernel = std::make_unique<kernels::ClHughReshapeKernel>();
     concat_reshape_kernel->configure(compile_context, &_permuted_concat, output);
     _concat_reshape_kernel = std::move(concat_reshape_kernel);
-    
-    std::cout << "ClScaleDotProduction::configure end " << std::endl;
-    
-
-
-   
 }
 
 Status
@@ -187,23 +164,11 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
 {
     ARM_COMPUTE_UNUSED(tensors);
 
-    auto query = tensors.get_const_tensor(ACL_SRC_0);
-    auto key   = tensors.get_const_tensor(ACL_SRC_1);
+    auto query  = tensors.get_const_tensor(ACL_SRC_0);
+    auto key    = tensors.get_const_tensor(ACL_SRC_1);
     auto value  = tensors.get_const_tensor(ACL_SRC_2);
     auto output = tensors.get_tensor(ACL_DST);
 
-    /*
-    ITensorPack query_reshape_pack{ { ACL_SRC_0, query }, { ACL_DST, output} };
-
-    std::cout << "query->info()->tensor_shape().x() " <<query->info()->tensor_shape().x() << std::endl;
-    std::cout << "query->info()->tensor_shape().y() " <<query->info()->tensor_shape().y() << std::endl;
-    std::cout << "query->info()->tensor_shape().z() " <<query->info()->tensor_shape().z() << std::endl;
-
-    CLScheduler::get().enqueue_op(*_sf_kernel, query_reshape_pack, true);
-    std::cout << " wo cao ni ma de bi " <<std::endl; 
-    */
-    
-    
     CLAuxTensorHandler reshaped_query(offset_int_vec(QueryReshape), _reshaped_query, tensors);
     CLAuxTensorHandler permuted_query(offset_int_vec(QueryPermute), _permuted_query, tensors);
     CLAuxTensorHandler reshaped_key(offset_int_vec(KeyReshape), _reshaped_key, tensors);
@@ -216,26 +181,12 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
     CLAuxTensorHandler scaled_query_key(offset_int_vec(QueryKeyScale), _scaled_query_key, tensors);
     CLAuxTensorHandler softmaxed_product(offset_int_vec(Softmax), _softmaxed_product, tensors);
     CLAuxTensorHandler gemmed_context(offset_int_vec(GemmedContext), _gemmed_context, tensors);
-
     CLAuxTensorHandler permuted_concat(offset_int_vec(ConcatPermute), _permuted_concat, tensors);
-    
 
     // Run Query multi-Head reshape
     ITensorPack query_reshape_pack{ { ACL_SRC_0, query }, { ACL_DST, reshaped_query.get() } };
 
-    std::cout << "query->info()->tensor_shape().x() " <<query->info()->tensor_shape().x() << std::endl;
-    std::cout << "query->info()->tensor_shape().y() " <<query->info()->tensor_shape().y() << std::endl;
-    std::cout << "query->info()->tensor_shape().z() " <<query->info()->tensor_shape().z() << std::endl;
-
     CLScheduler::get().enqueue_op(*_query_reshape_kernel, query_reshape_pack, true);
-
-    std::cout << "reshaped_query->info()->tensor_shape().x() " << reshaped_query.get()->info()->tensor_shape().x() << std::endl;
-    std::cout << "reshaped_query->info()->tensor_shape().y() " << reshaped_query.get()->info()->tensor_shape().y() << std::endl;
-    std::cout << "reshaped_query->info()->tensor_shape().z() " << reshaped_query.get()->info()->tensor_shape().z() << std::endl;
-
-    std::cout << "reshaped_query.get()->info()->tensor_shape().x() " <<reshaped_query.get()->info()->tensor_shape().x() << std::endl;
-    std::cout << "reshaped_query.get()->info()->tensor_shape().y() " <<reshaped_query.get()->info()->tensor_shape().y() << std::endl;
-    std::cout << "reshaped_query.get()->info()->tensor_shape().z() " <<reshaped_query.get()->info()->tensor_shape().z() << std::endl;
 
     ITensorPack query_permute_pack{ { ACL_SRC, reshaped_query.get() }, { ACL_DST, permuted_query.get() } };
     CLScheduler::get().enqueue_op(*_query_permute_kernel, query_permute_pack, true);
@@ -245,29 +196,21 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
     CLScheduler::get().enqueue_op(*_key_reshape_kernel, key_reshape_pack, true);
     ITensorPack key_permute_pack{ { ACL_SRC, reshaped_key.get() }, { ACL_DST, permuted_key.get() } };
     CLScheduler::get().enqueue_op(*_key_permute_kernel, key_permute_pack, true);
-    
-    
+
     // Run Value multi-Head reshape
     ITensorPack value_reshape_pack{ { ACL_SRC_0, value }, { ACL_DST, reshaped_value.get() } };
     CLScheduler::get().enqueue_op(*_value_reshape_kernel, value_reshape_pack, true);
     ITensorPack value_permute_pack{ { ACL_SRC, reshaped_value.get() }, { ACL_DST, permuted_value.get() } };
     CLScheduler::get().enqueue_op(*_value_permute_kernel, value_permute_pack, true);
 
-    // Run Key pre-transpose
-    //ITensorPack key_transpose_pack{ { ACL_SRC, permuted_key.get() }, { ACL_DST, transposed_key.get() } };
-    //CLScheduler::get().enqueue_op(*_key_transpose_kernel, key_transpose_pack, true);
-
-    std::cout << "      gemm_QK_pack " <<std::endl;
     // Run matrix multiply compute multi-head attention between Query and Key
     ITensorPack gemm_QK_pack{ { ACL_SRC_0, permuted_query.get() }, { ACL_SRC_1, permuted_key.get() }, { ACL_DST, scaled_query_key.get() } };
     CLScheduler::get().enqueue_op(*_product_mm_kernel, gemm_QK_pack, true);
-    std::cout << "      gemm_QK_pack " <<std::endl;
 
- 
     // Softmax scaled product
     ITensorPack softmax_pack = { { ACL_SRC, scaled_query_key.get() }, { ACL_DST, softmaxed_product.get() } };
     CLScheduler::get().enqueue_op(*_softmax_kernel, softmax_pack, true);
- 
+
     // Run matrix multiply compute multi-head attention between Context and Value
     ITensorPack gemm_context_pack{ { ACL_SRC_0, softmaxed_product.get() }, { ACL_SRC_1, permuted_value.get() }, { ACL_DST, gemmed_context.get() } };
     CLScheduler::get().enqueue_op(*_context_mm_kernel, gemm_context_pack, true);
@@ -278,11 +221,6 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
 
     ITensorPack concat_reshape_pack{ { ACL_SRC_0, permuted_concat.get() }, { ACL_DST, output } };
     CLScheduler::get().enqueue_op(*_concat_reshape_kernel, concat_reshape_pack, true);
-
-    std::cout << "output->info()->tensor_shape() x " << output->info()->tensor_shape().x() << std::endl;
-    std::cout << "output->info()->tensor_shape() y " << output->info()->tensor_shape().y() << std::endl;
-    std::cout << "output->info()->tensor_shape() z " << output->info()->tensor_shape().z() << std::endl;
-
 }
 
 experimental::MemoryRequirements ClScaleDotProduction::workspace() const

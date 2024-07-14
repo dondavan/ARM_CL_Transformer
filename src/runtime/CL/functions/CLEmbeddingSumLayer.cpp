@@ -57,8 +57,6 @@ void CLEmbeddingSumLayer::configure(const CLCompileContext   &compile_context,
     _impl->position = position;
     _impl->dst      = output;
 
-    std::cout << "src/runtime/CL/functions/CLEmbeddingSumLayer.cpp configure start" << std::endl;
-    
     _impl->op = std::make_unique<opencl::ClEmbedSum>();
     _impl->op->configure(compile_context,
                          token->info(),
@@ -66,8 +64,6 @@ void CLEmbeddingSumLayer::configure(const CLCompileContext   &compile_context,
                          position->info(),
                          output->info(),
                          emb_info);
-
-    std::cout << "src/runtime/CL/functions/CLEmbeddingSumLayer.cpp configure end" << std::endl;
 
 #ifdef MEASURE_TIME
     auto          end_time  = std::chrono::high_resolution_clock::now();
@@ -92,8 +88,6 @@ void CLEmbeddingSumLayer::run()
     auto start_time = std::chrono::high_resolution_clock::now();
 #endif
 
-    std::cout << "src/runtime/CL/functions/CLEmbeddingSumLayer.cpp  run start" << std::endl;
-
     ITensorPack pack;
     pack.add_tensor(TensorType::ACL_SRC_0, _impl->token);
     pack.add_tensor(TensorType::ACL_SRC_1, _impl->segment);
@@ -102,7 +96,6 @@ void CLEmbeddingSumLayer::run()
 
     _impl->op->run(pack);
 
-    std::cout << "src/runtime/CL/functions/CLEmbeddingSumLayer.cpp run end" << std::endl;
 #ifdef MEASURE_TIME
     auto          end_time  = std::chrono::high_resolution_clock::now();
     double        cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();

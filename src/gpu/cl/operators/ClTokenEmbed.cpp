@@ -20,13 +20,10 @@ void ClTokenEmbed::configure(const ClCompileContext   &compile_context,
     ARM_COMPUTE_LOG_PARAMS(input, output, tkemb_info);
     ARM_COMPUTE_UNUSED(tkemb_info);
 
-    std::cout << "src/gpu/cl/operators/ClTokenEmbed.cpp configure start" << std::endl;
-
     auto k = std::make_unique<kernels::ClVectorizeKernel>();
     k->configure(compile_context, input, vocab, output);
     _kernel = std::move(k);
 
-    std::cout << "src/gpu/cl/operators/ClTokenEmbed.cpp configure end" << std::endl;
 }
 
 Status
@@ -43,11 +40,8 @@ void ClTokenEmbed::run(ITensorPack &tensors)
 {
     ARM_COMPUTE_ERROR_ON_MSG(tensors.empty(), "No inputs provided");
 
-    std::cout << "src/gpu/cl/operators/ClTokenEmbed.cpp run start" << std::endl;
-
     CLScheduler::get().enqueue_op(*_kernel.get(), tensors);
 
-    std::cout << "src/gpu/cl/operators/ClTokenEmbed.cpp run end" << std::endl;
 }
 
 } // namespace opencl

@@ -1,7 +1,7 @@
 #include "arm_compute/runtime/CL/functions/CLPositionEmbeddingLayer.h"
 
-#include "arm_compute/core/Validate.h"
 #include "arm_compute/core/CL/ICLTensor.h"
+#include "arm_compute/core/Validate.h"
 
 #include "src/common/utils/Log.h"
 #include "src/core/CL/ICLKernel.h"
@@ -31,11 +31,11 @@ CLPositionEmbeddingLayer::CLPositionEmbeddingLayer()
 
 CLPositionEmbeddingLayer::~CLPositionEmbeddingLayer() = default;
 
-void CLPositionEmbeddingLayer::configure(ICLTensor              *input,
-                                         ICLTensor              *position,
-                                         ICLTensor              *output)
+void CLPositionEmbeddingLayer::configure(ICLTensor *input,
+                                         ICLTensor *position,
+                                         ICLTensor *output)
 {
-    configure(CLKernelLibrary::get().get_compile_context(),input,position,output);
+    configure(CLKernelLibrary::get().get_compile_context(), input, position, output);
 }
 
 void CLPositionEmbeddingLayer::configure(const CLCompileContext &compile_context,
@@ -47,17 +47,12 @@ void CLPositionEmbeddingLayer::configure(const CLCompileContext &compile_context
     auto start_time = std::chrono::high_resolution_clock::now();
 #endif
 
-    std::cout << "src/runtime/CL/functions/CLPositionEmbeddingLayer.cpp configure start" << std::endl;
-    
     _impl->src      = input;
     _impl->position = position;
     _impl->dst      = output;
 
     _impl->op = std::make_unique<opencl::ClPositionEmbed>();
     _impl->op->configure(compile_context, _impl->src->info(), _impl->position->info(), _impl->dst->info());
-
-
-    std::cout << "src/runtime/CL/functions/CLPositionEmbeddingLayer.cpp configure end" << std::endl;
 
 #ifdef MEASURE_TIME
     auto          end_time  = std::chrono::high_resolution_clock::now();
@@ -80,9 +75,7 @@ void CLPositionEmbeddingLayer::run()
 {
 #ifdef MEASURE_TIME
     auto start_time = std::chrono::high_resolution_clock::now();
-#endif 
-
-    std::cout << "src/runtime/CL/functions/CLPositionEmbeddingLayer.cpp run start" << std::endl;
+#endif
 
     ITensorPack pack;
     pack.add_tensor(TensorType::ACL_SRC_0, _impl->src);
@@ -90,7 +83,6 @@ void CLPositionEmbeddingLayer::run()
     pack.add_tensor(TensorType::ACL_DST, _impl->dst);
     _impl->op->run(pack);
 
-    std::cout << "src/runtime/CL/functions/CLPositionEmbeddingLayer.cpp run end" << std::endl;
 #ifdef MEASURE_TIME
     auto          end_time  = std::chrono::high_resolution_clock::now();
     double        cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();

@@ -29,7 +29,6 @@ void ClSimpleForwardKernel::configure(const CLCompileContext &compile_context, c
     ARM_COMPUTE_ERROR_ON_NULLPTR(vector);
     ARM_COMPUTE_UNUSED(compile_context);
 
-    std::cout << "src/gpu/cl/kernels/ClSimpleForwardKernel.cpp configure start" << std::endl;
 
     auto_init_if_empty(*dst1, src1->clone()->set_tensor_shape(src1->tensor_shape()));
     auto_init_if_empty(*dst2, src2->clone()->set_tensor_shape(src2->tensor_shape()));
@@ -47,7 +46,6 @@ void ClSimpleForwardKernel::configure(const CLCompileContext &compile_context, c
     std::string kernel_name("simple_forward");
     _kernel = create_kernel(compile_context, kernel_name, build_opts.options());
 
-    std::cout << "src/gpu/cl/kernels/ClSimpleForwardKernel.cpp configure end" << std::endl;
 }
 
 Status ClSimpleForwardKernel::validate(const ITensorInfo *src, const ITensorInfo *vector, ITensorInfo *dst)
@@ -60,7 +58,6 @@ Status ClSimpleForwardKernel::validate(const ITensorInfo *src, const ITensorInfo
 
 void ClSimpleForwardKernel::run_op(ITensorPack &tensors, const Window &window, cl::CommandQueue &queue)
 {
-    std::cout << "src/gpu/cl/kernels/ClSimpleForwardKernel.cpp run start" << std::endl;
 
     ARM_COMPUTE_ERROR_ON_UNCONFIGURED_KERNEL(this);
     ARM_COMPUTE_ERROR_ON_INVALID_SUBWINDOW(IKernel::window(), window);
@@ -74,19 +71,6 @@ void ClSimpleForwardKernel::run_op(ITensorPack &tensors, const Window &window, c
     auto       dst2 = utils::cast::polymorphic_downcast<ICLTensor *>(tensors.get_tensor(TensorType::ACL_DST_1));
     auto       dst3 = utils::cast::polymorphic_downcast<ICLTensor *>(tensors.get_tensor(TensorType::ACL_DST_2));
 
-    std::cout << "slice x " << slice.x().end() << std::endl;
-    std::cout << "slice y " << slice.y().end() << std::endl;
-    std::cout << "slice z " << slice.z().end() << std::endl;
-
-    std::cout << "src->info()->strides_in_bytes().x() " << src1->info()->strides_in_bytes().x() << std::endl;
-    std::cout << "src->info()->strides_in_bytes().y() " << src1->info()->strides_in_bytes().y() << std::endl;
-    std::cout << "src->info()->strides_in_bytes().z() " << src1->info()->strides_in_bytes().z() << std::endl;
-
-
-    std::cout << "dst->info()->strides_in_bytes().x() " << dst1->info()->strides_in_bytes().x() << std::endl;
-    std::cout << "dst->info()->strides_in_bytes().y() " << dst1->info()->strides_in_bytes().y() << std::endl;
-    std::cout << "dst->info()->strides_in_bytes().z() " << dst1->info()->strides_in_bytes().z() << std::endl;
-
     // Set srcs
     unsigned int idx = 0;
     add_3D_tensor_argument(idx, src1, window);
@@ -98,7 +82,6 @@ void ClSimpleForwardKernel::run_op(ITensorPack &tensors, const Window &window, c
 
     enqueue(queue, *this, slice, lws_hint());
 
-    std::cout << "src/gpu/cl/kernels/ClSimpleForwardKernel.cpp run end" << std::endl;
 }
 
 } // namespace kernels

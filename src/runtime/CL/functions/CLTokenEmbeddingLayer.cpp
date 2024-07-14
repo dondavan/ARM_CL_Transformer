@@ -48,8 +48,6 @@ void CLTokenEmbeddingLayer::configure(const CLCompileContext &compile_context,
     auto start_time = std::chrono::high_resolution_clock::now();
 #endif
 
-    std::cout << "src/runtime/CL/functions/CLTokenEmbeddingLayer.cpp configure start" << std::endl;
-
     _impl->src   = input;
     _impl->vocab = vocab;
     _impl->dst   = output;
@@ -57,8 +55,6 @@ void CLTokenEmbeddingLayer::configure(const CLCompileContext &compile_context,
     _impl->op = std::make_unique<opencl::ClTokenEmbed>();
     _impl->op->configure(compile_context, _impl->src->info(), _impl->vocab->info(), _impl->dst->info(), emb_info);
 
-
-    std::cout << "src/runtime/CL/functions/CLTokenEmbeddingLayer.cpp configure end" << std::endl;
 
 #ifdef MEASURE_TIME
     auto   end_time  = std::chrono::high_resolution_clock::now();
@@ -83,15 +79,12 @@ void CLTokenEmbeddingLayer::run()
     auto start_time = std::chrono::high_resolution_clock::now();
 #endif
 
-    std::cout << "src/runtime/CL/functions/CLTokenEmbeddingLayer.cpp run start" << std::endl;
     
     ITensorPack pack;
     pack.add_tensor(TensorType::ACL_SRC_0, _impl->src);
     pack.add_tensor(TensorType::ACL_SRC_1, _impl->vocab);
     pack.add_tensor(TensorType::ACL_DST, _impl->dst);
     _impl->op->run(pack);
-
-    std::cout << "src/runtime/CL/functions/CLTokenEmbeddingLayer.cpp run end" << std::endl;
 
 #ifdef MEASURE_TIME
     auto   end_time  = std::chrono::high_resolution_clock::now();

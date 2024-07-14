@@ -39,18 +39,14 @@ void ClLinearKernel::configure(const CLCompileContext &compile_context,
                                float                   beta,
                                const MatMulKernelInfo &matmul_kernel_info)
 {
-    std::cout << "src/gpu/cl/kernels/ClLinearKernel.cpp configure start" << std::endl;
     // dst tensor auto initialization if not yet initialized
     auto_init_if_empty(*dst, lhs->clone()->set_tensor_shape(misc::shape_calculator::compute_matmul_shape(
                                  lhs->tensor_shape(), rhs->tensor_shape(), matmul_kernel_info)));
     // Explictly set dst tensor shape
     dst->set_tensor_shape(misc::shape_calculator::compute_matmul_shape(lhs->tensor_shape(), rhs->tensor_shape(), matmul_kernel_info));
 
-    ARM_COMPUTE_UNUSED(alpha,beta,bias);
+    ARM_COMPUTE_UNUSED(alpha, beta, bias);
 
-    std::cout << "dst->tensor_shape().x() " << dst->tensor_shape().x() << std::endl;
-    std::cout << "dst->tensor_shape().y() " <<dst->tensor_shape().y() << std::endl;
-    std::cout << "dst->tensor_shape().z() " <<dst->tensor_shape().z() << std::endl;
     const int  m       = dst->dimension(1);
     const int  n       = dst->dimension(0);
     const int  k       = matmul_kernel_info.adj_lhs ? lhs->tensor_shape().y() : lhs->tensor_shape().x();
@@ -59,31 +55,15 @@ void ClLinearKernel::configure(const CLCompileContext &compile_context,
     int m0 = adj_lhs ? adjust_vec_size(matmul_kernel_info.m0, m) : std::min(matmul_kernel_info.m0, m);
     int n0 = adjust_vec_size(matmul_kernel_info.n0, n);
 
-
-    std::cout << "matmul_kernel_info.adj_lhs " << matmul_kernel_info.adj_lhs << std::endl;
-    std::cout << "m " << m << std::endl;
-    std::cout << "n " << n << std::endl;
-    std::cout << "k " << k << std::endl;
-    std::cout << "m0 " << m0 << std::endl;
-    std::cout << "n0 " << n0 << std::endl;
-    std::cout << "k0 " << matmul_kernel_info.k0 << std::endl;
-
     // Configure kernel window
     Window win = calculate_max_window(*dst, Steps(n0, m0));
 
-    std::cout <<"window.x().end() " <<win.x().end() << std::endl;
-    std::cout <<"window.y().end() " << win.y().end() << std::endl;
-    std::cout <<"window.z().end() "<< win.z().end() << std::endl;
-
-    win        = win.collapse(win, Window::DimZ);
+    win = win.collapse(win, Window::DimZ);
     IClKernel::configure_internal(win);
 
     // Calculate partial (store instead of load) M0 and partial N0 for the partial blocks at the end of a row/column if any. This is to avoid padding.
     const unsigned int partial_store_m0 = m % m0;
     const unsigned int partial_store_n0 = n % n0;
-
-    std::cout << "partial_store_m0 " << partial_store_m0 << std::endl;
-    std::cout << "partial_store_n0 " << partial_store_n0 << std::endl;
 
     CLBuildOptions build_opts;
     build_opts.add_option("-DDATA_TYPE=" + get_cl_type_from_data_type(lhs->data_type()));
@@ -102,16 +82,11 @@ void ClLinearKernel::configure(const CLCompileContext &compile_context,
     kernel_name += matmul_kernel_info.adj_lhs ? "_t" : "_nt";
     kernel_name += matmul_kernel_info.adj_rhs ? "_t" : "_nt";
 
-    std::cout << kernel_name << std::endl;
-
     // A macro guard to compile ONLY the kernel of interest
     build_opts.add_option("-D" + upper_string(kernel_name));
 
     // Create kernel
     _kernel = create_kernel(compile_context, kernel_name, build_opts.options());
-
-    std::cout << "src/gpu/cl/kernels/ClLinearKernel.cpp configure end" << std::endl;
-    
 }
 
 Status ClLinearKernel::validate(const ITensorInfo *src, const ITensorInfo *vector, ITensorInfo *dst)
@@ -124,7 +99,6 @@ Status ClLinearKernel::validate(const ITensorInfo *src, const ITensorInfo *vecto
 
 void ClLinearKernel::run_op(ITensorPack &tensors, const Window &window, cl::CommandQueue &queue)
 {
-    std::cout << "src/gpu/cl/kernels/ClLinearKernel.cpp run start" << std::endl;
     const ICLTensor *lhs =
         utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC_0));
     const ICLTensor *rhs =
@@ -137,37 +111,15 @@ void ClLinearKernel::run_op(ITensorPack &tensors, const Window &window, cl::Comm
     unsigned int idx              = 0;
     Window       window_collapsed = window.collapse(ICLKernel::window(), Window::DimZ);
 
-
-    std::cout << "lhs->info()->tensor_shape().x() " << lhs->info()->tensor_shape().x() << std::endl;
-    std::cout << "lhs->info()->tensor_shape().y() " << lhs->info()->tensor_shape().y() << std::endl;
-    std::cout << "lhs->info()->tensor_shape().z() " << lhs->info()->tensor_shape().z() << std::endl;
-
-
-    std::cout << "rhs->info()->tensor_shape().x() " << rhs->info()->tensor_shape().x() << std::endl;
-    std::cout << "rhs->info()->tensor_shape().y() " << rhs->info()->tensor_shape().y() << std::endl;
-    std::cout << "rhs->info()->tensor_shape().z() " << rhs->info()->tensor_shape().z() << std::endl;
-
-
-    std::cout << "dst->tensor_shape().x() " << dst->info()->tensor_shape().x() << std::endl;
-    std::cout << "dst->tensor_shape().y() " << dst->info()->tensor_shape().y() << std::endl;
-    std::cout << "dst->tensor_shape().z() " << dst->info()->tensor_shape().z() << std::endl;
-
-    std::cout <<"window_collapsed.x().end() " <<window_collapsed.x().end() << std::endl;
-    std::cout <<"window_collapsed.y().end() " << window_collapsed.y().end() << std::endl;
-    std::cout <<"window_collapsed.z().end() "<< window_collapsed.z().end() << std::endl;
-
-
     add_3d_tensor_nhw_argument(idx, lhs);
     add_3d_tensor_nhw_argument(idx, rhs);
-    if (bias != nullptr)
+    if(bias != nullptr)
     {
         add_3d_tensor_nhw_argument(idx, bias);
-    }else std::cout << " no bias " << std::endl;
+    }
     add_3d_tensor_nhw_argument(idx, dst);
 
     enqueue(queue, *this, window_collapsed, lws_hint());
-    std::cout << "src/gpu/cl/kernels/ClLinearKernel.cpp run end" << std::endl;
-
 }
 
 } // namespace kernels

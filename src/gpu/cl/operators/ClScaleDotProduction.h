@@ -11,10 +11,9 @@
 #include "src/gpu/cl/kernels/ClPermuteKernel.h"
 //#include "src/gpu/cl/kernels/ClReshapeKernel.h"
 #include "src/gpu/cl/kernels/ClHughReshapeKernel.h"
+#include "src/gpu/cl/kernels/ClSimpleForward1Kernel.h"
 #include "src/gpu/cl/kernels/ClSoftmaxKernel.h"
 #include "src/gpu/cl/kernels/ClTransposeKernel.h"
-#include "src/gpu/cl/kernels/ClSimpleForward1Kernel.h"
-
 
 #include <memory>
 
@@ -97,13 +96,13 @@ class ClScaleDotProduction : public IClOperator
     TensorInfo _gemmed_context{};
 
     std::unique_ptr<kernels::ClHughReshapeKernel> _query_reshape_kernel{ nullptr };
-    std::unique_ptr<kernels::ClPermuteKernel> _query_permute_kernel{ nullptr };
+    std::unique_ptr<kernels::ClPermuteKernel>     _query_permute_kernel{ nullptr };
     std::unique_ptr<kernels::ClHughReshapeKernel> _key_reshape_kernel{ nullptr };
-    std::unique_ptr<kernels::ClPermuteKernel> _key_permute_kernel{ nullptr };
+    std::unique_ptr<kernels::ClPermuteKernel>     _key_permute_kernel{ nullptr };
     std::unique_ptr<kernels::ClHughReshapeKernel> _value_reshape_kernel{ nullptr };
-    std::unique_ptr<kernels::ClPermuteKernel> _value_permute_kernel{ nullptr };
+    std::unique_ptr<kernels::ClPermuteKernel>     _value_permute_kernel{ nullptr };
     std::unique_ptr<kernels::ClHughReshapeKernel> _concat_reshape_kernel{ nullptr };
-    std::unique_ptr<kernels::ClPermuteKernel> _concat_permute_kernel{ nullptr };
+    std::unique_ptr<kernels::ClPermuteKernel>     _concat_permute_kernel{ nullptr };
 
     std::unique_ptr<kernels::ClTransposeKernel> _key_transpose_kernel{ nullptr };
 
@@ -111,7 +110,6 @@ class ClScaleDotProduction : public IClOperator
 
     std::unique_ptr<kernels::ClLinearKernel> _product_mm_kernel{ nullptr };
     std::unique_ptr<kernels::ClLinearKernel> _context_mm_kernel{ nullptr };
-
 
     std::unique_ptr<kernels::ClSimpleForward1Kernel> _sf_kernel{ nullptr };
 

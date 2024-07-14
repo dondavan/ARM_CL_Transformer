@@ -22,51 +22,12 @@ namespace opencl
 namespace kernels
 {
 
-namespace
-{
-/**  Vectorize pretrained position embedding*/
-template <typename T>
-void run_position_embedding(const Window &window, const ITensor *src, const ITensor *vector, ITensor *dst)
-{
-    ARM_COMPUTE_UNUSED(src);
-    std::cout << "run_position_embedding start" << std::endl;
-    Window win = window;
-    win.set(Window::DimX, Window::Dimension(0, 1, 1));
-    win.set(Window::DimY, Window::Dimension(0, 1, 1));
-    const unsigned int window_start_x = static_cast<unsigned int>(window.x().start());
-    const unsigned int window_end_x   = static_cast<unsigned int>(window.x().end());
-
-    const unsigned int vector_depth = vector->info()->tensor_shape().x();
-
-    unsigned int offset_vector, offset_dst;
-
-    Iterator dst_iter(dst, win);
-    Iterator vector_iter(vector, win);
-
-    const auto dst_ptr    = reinterpret_cast<T *>(dst_iter.ptr());
-    const auto vector_ptr = reinterpret_cast<T *>(vector_iter.ptr());
-
-    execute_window_loop(win, [&](const Coordinates &)
-                        {
-                            for(unsigned int x = window_start_x; x < window_end_x; x++)
-                            {
-                                offset_dst    = x * vector_depth;
-                                offset_vector = x * vector_depth;
-                                std::memcpy(dst_ptr + offset_dst, vector_ptr + offset_vector, (vector_depth) * sizeof(*vector_ptr));
-                            } }, dst_iter, vector_iter);
-    std::cout << "run_position_embedding end" << std::endl;
-}
-
-} // namespace
-
 void ClPositionEmbeddingKernel::configure(const CLCompileContext &compile_context,
                                           const ITensorInfo      *src,
                                           const ITensorInfo      *pos,
                                           ITensorInfo            *dst)
 {
     ARM_COMPUTE_ERROR_ON_NULLPTR(src, dst);
-
-    std::cout << "src/gpu/cl/kernels/ClPositionEmbeddingKernel.cpp configure start" << std::endl;
 
     auto               padding_info = get_padding_info({ src, dst });
     const unsigned int vector_depth = pos->tensor_shape().x();
@@ -83,10 +44,8 @@ void ClPositionEmbeddingKernel::configure(const CLCompileContext &compile_contex
     // Configure kernel window
     Window win = calculate_max_window(*dst, Steps());
     ICLKernel::configure_internal(win);
-    
-    ARM_COMPUTE_ERROR_ON(has_padding_changed(padding_info));
 
-    std::cout << "src/gpu/cl/kernels/ClPositionEmbeddingKernel.cpp configure end" << std::endl;
+    ARM_COMPUTE_ERROR_ON(has_padding_changed(padding_info));
 }
 
 Status ClPositionEmbeddingKernel::validate(const ITensorInfo *src, const ITensorInfo *pos, const ITensorInfo *dst)
@@ -101,29 +60,12 @@ Status ClPositionEmbeddingKernel::validate(const ITensorInfo *src, const ITensor
 void ClPositionEmbeddingKernel::run_op(ITensorPack &tensors, const Window &window, cl::CommandQueue &queue)
 {
     ARM_COMPUTE_UNUSED(queue, tensors, window);
-    std::cout << "src/gpu/cl/kernels/ClPositionEmbeddingKernel.cpp run start" << std::endl;
 
     Window slice = window.first_slice_window_3D();
 
     auto *src    = utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC_0));
     auto *vector = utils::cast::polymorphic_downcast<const ICLTensor *>(tensors.get_const_tensor(TensorType::ACL_SRC_1));
     auto  dst    = utils::cast::polymorphic_downcast<ICLTensor *>(tensors.get_tensor(TensorType::ACL_DST));
-
-    std::cout << "src x" << src->info()->tensor_shape().x() << std::endl;
-    std::cout << "src y" << src->info()->tensor_shape().y() << std::endl;
-    std::cout << "src z" << src->info()->tensor_shape().z() << std::endl;
-
-    std::cout << "vector x" << vector->info()->tensor_shape().x() << std::endl;
-    std::cout << "vector y" << vector->info()->tensor_shape().y() << std::endl;
-    std::cout << "vector z" << vector->info()->tensor_shape().z() << std::endl;
-
-    std::cout << "dst x" << dst->info()->tensor_shape().x() << std::endl;
-    std::cout << "dst y" << dst->info()->tensor_shape().y() << std::endl;
-    std::cout << "dst z" << dst->info()->tensor_shape().z() << std::endl;
-
-    std::cout << "slice x" << slice.x().end() << std::endl;
-    std::cout << "slice y" << slice.y().end() << std::endl;
-    std::cout << "slice z" << slice.z().end() << std::endl;
 
     // Set srcs
     unsigned int idx = 0;
@@ -132,8 +74,6 @@ void ClPositionEmbeddingKernel::run_op(ITensorPack &tensors, const Window &windo
     add_3D_tensor_argument(idx, dst, window);
 
     enqueue(queue, *this, slice, lws_hint());
-
-    std::cout << "src/gpu/cl/kernels/ClPositionEmbeddingKernel.cpp run end" << std::endl;
 }
 
 } // namespace kernels
