@@ -99,7 +99,6 @@ void GraphManager::finalize_graph(Graph &graph, GraphContext &ctx, PassManager &
     {
         forced_target = get_default_target();
         ARM_COMPUTE_LOG_GRAPH_INFO("Switching target from " << target << " to " << forced_target << std::endl);
-        std::cout << "Switching target from " << target << " to " << forced_target << std::endl;
     }
     force_target_to_graph(graph, forced_target);
 
@@ -124,33 +123,21 @@ void GraphManager::finalize_graph(Graph &graph, GraphContext &ctx, PassManager &
 
     // Allocate const tensors and call accessors
 
-    std::cout << "allocate_const_tensors start" << std::endl;
     detail::allocate_const_tensors(graph);
-    std::cout << "allocate_const_tensors end" << std::endl;
-    std::cout << "call_all_const_node_accessors start" << std::endl;
     detail::call_all_const_node_accessors(graph);
 
-    std::cout << "call_all_const_node_accessors end" << std::endl;
-
-    std::cout << "prepare_all_tasks start" << std::endl;
     // Prepare graph
     detail::prepare_all_tasks(workload);
-    std::cout << "prepare_all_tasks end" << std::endl;
 
-
-    std::cout << "Setup tensor memory start" << std::endl;
     // Setup tensor memory (Allocate all tensors or setup transition manager)
     if(ctx.config().use_transition_memory_manager)
     {
-        std::cout << "use_transition_memory_manager" << std::endl;
         detail::configure_transition_manager(graph, ctx, workload);
     }
     else
     {
-        std::cout << "allocate_all_tensors" << std::endl;
         detail::allocate_all_tensors(graph);
     }
-    std::cout << "Setup tensor memory end" << std::endl;
 
     // Finalize Graph context
     ctx.finalize();
@@ -173,13 +160,11 @@ void GraphManager::execute_graph(Graph &graph)
 #ifdef MEASURE_TIME
         auto input_start_time = std::chrono::high_resolution_clock::now();
 #endif
-    std::cout << "call_all_input_node_accessors start" << std::endl;
         // Call input accessors
         if(!detail::call_all_input_node_accessors(it->second))
         {
             return;
         }
-    std::cout << "call_all_input_node_accessors end" << std::endl;
 #ifdef MEASURE_TIME
         auto   input_end_time  = std::chrono::high_resolution_clock::now();
         double input_cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(input_end_time - input_start_time).count();
@@ -195,10 +180,8 @@ void GraphManager::execute_graph(Graph &graph)
 #ifdef MEASURE_TIME
         auto all_task_start_time = std::chrono::high_resolution_clock::now();
 #endif
-std::cout << "call_all_tasks start" << std::endl;
         // Run graph
         detail::call_all_tasks(it->second);
-        std::cout << "call_all_tasks end" << std::endl;
 #ifdef MEASURE_TIME
         auto   all_task_end_time  = std::chrono::high_resolution_clock::now();
         double all_task_cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(all_task_end_time - all_task_start_time).count();
@@ -213,13 +196,11 @@ std::cout << "call_all_tasks start" << std::endl;
 #ifdef MEASURE_TIME
         auto output_start_time = std::chrono::high_resolution_clock::now();
 #endif
-std::cout << "call_all_output_node_accessors start" << std::endl;
         // Call output accessors
         if(!detail::call_all_output_node_accessors(it->second))
         {
             return;
         }
-std::cout << "call_all_output_node_accessors end" << std::endl;
 #ifdef MEASURE_TIME
         auto   output_end_time  = std::chrono::high_resolution_clock::now();
         double output_cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(output_end_time - output_start_time).count();
