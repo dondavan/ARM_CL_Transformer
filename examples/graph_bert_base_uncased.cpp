@@ -123,6 +123,12 @@ class GraphVanillaTransformerExample : public Example
             add_encoder_block(data_path,"layer_4/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
             add_encoder_block(data_path,"layer_5/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
 
+            add_encoder_block(data_path,"layer_6/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+            add_encoder_block(data_path,"layer_7/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+            add_encoder_block(data_path,"layer_8/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+            add_encoder_block(data_path,"layer_9/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+            add_encoder_block(data_path,"layer_10/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+            add_encoder_block(data_path,"layer_11/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
 
         // Pooler
         graph << LinearLayer(LinearLayerInfo(d_model, TensorShape(d_model, d_model) ,
