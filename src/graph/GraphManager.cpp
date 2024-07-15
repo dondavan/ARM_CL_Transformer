@@ -202,6 +202,7 @@ void GraphManager::execute_graph(Graph &graph)
 
         measure_out.precision(5);
         measure_out << std::scientific << "Output cost: " << output_cost_time << std::endl;
+
         measure_out.close();
 #endif
     }
