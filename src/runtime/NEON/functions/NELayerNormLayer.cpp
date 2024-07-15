@@ -50,9 +50,6 @@ void NELayerNormLayer::configure(const ITensor *input,
     measure_out.precision(5);
     measure_out << std::scientific << "NELayerNormLayer::configure cost: " << cost_time << std::endl;
     measure_out.close();
-
-    std::cout.precision(5);
-    std::cout << std::scientific << "NELayerNormLayer::configure cost: " << cost_time << std::endl;
 #endif
 }
 
@@ -84,9 +81,6 @@ void NELayerNormLayer::run()
     measure_out.precision(5);
     measure_out << std::scientific << "NELayerNormLayer::run cost: " << cost_time << std::endl;
     measure_out.close();
-
-    std::cout.precision(5);
-    std::cout << std::scientific << "NELayerNormLayer::run cost: " << cost_time << std::endl;
 #endif
 
 }

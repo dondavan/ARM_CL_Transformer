@@ -173,8 +173,6 @@ void GraphManager::execute_graph(Graph &graph)
         measure_out.precision(5);
         measure_out << std::scientific << "Input cost: " << input_cost_time << std::endl;
 
-        std::cout.precision(5);
-        std::cout << "Input cost: " << input_cost_time << std::endl;
 #endif
 
 #ifdef MEASURE_TIME
@@ -188,9 +186,6 @@ void GraphManager::execute_graph(Graph &graph)
 
         measure_out.precision(5);
         measure_out << std::scientific << "All_task cost: " << all_task_cost_time << std::endl;
-
-        std::cout.precision(5);
-        std::cout << "All_task cost: " << all_task_cost_time << std::endl;
 #endif
 
 #ifdef MEASURE_TIME
@@ -207,9 +202,6 @@ void GraphManager::execute_graph(Graph &graph)
 
         measure_out.precision(5);
         measure_out << std::scientific << "Output cost: " << output_cost_time << std::endl;
-
-        std::cout.precision(5);
-        std::cout << "Output cost: " << output_cost_time << std::endl;
         measure_out.close();
 #endif
     }

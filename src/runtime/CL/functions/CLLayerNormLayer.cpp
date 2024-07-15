@@ -59,9 +59,6 @@ void CLLayerNormLayer::configure(const CLCompileContext   &compile_context,
     measure_out.precision(5);
     measure_out << std::scientific << "CLLayerNormLayer::configure cost: " << cost_time << std::endl;
     measure_out.close();
-
-    std::cout.precision(5);
-    std::cout << std::scientific << "CLLayerNormLayer::configure cost: " << cost_time << std::endl;
 #endif
 }
 
@@ -93,9 +90,6 @@ void CLLayerNormLayer::run()
     measure_out.precision(5);
     measure_out << std::scientific << "CLLayerNormLayer::run cost: " << cost_time << std::endl;
     measure_out.close();
-
-    std::cout.precision(5);
-    std::cout << std::scientific << "CLLayerNormLayer::run cost: " << cost_time << std::endl;
 #endif
 }
 

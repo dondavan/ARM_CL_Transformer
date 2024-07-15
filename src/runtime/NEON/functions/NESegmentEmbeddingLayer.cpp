@@ -47,9 +47,6 @@ void NESegmentEmbeddingLayer::configure(ITensor *input, ITensor *segment, ITenso
     measure_out.precision(5);
     measure_out << std::scientific << "NESegmentEmbeddingLayer::configure cost: " << cost_time << std::endl;
     measure_out.close();
-
-    std::cout.precision(5);
-    std::cout << std::scientific << "NESegmentEmbeddingLayer::configure cost: " << cost_time << std::endl;
 #endif
 }
 
@@ -76,9 +73,6 @@ void NESegmentEmbeddingLayer::run()
     measure_out.precision(5);
     measure_out << std::scientific <<  "NESegmentEmbeddingLayer::run cost: " << cost_time << std::endl;
     measure_out.close();
-
-    std::cout.precision(5);
-    std::cout << std::scientific << "NESegmentEmbeddingLayer::run cost: " << cost_time << std::endl;
 #endif
 }
 

@@ -55,9 +55,6 @@ void NELinearLayer::configure(const ITensor *input,
     measure_out.precision(5);
     measure_out << std::scientific << "NELinearLayer::configure cost: " << cost_time << std::endl;
     measure_out.close();
-
-    std::cout.precision(5);
-    std::cout << std::scientific << "NELinearLayer::configure cost: " << cost_time << std::endl;
 #endif
 }
 
@@ -91,9 +88,6 @@ void NELinearLayer::run()
     measure_out.precision(5);
     measure_out << std::scientific << "NELinearLayer::run cost: " << cost_time << std::endl;
     measure_out.close();
-
-    std::cout.precision(5);
-    std::cout << std::scientific << "NELinearLayer::run cost: " << cost_time << std::endl;
 #endif
 
 }

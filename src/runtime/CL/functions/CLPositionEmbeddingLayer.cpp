@@ -61,9 +61,6 @@ void CLPositionEmbeddingLayer::configure(const CLCompileContext &compile_context
     measure_out.precision(5);
     measure_out << std::scientific << "CLPositionEmbeddingLayer::configure cost: " << cost_time << std::endl;
     measure_out.close();
-
-    std::cout.precision(5);
-    std::cout << std::scientific << "CLPositionEmbeddingLayer::configure cost: " << cost_time << std::endl;
 #endif
 }
 
@@ -90,9 +87,6 @@ void CLPositionEmbeddingLayer::run()
     measure_out.precision(5);
     measure_out << std::scientific << "CLPositionEmbeddingLayer::run cost: " << cost_time << std::endl;
     measure_out.close();
-
-    std::cout.precision(5);
-    std::cout << std::scientific << "CLPositionEmbeddingLayer::run cost: " << cost_time << std::endl;
 #endif
 }
 

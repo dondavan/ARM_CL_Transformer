@@ -58,9 +58,6 @@ void CLSegmentEmbeddingLayer::configure(const CLCompileContext &compile_context,
     measure_out.precision(5);
     measure_out << std::scientific << "CLSegmentEmbeddingLayer::configure cost: " << cost_time << std::endl;
     measure_out.close();
-
-    std::cout.precision(5);
-    std::cout << std::scientific << "CLSegmentEmbeddingLayer::configure cost: " << cost_time << std::endl;
 #endif
 }
 
@@ -87,9 +84,6 @@ void CLSegmentEmbeddingLayer::run()
     measure_out.precision(5);
     measure_out << std::scientific <<  "CLSegmentEmbeddingLayer::run cost: " << cost_time << std::endl;
     measure_out.close();
-
-    std::cout.precision(5);
-    std::cout << std::scientific << "CLSegmentEmbeddingLayer::run cost: " << cost_time << std::endl;
 #endif
 }
 

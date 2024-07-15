@@ -72,9 +72,6 @@ void CLEmbeddingSumLayer::configure(const CLCompileContext   &compile_context,
     measure_out.precision(5);
     measure_out << std::scientific << "CLEmbeddingSumLayer::configure cost: " << cost_time << std::endl;
     measure_out.close();
-
-    std::cout.precision(5);
-    std::cout << std::scientific << "CLEmbeddingSumLayer::configure cost: " << cost_time << std::endl;
 #endif
 }
 
@@ -103,9 +100,6 @@ void CLEmbeddingSumLayer::run()
     measure_out.precision(5);
     measure_out << std::scientific << "CLEmbeddingSumLayer::run cost: " << cost_time << std::endl;
     measure_out.close();
-
-    std::cout.precision(5);
-    std::cout << std::scientific << "CLEmbeddingSumLayer::run cost: " << cost_time << std::endl;
 #endif
 }
 

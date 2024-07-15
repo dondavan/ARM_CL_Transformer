@@ -48,9 +48,6 @@ void NEPositionEmbeddingLayer::configure(ITensor *input, ITensor *position, ITen
     measure_out.precision(5);
     measure_out << std::scientific << "NEPositionEmbeddingLayer::configure cost: " << cost_time << std::endl;
     measure_out.close();
-
-    std::cout.precision(5);
-    std::cout << std::scientific << "NEPositionEmbeddingLayer::configure cost: " << cost_time << std::endl;
 #endif
 }
 
@@ -77,9 +74,6 @@ void NEPositionEmbeddingLayer::run()
     measure_out.precision(5);
     measure_out << std::scientific << "NEPositionEmbeddingLayer::run cost: " << cost_time << std::endl;
     measure_out.close();
-
-    std::cout.precision(5);
-    std::cout << std::scientific << "NEPositionEmbeddingLayer::run cost: " << cost_time << std::endl;
 #endif
 }
 

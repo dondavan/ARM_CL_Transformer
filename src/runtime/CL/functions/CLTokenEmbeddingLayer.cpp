@@ -63,9 +63,6 @@ void CLTokenEmbeddingLayer::configure(const CLCompileContext &compile_context,
     measure_out.precision(5);
     measure_out << std::scientific << "CLTokenEmbeddingLayer::configure cost: " << cost_time << std::endl;
     measure_out.close();
-
-    std::cout.precision(5);
-    std::cout << std::scientific << "CLTokenEmbeddingLayer::configure cost: " << cost_time << std::endl;
 #endif
 }
 
@@ -93,9 +90,6 @@ void CLTokenEmbeddingLayer::run()
     measure_out.precision(5);
     measure_out << std::scientific << "CLTokenEmbeddingLayer::run cost: " << cost_time << std::endl;
     measure_out.close();
-
-    std::cout.precision(5);
-    std::cout << std::scientific << "CLTokenEmbeddingLayer::run cost: " << cost_time << std::endl;
 #endif
 }
 

@@ -48,9 +48,6 @@ void NETokenEmbeddingLayer::configure(ITensor *input, ITensor *vocab, ITensor *o
     measure_out.precision(5);
     measure_out << std::scientific << "NETokenEmbeddingLayer::configure cost: " << cost_time << std::endl;
     measure_out.close();
-
-    std::cout.precision(5);
-    std::cout << std::scientific << "NETokenEmbeddingLayer::configure cost: " << cost_time << std::endl;
 #endif
 }
 
@@ -77,9 +74,6 @@ void NETokenEmbeddingLayer::run()
     measure_out.precision(5);
     measure_out << std::scientific << "NETokenEmbeddingLayer::run cost: " << cost_time << std::endl;
     measure_out.close();
-
-    std::cout.precision(5);
-    std::cout << std::scientific << "NETokenEmbeddingLayer::run cost: " << cost_time << std::endl;
 #endif
 }
 

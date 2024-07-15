@@ -65,9 +65,6 @@ void CLScaleDotProductionAttentionLayer::configure(const CLCompileContext       
     measure_out.precision(5);
     measure_out << std::scientific << "CLScaleDotProductionAttentionLayer::configure cost: " << cost_time << std::endl;
     measure_out.close();
-
-    std::cout.precision(5);
-    std::cout << std::scientific << "CLScaleDotProductionAttentionLayer::configure cost: " << cost_time << std::endl;
 #endif
 }
 
@@ -88,9 +85,6 @@ void CLScaleDotProductionAttentionLayer::run()
     measure_out.precision(5);
     measure_out << std::scientific << "CLScaleDotProductionAttentionLayer::run cost: " << cost_time << std::endl;
     measure_out.close();
-
-    std::cout.precision(5);
-    std::cout << std::scientific << "CLScaleDotProductionAttentionLayer::run cost: " << cost_time << std::endl;
 #endif
 }
 

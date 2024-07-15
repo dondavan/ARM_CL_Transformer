@@ -56,9 +56,6 @@ void NEScaleDotProductionAttentionLayer::configure(const ITensor *query,
     measure_out.precision(5);
     measure_out << std::scientific << "NEScaleDotProductionAttentionLayer::configure cost: " << cost_time << std::endl;
     measure_out.close();
-
-    std::cout.precision(5);
-    std::cout << std::scientific << "NEScaleDotProductionAttentionLayer::configure cost: " << cost_time << std::endl;
 #endif
 
 }
@@ -80,9 +77,6 @@ void NEScaleDotProductionAttentionLayer::run()
     measure_out.precision(5);
     measure_out << std::scientific << "NEScaleDotProductionAttentionLayer::run cost: " << cost_time << std::endl;
     measure_out.close();
-
-    std::cout.precision(5);
-    std::cout << std::scientific << "NEScaleDotProductionAttentionLayer::run cost: " << cost_time << std::endl;
 #endif
 
 }

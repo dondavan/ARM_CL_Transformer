@@ -66,9 +66,6 @@ void NESimpleForwardLayer::configure(const ITensor *src1,
     measure_out.precision(5);
     measure_out << std::scientific << "NESimpleForwardLayer::configure cost: " << cost_time << std::endl;
     measure_out.close();
-
-    std::cout.precision(5);
-    std::cout << std::scientific << "NESimpleForwardLayer::configure cost: " << cost_time << std::endl;
 #endif
 }
 
@@ -95,9 +92,6 @@ void NESimpleForwardLayer::run()
     measure_out.precision(5);
     measure_out << std::scientific << "NESimpleForwardLayer::run cost: " << cost_time << std::endl;
     measure_out.close();
-
-    std::cout.precision(5);
-    std::cout << std::scientific << "NESimpleForwardLayer::run cost: " << cost_time << std::endl;
 #endif
 }
 

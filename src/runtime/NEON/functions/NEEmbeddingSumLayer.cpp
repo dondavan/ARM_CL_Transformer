@@ -54,9 +54,6 @@ void NEEmbeddingSumLayer::configure(ITensor *token, ITensor *segment, ITensor *p
     measure_out.precision(5);
     measure_out << std::scientific << "NEEmbeddingSumLayer::configure cost: " << cost_time << std::endl;
     measure_out.close();
-
-    std::cout.precision(5);
-    std::cout << std::scientific << "NEEmbeddingSumLayer::configure cost: " << cost_time << std::endl;
 #endif
 }
 
@@ -85,9 +82,6 @@ void NEEmbeddingSumLayer::run()
     measure_out.precision(5);
     measure_out << std::scientific << "NEEmbeddingSumLayer::run cost: " << cost_time << std::endl;
     measure_out.close();
-
-    std::cout.precision(5);
-    std::cout << std::scientific << "NEEmbeddingSumLayer::run cost: " << cost_time << std::endl;
 #endif
 }
 
