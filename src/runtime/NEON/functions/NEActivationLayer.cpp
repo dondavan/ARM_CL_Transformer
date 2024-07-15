@@ -71,9 +71,6 @@ void NEActivationLayer::configure(ITensor *input, ITensor *output, ActivationLay
     measure_out.precision(5);
     measure_out << std::scientific << "NEActivationLayer::configure cost: " << cost_time << std::endl;
     measure_out.close();
-
-    std::cout.precision(5);
-    std::cout << std::scientific << "NEActivationLayer::configure cost: " << cost_time << std::endl;
 #endif
 }
 
@@ -101,9 +98,6 @@ void NEActivationLayer::run()
     measure_out.precision(5);
     measure_out << std::scientific << "NEActivationLayer::run cost: " << cost_time << std::endl;
     measure_out.close();
-
-    std::cout.precision(5);
-    std::cout << std::scientific << "NEActivationLayer::run cost: " << cost_time << std::endl;
 #endif
 }
 } // namespace arm_compute

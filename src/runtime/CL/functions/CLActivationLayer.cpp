@@ -60,6 +60,9 @@ void CLActivationLayer::configure(const CLCompileContext &compile_context,
                                   ICLTensor              *output,
                                   ActivationLayerInfo     act_info)
 {
+#ifdef MEASURE_TIME
+    auto start_time = std::chrono::high_resolution_clock::now();
+#endif
     ARM_COMPUTE_ERROR_ON_NULLPTR(input);
 
     _impl->src = input;
@@ -67,6 +70,14 @@ void CLActivationLayer::configure(const CLCompileContext &compile_context,
 
     _impl->op = std::make_unique<opencl::ClActivation>();
     _impl->op->configure(compile_context, _impl->src->info(), _impl->dst->info(), act_info);
+#ifdef MEASURE_TIME
+    auto   end_time  = std::chrono::high_resolution_clock::now();
+    double cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
+    std::ofstream measure_out("measure_output.txt",std::ios::app);
+    measure_out.precision(5);
+    measure_out << std::scientific << "CLActivationLayer::configure cost: " << cost_time << std::endl;
+    measure_out.close();
+#endif
 }
 
 Status
@@ -77,9 +88,21 @@ CLActivationLayer::validate(const ITensorInfo *input, const ITensorInfo *output,
 
 void CLActivationLayer::run()
 {
+#ifdef MEASURE_TIME
+    auto start_time = std::chrono::high_resolution_clock::now();
+#endif
     ITensorPack pack;
     pack.add_tensor(TensorType::ACL_SRC, _impl->src);
     pack.add_tensor(TensorType::ACL_DST, _impl->dst);
     _impl->op->run(pack);
+    
+#ifdef MEASURE_TIME
+    auto   end_time  = std::chrono::high_resolution_clock::now();
+    double cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
+    std::ofstream measure_out("measure_output.txt",std::ios::app);
+    measure_out.precision(5);
+    measure_out << std::scientific << "NEActivationLayer::run cost: " << cost_time << std::endl;
+    measure_out.close();
+#endif
 }
 } // namespace arm_compute
