@@ -83,9 +83,6 @@ void NEArithmeticAddition::configure(const ITensor             *input1,
     measure_out.precision(5);
     measure_out << std::scientific << "NEArithmeticAddition::configure cost: " << cost_time << std::endl;
     measure_out.close();
-
-    std::cout.precision(5);
-    std::cout << std::scientific << "NEArithmeticAddition::configure cost: " << cost_time << std::endl;
 #endif
 
 }
@@ -110,9 +107,6 @@ void NEArithmeticAddition::run()
     measure_out.precision(5);
     measure_out << std::scientific << "NEScaleDotProductionAttentionLayer::run cost: " << cost_time << std::endl;
     measure_out.close();
-
-    std::cout.precision(5);
-    std::cout << std::scientific << "NEScaleDotProductionAttentionLayer::run cost: " << cost_time << std::endl;
 #endif
 }
 } // namespace arm_compute
