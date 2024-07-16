@@ -181,10 +181,19 @@ class GraphVanillaTransformerExample : public Example
 
     void add_encoder_block(std::string data_path, std::string layer_path,
                            unsigned int d_model, unsigned int h, float eps, unsigned int d_ff)
-    {ARM_COMPUTE_UNUSED(h);
+    {
         SubStream without_attention(graph);
         SubStream with_attention(graph);
 
+        with_attention
+            /* Self Attention */
+            << MultiHeadLinearLayer(LinearLayerInfo(d_model), get_weights_accessor(data_path + layer_path, "query_weight.npy"),
+                                    get_weights_accessor(data_path + layer_path, "query_bias.npy"),
+                                    get_weights_accessor(data_path + layer_path, "key_weight.npy"),
+                                    get_weights_accessor(data_path + layer_path, "key_bias.npy"),
+                                    get_weights_accessor(data_path + layer_path, "value_weight.npy"),
+                                    get_weights_accessor(data_path + layer_path, "value_bias.npy"))
+            << MultiHeadAttentionLayer(MultiHeadAttentionLayerInfo(d_model, h)).set_name("mha1");
 
         graph << EltwiseLayer(std::move(with_attention), std::move(without_attention), EltwiseOperation::Add).set_name("add_4_norm_attention");
 

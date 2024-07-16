@@ -105,7 +105,7 @@ void NEArithmeticAddition::run()
     double cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
     std::ofstream measure_out("measure_output.txt",std::ios::app);
     measure_out.precision(5);
-    measure_out << std::scientific << "NEScaleDotProductionAttentionLayer::run cost: " << cost_time << std::endl;
+    measure_out << std::scientific << "NEArithmeticAddition::run cost: " << cost_time << std::endl;
     measure_out.close();
 #endif
 }
