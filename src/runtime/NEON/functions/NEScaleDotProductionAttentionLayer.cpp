@@ -62,9 +62,6 @@ void NEScaleDotProductionAttentionLayer::configure(const ITensor *query,
 
 void NEScaleDotProductionAttentionLayer::run()
 {
-#ifdef MEASURE_TIME
-    auto start_time = std::chrono::high_resolution_clock::now();
-#endif
 
     ITensorPack pack;
 
