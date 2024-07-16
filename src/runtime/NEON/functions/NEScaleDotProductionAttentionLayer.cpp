@@ -70,14 +70,6 @@ void NEScaleDotProductionAttentionLayer::run()
 
     _impl->scale_dot_production_op->run(_impl->scale_dot_pack);
 
-#ifdef MEASURE_TIME
-    auto   end_time  = std::chrono::high_resolution_clock::now();
-    double cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
-    std::ofstream measure_out("measure_output.txt",std::ios::app);
-    measure_out.precision(5);
-    measure_out << std::scientific << "NEScaleDotProductionAttentionLayer::run cost: " << cost_time << std::endl;
-    measure_out.close();
-#endif
 
 }
 
