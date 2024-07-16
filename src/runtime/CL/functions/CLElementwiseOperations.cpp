@@ -32,6 +32,11 @@
 #include "src/gpu/cl/operators/ClElementwiseOperations.h"
 #include "src/gpu/cl/operators/ClSub.h"
 
+#ifdef MEASURE_TIME
+#include <chrono>
+#include <fstream>
+#endif
+
 namespace arm_compute
 {
 struct CLArithmeticAddition::Impl
