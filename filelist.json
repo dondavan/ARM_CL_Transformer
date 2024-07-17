@@ -1028,6 +1028,16 @@
           ]
         }
       },
+      "AttentionLinear": {
+        "deps": [
+          "Linear"
+        ],
+        "files": {
+          "common": [
+            "src/runtime/CL/functions/CLAttentionLinearLayer.cpp"
+          ]
+        }
+      },
       "ScaleDotProduction": {
         "files": {
           "common": [

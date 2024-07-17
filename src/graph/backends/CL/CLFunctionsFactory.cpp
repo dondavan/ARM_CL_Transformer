@@ -366,6 +366,9 @@ std::unique_ptr<IFunction> CLFunctionFactory::create(INode *node, GraphContext &
         case NodeType::LayerNormLayer:
             return detail::create_layer_norm_layer<CLLayerNormLayer, CLTargetInfo>(
                 *polymorphic_downcast<LayerNormNode *>(node));
+        case NodeType::AttentionLinearLayer:
+            return detail::create_attention_linear_layer<CLAttentionLinearLayer,CLTargetInfo>(
+                *polymorphic_downcast<AttentionLinearNode *>(node));
         case NodeType::ScaleDotProductionAttentionLayer:
             return detail::create_scale_dot_production_layer<CLScaleDotProductionAttentionLayer,CLTargetInfo>(
                 *polymorphic_downcast<ScaleDotProductionAttentionNode *>(node));
