@@ -2884,6 +2884,16 @@
           ]
         }
       },
+      "AttentionLinear": {
+        "deps": [
+          "Linear"
+        ],
+        "files": {
+          "common": [
+            "src/runtime/NEON/functions/NEAttentionLinearLayer.cpp"
+          ]
+        }
+      },
       "ScaleDotProduction": {
         "files": {
           "common": [

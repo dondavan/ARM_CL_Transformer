@@ -16,7 +16,7 @@ class ITensorInfo;
 
 class NEAttentionLinearLayer : public IFunction
 {
-public:
+    public:
     /** Default Constructor */
     NEAttentionLinearLayer();
     /** Default Destructor */
@@ -33,7 +33,11 @@ public:
      * @param[in]  value      Input tenser of Attention Value, Data type supported: F32
      * @param[out] output     Output tensor, shape (d_model,d_model). Data type supported: F32
      */
-    void configure(const ITensor *query,const ITensor *key,const ITensor *value, ITensor *output, const ScaleDotProductionAttentionLayerInfo& info);
+    void configure(const ITensor *query_input, const ITensor *query_w, const ITensor *query_b,
+                   const ITensor *key_input, const ITensor *key_w, const ITensor *key_b,
+                   const ITensor *value_input, const ITensor *value_w, const ITensor *value_b,
+                   ITensor *query_output, ITensor *key_output, ITensor *value_output,
+                   const LinearLayerInfo& linear_info);
     /** Static function to check if given info will lead to a valid configuration of @ref NEAttentionLinearLayer
      *
      * @param[in] output Destination tensor info. Data type supported: same as @p input
@@ -44,7 +48,8 @@ public:
 
     // Inherited methods overridden:
     void run() override;
-private:
+
+    private:
     struct Impl;
     std::unique_ptr<Impl> _impl;
 };

@@ -20,29 +20,17 @@ const LinearLayerInfo& AttentionLinearNode::linear_info() const
 
 bool AttentionLinearNode::forward_descriptors()
 {
-    // Query
-    if ((input_id(0) != NullTensorID) && (output_id(0) != NullTensorID))
-    {
-        Tensor *dst = output(0);
+    for(size_t idx=0; idx <num_inputs(); idx++)
+    {   
+        if ((input_id(idx) == NullTensorID) || (output_id(idx) == NullTensorID))
+        {
+            return false;
+        }
+        Tensor *dst = output(idx);
         ARM_COMPUTE_ERROR_ON(dst == nullptr);
-        dst->desc() = configure_output(0);
+        dst->desc() = configure_output(idx);
     }
-    // Key
-    if ((input_id(1) != NullTensorID) && (output_id(1) != NullTensorID))
-    {
-        Tensor *dst = output(1);
-        ARM_COMPUTE_ERROR_ON(dst == nullptr);
-        dst->desc() = configure_output(1);
-    }
-    // Value
-    if ((input_id(2) != NullTensorID) && (output_id(2) != NullTensorID))
-    {
-        Tensor *dst = output(2);
-        ARM_COMPUTE_ERROR_ON(dst == nullptr);
-        dst->desc() = configure_output(2);
-        return true;
-    }
-    return false;
+    return true;
 }
 
 
@@ -51,7 +39,7 @@ TensorDescriptor AttentionLinearNode::configure_output(size_t idx) const
     ARM_COMPUTE_UNUSED(idx);
     ARM_COMPUTE_ERROR_ON(idx >= _outputs.size());
 
-    const Tensor *src = input(0);
+    const Tensor *src = input(idx);
     ARM_COMPUTE_ERROR_ON(src == nullptr);
 
     TensorDescriptor output_desc = src->desc();

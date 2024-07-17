@@ -1852,6 +1852,52 @@ std::unique_ptr<IFunction> create_simple_forward_layer(SimpleForwardLayerNode &n
 
     return func;
 }
+/** Creates a backend scale dot production function
+ *
+ * @tparam AttentionLinearLayerFunction  Backend scale dot production function
+ * @tparam TargetInfo                       Target-specific information
+ *
+ * @param[in] node Node to create the backend function for
+ *
+ * @return Backend attention linear function
+ */
+template <typename AttentionLinearLayerFunction, typename TargetInfo>
+std::unique_ptr<IFunction> create_attention_linear_layer(AttentionLinearNode &node)
+{
+    validate_node<TargetInfo>(node, 9 /* expected inputs */, 3 /* expected outputs */);
+
+    // Extract IO and info
+    typename TargetInfo::TensorType *query_input   = get_backing_tensor<TargetInfo>(node.input(0));
+    typename TargetInfo::TensorType *query_w   = get_backing_tensor<TargetInfo>(node.input(1));
+    typename TargetInfo::TensorType *query_b   = get_backing_tensor<TargetInfo>(node.input(2));
+    typename TargetInfo::TensorType *key_input   = get_backing_tensor<TargetInfo>(node.input(3));
+    typename TargetInfo::TensorType *key_w   = get_backing_tensor<TargetInfo>(node.input(4));
+    typename TargetInfo::TensorType *key_b   = get_backing_tensor<TargetInfo>(node.input(5));
+    typename TargetInfo::TensorType *value_input   = get_backing_tensor<TargetInfo>(node.input(6));
+    typename TargetInfo::TensorType *value_w   = get_backing_tensor<TargetInfo>(node.input(7));
+    typename TargetInfo::TensorType *value_b   = get_backing_tensor<TargetInfo>(node.input(8));
+
+    typename TargetInfo::TensorType *query_output  = get_backing_tensor<TargetInfo>(node.output(0));
+    typename TargetInfo::TensorType *key_output  = get_backing_tensor<TargetInfo>(node.output(1));
+    typename TargetInfo::TensorType *value_output  = get_backing_tensor<TargetInfo>(node.output(2));
+    const LinearLayerInfo linear_info         = node.linear_info();
+
+    // Create and configure function
+    auto func = std::make_unique<AttentionLinearLayerFunction>();
+    func->configure(query_input,query_w,query_b,
+                    key_input,key_w,key_b,
+                    value_input,value_w,value_b,
+                    query_output,key_output,value_output,
+                    linear_info);
+
+    // Log info
+    ARM_COMPUTE_LOG_GRAPH_INFO("Instantiated " << node.name() << " Type: " << node.type() << " Target: "
+                                               << TargetInfo::TargetType << " Data Type: " << input->info()->data_type()
+                                               << " Input shape: " << input->info()->tensor_shape()
+                                               << " Output shape: " << output->info()->tensor_shape() << std::endl);
+
+    return func;
+}
 
 /** Creates a backend scale dot production function
  *

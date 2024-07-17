@@ -25,6 +25,7 @@
 #define ACL_ARM_COMPUTE_RUNTIME_NEON_NEFUNCTIONS_H
 
 #include "arm_compute/runtime/NEON/functions/NEActivationLayer.h"
+#include "arm_compute/runtime/NEON/functions/NEAttentionLinearLayer.h"
 #include "arm_compute/runtime/NEON/functions/NEAddMulAdd.h"
 #include "arm_compute/runtime/NEON/functions/NEArgMinMaxLayer.h"
 #include "arm_compute/runtime/NEON/functions/NEArithmeticAddition.h"
