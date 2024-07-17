@@ -34,6 +34,7 @@ struct CLAttentionLinearLayer::Impl
     ICLTensor                        *query_output{ nullptr };
     ICLTensor                        *key_output{ nullptr };
     ICLTensor                        *value_output{ nullptr };
+
     std::unique_ptr<opencl::ClLinear> query_kernel{ nullptr };
     std::unique_ptr<opencl::ClLinear> key_kernel{ nullptr };
     std::unique_ptr<opencl::ClLinear> value_kernel{ nullptr };
@@ -80,7 +81,7 @@ void CLAttentionLinearLayer::configure(const CLCompileContext &compile_context,
     _impl->query_output = query_output;
 
     _impl->query_kernel = std::make_unique<opencl::ClLinear>();
-    _impl->query_kernel->configure(compile_context, query_input->info(), query_w->info(), query_b->info(), query_output->info(), 1.0f, 1.0f);
+    _impl->query_kernel->configure(compile_context, query_input->info(), query_w->info(), query_b->info(), query_output->info(), 1.0f, 0.f);
 
     _impl->key_input  = key_input;
     _impl->key_w      = key_w;
@@ -88,7 +89,7 @@ void CLAttentionLinearLayer::configure(const CLCompileContext &compile_context,
     _impl->key_output = key_output;
 
     _impl->key_kernel = std::make_unique<opencl::ClLinear>();
-    _impl->key_kernel->configure(compile_context, key_input->info(), key_w->info(), key_b->info(), key_output->info(), 1.0f, 1.0f);
+    _impl->key_kernel->configure(compile_context, key_input->info(), key_w->info(), key_b->info(), key_output->info(), 1.0f, 0.f);
 
     _impl->value_input  = value_input;
     _impl->value_w      = value_w;
@@ -96,7 +97,7 @@ void CLAttentionLinearLayer::configure(const CLCompileContext &compile_context,
     _impl->value_output = value_output;
 
     _impl->value_kernel = std::make_unique<opencl::ClLinear>();
-    _impl->value_kernel->configure(compile_context, value_input->info(), value_w->info(), value_b->info(), value_output->info(), 1.0f, 1.0f);
+    _impl->value_kernel->configure(compile_context, value_input->info(), value_w->info(), value_b->info(), value_output->info(), 1.0f, 0.f);
 
 #ifdef MEASURE_TIME
     auto          end_time  = std::chrono::high_resolution_clock::now();
