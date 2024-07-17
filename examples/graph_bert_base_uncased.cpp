@@ -187,7 +187,7 @@ class GraphVanillaTransformerExample : public Example
 
         with_attention
             /* Self Attention */
-            << MultiHeadLinearLayer(LinearLayerInfo(d_model), get_weights_accessor(data_path + layer_path, "query_weight.npy"),
+            << AttentionLinearLayer(LinearLayerInfo(d_model), get_weights_accessor(data_path + layer_path, "query_weight.npy"),
                                     get_weights_accessor(data_path + layer_path, "query_bias.npy"),
                                     get_weights_accessor(data_path + layer_path, "key_weight.npy"),
                                     get_weights_accessor(data_path + layer_path, "key_bias.npy"),

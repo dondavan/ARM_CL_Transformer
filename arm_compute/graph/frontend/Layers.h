@@ -950,6 +950,52 @@ private:
     ITensorAccessorUPtr _value_bias;   
 };
 
+/** Multi Head Linear Layer */
+class AttentionLinearLayer final : public ILayer
+{
+public:
+    /** Construct a linear layer computing Key, Value, Query
+     *
+     */
+    AttentionLinearLayer(LinearLayerInfo info,
+                ITensorAccessorUPtr           query_weights,
+                ITensorAccessorUPtr           query_bias,
+                ITensorAccessorUPtr           key_weights,
+                ITensorAccessorUPtr           key_bias,
+                ITensorAccessorUPtr           value_weights,
+                ITensorAccessorUPtr           value_bias) : _info(info),
+                                                            _query_weights(std::move(query_weights)),
+                                                            _query_bias(std::move(query_bias)),
+                                                            _key_weights(std::move(key_weights)),
+                                                            _key_bias(std::move(key_bias)),
+                                                            _value_weights(std::move(value_weights)),
+                                                            _value_bias(std::move(value_bias))
+    {
+    }
+
+    NodeID create_layer(IStream &s) override
+    {
+        NodeParams  common_params = {name(), s.hints().target_hint};
+        NodeIdxPair input         = {s.tail_node(), 0};
+        return GraphBuilder::add_attention_linear_layer(s.graph(), common_params, input, _info,
+                                                                             std::move(_query_weights),
+                                                                             std::move(_query_bias),
+                                                                             std::move(_key_weights),
+                                                                             std::move(_key_bias),
+                                                                             std::move(_value_weights),
+                                                                             std::move(_value_bias));
+    }
+
+private:
+    LinearLayerInfo _info;
+    ITensorAccessorUPtr _query_weights;
+    ITensorAccessorUPtr _query_bias;        
+    ITensorAccessorUPtr _key_weights;
+    ITensorAccessorUPtr _key_bias;        
+    ITensorAccessorUPtr _value_weights;
+    ITensorAccessorUPtr _value_bias;   
+};
+
 /** L2 Normalize Layer */
 class L2NormalizeLayer final : public ILayer
 {
