@@ -1864,7 +1864,6 @@ std::unique_ptr<IFunction> create_simple_forward_layer(SimpleForwardLayerNode &n
 template <typename AttentionLinearLayerFunction, typename TargetInfo>
 std::unique_ptr<IFunction> create_attention_linear_layer(AttentionLinearNode &node)
 {
-    std::cout << "create_attention_linear_layer 1 " << std::endl;
     validate_node<TargetInfo>(node, 9 /* expected inputs */, 3 /* expected outputs */);
 
     // Extract IO and info
@@ -1890,8 +1889,6 @@ std::unique_ptr<IFunction> create_attention_linear_layer(AttentionLinearNode &no
                     value_input,value_w,value_b,
                     query_output,key_output,value_output,
                     linear_info);
-
-    std::cout << "create_attention_linear_layer 2" << std::endl;
     // Log info
     ARM_COMPUTE_LOG_GRAPH_INFO("Instantiated " << node.name() << " Type: " << node.type() << " Target: "
                                                << TargetInfo::TargetType << " Data Type: " << input->info()->data_type()
