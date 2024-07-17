@@ -25,7 +25,7 @@ struct NEAttentionLinearLayer::Impl
     const ITensor                  *value_b{ nullptr };
     ITensor                        *query_output{ nullptr };
     ITensor                        *key_output{ nullptr };
-    ITensor                        *value_output;
+    ITensor                        *value_output{ nullptr };
     std::unique_ptr<cpu::CpuLinear> query_kernel{ nullptr };
     std::unique_ptr<cpu::CpuLinear> key_kernel{ nullptr };
     std::unique_ptr<cpu::CpuLinear> value_kernel{ nullptr };
@@ -44,6 +44,7 @@ void NEAttentionLinearLayer::configure(const ITensor *query_input, const ITensor
                                        ITensor *query_output, ITensor *key_output, ITensor *value_output,
                                        const LinearLayerInfo& linear_info)
 {
+    ARM_COMPUTE_UNUSED(linear_info);
 #ifdef MEASURE_TIME
     auto start_time = std::chrono::high_resolution_clock::now();
 #endif
