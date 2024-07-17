@@ -28,14 +28,14 @@ bool AttentionLinearNode::forward_descriptors()
         dst0->desc() = configure_output(0);
     }
     // Key
-    if ((input_id(1) != NullTensorID) && (output_id(1) != NullTensorID))
+    if ((input_id(3) != NullTensorID) && (output_id(1) != NullTensorID))
     {
         Tensor *dst1 = output(1);
         ARM_COMPUTE_ERROR_ON(dst1 == nullptr);
         dst1->desc() = configure_output(1);
     }
     // Value
-    if ((input_id(2) != NullTensorID) && (output_id(2) != NullTensorID))
+    if ((input_id(6) != NullTensorID) && (output_id(2) != NullTensorID))
     {
         Tensor *dst2 = output(2);
         ARM_COMPUTE_ERROR_ON(dst2 == nullptr);
