@@ -20,23 +20,22 @@ const LinearLayerInfo& AttentionLinearNode::linear_info() const
 
 bool AttentionLinearNode::forward_descriptors()
 {
-    // Query
-    if ((input_id(0) != NullTensorID) && (output_id(0) != NullTensorID))
+    
+    if ((input_id(0) != NullTensorID) && (output_id(0) != NullTensorID) 
+        && (input_id(3) != NullTensorID) && (output_id(1) != NullTensorID) 
+        && (input_id(6) != NullTensorID) && (output_id(2) != NullTensorID))
     {
+        // Query
         Tensor *dst0 = output(0);
         ARM_COMPUTE_ERROR_ON(dst0 == nullptr);
         dst0->desc() = configure_output(0);
-    }
-    // Key
-    if ((input_id(3) != NullTensorID) && (output_id(1) != NullTensorID))
-    {
+
+        // Key
         Tensor *dst1 = output(1);
         ARM_COMPUTE_ERROR_ON(dst1 == nullptr);
         dst1->desc() = configure_output(1);
-    }
-    // Value
-    if ((input_id(6) != NullTensorID) && (output_id(2) != NullTensorID))
-    {
+
+        // Value
         Tensor *dst2 = output(2);
         ARM_COMPUTE_ERROR_ON(dst2 == nullptr);
         dst2->desc() = configure_output(2);
