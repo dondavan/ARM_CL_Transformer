@@ -154,6 +154,7 @@ enum class FastMathHint
 enum class NodeType
 {
     ActivationLayer,
+    AttentionLinearLayer,
     ArgMinMaxLayer,
     BatchNormalizationLayer,
     BoundingBoxTransformLayer,

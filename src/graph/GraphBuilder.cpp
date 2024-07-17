@@ -784,47 +784,27 @@ NodeID GraphBuilder::add_attention_linear_layer(Graph &g, NodeParams params, Nod
     NodeID          v_w_nid  = add_const_node_with_name(g, params, "Value Weights", v_w_desc, std::move(value_weights));
     NodeID          v_b_nid  = add_const_node_with_name(g, params, "Value Bias", v_b_desc, std::move(value_bias));
 
-    
-    // Specific Linear attention operation
-    LinearLayerInfo  q_linear_info = linear_info;
-    LinearLayerInfo  k_linear_info = linear_info;
-    LinearLayerInfo  v_linear_info = linear_info;
 
-    // Value, Key, Query Linear Nodes
-    NodeID q_nid    = g.add_node<LinearLayerNode>(q_linear_info);
-    NodeID k_nid    = g.add_node<LinearLayerNode>(k_linear_info);
-    NodeID v_nid    = g.add_node<LinearLayerNode>(v_linear_info);
-    
-    // Connect input
-    g.add_connection(input.node_id, input.index, q_nid, 0);
-    g.add_connection(input.node_id, input.index, k_nid, 0);
-    g.add_connection(input.node_id, input.index, v_nid, 0);
+    NodeID attention_linear_nid = g.add_node<AttentionLinearNode>(linear_info);
 
-    // Connect weights and bias
-    g.add_connection(q_w_nid, 0, q_nid, 1);
-    g.add_connection(q_b_nid, 0, q_nid, 2);
-    g.add_connection(k_w_nid, 0, k_nid, 1);
-    g.add_connection(k_b_nid, 0, k_nid, 2);
-    g.add_connection(v_w_nid, 0, v_nid, 1);
-    g.add_connection(v_b_nid, 0, v_nid, 2);
+    // Q
+    g.add_connection(input.node_id, input.index, attention_linear_nid, 0);
+    g.add_connection(q_w_nid, 0, attention_linear_nid, 1);
+    g.add_connection(q_b_nid, 0, attention_linear_nid, 2);
 
+    // K
+    g.add_connection(input.node_id, input.index, attention_linear_nid, 3);
+    g.add_connection(k_w_nid, 0, attention_linear_nid, 4);
+    g.add_connection(k_b_nid, 0, attention_linear_nid, 5);
 
-    // A node to hold all the output
-    NodeID f_nid    = g.add_node<SimpleForwardLayerNode>(3);
+    // V
+    g.add_connection(input.node_id, input.index, attention_linear_nid, 6);
+    g.add_connection(v_w_nid, 0, attention_linear_nid, 7);
+    g.add_connection(v_b_nid, 0, attention_linear_nid, 8);
 
-    // Connect all linear node to single node
-    g.add_connection(q_nid, 0, f_nid,0);
-    g.add_connection(k_nid, 0, f_nid,1);
-    g.add_connection(v_nid, 0, f_nid,2);
+    set_node_params(g, attention_linear_nid, params);
 
-
-    set_node_params(g, q_nid, params);
-    set_node_params(g, k_nid, params);
-    set_node_params(g, v_nid, params);
-
-    set_node_params(g, f_nid, params);
-
-    return f_nid;
+    return attention_linear_nid;
 }
 
 NodeID GraphBuilder::add_linear_node(Graph &g, NodeParams params, NodeIdxPair input, 
