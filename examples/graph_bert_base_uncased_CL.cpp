@@ -185,6 +185,16 @@ class GraphVanillaTransformerExample : public Example
     {
         ARM_COMPUTE_UNUSED(h,eps,d_ff,data_path,layer_path,d_model);
 
+        graph
+            /* Self Attention */
+            << AttentionLinearLayer(LinearLayerInfo(d_model), get_weights_accessor(data_path + layer_path, "query_weight.npy"),
+                                    get_weights_accessor(data_path + layer_path, "query_bias.npy"),
+                                    get_weights_accessor(data_path + layer_path, "key_weight.npy"),
+                                    get_weights_accessor(data_path + layer_path, "key_bias.npy"),
+                                    get_weights_accessor(data_path + layer_path, "value_weight.npy"),
+                                    get_weights_accessor(data_path + layer_path, "value_bias.npy"))
+            << MultiHeadAttentionLayer(MultiHeadAttentionLayerInfo(d_model, h)).set_name("mha1");
+
         /* Self output */
         graph << LayerNormLayer(LayerNormLayerInfo(0 /*Window::DimX*/, eps));
 
