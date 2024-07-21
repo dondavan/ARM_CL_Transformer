@@ -116,7 +116,13 @@ class GraphVanillaTransformerExample : public Example
                                 get_weights_accessor(data_path, "positional_embedding.npy", operation_layout))
                      .set_name("tkemb1")
 
-
+        << LinearLayer(LinearLayerInfo(d_model, TensorShape(d_model, d_model) ,
+                                               TensorShape(d_model) ),
+                               get_weights_accessor(data_path, "pooler_weight.npy"),
+                               get_weights_accessor(data_path, "pooler_bias.npy"))
+                               
+              << ActivationLayer(ActivationLayerInfo(ActivationFunction::TANH,1.f, 1.f))
+              
               << OutputLayer(get_output_accessor(common_params)).set_name("out1");
 
         // Finalize graph
