@@ -42,7 +42,7 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
                                             1);
     _permuted_query           = query->clone()->set_tensor_shape(query_permute);
 
-    auto query_reshape_kernel = std::make_unique<kernels::ClHughReshapeKernel>();
+    auto query_reshape_kernel = std::make_unique<kernels::ClReshapeKernel>();
     query_reshape_kernel->configure(compile_context, query, &_reshaped_query);
     _query_reshape_kernel = std::move(query_reshape_kernel);
 
@@ -62,7 +62,7 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
                                           1);
     _permuted_key           = key->clone()->set_tensor_shape(key_permute);
 
-    auto key_reshape_kernel = std::make_unique<kernels::ClHughReshapeKernel>();
+    auto key_reshape_kernel = std::make_unique<kernels::ClReshapeKernel>();
     key_reshape_kernel->configure(compile_context, key, &_reshaped_key);
     _key_reshape_kernel = std::move(key_reshape_kernel);
 
@@ -82,7 +82,7 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
                                             1);
     _permuted_value           = value->clone()->set_tensor_shape(value_permute);
 
-    auto value_reshape_kernel = std::make_unique<kernels::ClHughReshapeKernel>();
+    auto value_reshape_kernel = std::make_unique<kernels::ClReshapeKernel>();
     value_reshape_kernel->configure(compile_context, value, &_reshaped_value);
     _value_reshape_kernel = std::move(value_reshape_kernel);
 
@@ -145,7 +145,7 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
     concat_permute_kernel->configure(compile_context, &_gemmed_context, &_permuted_concat, PermutationVector(0U, 2U, 1U));
     _concat_permute_kernel = std::move(concat_permute_kernel);
 
-    auto concat_reshape_kernel = std::make_unique<kernels::ClHughReshapeKernel>();
+    auto concat_reshape_kernel = std::make_unique<kernels::ClReshapeKernel>();
     concat_reshape_kernel->configure(compile_context, &_permuted_concat, output);
     _concat_reshape_kernel = std::move(concat_reshape_kernel);
 }
