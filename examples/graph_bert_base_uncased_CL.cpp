@@ -69,9 +69,9 @@ class GraphVanillaTransformerExample : public Example
         constexpr unsigned int d_vocab    = 30522U; // Vocaboary size
         constexpr unsigned int d_segemnt  = 2U;     // Sentence segmentation size
         constexpr unsigned int d_position = 512U;   // Pretrained positional encoding length
-        //constexpr unsigned int h          = 12U;    // Parallel attention (Heads)
+        constexpr unsigned int h          = 12U;    // Parallel attention (Heads)
         constexpr float        eps        = 1e-12;  // Layer normalization eplision
-        //constexpr unsigned int d_ff       = 3072U;  // Dim feedforward
+        constexpr unsigned int d_ff       = 3072U;  // Dim feedforward
         /*constexpr unsigned int d_q         = 64U;      // Dim query, 512U/8U
         constexpr unsigned int d_k           = 64U;      // Dim key, 512U/8U
         constexpr unsigned int d_v           = 64U;      // Dim value, 512U/8U
@@ -114,9 +114,24 @@ class GraphVanillaTransformerExample : public Example
                                 get_weights_accessor(data_path, "token_embedding.npy", operation_layout),
                                 get_weights_accessor(data_path, "segment_embedding.npy", operation_layout),
                                 get_weights_accessor(data_path, "positional_embedding.npy", operation_layout))
-                     .set_name("tkemb1")
-            << LayerNormLayer(LayerNormLayerInfo(0 /*Window::DimX*/, eps))         
-            << LinearLayer(LinearLayerInfo(d_model, TensorShape(d_model, d_model) ,
+                     .set_name("tkemb1");
+
+            add_encoder_block(data_path,"layer_0/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+            add_encoder_block(data_path,"layer_1/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+            add_encoder_block(data_path,"layer_2/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+            add_encoder_block(data_path,"layer_3/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+            add_encoder_block(data_path,"layer_4/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+            add_encoder_block(data_path,"layer_5/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+
+            add_encoder_block(data_path,"layer_6/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+            add_encoder_block(data_path,"layer_7/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+            add_encoder_block(data_path,"layer_8/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+            add_encoder_block(data_path,"layer_9/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+            add_encoder_block(data_path,"layer_10/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+            add_encoder_block(data_path,"layer_11/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
+
+        // Pooler
+        graph << LinearLayer(LinearLayerInfo(d_model, TensorShape(d_model, d_model) ,
                                                TensorShape(d_model) ),
                                get_weights_accessor(data_path, "pooler_weight.npy"),
                                get_weights_accessor(data_path, "pooler_bias.npy"))
