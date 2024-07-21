@@ -185,7 +185,10 @@ class GraphVanillaTransformerExample : public Example
     {
         ARM_COMPUTE_UNUSED(h,eps,d_ff,data_path,layer_path,d_model);
 
-        graph
+        SubStream without_attention(graph);
+        SubStream with_attention(graph);
+
+        with_attention
             /* Self Attention */
             << AttentionLinearLayer(LinearLayerInfo(d_model), get_weights_accessor(data_path + layer_path, "query_weight.npy"),
                                     get_weights_accessor(data_path + layer_path, "query_bias.npy"),
@@ -194,6 +197,8 @@ class GraphVanillaTransformerExample : public Example
                                     get_weights_accessor(data_path + layer_path, "value_weight.npy"),
                                     get_weights_accessor(data_path + layer_path, "value_bias.npy"))
             << MultiHeadAttentionLayer(MultiHeadAttentionLayerInfo(d_model, h)).set_name("mha1");
+
+        graph << EltwiseLayer(std::move(with_attention), std::move(without_attention), EltwiseOperation::Add).set_name("add_4_norm_attention");
 
         /* Self output */
         graph << LayerNormLayer(LayerNormLayerInfo(0 /*Window::DimX*/, eps));
