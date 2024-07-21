@@ -36,11 +36,18 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
                                             query->tensor_shape().y(),
                                             1);
     _reshaped_query           = query->clone()->set_tensor_shape(query_reshape);
+    std::cout << "query_reshape x" << query_reshape.x() << std::endl;
+    std::cout << "query_reshape y" << query_reshape.y() << std::endl;
+    std::cout << "query_reshape z" << query_reshape.z() << std::endl;
     TensorShape query_permute = TensorShape(query->tensor_shape().x() / info.h(),
                                             query->tensor_shape().y(),
                                             info.h(),
                                             1);
     _permuted_query           = query->clone()->set_tensor_shape(query_permute);
+
+    std::cout << "query_permute x" << query_permute.x() << std::endl;
+    std::cout << "query_permute y" << query_permute.y() << std::endl;
+    std::cout << "query_permute z" << query_permute.z() << std::endl;
 
     auto query_reshape_kernel = std::make_unique<kernels::ClReshapeKernel>();
     query_reshape_kernel->configure(compile_context, query, &_reshaped_query);
@@ -201,9 +208,23 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
     CLScheduler::get().enqueue_op(*_value_permute_kernel, value_permute_pack, true);
 
     // Run matrix multiply compute multi-head attention between Query and Key
-    ITensorPack gemm_QK_pack{ { ACL_SRC_0, permuted_query.get() }, { ACL_SRC_1, permuted_key.get() }, { ACL_DST, output } };
+    ITensorPack gemm_QK_pack{ { ACL_SRC_0, permuted_query.get() }, { ACL_SRC_1, permuted_key.get() }, { ACL_DST, scaled_query_key.get() } };
     CLScheduler::get().enqueue_op(*_product_mm_kernel, gemm_QK_pack, true);
 
+    // Softmax scaled product
+    ITensorPack softmax_pack = { { ACL_SRC, scaled_query_key.get() }, { ACL_DST, softmaxed_product.get() } };
+    CLScheduler::get().enqueue_op(*_softmax_kernel, softmax_pack, true);
+
+    // Run matrix multiply compute multi-head attention between Context and Value
+    ITensorPack gemm_context_pack{ { ACL_SRC_0, softmaxed_product.get() }, { ACL_SRC_1, permuted_value.get() }, { ACL_DST, gemmed_context.get() } };
+    CLScheduler::get().enqueue_op(*_context_mm_kernel, gemm_context_pack, true);
+
+    // Concat all attention head together
+    ITensorPack concat_permute_pack{ { ACL_SRC, gemmed_context.get() }, { ACL_DST, permuted_concat.get() } };
+    CLScheduler::get().enqueue_op(*_concat_permute_kernel, concat_permute_pack, true);
+
+    ITensorPack concat_reshape_pack{ { ACL_SRC_0, permuted_concat.get() }, { ACL_DST, output } };
+    CLScheduler::get().enqueue_op(*_concat_reshape_kernel, concat_reshape_pack, true);
 }
 
 experimental::MemoryRequirements ClScaleDotProduction::workspace() const
