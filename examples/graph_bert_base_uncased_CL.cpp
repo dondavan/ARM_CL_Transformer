@@ -70,7 +70,7 @@ class GraphVanillaTransformerExample : public Example
         constexpr unsigned int d_segemnt  = 2U;     // Sentence segmentation size
         constexpr unsigned int d_position = 512U;   // Pretrained positional encoding length
         //constexpr unsigned int h          = 12U;    // Parallel attention (Heads)
-        //constexpr float        eps        = 1e-12;  // Layer normalization eplision
+        constexpr float        eps        = 1e-12;  // Layer normalization eplision
         //constexpr unsigned int d_ff       = 3072U;  // Dim feedforward
         /*constexpr unsigned int d_q         = 64U;      // Dim query, 512U/8U
         constexpr unsigned int d_k           = 64U;      // Dim key, 512U/8U
@@ -115,8 +115,8 @@ class GraphVanillaTransformerExample : public Example
                                 get_weights_accessor(data_path, "segment_embedding.npy", operation_layout),
                                 get_weights_accessor(data_path, "positional_embedding.npy", operation_layout))
                      .set_name("tkemb1")
-
-        << LinearLayer(LinearLayerInfo(d_model, TensorShape(d_model, d_model) ,
+            << LayerNormLayer(LayerNormLayerInfo(0 /*Window::DimX*/, eps))         
+            << LinearLayer(LinearLayerInfo(d_model, TensorShape(d_model, d_model) ,
                                                TensorShape(d_model) ),
                                get_weights_accessor(data_path, "pooler_weight.npy"),
                                get_weights_accessor(data_path, "pooler_bias.npy"))
