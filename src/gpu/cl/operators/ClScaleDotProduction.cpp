@@ -36,18 +36,11 @@ void ClScaleDotProduction::configure(const ClCompileContext                     
                                             query->tensor_shape().y(),
                                             1);
     _reshaped_query           = query->clone()->set_tensor_shape(query_reshape);
-    std::cout << "query_reshape x" << query_reshape.x() << std::endl;
-    std::cout << "query_reshape y" << query_reshape.y() << std::endl;
-    std::cout << "query_reshape z" << query_reshape.z() << std::endl;
     TensorShape query_permute = TensorShape(query->tensor_shape().x() / info.h(),
                                             query->tensor_shape().y(),
                                             info.h(),
                                             1);
     _permuted_query           = query->clone()->set_tensor_shape(query_permute);
-
-    std::cout << "query_permute x" << query_permute.x() << std::endl;
-    std::cout << "query_permute y" << query_permute.y() << std::endl;
-    std::cout << "query_permute z" << query_permute.z() << std::endl;
 
     auto query_reshape_kernel = std::make_unique<kernels::ClReshapeKernel>();
     query_reshape_kernel->configure(compile_context, query, &_reshaped_query);
