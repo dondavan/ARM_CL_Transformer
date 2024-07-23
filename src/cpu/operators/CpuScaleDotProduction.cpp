@@ -72,9 +72,6 @@ void CpuScaleDotProduction::configure(const ITensorInfo *query,
                                             info.h(),
                                             1);
     _permuted_value = value->clone()->set_tensor_shape(value_permute);
-    std::cout << "_permuted_value.tensor_shape().x() "<< _permuted_value.tensor_shape().x() << std::endl;
-    std::cout << "_permuted_value.tensor_shape().y() "<< _permuted_value.tensor_shape().y() << std::endl;
-    std::cout << "_permuted_value.tensor_shape().z() "<< _permuted_value.tensor_shape().z() << std::endl;
     _value_reshape_kernel = std::make_unique<kernels::CpuReshapeKernel>();
     _value_reshape_kernel->configure(value, &_reshaped_value);
     _value_permute_func = std::make_unique<CpuPermute>();
