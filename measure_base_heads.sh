@@ -192,7 +192,7 @@ mv measure_output.txt measure_output_7.txt
 mv measure_output.txt measure_output_8.txt
 ./graph_bert_base_uncased_h24 --threads=4 --text=./data/input_text.txt --segment=./data/input_segment.txt --data=./data/bert-base-uncased_npy/ --vocabulary=./data/vocab/bert-base-uncased_vocab.txt --raw-output=true
 mv measure_output.txt measure_output_9.txt
-mv measure_output_* ./thesis_result/data/bert-base-uncased_heads/h16/NEON/
+mv measure_output_* ./thesis_result/data/bert-base-uncased_heads/h24/NEON/
 
 
 
@@ -391,4 +391,4 @@ mv measure_output.txt measure_output_7.txt
 mv measure_output.txt measure_output_8.txt
 ./graph_bert_base_uncased_CL_h24 --target=cl --threads=4 --text=./data/input_text.txt --segment=./data/input_segment.txt --data=./data/bert-base-uncased_npy/ --vocabulary=./data/vocab/bert-base-uncased_vocab.txt --raw-output=true
 mv measure_output.txt measure_output_9.txt
-mv measure_output_* ./thesis_result/data/bert-base-uncased_heads/h16/CL/
+mv measure_output_* ./thesis_result/data/bert-base-uncased_heads/h24/CL/
