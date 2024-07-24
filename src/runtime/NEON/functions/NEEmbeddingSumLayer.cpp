@@ -35,6 +35,7 @@ void NEEmbeddingSumLayer::configure(ITensor *token, ITensor *segment, ITensor *p
     auto start_time = std::chrono::high_resolution_clock::now();
 #endif
 
+    std::cout << "embedding configure start " << std::endl;
     _impl->token    = token;
     _impl->segment  = segment;
     _impl->position = position;
@@ -46,6 +47,8 @@ void NEEmbeddingSumLayer::configure(ITensor *token, ITensor *segment, ITensor *p
                          _impl->position->info(),
                          _impl->dst->info(),
                          emb_info);
+
+    std::cout << "embedding configure start " << std::endl;
 
 #ifdef MEASURE_TIME
     auto   end_time  = std::chrono::high_resolution_clock::now();
