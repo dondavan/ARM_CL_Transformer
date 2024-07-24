@@ -187,6 +187,7 @@ public:
 
             // [SEP]
             text_ids.push_back(token2id[end_token]);
+            std::cout << "utils/TextLoader.h" << std::endl;
             for(auto ids : text_ids)
             {
                 std::cout << ids << std::endl;

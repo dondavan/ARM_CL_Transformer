@@ -41,6 +41,12 @@ void CpuScaleDotProduction::configure(const ITensorInfo *query,
     _query_permute_func->configure(&_reshaped_query, &_permuted_query, PermutationVector(0U, 2U, 1U));
 
 
+    std::cout << "src/cpu/operators/CpuScaleDotProduction.cpp " << std::endl;
+    std::cout << "_permuted_query.tensor_shape() " <<_permuted_query.tensor_shape().x() << std::endl;
+    std::cout << "_permuted_query.tensor_shape() " <<_permuted_query.tensor_shape().y() << std::endl;
+    std::cout << "_permuted_query.tensor_shape() " <<_permuted_query.tensor_shape().z() << std::endl;
+
+
     // Key multi-Head reshape 
     TensorShape key_reshape = TensorShape(key->tensor_shape().x()/info.h(),
                                           info.h(),
