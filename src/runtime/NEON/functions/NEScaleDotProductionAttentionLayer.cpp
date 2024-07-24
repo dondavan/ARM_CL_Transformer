@@ -44,15 +44,11 @@ void NEScaleDotProductionAttentionLayer::configure(const ITensor *query,
     auto start_time = std::chrono::high_resolution_clock::now();
 #endif
 
-    std::cout << "NEScaleDotProductionAttentionLayer::configure start " << std::endl;
-
     /* Scale dot production of key and query */
     _impl->scale_dot_production_op  = std::make_unique<cpu::CpuScaleDotProduction>();
     _impl->scale_dot_production_op->configure(query->info(),key->info(),value->info(),output->info(),info);
     _impl->scale_dot_pack = {{ACL_SRC_0, query}, {ACL_SRC_1, key}, {ACL_SRC_2, value}, {ACL_DST, output}};
 
-
-    std::cout << "NEScaleDotProductionAttentionLayer::configure end " << std::endl;
 #ifdef MEASURE_TIME
     auto   end_time  = std::chrono::high_resolution_clock::now();
     double cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
@@ -70,14 +66,10 @@ void NEScaleDotProductionAttentionLayer::run()
     auto start_time = std::chrono::high_resolution_clock::now();
 #endif
 
-
-    std::cout << "NEScaleDotProductionAttentionLayer::run() start " << std::endl;
     ITensorPack pack;
 
     _impl->scale_dot_production_op->run(_impl->scale_dot_pack);
-
-    std::cout << "NEScaleDotProductionAttentionLayer::run() end " << std::endl;
-
+    
 #ifdef MEASURE_TIME
     auto   end_time  = std::chrono::high_resolution_clock::now();
     double cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();

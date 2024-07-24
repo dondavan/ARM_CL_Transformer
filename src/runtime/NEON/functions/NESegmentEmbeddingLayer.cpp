@@ -62,13 +62,11 @@ void NESegmentEmbeddingLayer::run()
 #endif
 
 
-    std::cout << "NESegmentEmbeddingLayer::run start" << std::endl;
     ITensorPack pack;
     pack.add_tensor(TensorType::ACL_SRC_0, _impl->src);
     pack.add_tensor(TensorType::ACL_SRC_1, _impl->segment);
     pack.add_tensor(TensorType::ACL_DST, _impl->dst);
     _impl->op->run(pack);
-    std::cout << "NESegmentEmbeddingLayer::run end" << std::endl;
 
 #ifdef MEASURE_TIME
     auto   end_time  = std::chrono::high_resolution_clock::now();

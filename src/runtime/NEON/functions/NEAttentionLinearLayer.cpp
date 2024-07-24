@@ -50,7 +50,6 @@ void NEAttentionLinearLayer::configure(const ITensor *query_input, const ITensor
 #endif
 
 
-    std::cout << "NEAttentionLinearLayer::configure start " << std::endl;
     _impl->query_input  = query_input;
     _impl->query_w      = query_w;
     _impl->query_b      = query_b;
@@ -75,7 +74,6 @@ void NEAttentionLinearLayer::configure(const ITensor *query_input, const ITensor
     _impl->value_kernel = std::make_unique<cpu::CpuLinear>();
     _impl->value_kernel->configure(value_input->info(), value_w->info(), value_b->info(), value_output->info(), 1.0f, 1.0f);
 
-    std::cout << "NEAttentionLinearLayer::configure end " << std::endl;
 
 #ifdef MEASURE_TIME
     auto          end_time  = std::chrono::high_resolution_clock::now();
@@ -93,7 +91,6 @@ void NEAttentionLinearLayer::run()
     auto start_time = std::chrono::high_resolution_clock::now();
 #endif
 
-    std::cout << "NEAttentionLinearLayer::run start " << std::endl;
     // Q
     ITensorPack query_pack;
     query_pack.add_tensor(TensorType::ACL_SRC_0, _impl->query_input);
@@ -118,7 +115,6 @@ void NEAttentionLinearLayer::run()
     value_pack.add_tensor(TensorType::ACL_DST, _impl->value_output);
     _impl->value_kernel->run(value_pack);
 
-    std::cout << "NEAttentionLinearLayer::run end " << std::endl;
 
 #ifdef MEASURE_TIME
     auto          end_time  = std::chrono::high_resolution_clock::now();
