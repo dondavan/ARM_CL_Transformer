@@ -203,6 +203,9 @@ public:
                 },
                 out
             );
+
+            std::cout << "utils/TextLoader.h caonima sile" << std::endl;
+            std::cout << text_ids.size()<< std::endl;
             
         }
         catch (const std::ifstream::failure &e)
