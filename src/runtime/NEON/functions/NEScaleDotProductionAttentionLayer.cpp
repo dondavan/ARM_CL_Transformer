@@ -66,9 +66,13 @@ void NEScaleDotProductionAttentionLayer::run()
     auto start_time = std::chrono::high_resolution_clock::now();
 #endif
 
+
+    std::cout << "NEScaleDotProductionAttentionLayer::run() start " << std::endl;
     ITensorPack pack;
 
     _impl->scale_dot_production_op->run(_impl->scale_dot_pack);
+
+    std::cout << "NEScaleDotProductionAttentionLayer::run() end " << std::endl;
 
 #ifdef MEASURE_TIME
     auto   end_time  = std::chrono::high_resolution_clock::now();

@@ -89,6 +89,7 @@ void NEAttentionLinearLayer::run()
     auto start_time = std::chrono::high_resolution_clock::now();
 #endif
 
+    std::cout << "NEAttentionLinearLayer::run start " << std::endl;
     // Q
     ITensorPack query_pack;
     query_pack.add_tensor(TensorType::ACL_SRC_0, _impl->query_input);
@@ -112,6 +113,8 @@ void NEAttentionLinearLayer::run()
     value_pack.add_tensor(TensorType::ACL_SRC_2, _impl->value_b);
     value_pack.add_tensor(TensorType::ACL_DST, _impl->value_output);
     _impl->value_kernel->run(value_pack);
+
+    std::cout << "NEAttentionLinearLayer::run end " << std::endl;
 
 #ifdef MEASURE_TIME
     auto          end_time  = std::chrono::high_resolution_clock::now();

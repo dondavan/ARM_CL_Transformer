@@ -63,6 +63,7 @@ void NEEmbeddingSumLayer::prepare()
 
 void NEEmbeddingSumLayer::run()
 {
+    std::cout << "embedding sum start " << std::endl;
 #ifdef MEASURE_TIME
     auto start_time = std::chrono::high_resolution_clock::now();
 #endif
@@ -74,6 +75,8 @@ void NEEmbeddingSumLayer::run()
     pack.add_tensor(TensorType::ACL_DST, _impl->dst);
 
     _impl->op->run(pack);
+
+    std::cout << "embedding sum end " << std::endl;
 
 #ifdef MEASURE_TIME
     auto   end_time  = std::chrono::high_resolution_clock::now();
