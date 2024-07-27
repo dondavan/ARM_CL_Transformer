@@ -187,8 +187,6 @@ public:
 
             // [SEP]
             text_ids.push_back(token2id[end_token]);
-            std::cout << "utils/TextLoader.h" << std::endl;
-            std::cout << text_ids.size()<< std::endl;
 
             Window window;
             window.set(Window::DimX, Window::Dimension(0,tensor.info()->tensor_shape().x(),1));
