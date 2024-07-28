@@ -81,6 +81,7 @@ namespace utils
 
     os << "Threads : " << common_params.threads << std::endl;
     os << "Target : " << common_params.target << std::endl;
+    os << "Token length : " << common_params.input_len << std::endl;
     os << "Data type : " << common_params.data_type << std::endl;
     os << "Data layout : " << common_params.data_layout << std::endl;
     os << "Tuner enabled? : " << (common_params.enable_tuner ? true_str : false_str) << std::endl;
@@ -143,6 +144,7 @@ CommonGraphOptions::CommonGraphOptions(CommandLineParser &parser)
       fast_math_hint(parser.add_option<ToggleOption>("fast-math")),
       data_path(parser.add_option<SimpleOption<std::string>>("data")),
       image(parser.add_option<SimpleOption<std::string>>("image")),
+      input_len(parser.add_option<SimpleOption<int>>("input_len")),
       text(parser.add_option<SimpleOption<std::string>>("text")),
       segment(parser.add_option<SimpleOption<std::string>>("segment")),
       vocabulary(parser.add_option<SimpleOption<std::string>>("vocabulary")),
@@ -195,6 +197,7 @@ CommonGraphOptions::CommonGraphOptions(CommandLineParser &parser)
     fast_math_hint->set_help("Enable fast math");
     data_path->set_help("Path where graph parameters reside");
     image->set_help("Input image for the graph");
+    input_len->set_help("Sentence token input length");
     text->set_help("Input text for the graph");
     segment->set_help("Input sentence segmentation");
     vocabulary->set_help("Path to vocabulary file for tex tokenization");
@@ -229,6 +232,7 @@ CommonGraphParams consume_common_graph_parameters(CommonGraphOptions &options)
     common_params.fast_math_hint         = options.fast_math_hint->is_set() ? fast_math_hint_value : FastMathHint::Disabled;
     common_params.data_path              = options.data_path->value();
     common_params.image                  = options.image->value();
+    common_params.input_len              = options.input_len->value();
     common_params.text                   = options.text->value();
     common_params.segment                = options.segment->value();
     common_params.vocabulary             = options.vocabulary->value();

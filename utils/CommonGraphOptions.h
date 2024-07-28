@@ -49,6 +49,7 @@ namespace utils
  * --fast-math        : Toggle option to enable the fast math option.
  * --data             : Path that contains the trainable parameter files of graph layers.
  * --image            : Image to load and operate on. Image types supported: PPM, JPEG, NPY.
+ * --input-len        : Input token length
  * --text             : Text to load and operate on. Text types supported: TXT.
  * --segment          : Segment to input text sentence.
  * --vocabulary       : Vocabulary list for text tokenization
@@ -109,6 +110,7 @@ struct CommonGraphParams
     arm_compute::graph::FastMathHint fast_math_hint{arm_compute::graph::FastMathHint::Disabled};
     std::string                      data_path{};
     std::string                      image{};
+    int                              input_len{};
     std::string                      text{};
     std::string                      segment{};
     std::string                      vocabulary{};
@@ -171,6 +173,7 @@ public:
     ToggleOption                           *fast_math_hint;   /**< Fast math hint */
     SimpleOption<std::string>              *data_path;        /**< Trainable parameters path */
     SimpleOption<std::string>              *image;            /**< Image */
+    SimpleOption<int>                      *input_len;        /**< Input length */
     SimpleOption<std::string>              *text;             /**< Text */
     SimpleOption<std::string>              *segment;          /**< segment */
     SimpleOption<std::string>              *vocabulary;       /**< Vocabulary */
