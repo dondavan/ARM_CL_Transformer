@@ -10,6 +10,10 @@
 #include "src/core/helpers/MemoryHelpers.h"
 #include "src/cpu/utils/CpuAuxTensorHandler.h"
 
+#ifdef MEASURE_TIME
+#include <chrono>
+#include <fstream>
+#endif
 
 namespace arm_compute
 {
