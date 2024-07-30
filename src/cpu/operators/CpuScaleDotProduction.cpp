@@ -191,7 +191,6 @@ void CpuScaleDotProduction::run(ITensorPack &tensors)
     std::ofstream measure_out("measure_output.txt",std::ios::app);
     measure_out.precision(5);
     measure_out << std::scientific << "query_reshape cost: " << cost_time << std::endl;
-    measure_out.close();
 #endif
 
 
@@ -205,7 +204,6 @@ void CpuScaleDotProduction::run(ITensorPack &tensors)
     cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
     measure_out.precision(5);
     measure_out << std::scientific << "query_permute_func cost: " << cost_time << std::endl;
-    measure_out.close();
 #endif
 
 
@@ -221,7 +219,6 @@ void CpuScaleDotProduction::run(ITensorPack &tensors)
     cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
     measure_out.precision(5);
     measure_out << std::scientific << "key_reshape cost: " << cost_time << std::endl;
-    measure_out.close();
 #endif
 
 
@@ -235,7 +232,6 @@ void CpuScaleDotProduction::run(ITensorPack &tensors)
     cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
     measure_out.precision(5);
     measure_out << std::scientific << "key_permute_func cost: " << cost_time << std::endl;
-    measure_out.close();
 #endif
 
 
@@ -255,7 +251,6 @@ void CpuScaleDotProduction::run(ITensorPack &tensors)
     cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
     measure_out.precision(5);
     measure_out << std::scientific << "value_reshape cost: " << cost_time << std::endl;
-    measure_out.close();
 #endif
 
 
@@ -269,7 +264,6 @@ void CpuScaleDotProduction::run(ITensorPack &tensors)
     cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
     measure_out.precision(5);
     measure_out << std::scientific << "value_permute_func cost: " << cost_time << std::endl;
-    measure_out.close();
 #endif
 
     // Run interleave kernel
@@ -294,7 +288,6 @@ void CpuScaleDotProduction::run(ITensorPack &tensors)
     cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
     measure_out.precision(5);
     measure_out << std::scientific << "MMUL QK cost: " << cost_time << std::endl;
-    measure_out.close();
 #endif
 
     ITensorPack softmax_pack = {{ACL_SRC, scaled_query_key.get()}, {ACL_DST, softmaxed_product.get()}};
@@ -322,7 +315,6 @@ void CpuScaleDotProduction::run(ITensorPack &tensors)
     cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
     measure_out.precision(5);
     measure_out << std::scientific << "MMUL CV cost: " << cost_time << std::endl;
-    measure_out.close();
 #endif
 
 
@@ -337,7 +329,6 @@ void CpuScaleDotProduction::run(ITensorPack &tensors)
     cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
     measure_out.precision(5);
     measure_out << std::scientific << "concat_permute_func cost: " << cost_time << std::endl;
-    measure_out.close();
 #endif
 
     ITensorPack concat_reshape_pack{{ACL_SRC_0, permuted_concat.get()},{ACL_DST, output}};
