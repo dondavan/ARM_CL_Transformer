@@ -203,7 +203,6 @@ void CpuScaleDotProduction::run(ITensorPack &tensors)
 #ifdef MEASURE_TIME
     end_time  = std::chrono::high_resolution_clock::now();
     cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
-    std::ofstream measure_out("measure_output.txt",std::ios::app);
     measure_out.precision(5);
     measure_out << std::scientific << "query_permute_func cost: " << cost_time << std::endl;
     measure_out.close();
@@ -220,7 +219,6 @@ void CpuScaleDotProduction::run(ITensorPack &tensors)
 #ifdef MEASURE_TIME
     end_time  = std::chrono::high_resolution_clock::now();
     cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
-    std::ofstream measure_out("measure_output.txt",std::ios::app);
     measure_out.precision(5);
     measure_out << std::scientific << "key_reshape cost: " << cost_time << std::endl;
     measure_out.close();
@@ -235,7 +233,6 @@ void CpuScaleDotProduction::run(ITensorPack &tensors)
 #ifdef MEASURE_TIME
     end_time  = std::chrono::high_resolution_clock::now();
     cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
-    std::ofstream measure_out("measure_output.txt",std::ios::app);
     measure_out.precision(5);
     measure_out << std::scientific << "key_permute_func cost: " << cost_time << std::endl;
     measure_out.close();
@@ -256,7 +253,6 @@ void CpuScaleDotProduction::run(ITensorPack &tensors)
 #ifdef MEASURE_TIME
     end_time  = std::chrono::high_resolution_clock::now();
     cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
-    std::ofstream measure_out("measure_output.txt",std::ios::app);
     measure_out.precision(5);
     measure_out << std::scientific << "value_reshape cost: " << cost_time << std::endl;
     measure_out.close();
@@ -271,7 +267,6 @@ void CpuScaleDotProduction::run(ITensorPack &tensors)
 #ifdef MEASURE_TIME
     end_time  = std::chrono::high_resolution_clock::now();
     cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
-    std::ofstream measure_out("measure_output.txt",std::ios::app);
     measure_out.precision(5);
     measure_out << std::scientific << "value_permute_func cost: " << cost_time << std::endl;
     measure_out.close();
@@ -297,7 +292,6 @@ void CpuScaleDotProduction::run(ITensorPack &tensors)
 #ifdef MEASURE_TIME
     end_time  = std::chrono::high_resolution_clock::now();
     cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
-    std::ofstream measure_out("measure_output.txt",std::ios::app);
     measure_out.precision(5);
     measure_out << std::scientific << "MMUL QK cost: " << cost_time << std::endl;
     measure_out.close();
@@ -326,7 +320,6 @@ void CpuScaleDotProduction::run(ITensorPack &tensors)
 #ifdef MEASURE_TIME
     end_time  = std::chrono::high_resolution_clock::now();
     cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
-    std::ofstream measure_out("measure_output.txt",std::ios::app);
     measure_out.precision(5);
     measure_out << std::scientific << "MMUL CV cost: " << cost_time << std::endl;
     measure_out.close();
@@ -342,7 +335,6 @@ void CpuScaleDotProduction::run(ITensorPack &tensors)
 #ifdef MEASURE_TIME
     end_time  = std::chrono::high_resolution_clock::now();
     cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
-    std::ofstream measure_out("measure_output.txt",std::ios::app);
     measure_out.precision(5);
     measure_out << std::scientific << "concat_permute_func cost: " << cost_time << std::endl;
     measure_out.close();
@@ -357,7 +349,6 @@ void CpuScaleDotProduction::run(ITensorPack &tensors)
 #ifdef MEASURE_TIME
     end_time  = std::chrono::high_resolution_clock::now();
     cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
-    std::ofstream measure_out("measure_output.txt",std::ios::app);
     measure_out.precision(5);
     measure_out << std::scientific << "concat_reshape cost: " << cost_time << std::endl;
     measure_out.close();
