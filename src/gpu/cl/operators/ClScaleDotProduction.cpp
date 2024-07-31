@@ -170,9 +170,6 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
 {
     ARM_COMPUTE_UNUSED(tensors);
 
-#ifdef MEASURE_TIME
-    auto start_time = std::chrono::high_resolution_clock::now();
-#endif
     auto query  = tensors.get_const_tensor(ACL_SRC_0);
     auto key    = tensors.get_const_tensor(ACL_SRC_1);
     auto value  = tensors.get_const_tensor(ACL_SRC_2);
