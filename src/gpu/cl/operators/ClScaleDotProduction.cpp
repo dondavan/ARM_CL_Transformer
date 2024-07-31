@@ -334,7 +334,6 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
     cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
     measure_out.precision(5);
     measure_out << std::scientific << "concat_reshape cost: " << cost_time << std::endl;
-    measure_out.close();
 #endif
 
 #ifdef MEASURE_TIME
@@ -342,6 +341,7 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
     double total_cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(total_end_time - total_start_time).count();
     measure_out.precision(5);
     measure_out << std::scientific << "total_SDPA cost: " << total_cost_time << std::endl;
+    measure_out.close();
 #endif
 }
 
