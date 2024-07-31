@@ -275,7 +275,16 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
 
     // Softmax scaled product
     ITensorPack softmax_pack = { { ACL_SRC, scaled_query_key.get() }, { ACL_DST, softmaxed_product.get() } };
+#ifdef MEASURE_TIME
+    start_time = std::chrono::high_resolution_clock::now();
+#endif
     CLScheduler::get().enqueue_op(*_softmax_kernel, softmax_pack, true);
+#ifdef MEASURE_TIME
+    end_time  = std::chrono::high_resolution_clock::now();
+    cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
+    measure_out.precision(5);
+    measure_out << std::scientific << "softmax cost: " << cost_time << std::endl;
+#endif
 
     // Run matrix multiply compute multi-head attention between Context and Value
     ITensorPack gemm_context_pack{ { ACL_SRC_0, softmaxed_product.get() }, { ACL_SRC_1, permuted_value.get() }, { ACL_DST, gemmed_context.get() } };
