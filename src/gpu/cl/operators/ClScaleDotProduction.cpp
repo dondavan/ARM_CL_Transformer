@@ -168,9 +168,6 @@ ClScaleDotProduction::validate(const ITensorInfo *query, const ITensorInfo *key,
 
 void ClScaleDotProduction::run(ITensorPack &tensors)
 {
-#ifdef MEASURE_TIME
-    auto total_start_time = std::chrono::high_resolution_clock::now();
-#endif
     ARM_COMPUTE_UNUSED(tensors);
 
 #ifdef MEASURE_TIME
@@ -191,23 +188,17 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
     CLAuxTensorHandler softmaxed_product(offset_int_vec(Softmax), _softmaxed_product, tensors);
     CLAuxTensorHandler gemmed_context(offset_int_vec(GemmedContext), _gemmed_context, tensors);
     CLAuxTensorHandler permuted_concat(offset_int_vec(ConcatPermute), _permuted_concat, tensors);
-#ifdef MEASURE_TIME
-    auto   end_time  = std::chrono::high_resolution_clock::now();
-    double cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
-    std::ofstream measure_out("measure_output.txt",std::ios::app);
-    measure_out.precision(5);
-    measure_out << std::scientific << "auxmemory cost: " << cost_time << std::endl;
-#endif
 
     // Run Query multi-Head reshape
     ITensorPack query_reshape_pack{ { ACL_SRC_0, query }, { ACL_DST, reshaped_query.get() } };
 #ifdef MEASURE_TIME
-    start_time = std::chrono::high_resolution_clock::now();
+    auto start_time = std::chrono::high_resolution_clock::now();
 #endif
     CLScheduler::get().enqueue_op(*_query_reshape_kernel, query_reshape_pack, true);
 #ifdef MEASURE_TIME
-    end_time  = std::chrono::high_resolution_clock::now();
-    cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
+    auto   end_time  = std::chrono::high_resolution_clock::now();
+    double cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
+    std::ofstream measure_out("measure_output.txt",std::ios::app);
     measure_out.precision(5);
     measure_out << std::scientific << "query_reshape cost: " << cost_time << std::endl;
 #endif
@@ -334,14 +325,6 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
     cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
     measure_out.precision(5);
     measure_out << std::scientific << "concat_reshape cost: " << cost_time << std::endl;
-#endif
-
-#ifdef MEASURE_TIME
-    auto   total_end_time  = std::chrono::high_resolution_clock::now();
-    double total_cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(total_end_time - total_start_time).count();
-    measure_out.precision(5);
-    measure_out << std::scientific << "total_SDPA cost: " << total_cost_time << std::endl;
-    measure_out.close();
 #endif
 }
 
