@@ -341,7 +341,7 @@ void ClScaleDotProduction::run(ITensorPack &tensors)
     auto   total_end_time  = std::chrono::high_resolution_clock::now();
     double total_cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(total_end_time - total_start_time).count();
     measure_out.precision(5);
-    measure_out << std::scientific << "total_SDPA cost: " << cost_time << std::endl;
+    measure_out << std::scientific << "total_SDPA cost: " << total_cost_time << std::endl;
 #endif
 }
 
