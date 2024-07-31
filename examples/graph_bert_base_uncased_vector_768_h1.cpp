@@ -86,7 +86,7 @@ class GraphVanillaTransformerExample : public Example
         //const auto operation_layout = common_params.data_layout;
 
         // Create input tensor
-        const TensorShape src_tensor = TensorShape(7U);
+        const TensorShape src_tensor = TensorShape(common_params.input_len);
 
         // Data layout
         const DataLayout operation_layout = DataLayout::NCHW;

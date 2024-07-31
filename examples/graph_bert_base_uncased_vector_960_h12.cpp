@@ -65,7 +65,7 @@ class GraphVanillaTransformerExample : public Example
         std::string data_path = common_params.data_path;
 
         // Model parameters
-        constexpr unsigned int d_model    = 768U;   // Dim layer output
+        constexpr unsigned int d_model    = 960U;   // Dim layer output
         constexpr unsigned int d_vocab    = 30522U; // Vocaboary size
         constexpr unsigned int d_segemnt  = 2U;     // Sentence segmentation size
         constexpr unsigned int d_position = 512U;   // Pretrained positional encoding length
@@ -86,7 +86,7 @@ class GraphVanillaTransformerExample : public Example
         //const auto operation_layout = common_params.data_layout;
 
         // Create input tensor
-        const TensorShape src_tensor = TensorShape(3U);
+        const TensorShape src_tensor = TensorShape(common_params.input_len);
 
         // Data layout
         const DataLayout operation_layout = DataLayout::NCHW;
