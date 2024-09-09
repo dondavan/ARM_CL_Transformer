@@ -228,7 +228,7 @@ __kernel void mat_mul_mmul_hugh_nt_t(
 #endif // defined(MAT_MUL_MMUL_HUGH_NT_T)
 
 
-#if defined(MAT_MUL_NATIVE_NT_NT)
+#if defined(MAT_MUL_MMUL_HUGH_NT_NT)
 __kernel void mat_mul_mmul_hugh_nt_nt(
     TENSOR3D_T(lhs, BUFFER),
     TENSOR3D_T(rhs, RHS_TENSOR_TYPE),
