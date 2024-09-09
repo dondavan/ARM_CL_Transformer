@@ -80,7 +80,7 @@ void ClLinearKernel::configure(const CLCompileContext &compile_context,
 
     std::string kernel_name("mat_mul_mmul_hugh");
     kernel_name += matmul_kernel_info.adj_lhs ? "_t" : "_nt";
-    kernel_name += matmul_kernel_info.adj_rhs ? "_t" : "_nt";
+    kernel_name += matmul_kernel_info.adj_rhs ? "_t" : "_t";
 
     // A macro guard to compile ONLY the kernel of interest
     build_opts.add_option("-D" + upper_string(kernel_name));
