@@ -228,7 +228,7 @@ __kernel void mat_mul_mmul_hugh_nt_t(
 #endif // defined(MAT_MUL_MMUL_HUGH_NT_T)
 
 
-#if defined(MAT_MUL_MMUL_HUGH_NT_NT)
+#if defined(MAT_MUL_NATIVE_NT_NT)
 __kernel void mat_mul_mmul_hugh_nt_nt(
     TENSOR3D_T(lhs, BUFFER),
     TENSOR3D_T(rhs, RHS_TENSOR_TYPE),
@@ -252,32 +252,32 @@ __kernel void mat_mul_mmul_hugh_nt_nt(
         ret[i].v = 0.f;
     })
 
-    HUGH_2D(DATA_TYPE, M0, N0, acc);
-    T_LOAD_HUGH(DATA_TYPE, M0, N0, BUFFER, lhs, 0, 0, 1, lhs_stride_y, acc);
+    //HUGH_2D(DATA_TYPE, M0, N0, acc);
+    //T_LOAD_HUGH(DATA_TYPE, M0, N0, BUFFER, lhs, 0, 0, 1, lhs_stride_y, acc);
 
     const int rhs_z = z * rhs_h;
     int       k;
     for(k = 0; k <= K - K0; k += K0)
     {
         //TILE(DATA_TYPE, M0, K0, a);
-        //TILE(DATA_TYPE, K0, N0, b);
+        TILE(DATA_TYPE, K0, N0, b);
 
         //LOOP_UNROLLING(int, i, 0, 1, M0,{a[i].v = 0.f;})
 
-        //LOOP_UNROLLING(int, i, 0, 1, K0,
-        //{
-        //    b[i].v = 0.f;
-        //})
+        LOOP_UNROLLING(int, i, 0, 1, K0,
+        {
+            b[i].v = 0.f;
+        })
 
         HUGH_2D(DATA_TYPE, M0, K0, a);
-        HUGH_2D(DATA_TYPE, K0, N0, b);
+        //HUGH_2D(DATA_TYPE, K0, N0, b);
 
         T_LOAD_HUGH(DATA_TYPE, M0, K0, BUFFER, lhs, k, 0, 1, lhs_stride_y, a);
-        T_LOAD_HUGH(DATA_TYPE, K0, N0, RHS_TENSOR_TYPE, rhs, x, k + rhs_z, 1, rhs_stride_y, b);
+        //T_LOAD_HUGH(DATA_TYPE, K0, N0, RHS_TENSOR_TYPE, rhs, x, k + rhs_z, 1, rhs_stride_y, b);
 
         // Load tile from the lhs/rhs tensors
         //T_LOAD(DATA_TYPE, M0, K0, BUFFER, lhs, 0, 0, 1, lhs_stride_y, a);
-        //T_LOAD(DATA_TYPE, K0, N0, RHS_TENSOR_TYPE, rhs, x, k + rhs_z, 1, rhs_stride_y, b);
+        T_LOAD(DATA_TYPE, K0, N0, RHS_TENSOR_TYPE, rhs, x, k + rhs_z, 1, rhs_stride_y, b);
 
         //T_MMUL(DATA_TYPE, DATA_TYPE, DATA_TYPE, M0, N0, K0, NT, NT, a, b, acc);
         LOOP_UNROLLING(int, _m, 0, 1, M0,
@@ -295,34 +295,26 @@ __kernel void mat_mul_mmul_hugh_nt_nt(
     /* Leftover Loop */
     for(; k < K; ++k)
     {
-        //TILE(DATA_TYPE, M0, K0, a);
-        //TILE(DATA_TYPE, 1, N0, b);
+        TILE(DATA_TYPE, M0, 1, a);
+        TILE(DATA_TYPE, 1, N0, b);
 
-        //LOOP_UNROLLING(int, i, 0, 1, M0,{a[i].v = 0.f;})
+        LOOP_UNROLLING(int, i, 0, 1, M0,
+        {
+            a[i].v = 0.f;
+        })
 
-        //LOOP_UNROLLING(int, i, 0, 1, 1,
-        //{
-        //    b[i].v = 0.f;
-        //})
-
-        HUGH_2D(DATA_TYPE, M0, 1, a);
-        HUGH_2D(DATA_TYPE, K0, N0, b);
-
-        T_LOAD_HUGH(DATA_TYPE, M0, 1, BUFFER, lhs, k, 0, 1, lhs_stride_y, a);
-        T_LOAD_HUGH(DATA_TYPE, K0, N0, RHS_TENSOR_TYPE, rhs, x, k + rhs_z, 1, rhs_stride_y, b);
+        LOOP_UNROLLING(int, i, 0, 1, 1,
+        {
+            b[i].v = 0.f;
+        })
 
         // Load tile from the lhs/rhs tensors
-        //T_LOAD(DATA_TYPE, M0, K0, BUFFER, lhs, 0, 0, 1, lhs_stride_y, a);
-        //T_LOAD(DATA_TYPE, 1, N0, RHS_TENSOR_TYPE, rhs, x, k + rhs_z, 1, rhs_stride_y, b);
+        T_LOAD(DATA_TYPE, M0, 1, BUFFER, lhs, 0, 0, 1, lhs_stride_y, a);
+        T_LOAD(DATA_TYPE, 1, N0, BUFFER, rhs, x, k + rhs_z, 1, rhs_stride_y, b);
 
-        //T_MMUL(DATA_TYPE, DATA_TYPE, DATA_TYPE, M0, N0, K0, NT, NT, a, b, acc);
-        LOOP_UNROLLING(int, _m, 0, 1, M0,
-        {
-            LOOP_UNROLLING(int, _k, 0, 1, 1,
-            {
-                ret[_m].v = fma((DATA_TYPE)(HUGH_2D_ACCESS(a, _m, _k, 1)), b[_k].v, ret[_m].v);
-            })
-        }) 
+        T_MMUL(DATA_TYPE, DATA_TYPE, DATA_TYPE, M0, N0, 1, NT, NT, a, b, acc);
+
+        lhs_offset_first_element_in_bytes += 1 * sizeof(DATA_TYPE);
     }
 #endif // K % K0 != 0
 
@@ -336,33 +328,19 @@ __kernel void mat_mul_mmul_hugh_nt_nt(
     });
 
 #ifdef BIAS
-    HUGH_2D(DATA_TYPE, 1, N0, bias_tile);
-    T_LOAD_HUGH(DATA_TYPE, 1, N0, BUFFER, bias, x, 0, 1, 0, bias_tile);
+    TILE(DATA_TYPE, 1, N0, bias_tile);
 
+    // below expands to use bias_ptr and bias_offset_first_element_in_bytes
+    T_LOAD(DATA_TYPE, 1, N0, BUFFER, bias, x, 0, 1, 0, bias_tile);
+    
     LOOP_UNROLLING(int, _m, 0, 1, M0,
     {
-        LOOP_UNROLLING(int, _n, 0, 1, N0,
-        {
-            HUGH_2D_ACCESS(acc,_m,_n,N0) += bias_tile[_n];//bias_tile[0].s[_n];
-        })
+        ret[_m].v+=bias_tile[0].v; 
     }) 
+
 #endif // defined(BIAS)
 
-    // Alpha and Beta
-    LOOP_UNROLLING(int, _m, 0, 1, M0,
-    {
-        LOOP_UNROLLING(int, _n, 0, 1, N0,
-        {
-            HUGH_2D_ACCESS(acc,_m,_n,N0) = HUGH_2D_ACCESS(acc,_m,_n,N0) * ALPHA + BETA;
-        })
-    }) 
 
-    for(int _m = 0; _m < M0; _m++)
-    {
-        ret[_m].v = V_LOAD_HUGH(DATA_TYPE, N0, acc, 0, _m, N0);
-    }
-    
     T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, ret, indirect_buffer);
-
 }
-#endif // defined(MAT_MUL_MMUL_HUGH_NT_NT)
+#endif // defined(MAT_MUL_NATIVE_NT_NT)
