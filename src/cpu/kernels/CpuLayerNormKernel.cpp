@@ -24,7 +24,7 @@ namespace
                                                                                 float beta,
                                                                                 int layer_axis)
     {
-        const int  window_step_axis  = 4;
+        const int  window_step_axis  = 1;
         const auto window_start_axis = static_cast<int>(window[layer_axis].start());
         const auto window_end_axis   = static_cast<int>(window[layer_axis].end());
 
@@ -40,9 +40,7 @@ namespace
         {
             const auto input_ptr  = reinterpret_cast<const float *>(input.ptr());
             const auto output_ptr = reinterpret_cast<float *>(output.ptr());
-            auto mean_v = wrapper::vdup_n(0.f, ExactTagType{});
             float mean = 0;
-            auto var_v = wrapper::vdup_n(0.f, ExactTagType{});
             float var = 0;
             float res;
 
@@ -51,21 +49,13 @@ namespace
             int axis = window_start_axis;
             for (; axis <=  axis_len; axis += window_step_axis)
             {
-                mean_v = wrapper::vadd(mean_v, wrapper::vloadq(input_ptr + axis));
+                mean+= *(input_ptr + axis);
             }
-            mean = wrapper::vmladav(mean_v, wrapper::vinv((axis_len+1)));
-            for (; axis <=  axis_len; axis += 1)
-            {
-                mean+= *(input_ptr + axis) / (axis_len+1);
-            }
+            mean = mean /(axis_len+1);
 
             /* Calculate variance */
             axis = window_start_axis;
             for (; axis <=  axis_len; axis += window_step_axis)
-            {
-                var += (*(input_ptr + axis) - mean ) * (*(input_ptr + axis) - mean );
-            }
-            for (; axis <=  axis_len; axis += 1)
             {
                 var += (*(input_ptr + axis) - mean ) * (*(input_ptr + axis) - mean );
             }
