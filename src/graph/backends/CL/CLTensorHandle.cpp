@@ -57,11 +57,13 @@ void CLTensorHandle::manage(IMemoryGroup *mg)
 void CLTensorHandle::map(bool blocking)
 {
     _tensor.map(blocking);
+    std::cout << "CLTensorHandle::map" << std::endl;
 }
 
 void CLTensorHandle::unmap()
 {
     _tensor.unmap();
+    std::cout << "CLTensorHandle::unmap" << std::endl;
 }
 
 void CLTensorHandle::release_if_unused()
