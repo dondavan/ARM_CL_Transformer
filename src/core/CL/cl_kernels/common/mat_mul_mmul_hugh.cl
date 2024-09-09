@@ -261,18 +261,6 @@ __kernel void mat_mul_mmul_hugh_nt_nt(
         T_LOAD_HUGH(DATA_TYPE, M0, K0, BUFFER, lhs, k, 0, 1, lhs_stride_y, a);
         T_LOAD_HUGH(DATA_TYPE, K0, N0, RHS_TENSOR_TYPE, rhs, x, k + rhs_z, 1, rhs_stride_y, b);
 
-        // Load tile from the lhs/rhs tensors
-
-        LOOP_UNROLLING(int, _m, 0, 1, M0,
-        {
-            LOOP_UNROLLING(int, _n, 0, 1, N0,
-            {
-                for(int _k = 0; _k < 1; _k++ )
-                {
-                    HUGH_2D_ACCESS(acc, _m, _n ,N0) = fma((DATA_TYPE)HUGH_2D_ACCESS(a, _m, _k, K0), (DATA_TYPE)HUGH_2D_ACCESS(b, _n, _k, K0), HUGH_2D_ACCESS(acc, _m, _n, N0));
-                }
-            })
-        })
         //T_MMUL(DATA_TYPE, DATA_TYPE, DATA_TYPE, M0, N0, K0, NT, NT, a, b, acc);
         //LOOP_UNROLLING(int, _m, 0, 1, M0,
         //{
@@ -295,17 +283,6 @@ __kernel void mat_mul_mmul_hugh_nt_nt(
         T_LOAD_HUGH(DATA_TYPE, M0, 1, BUFFER, lhs, k, 0, 1, lhs_stride_y, a);
         T_LOAD_HUGH(DATA_TYPE, K0, N0, RHS_TENSOR_TYPE, rhs, x, k + rhs_z, 1, rhs_stride_y, b);
 
-        // Load tile from the lhs/rhs tensors
-        LOOP_UNROLLING(int, _m, 0, 1, M0,
-        {
-            LOOP_UNROLLING(int, _n, 0, 1, N0,
-            {
-                for(int _k = 0; _k < 1; _k++ )
-                {
-                    HUGH_2D_ACCESS(acc, _m, _n ,N0) = fma((DATA_TYPE)HUGH_2D_ACCESS(a, _m, _k, K0), (DATA_TYPE)HUGH_2D_ACCESS(b, _n, _k, K0), HUGH_2D_ACCESS(acc, _m, _n, N0));
-                }
-            })
-        })
     }
 #endif // K % K0 != 0
 
