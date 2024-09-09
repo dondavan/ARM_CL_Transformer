@@ -336,19 +336,33 @@ __kernel void mat_mul_mmul_hugh_nt_nt(
     });
 
 #ifdef BIAS
-    TILE(DATA_TYPE, 1, N0, bias_tile);
+    HUGH_2D(DATA_TYPE, 1, N0, bias_tile);
+    T_LOAD_HUGH(DATA_TYPE, 1, N0, BUFFER, bias, x, 0, 1, 0, bias_tile);
 
-    // below expands to use bias_ptr and bias_offset_first_element_in_bytes
-    T_LOAD(DATA_TYPE, 1, N0, BUFFER, bias, x, 0, 1, 0, bias_tile);
-    
     LOOP_UNROLLING(int, _m, 0, 1, M0,
     {
-        ret[_m].v+=bias_tile[0].v; 
+        LOOP_UNROLLING(int, _n, 0, 1, N0,
+        {
+            HUGH_2D_ACCESS(acc,_m,_n,N0) += bias_tile[_n];//bias_tile[0].s[_n];
+        })
     }) 
-
 #endif // defined(BIAS)
 
+    // Alpha and Beta
+    LOOP_UNROLLING(int, _m, 0, 1, M0,
+    {
+        LOOP_UNROLLING(int, _n, 0, 1, N0,
+        {
+            HUGH_2D_ACCESS(acc,_m,_n,N0) = HUGH_2D_ACCESS(acc,_m,_n,N0) * ALPHA + BETA;
+        })
+    }) 
 
+    for(int _m = 0; _m < M0; _m++)
+    {
+        ret[_m].v = V_LOAD_HUGH(DATA_TYPE, N0, acc, 0, _m, N0);
+    }
+    
     T_STORE_INDIRECT_WIDTH_SELECT(DATA_TYPE, M0, N0, PARTIAL_STORE_N0, BUFFER, dst, 0, dst_stride_y, x_cond, ret, indirect_buffer);
+
 }
 #endif // defined(MAT_MUL_MMUL_HUGH_NT_NT)
