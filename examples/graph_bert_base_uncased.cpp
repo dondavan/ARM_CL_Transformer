@@ -131,6 +131,7 @@ class GraphVanillaTransformerExample : public Example
         add_encoder_block(data_path, "layer_11/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
 
         // Pooler
+        graph 
 
               << ActivationLayer(ActivationLayerInfo(ActivationFunction::TANH, 1.f, 1.f))
 
