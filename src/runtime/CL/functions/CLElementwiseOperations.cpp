@@ -72,11 +72,13 @@ void CLArithmeticAddition::configure(const CLCompileContext    &compile_context,
     auto start_time = std::chrono::high_resolution_clock::now();
 #endif
 
+    std::cout << "CLArithmeticAddition::configure start" << std::endl;
     _impl->src_0 = input1;
     _impl->src_1 = input2;
     _impl->dst   = output;
     _impl->op    = std::make_unique<opencl::ClAdd>();
     _impl->op->configure(compile_context, input1->info(), input2->info(), output->info(), policy, act_info);
+    std::cout << "CLArithmeticAddition::configure end" << std::endl;
 
 #ifdef MEASURE_TIME
     auto          end_time  = std::chrono::high_resolution_clock::now();
