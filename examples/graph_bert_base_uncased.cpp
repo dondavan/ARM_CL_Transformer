@@ -131,7 +131,10 @@ class GraphVanillaTransformerExample : public Example
         add_encoder_block(data_path, "layer_11/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
 
         // Pooler
-        graph 
+        graph << LinearLayer(LinearLayerInfo(d_model, TensorShape(d_model, d_model),
+                                             TensorShape(d_model)),
+                             get_weights_accessor(data_path, "pooler_weight.npy"),
+                             get_weights_accessor(data_path, "pooler_bias.npy"))
 
               << ActivationLayer(ActivationLayerInfo(ActivationFunction::TANH, 1.f, 1.f))
 
@@ -179,11 +182,40 @@ class GraphVanillaTransformerExample : public Example
     void add_encoder_block(std::string data_path, std::string layer_path,
                            unsigned int d_model, unsigned int h, float eps, unsigned int d_ff)
     {
-        ARM_COMPUTE_UNUSED(data_path,layer_path,d_model,h,eps,d_ff);
         SubStream without_attention(graph);
         SubStream with_attention(graph);
 
+        with_attention
+            /* Self Attention */
+            << AttentionLinearLayer(LinearLayerInfo(d_model), get_weights_accessor(data_path + layer_path, "query_weight.npy"),
+                                    get_weights_accessor(data_path + layer_path, "query_bias.npy"),
+                                    get_weights_accessor(data_path + layer_path, "key_weight.npy"),
+                                    get_weights_accessor(data_path + layer_path, "key_bias.npy"),
+                                    get_weights_accessor(data_path + layer_path, "value_weight.npy"),
+                                    get_weights_accessor(data_path + layer_path, "value_bias.npy"))
+            << MultiHeadAttentionLayer(MultiHeadAttentionLayerInfo(d_model, h)).set_name("mha1");
+
+        graph << EltwiseLayer(std::move(with_attention), std::move(without_attention), EltwiseOperation::Add).set_name("add_4_norm_attention");
+
         /* Self output */
+        graph << LayerNormLayer(LayerNormLayerInfo(0 /*Window::DimX*/, eps));
+
+        SubStream without_ff(graph);
+        SubStream with_ff(graph);
+        /* Self Intermediate(Feed Forward)*/
+        with_ff << LinearLayer(LinearLayerInfo(d_ff, TensorShape(d_model, d_ff) /*weight*/,
+                                               TensorShape(d_ff) /*bias*/),
+                               get_weights_accessor(data_path + layer_path, "ff_weight_0.npy"),
+                               get_weights_accessor(data_path + layer_path, "ff_bias_0.npy"))
+                << ActivationLayer(ActivationLayerInfo(ActivationFunction::GELU))
+                << LinearLayer(LinearLayerInfo(d_model, TensorShape(d_ff, d_model) /*weight*/,
+                                               TensorShape(d_model) /*bias*/),
+                               get_weights_accessor(data_path + layer_path, "ff_weight_1.npy"),
+                               get_weights_accessor(data_path + layer_path, "ff_bias_1.npy"));
+
+        graph << EltwiseLayer(std::move(with_ff), std::move(without_ff), EltwiseOperation::Add).set_name("add_4_norm_ff");
+
+        /* Output*/
         graph << LayerNormLayer(LayerNormLayerInfo(0 /*Window::DimX*/, eps));
     }
 };
