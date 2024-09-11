@@ -305,6 +305,7 @@ void ClElementwiseKernel::configure_common(const ClCompileContext &compile_conte
     {
         kernel_name += "_quantized";
     }
+    std::cout << kernel_name << std::endl;
 
     // Set kernel build options
     CLBuildOptions build_opts = generate_build_options(*src1, *src2, *dst);
