@@ -133,18 +133,18 @@ __kernel void OP_FUN_NAME(OP)(
 #endif // !defined(IN_PLACE)
 
     // Load values
-    VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE_OUT)
+    VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE_OUT);
     in_a = CONVERT((VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE_OUT))(VLOAD(VEC_SIZE_IN1)(0, (__global DATA_TYPE *)in1_addr)), VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE_OUT));
-    VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE_OUT)
+    VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE_OUT);
     in_b = CONVERT((VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE_OUT))(VLOAD(VEC_SIZE_IN2)(0, (__global DATA_TYPE *)in2_addr)), VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE_OUT));
 
     // Calculate and store result
-    VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE_OUT)
+    VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE_OUT);
     res0 = OP(in_a, in_b);
 #if defined(ACTIVATION_TYPE)
     res0 = ACTIVATION(ACTIVATION_TYPE, DATA_TYPE, VEC_SIZE_OUT, res0, A_VAL, B_VAL);
 #endif // defined(ACTIVATION_TYPE)
 
-    STORE_VECTOR_SELECT(res, DATA_TYPE, out_addr, VEC_SIZE_OUT, VEC_SIZE_LEFTOVER, VEC_SIZE_LEFTOVER != 0 && get_global_id(0) == 0)
+    STORE_VECTOR_SELECT(res, DATA_TYPE, out_addr, VEC_SIZE_OUT, VEC_SIZE_LEFTOVER, VEC_SIZE_LEFTOVER != 0 && get_global_id(0) == 0);
 }
 #endif /* defined(OP) && defined(VEC_SIZE_IN1) && defined(VEC_SIZE_IN2) && defined(VEC_SIZE_OUT) && defined(DATA_TYPE) */
