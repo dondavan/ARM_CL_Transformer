@@ -760,10 +760,10 @@
 #define convert_ulong1_sat  convert_ulong_sat
 #define convert_double1_sat convert_double_sat
 
-#define VEC_DATA_TYPE_STR(type, size) (type##size)
+#define VEC_DATA_TYPE_STR(type, size) type##size
 #define VEC_DATA_TYPE(type, size)     VEC_DATA_TYPE_STR(type, size)
 
-#define CONVERT_STR(x, type) convert_##type((x))
+#define CONVERT_STR(x, type) (convert_##type((x)))
 #define CONVERT(x, type)     CONVERT_STR(x, type)
 
 #define CONVERT_SAT_STR(x, type) (convert_##type##_sat((x)))
