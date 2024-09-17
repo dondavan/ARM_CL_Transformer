@@ -74,7 +74,7 @@ private:
     std::string _vocab_file;
 };
 
-/** Convert input text to Int preprocessor */
+/** Convert input text to int preprocessor */
 class atoiPreprocessor : public IPreprocessor
 {
 public:

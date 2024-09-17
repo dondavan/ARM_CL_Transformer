@@ -1852,9 +1852,9 @@ std::unique_ptr<IFunction> create_simple_forward_layer(SimpleForwardLayerNode &n
 
     return func;
 }
-/** Creates a backend scale dot production function
+/** Creates a backend attention linear function
  *
- * @tparam AttentionLinearLayerFunction  Backend scale dot production function
+ * @tparam AttentionLinearLayerFunction  Backend attention linear function
  * @tparam TargetInfo                       Target-specific information
  *
  * @param[in] node Node to create the backend function for
