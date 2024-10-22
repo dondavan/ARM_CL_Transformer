@@ -1909,9 +1909,8 @@ std::unique_ptr<IFunction> create_attention_linear_layer(AttentionLinearNode &no
  */
 template <typename ScaleDotProductionLayerFunction, typename TargetInfo>
 std::unique_ptr<IFunction> create_scale_dot_production_layer(ScaleDotProductionAttentionNode &node)
-{   
+{
     validate_node<TargetInfo>(node, 3 /* expected inputs */, 1 /* expected outputs */);
-    /*
 
     // Extract IO and info
     typename TargetInfo::TensorType *query   = get_backing_tensor<TargetInfo>(node.input(0));
@@ -1923,28 +1922,13 @@ std::unique_ptr<IFunction> create_scale_dot_production_layer(ScaleDotProductionA
     auto func = std::make_unique<ScaleDotProductionLayerFunction>();
     func->configure(query,key,value,output,node.sdpa_info());
 
-    // Log info
-    ARM_COMPUTE_LOG_GRAPH_INFO("Instantiated " << node.name() << " Type: " << node.type() << " Target: "
-                                               << TargetInfo::TargetType << " Data Type: " << input->info()->data_type()
-                                               << " Input shape: " << input->info()->tensor_shape()
-                                               << " Output shape: " << output->info()->tensor_shape() << std::endl);
-    */
+    auto wrap_func = std::make_unique<CPPWrapperFunction>();
 
-   // Extract IO and info
-    typename TargetInfo::TensorType *query   = get_backing_tensor<TargetInfo>(node.input(0));
-    typename TargetInfo::TensorType *key     = get_backing_tensor<TargetInfo>(node.input(1));
-    typename TargetInfo::TensorType *value   = get_backing_tensor<TargetInfo>(node.input(2));
-    typename TargetInfo::TensorType *output  = get_backing_tensor<TargetInfo>(node.output(0));
-
-    // Create and configure function
-    auto func = std::make_unique<ScaleDotProductionLayerFunction>();
-    func->configure(query,key,value,output,node.sdpa_info());
-    auto wrapper_func = std::make_unique<CPPWrapperFunction>();
-    wrapper_func.get()->register_function(func);
-    wrapper_func.get()->register_tensor(query);
-    wrapper_func.get()->register_tensor(key);
-    wrapper_func.get()->register_tensor(value);
-    wrapper_func.get()->register_tensor(ouput);
+    wrap_function->register_function(std::move(func));
+    wrap_function->register_tensor(query);
+    wrap_function->register_tensor(key);
+    wrap_function->register_tensor(value);
+    wrap_function->register_tensor(output);
 
     // Log info
     ARM_COMPUTE_LOG_GRAPH_INFO("Instantiated " << node.name() << " Type: " << node.type() << " Target: "
@@ -1952,7 +1936,7 @@ std::unique_ptr<IFunction> create_scale_dot_production_layer(ScaleDotProductionA
                                                << " Input shape: " << input->info()->tensor_shape()
                                                << " Output shape: " << output->info()->tensor_shape() << std::endl);
 
-    return wrapper_func;
+    return std::move(wrap_function);
 }
 
 /** Creates a backend layer normalization function
