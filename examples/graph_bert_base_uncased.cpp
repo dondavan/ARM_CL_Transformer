@@ -103,7 +103,7 @@ class GraphVanillaTransformerExample : public Example
         // Encode Input
         graph << InputLayer(input_descriptor, get_token_accessor(common_params),
                             get_segment_accessor(common_params.segment, move(at2_preproccessor)))
-                     .set_name("in1")
+                     .set_name("in")
 
               << EmbeddingLayer(EmbeddingLayerInfo(d_model,
                                                    d_vocab,
@@ -114,7 +114,7 @@ class GraphVanillaTransformerExample : public Example
                                 get_weights_accessor(data_path, "token_embedding.npy", operation_layout),
                                 get_weights_accessor(data_path, "segment_embedding.npy", operation_layout),
                                 get_weights_accessor(data_path, "positional_embedding.npy", operation_layout))
-                     .set_name("tkemb1");
+                     .set_name("tkemb");
 
         add_encoder_block(data_path, "layer_0/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
         add_encoder_block(data_path, "layer_1/" /*Layer Parameter Dir*/, d_model, h, eps, d_ff);
@@ -134,11 +134,11 @@ class GraphVanillaTransformerExample : public Example
         graph << LinearLayer(LinearLayerInfo(d_model, TensorShape(d_model, d_model),
                                              TensorShape(d_model)),
                              get_weights_accessor(data_path, "pooler_weight.npy"),
-                             get_weights_accessor(data_path, "pooler_bias.npy"))
+                             get_weights_accessor(data_path, "pooler_bias.npy")).set_name("post_linear")
 
-              << ActivationLayer(ActivationLayerInfo(ActivationFunction::TANH, 1.f, 1.f))
+              << ActivationLayer(ActivationLayerInfo(ActivationFunction::TANH, 1.f, 1.f)).set_name("post_activation")
 
-              << OutputLayer(get_output_accessor(common_params)).set_name("out1");
+              << OutputLayer(get_output_accessor(common_params)).set_name("out");
 
         // Finalize graph
         GraphConfig config;
@@ -193,12 +193,12 @@ class GraphVanillaTransformerExample : public Example
                                     get_weights_accessor(data_path + layer_path, "key_bias.npy"),
                                     get_weights_accessor(data_path + layer_path, "value_weight.npy"),
                                     get_weights_accessor(data_path + layer_path, "value_bias.npy"))
-            << MultiHeadAttentionLayer(MultiHeadAttentionLayerInfo(d_model, h)).set_name("mha1");
+            << MultiHeadAttentionLayer(MultiHeadAttentionLayerInfo(d_model, h)).set_name("mha");
 
-        graph << EltwiseLayer(std::move(with_attention), std::move(without_attention), EltwiseOperation::Add).set_name("add_4_norm_attention");
+        graph << EltwiseLayer(std::move(with_attention), std::move(without_attention), EltwiseOperation::Add).set_name("atten_res_add");
 
         /* Self output */
-        graph << LayerNormLayer(LayerNormLayerInfo(0 /*Window::DimX*/, eps));
+        graph << LayerNormLayer(LayerNormLayerInfo(0 /*Window::DimX*/, eps)).set_name("atten_layer_norm");
 
         SubStream without_ff(graph);
         SubStream with_ff(graph);
@@ -206,17 +206,17 @@ class GraphVanillaTransformerExample : public Example
         with_ff << LinearLayer(LinearLayerInfo(d_ff, TensorShape(d_model, d_ff) /*weight*/,
                                                TensorShape(d_ff) /*bias*/),
                                get_weights_accessor(data_path + layer_path, "ff_weight_0.npy"),
-                               get_weights_accessor(data_path + layer_path, "ff_bias_0.npy"))
-                << ActivationLayer(ActivationLayerInfo(ActivationFunction::GELU))
+                               get_weights_accessor(data_path + layer_path, "ff_bias_0.npy")).set_name("ff_linear_1")
+                << ActivationLayer(ActivationLayerInfo(ActivationFunction::GELU)).set_name("ff_activation")
                 << LinearLayer(LinearLayerInfo(d_model, TensorShape(d_ff, d_model) /*weight*/,
                                                TensorShape(d_model) /*bias*/),
                                get_weights_accessor(data_path + layer_path, "ff_weight_1.npy"),
-                               get_weights_accessor(data_path + layer_path, "ff_bias_1.npy"));
+                               get_weights_accessor(data_path + layer_path, "ff_bias_1.npy")).set_name("ff_linear_2");
 
-        graph << EltwiseLayer(std::move(with_ff), std::move(without_ff), EltwiseOperation::Add).set_name("add_4_norm_ff");
+        graph << EltwiseLayer(std::move(with_ff), std::move(without_ff), EltwiseOperation::Add).set_name("ff_res_add");
 
         /* Output*/
-        graph << LayerNormLayer(LayerNormLayerInfo(0 /*Window::DimX*/, eps));
+        graph << LayerNormLayer(LayerNormLayerInfo(0 /*Window::DimX*/, eps)).set_name("ff_layer_norm");;
     }
 };
 
