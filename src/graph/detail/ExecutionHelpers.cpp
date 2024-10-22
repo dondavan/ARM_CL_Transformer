@@ -30,6 +30,12 @@
 #include "arm_compute/graph/Tensor.h"
 #include "arm_compute/graph/Utils.h"
 
+
+#ifdef MEASURE_TIME
+#include <chrono>
+#include <fstream>
+#endif
+
 namespace arm_compute
 {
 namespace graph
