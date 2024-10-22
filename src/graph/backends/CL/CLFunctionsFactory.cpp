@@ -101,11 +101,6 @@ public:
             tensor->map(CLScheduler::get().queue());
         }
         _func->run();
-
-        for (auto &tensor : _tensors)
-        {
-            tensor->unmap(CLScheduler::get().queue());
-        }
     }
 
     void register_tensor(ICLTensor *tensor)
