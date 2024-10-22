@@ -220,6 +220,37 @@ create_detection_post_process_layer<CPPDetectionPostProcessLayer, CLTargetInfo>(
 
     return std::move(wrap_function);
 }
+template <typename ScaleDotProductionAttentionLayer,typename TargetInfo>
+std::unique_ptr<IFunction>
+create_sdpa_wrap_layer(ScaleDotProductionAttentionNode &node)
+{
+    // Extract IO and info
+    typename TargetInfo::TensorType *query   = get_backing_tensor<TargetInfo>(node.input(0));
+    typename TargetInfo::TensorType *key     = get_backing_tensor<TargetInfo>(node.input(1));
+    typename TargetInfo::TensorType *value   = get_backing_tensor<TargetInfo>(node.input(2));
+    typename TargetInfo::TensorType *output  = get_backing_tensor<TargetInfo>(node.output(0));
+
+    // Create and configure function
+    auto func = std::make_unique<ScaleDotProductionAttentionLayer>();
+    func->configure(query,key,value,output,node.sdpa_info());
+
+    auto wrap_func = std::make_unique<CPPWrapperFunction>();
+
+    wrap_func->register_function(std::move(func));
+    wrap_func->register_tensor(query);
+    wrap_func->register_tensor(key);
+    wrap_func->register_tensor(value);
+    wrap_func->register_tensor(output);
+
+    // Log info
+    ARM_COMPUTE_LOG_GRAPH_INFO("Instantiated " << node.name() << " Type: " << node.type() << " Target: "
+                                               << TargetInfo::TargetType << " Data Type: " << input->info()->data_type()
+                                               << " Input shape: " << input->info()->tensor_shape()
+                                               << " Output shape: " << output->info()->tensor_shape() << std::endl);
+
+    return std::move(wrap_func);
+}
+
 } // namespace detail
 
 std::unique_ptr<IFunction> CLFunctionFactory::create(INode *node, GraphContext &ctx)
@@ -371,7 +402,7 @@ std::unique_ptr<IFunction> CLFunctionFactory::create(INode *node, GraphContext &
             return detail::create_attention_linear_layer<CLAttentionLinearLayer,CLTargetInfo>(
                 *polymorphic_downcast<AttentionLinearNode *>(node));
         case NodeType::ScaleDotProductionAttentionLayer:
-            return detail::create_scale_dot_production_layer<CLScaleDotProductionAttentionLayer,CLTargetInfo>(
+            return detail::create_sdpa_wrap_layer<NEScaleDotProductionAttentionLayer,CLTargetInfo>(
                 *polymorphic_downcast<ScaleDotProductionAttentionNode *>(node));
         default:
             return nullptr;
