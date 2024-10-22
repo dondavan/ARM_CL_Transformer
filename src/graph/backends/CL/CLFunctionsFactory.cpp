@@ -32,6 +32,12 @@
 #include "src/core/CL/CLKernels.h"
 #include "support/Cast.h"
 
+
+#ifdef MEASURE_TIME
+#include <chrono>
+#include <fstream>
+#endif
+
 using namespace arm_compute::utils::cast;
 
 namespace arm_compute
@@ -96,11 +102,39 @@ public:
 
     void run() override
     {
+#ifdef MEASURE_TIME
+        auto input_start_time = std::chrono::high_resolution_clock::now();
+#endif
         for (auto &tensor : _tensors)
         {
             tensor->map(CLScheduler::get().queue());
         }
+#ifdef MEASURE_TIME
+        auto   input_end_time  = std::chrono::high_resolution_clock::now();
+        double input_cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(input_end_time - input_start_time).count();
+
+        std::ofstream measure_out("measure_output.txt", std::ios::app);
+        measure_out.precision(5);
+        measure_out << std::scientific << "mapping cost: " << input_cost_time << std::endl;
+
+#endif
+
         _func->run();
+#ifdef MEASURE_TIME
+        auto unmap_start_time = std::chrono::high_resolution_clock::now();
+#endif
+        for (auto &tensor : _tensors)
+        {
+            tensor->unmap(CLScheduler::get().queue());
+        }
+#ifdef MEASURE_TIME
+        auto   unmap_end_time  = std::chrono::high_resolution_clock::now();
+        double unmap_cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(unmap_end_time - unmap_start_time).count();
+
+        measure_out.precision(5);
+        measure_out << std::scientific << "Unmapping cost: " << unmap_cost_time << std::endl;
+
+#endif
     }
 
     void register_tensor(ICLTensor *tensor)
