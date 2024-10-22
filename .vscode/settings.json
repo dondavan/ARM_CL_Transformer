@@ -75,6 +75,7 @@
         "version": "cpp",
         "unordered_set": "cpp",
         "queue": "cpp",
-        "type_traits": "c"
+        "type_traits": "c",
+        "utility": "cpp"
     }
 }

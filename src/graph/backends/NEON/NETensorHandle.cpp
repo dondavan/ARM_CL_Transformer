@@ -59,7 +59,6 @@ void NETensorHandle::manage(IMemoryGroup *mg)
 void NETensorHandle::map(bool blocking)
 {
     ARM_COMPUTE_UNUSED(blocking);
-    std::cout << "NETensorHandle::map" << std::endl;
 }
 
 void NETensorHandle::unmap()
