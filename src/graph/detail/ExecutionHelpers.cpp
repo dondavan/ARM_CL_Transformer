@@ -156,6 +156,7 @@ ExecutionWorkload configure_all_nodes(Graph &g, GraphContext &ctx, const std::ve
             std::unique_ptr<IFunction> func            = backend.configure_node(*node, ctx);
             if (func != nullptr || is_utility_node(node))
             {
+                std::cout << node->name() << std::endl;
                 workload.tasks.emplace_back(ExecutionTask(std::move(func), node));
                 node->set_configured(true);
             }
@@ -170,12 +171,14 @@ ExecutionWorkload configure_all_nodes(Graph &g, GraphContext &ctx, const std::ve
         {
             for(size_t idx=0; idx <node->num_outputs(); idx++)
             {
+                std::cout << node->name() << std::endl;
                 workload.inputs.push_back(node->output(idx));
             }
         }
 
         if (node != nullptr && node->type() == NodeType::Output)
         {
+            std::cout << node->name() << std::endl;
             workload.outputs.push_back(node->input(0));
             continue;
         }
@@ -272,7 +275,6 @@ void call_all_tasks(ExecutionWorkload &workload)
 #ifdef MEASURE_TIME
         auto   all_task_end_time  = std::chrono::high_resolution_clock::now();
         double all_task_cost_time = std::chrono::duration_cast<std::chrono::duration<double>>(all_task_end_time - all_task_start_time).count();
-
 
         std::ofstream measure_out("measure_output.txt", std::ios::app);
         measure_out.precision(5);
