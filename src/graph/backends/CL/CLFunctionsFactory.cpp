@@ -27,6 +27,7 @@
 #include "arm_compute/graph/GraphContext.h"
 #include "arm_compute/runtime/CL/CLFunctions.h"
 #include "arm_compute/runtime/CPP/CPPFunctions.h"
+#include "arm_compute/runtime/NEON/NEFunctions.h"
 
 #include "src/core/CL/CLKernels.h"
 #include "support/Cast.h"
@@ -370,7 +371,7 @@ std::unique_ptr<IFunction> CLFunctionFactory::create(INode *node, GraphContext &
             return detail::create_attention_linear_layer<CLAttentionLinearLayer,CLTargetInfo>(
                 *polymorphic_downcast<AttentionLinearNode *>(node));
         case NodeType::ScaleDotProductionAttentionLayer:
-            return detail::create_scale_dot_production_layer<CLScaleDotProductionAttentionLayer,CLTargetInfo>(
+            return detail::create_scale_dot_production_layer<NEScaleDotProductionAttentionLayer,CLTargetInfo>(
                 *polymorphic_downcast<ScaleDotProductionAttentionNode *>(node));
         default:
             return nullptr;
