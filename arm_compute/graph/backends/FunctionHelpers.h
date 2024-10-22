@@ -1924,11 +1924,11 @@ std::unique_ptr<IFunction> create_scale_dot_production_layer(ScaleDotProductionA
 
     auto wrap_func = std::make_unique<CPPWrapperFunction>();
 
-    wrap_function->register_function(std::move(func));
-    wrap_function->register_tensor(query);
-    wrap_function->register_tensor(key);
-    wrap_function->register_tensor(value);
-    wrap_function->register_tensor(output);
+    wrap_func->register_function(std::move(func));
+    wrap_func->register_tensor(query);
+    wrap_func->register_tensor(key);
+    wrap_func->register_tensor(value);
+    wrap_func->register_tensor(output);
 
     // Log info
     ARM_COMPUTE_LOG_GRAPH_INFO("Instantiated " << node.name() << " Type: " << node.type() << " Target: "
@@ -1936,7 +1936,7 @@ std::unique_ptr<IFunction> create_scale_dot_production_layer(ScaleDotProductionA
                                                << " Input shape: " << input->info()->tensor_shape()
                                                << " Output shape: " << output->info()->tensor_shape() << std::endl);
 
-    return std::move(wrap_function);
+    return std::move(wrap_func);
 }
 
 /** Creates a backend layer normalization function
